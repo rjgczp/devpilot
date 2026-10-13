@@ -12,7 +12,7 @@
 | `go test -race ./... -count=1` | 通过 | 同上四个包均为 `ok`，未报告 data race |
 | `go test -race ./internal/app -run TestRunner -count=20` | 通过 | 关闭路径重复 20 次，未报告失败或 data race |
 | `go test ./cmd/api -run TestProcessSignalsWithInFlightRequest -count=5 -v` | 通过 | SIGINT 和 SIGTERM 两个子测试各通过 5 次 |
-| GitHub Actions 工作流 | 未验证 | `.github/workflows/go-ci.yml` 已在本地编写；当前 GitHub 凭据缺少 `workflow` 权限，工作流文件尚未发布，以补入 PR 后的运行结果为准 |
+| GitHub Actions 工作流 | 通过 | PR #1 的 Go CI 执行 gofmt、`go vet ./...`、`go test ./... -count=1`、`go test -race ./... -count=1`；运行记录：https://github.com/rjgczp/devpilot/actions/runs/38361179216 |
 
 ## Docker Compose 集成验收
 
