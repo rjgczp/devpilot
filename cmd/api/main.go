@@ -51,7 +51,10 @@ func run() int {
 		Logger:          logger,
 		Draining:        &draining,
 		ShutdownTimeout: cfg.ShutdownTimeout,
-		CloseResource:   pool.Close,
+		CloseResource: func() error {
+			pool.Close()
+			return nil
+		},
 	}
 	signalContext, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

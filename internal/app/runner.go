@@ -17,7 +17,7 @@ type Runner struct {
 	Logger          *slog.Logger
 	Draining        *atomic.Bool
 	ShutdownTimeout time.Duration
-	CloseResource   func()
+	CloseResource   func() error
 	Workers         []func(context.Context)
 }
 
@@ -65,34 +65,43 @@ func (r Runner) Run(signalContext context.Context, listener net.Listener) error 
 		workers.Wait()
 		close(workersDone)
 	}()
-	resourceDone := make(chan struct{})
+	var workerErr error
+	select {
+	case <-workersDone:
+	case <-shutdownContext.Done():
+		workerErr = shutdownContext.Err()
+	}
+
+	resourceResult := make(chan error, 1)
 	go func() {
 		if r.CloseResource != nil {
-			r.CloseResource()
+			resourceResult <- r.CloseResource()
+			return
 		}
-		close(resourceDone)
+		resourceResult <- nil
 	}()
-
-	var cleanupErr error
-	pendingWorkers, pendingResource := workersDone, resourceDone
-	for pendingWorkers != nil || pendingResource != nil {
-		select {
-		case <-pendingWorkers:
-			pendingWorkers = nil
-		case <-pendingResource:
-			pendingResource = nil
-		case <-shutdownContext.Done():
-			cleanupErr = shutdownContext.Err()
-			r.Logger.Error("resource cleanup failed", "reason", "deadline_exceeded")
-			pendingWorkers = nil
-			pendingResource = nil
+	var resourceErr error
+	select {
+	case err := <-resourceResult:
+		if err != nil {
+			resourceErr = err
+			r.Logger.Error("resource cleanup failed", "reason", "resource_close_error")
 		}
+	case <-shutdownContext.Done():
+		resourceErr = shutdownContext.Err()
+	}
+	if errors.Is(workerErr, context.DeadlineExceeded) || errors.Is(resourceErr, context.DeadlineExceeded) {
+		r.Logger.Error("resource cleanup failed", "reason", "deadline_exceeded")
+	}
+	deadlineErr := shutdownContext.Err()
+	if deadlineErr != nil && shutdownErr == nil && workerErr == nil && resourceErr == nil {
+		r.Logger.Error("service shutdown failed", "reason", "deadline_exceeded")
 	}
 	if serveFailure != nil {
 		r.Logger.Error("server stopped unexpectedly", "reason", "serve_error")
 		return errors.New("HTTP serving failed")
 	}
-	if shutdownErr != nil || cleanupErr != nil {
+	if shutdownErr != nil || workerErr != nil || resourceErr != nil || deadlineErr != nil {
 		return errors.New("service shutdown failed")
 	}
 	r.Logger.Info("server stopped")

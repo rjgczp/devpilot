@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"net"
@@ -40,7 +41,10 @@ func TestRunnerGracefulShutdown(t *testing.T) {
 		Logger:          NewLogger(&logs, slog.LevelInfo),
 		Draining:        &draining,
 		ShutdownTimeout: time.Second,
-		CloseResource:   func() { resourceClosed.Store(true) },
+		CloseResource: func() error {
+			resourceClosed.Store(true)
+			return nil
+		},
 		Workers: []func(context.Context){func(ctx context.Context) {
 			<-ctx.Done()
 			close(workerStopped)
@@ -105,6 +109,54 @@ func TestRunnerGracefulShutdown(t *testing.T) {
 	}
 }
 
+func TestRunnerClosesResourceAfterWorkerExit(t *testing.T) {
+	listener := testListener(t)
+	var draining atomic.Bool
+	var workerFinished atomic.Bool
+	var closedTooEarly atomic.Bool
+	workerStarted := make(chan struct{})
+	releaseWorker := make(chan struct{})
+	t.Cleanup(func() {
+		select {
+		case <-releaseWorker:
+		default:
+			close(releaseWorker)
+		}
+	})
+	resourceClosed := make(chan struct{})
+	runner := Runner{
+		Server:          NewServer(listener.Addr().String(), http.NewServeMux()),
+		Logger:          NewLogger(io.Discard, slog.LevelInfo),
+		Draining:        &draining,
+		ShutdownTimeout: time.Second,
+		CloseResource: func() error {
+			closedTooEarly.Store(!workerFinished.Load())
+			close(resourceClosed)
+			return nil
+		},
+		Workers: []func(context.Context){func(ctx context.Context) {
+			close(workerStarted)
+			<-ctx.Done()
+			<-releaseWorker
+			workerFinished.Store(true)
+		}},
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	result := make(chan error, 1)
+	go func() { result <- runner.Run(ctx, listener) }()
+	waitFor(t, workerStarted)
+	cancel()
+	time.Sleep(30 * time.Millisecond)
+	close(releaseWorker)
+	if err := receive(t, result); err != nil {
+		t.Fatalf("graceful shutdown failed: %v", err)
+	}
+	waitFor(t, resourceClosed)
+	if closedTooEarly.Load() {
+		t.Fatal("resource closed before managed worker exited")
+	}
+}
+
 func TestRunnerShutdownDeadline(t *testing.T) {
 	listener := testListener(t)
 	var draining atomic.Bool
@@ -123,7 +175,10 @@ func TestRunnerShutdownDeadline(t *testing.T) {
 		Logger:          NewLogger(&logs, slog.LevelInfo),
 		Draining:        &draining,
 		ShutdownTimeout: 60 * time.Millisecond,
-		CloseResource:   func() { close(resourceClosed) },
+		CloseResource: func() error {
+			close(resourceClosed)
+			return nil
+		},
 		Workers: []func(context.Context){func(context.Context) {
 			<-releaseWorker // Deliberately ignores cancellation.
 		}},
@@ -179,6 +234,78 @@ func TestRunnerShutdownError(t *testing.T) {
 	if !strings.Contains(logs.String(), "http_shutdown_error") {
 		t.Fatalf("missing shutdown error reason: %s", logs.String())
 	}
+}
+
+func TestRunnerResourceCloseError(t *testing.T) {
+	listener := testListener(t)
+	var draining atomic.Bool
+	var logs bytes.Buffer
+	runner := Runner{
+		Server:          NewServer(listener.Addr().String(), http.NewServeMux()),
+		Logger:          NewLogger(&logs, slog.LevelInfo),
+		Draining:        &draining,
+		ShutdownTimeout: time.Second,
+		CloseResource: func() error {
+			return errors.New("postgres://user:top-secret@host/db close failed")
+		},
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	result := make(chan error, 1)
+	go func() { result <- runner.Run(ctx, listener) }()
+	time.Sleep(20 * time.Millisecond)
+	cancel()
+	if err := receive(t, result); err == nil {
+		t.Fatal("expected non-zero result for resource close failure")
+	}
+	if !strings.Contains(logs.String(), "resource_close_error") {
+		t.Fatalf("missing resource close reason: %s", logs.String())
+	}
+	if strings.Contains(logs.String(), "top-secret") || strings.Contains(logs.String(), "postgres://") {
+		t.Fatalf("resource close log disclosed secret: %s", logs.String())
+	}
+}
+
+func TestRunnerResourceCloseDeadline(t *testing.T) {
+	listener := testListener(t)
+	var draining atomic.Bool
+	var logs bytes.Buffer
+	releaseResource := make(chan struct{})
+	t.Cleanup(func() {
+		select {
+		case <-releaseResource:
+		default:
+			close(releaseResource)
+		}
+	})
+	resourceStopped := make(chan struct{})
+	runner := Runner{
+		Server:          NewServer(listener.Addr().String(), http.NewServeMux()),
+		Logger:          NewLogger(&logs, slog.LevelInfo),
+		Draining:        &draining,
+		ShutdownTimeout: 50 * time.Millisecond,
+		CloseResource: func() error {
+			<-releaseResource
+			close(resourceStopped)
+			return nil
+		},
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	result := make(chan error, 1)
+	go func() { result <- runner.Run(ctx, listener) }()
+	time.Sleep(20 * time.Millisecond)
+	start := time.Now()
+	cancel()
+	if err := receive(t, result); err == nil {
+		t.Fatal("expected non-zero result for blocked resource close")
+	}
+	if time.Since(start) > 500*time.Millisecond {
+		t.Fatal("resource close blocked beyond the shutdown deadline")
+	}
+	if !strings.Contains(logs.String(), "deadline_exceeded") {
+		t.Fatalf("missing resource timeout reason: %s", logs.String())
+	}
+	close(releaseResource)
+	waitFor(t, resourceStopped)
 }
 
 type closeErrorListener struct{ net.Listener }
