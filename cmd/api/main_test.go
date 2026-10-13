@@ -44,6 +44,60 @@ func TestProcessSignals(t *testing.T) {
 	}
 }
 
+func TestProcessSignalsWithInFlightRequest(t *testing.T) {
+	binary := buildBinary(t)
+	for _, signal := range []os.Signal{os.Interrupt, syscall.SIGTERM} {
+		t.Run(fmt.Sprint(signal), func(t *testing.T) {
+			database, err := net.Listen("tcp", "127.0.0.1:0")
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer database.Close()
+			accepted := make(chan net.Conn, 1)
+			go func() {
+				conn, err := database.Accept()
+				if err == nil {
+					accepted <- conn
+				}
+			}()
+
+			address := freeAddress(t)
+			cmd, output := startBinary(t, binary, address, "2s",
+				"DATABASE_URL=postgres://devpilot:top-secret@"+database.Addr().String()+"/devpilot?sslmode=disable",
+				"READINESS_TIMEOUT=250ms",
+			)
+			waitForHealth(t, address)
+			readyResult := make(chan error, 1)
+			go func() {
+				client := &http.Client{Timeout: time.Second}
+				response, err := client.Get("http://" + address + "/readyz")
+				if err == nil {
+					_ = response.Body.Close()
+					if response.StatusCode != http.StatusServiceUnavailable {
+						err = fmt.Errorf("readyz status = %d, want 503", response.StatusCode)
+					}
+				}
+				readyResult <- err
+			}()
+			select {
+			case conn := <-accepted:
+				defer conn.Close()
+			case <-time.After(time.Second):
+				t.Fatal("readiness request did not reach database checker")
+			}
+			if err := cmd.Process.Signal(signal); err != nil {
+				t.Fatal(err)
+			}
+			if err := <-readyResult; err != nil {
+				t.Fatalf("in-flight request failed: %v", err)
+			}
+			if err := waitForProcess(t, cmd); err != nil {
+				t.Fatalf("expected clean exit: %v; logs: %s", err, output.String())
+			}
+		})
+	}
+}
+
 func TestProcessStartsWhenDatabaseIsUnavailable(t *testing.T) {
 	binary := buildBinary(t)
 	address := freeAddress(t)
@@ -128,7 +182,7 @@ func freeAddress(t *testing.T) string {
 	return address
 }
 
-func startBinary(t *testing.T, binary, address, timeout string) (*exec.Cmd, *bytes.Buffer) {
+func startBinary(t *testing.T, binary, address, timeout string, extraEnv ...string) (*exec.Cmd, *bytes.Buffer) {
 	t.Helper()
 	cmd := exec.Command(binary)
 	cmd.Env = append(os.Environ(),
@@ -136,6 +190,7 @@ func startBinary(t *testing.T, binary, address, timeout string) (*exec.Cmd, *byt
 		"HTTP_ADDR="+address,
 		"SHUTDOWN_TIMEOUT="+timeout,
 	)
+	cmd.Env = append(cmd.Env, extraEnv...)
 	output := &bytes.Buffer{}
 	cmd.Stdout = output
 	cmd.Stderr = output
