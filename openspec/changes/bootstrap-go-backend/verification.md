@@ -18,9 +18,9 @@
 
 仓库原样配置通过 `docker compose config --quiet`；解析结果为 `postgres:18`、`127.0.0.1:5432`、命名卷 `postgres_data` 挂载到 `/var/lib/postgresql`。缺少 `POSTGRES_PASSWORD` 时，Compose 配置命令以非零状态退出。
 
-本机 Docker 存储空间不足，原样配置的命名卷初始化报 `No space left on device`。未清理其他项目的 Docker 数据。为验证服务行为，使用同一 `compose.yaml` 加临时覆盖文件，仅将数据卷换为主机临时目录；镜像、密码注入、健康检查和回环端口配置保持一致。覆盖配置下 PostgreSQL 18 显示 `healthy`，端口显示 `127.0.0.1:5432->5432/tcp`。
+清理本机 Docker 空间后，使用仓库原样 `compose.yaml`、临时注入的随机密码及独立 Compose 项目名，在新建命名卷上执行 `docker compose up -d --wait postgres`。PostgreSQL 18 显示 `healthy`；容器检查确认挂载类型为 `volume`、目标为 `/var/lib/postgresql`，且端口仅发布到 `127.0.0.1:5432`。`pg_isready` 报告接受连接。
 
-同一个 Go 进程监听 `127.0.0.1:18081`，未在数据库停止和恢复之间重启：
+同一个 Go 进程监听 `127.0.0.1:18082`，未在数据库停止和恢复之间重启：
 
 | 数据库状态 | `/healthz` | `/readyz` |
 | --- | --- | --- |
@@ -28,11 +28,11 @@
 | Compose `stop postgres` 后 | 200 | 503 |
 | Compose `start postgres` 后 | 200 | 200 |
 
-最后向 Go 进程发送 SIGINT，退出码为 0，日志包含 `server stopped`。验收容器、网络、临时数据目录和二进制已清理。仓库默认命名卷的**实际启动**仍需在 Docker 存储空间充足的环境复验。
+最后向 Go 进程发送 SIGINT，退出码为 0。此次验收创建的容器、网络、命名卷、临时目录和二进制已清理。
 
 ## 对照 OpenSpec Specs
 
-状态统计：通过 21，失败 0，未验证 1。这里的“通过”包含自动化测试、配置检查或上述真实数据库验收；“未验证”表示本机环境无法完成该场景。
+状态统计：通过 22，失败 0，未验证 0。这里的“通过”包含自动化测试、配置检查或上述真实数据库验收。
 
 | Spec / 场景 | 状态 | 证据或限制 |
 | --- | --- | --- |
@@ -41,7 +41,7 @@
 | backend-runtime / Configuration file is not imported automatically | 通过 | `TestLoadDoesNotReadDotEnvFile` |
 | backend-runtime / Default and invalid shutdown timeouts | 通过 | `TestLoadDefaultsAndOverrides`、`TestLoadRejectsInvalidConfigurationWithoutSecrets` |
 | backend-runtime / Developer prepares local configuration | 通过 | `.env.example` 无真实凭据；`git check-ignore .env` 输出 `.env` |
-| backend-runtime / Local database is started | 未验证 | 默认命名卷初始化因本机 Docker 空间不足而失败；临时主机目录覆盖下 PostgreSQL 18 正常启动并仅发布到回环地址 |
+| backend-runtime / Local database is started | 通过 | 仓库原样 Compose 配置在新命名卷上启动 PostgreSQL 18 并达到 `healthy`；检查确认 `/var/lib/postgresql` 卷挂载和仅回环端口发布 |
 | backend-runtime / Password is absent | 通过 | 不设置 `POSTGRES_PASSWORD` 时 `docker compose --env-file /dev/null config --quiet` 失败 |
 | backend-runtime / Service starts（日志） | 通过 | `TestProcessSignals` 验证 JSON 启动日志 |
 | backend-runtime / Database operation fails（日志） | 通过 | `TestHealthAndReadinessTransitions` 验证 JSON 错误日志且无连接串和密码 |
