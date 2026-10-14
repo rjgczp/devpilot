@@ -1,0 +1,9 @@
+--- FAIL: TestMigrationAndConstraints (0.00s)
+    registration_test.go:85: TEST_DATABASE_URL must name the isolated registration test database
+--- FAIL: TestRegistrationWithPostgreSQL (0.00s)
+    registration_test.go:190: TEST_DATABASE_URL must name the isolated registration test database
+--- FAIL: TestUnavailableDatabaseAndRecovery (0.00s)
+    registration_test.go:350: TEST_DATABASE_URL must name the isolated registration test database
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.682s
+FAIL

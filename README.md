@@ -1,6 +1,46 @@
 # devpilot
 DevPilot AI 是一个基于 Go + Python 的多租户 SaaS 监控与 AI 故障诊断平台。
 
+## 用户注册
+
+在启动 Go API 前，按[数据库迁移说明](docs/database-migrations.md)安装固定版本 Goose 并显式执行 migration up。API 不自动修改 Schema，原有 `/healthz` 与 `/readyz` 语义保持不变。
+
+```sh
+curl -i http://127.0.0.1:8080/api/v1/auth/register \
+  -H 'Content-Type: application/json' \
+  --data '{"email":"Alice.Example+tag@Example.COM","password":"a long local test phrase"}'
+```
+
+成功返回201和 `data`（id、规范化email、status、created_at），不签发登录令牌、Cookie或Session，不发送邮件。`active` **只表示未被禁用**，新用户 `email_verified_at=NULL`；后续功能不得仅凭 active 信任邮箱所有权。
+
+邮箱采用MVP ASCII子集及全地址小写策略，去除首尾ASCII空格/Tab/CR/LF，保留点号和 `+tag`；规范化地址最多254 bytes、local part最多64 bytes。国际化、quoted local part等其他格式可能在别的邮件系统有效，但当前产品不支持。数据库UNIQUE约束是并发一致性的最终保证，重复邮箱返回409，既有密码/状态/验证/时间字段不变。这一接口明确暴露邮箱占用，不宣称抵御账号枚举。
+
+密码为15–128个Unicode码点、最多512个UTF-8字节，不裁剪、截断或Unicode归一化，无字符类别要求。JSON body总长最多4096 bytes（包括尾随空白），只允许一个含email/password字符串的对象，拒绝未知/重复/缺失键与多值。先检查原始UTF-8和Unicode转义，拒绝孤立/反序/缺损代理项；仅检查JSON解码后的utf8.ValidString不足以保证这一点。合法代理对计一个码点，合法U+FFFD允许使用。
+
+| HTTP | error.code | 含义 |
+| --- | --- | --- |
+| 201 | 无 | 已确认创建用户 |
+| 400 | invalid_request | JSON结构、字段或原始Unicode转义错误 |
+| 405 | method_not_allowed | 仅POST，附Allow: POST；HEAD无body |
+| 413 | request_too_large | 超过4096 bytes |
+| 415 | unsupported_media_type | 仅application/json及可选UTF-8 charset，无Content-Encoding |
+| 422 | validation_failed | 不符合当前邮箱/密码策略 |
+| 409 | email_conflict | 规范化邮箱已存在 |
+| 503 | registration_busy | 两个哈希槽已满，Retry-After: 1 |
+| 503 | service_unavailable | 连接不可用/中断，或服务端处理预算耗尽 |
+| 503 | database_timeout | 数据库执行/取连接期限或确认的statement timeout |
+| 500 | internal_error | 缺users等部署错误，或其他内部故障 |
+
+错误体为 `{"error":{"code":"…","message":"固定安全文本"}}`，422可附仅含字段名和固定原因码的fields；响应为JSON并附 `Cache-Control: no-store`、`X-Content-Type-Options: nosniff`。不暴露密码、哈希或原始PgError/SQL/内部诊断；日志不记邮箱或请求体。完整机器可读契约见 [OpenAPI](docs/api/openapi.yaml)。
+
+数据库超时/连接中断后，INSERT可能已经提交，错误只表示**无法确认注册结果**，不保证一定失败；服务端不自动重试。重试可能收到409，不能据此覆盖密码。客户端主动取消或断连时传播取消并停止发起后续工作，不尝试保证或写入503响应；服务端预算超时与客户端取消分开处理。
+
+Argon2id暂定64 MiB、t=3、p=1，16-byte随机盐、32-byte输出、PHC编码。每进程最多2次同时哈希，无等待队列；4096-byte上限和廉价验证先于获取槽位，取消不能释放仍在计算的槽位。哈希真实返回才释放，GC/RSS回收不保证立即发生；这不是128 MiB进程内存硬上限。处理/数据库context预算为5s/2s，不能中断Argon本身。[基准与测试证据](openspec/changes/add-user-registration/verification.md)记录实际资源与延迟；不得为了性能目标擅自降低安全参数。
+
+**公开部署前必须另行实现并评审注册限流与防滥用控制**。两个槽仅控制本进程并发资源，不防止持续批量注册或跨实例滥用；本Change不实现限流系统，不扩展登录、JWT、Workspace、Redis或AI能力。
+
+单元测试无需数据库：`go test ./... -count=1`；竞态检查：`go test -race ./... -count=1`。真实PG18测试和安全隔离/清理步骤见[迁移说明](docs/database-migrations.md)。缺少TEST_DATABASE_URL或Goose时显式集成测试失败，不跳过。
+
 ## 本地配置
 
 需要 Go 1.24 或更新版本与 Docker Compose。复制示例文件并自行设置本地密码：

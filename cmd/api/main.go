@@ -13,6 +13,9 @@ import (
 	"github.com/rjgczp/devpilot/internal/app"
 	"github.com/rjgczp/devpilot/internal/config"
 	"github.com/rjgczp/devpilot/internal/health"
+	"github.com/rjgczp/devpilot/internal/password"
+	"github.com/rjgczp/devpilot/internal/registration"
+	"github.com/rjgczp/devpilot/internal/user"
 )
 
 func main() { os.Exit(run()) }
@@ -40,12 +43,13 @@ func run() int {
 	defer listener.Close()
 
 	var draining atomic.Bool
-	handler := health.Handler{
+	healthRoutes := health.Handler{
 		Checker:  pool,
 		Timeout:  cfg.ReadinessTimeout,
 		Draining: &draining,
 		Logger:   logger,
 	}.Routes()
+	handler := app.NewRoutes(healthRoutes, registration.New(user.Store{Pool: pool}, password.New(), logger))
 	runner := app.Runner{
 		Server:          app.NewServer(cfg.HTTPAddr, handler),
 		Logger:          logger,
