@@ -72,3 +72,7 @@ go test -c -o /tmp/devpilot-password.test ./internal/password
 ## 审查与部署边界
 
 本地验证完成不代表独立代码审查已通过。交付PR等待独立审查，不自动合并或归档；主Specs保留归档/同步流程原有边界。公开部署前仍必须另行实现并评审注册限流与防滥用控制，两个hash槽不能替代这一要求。409保留已评审的邮箱占用枚举取舍。此轮未执行共享/生产迁移或部署。
+
+## 归档记录
+
+2026-10-14，用户确认独立审查结束并授权合并与归档。PR #2已在GitHub合并，verify/integration的push与pull_request检查均成功，本地main已同步至合并提交1ac1eab。21/21实施任务完成；两份delta的Purpose、14项Requirement与64个Scenario已逐字同步为主Specs，原有runtime/health Specs保持不变。归档前所有4份主Specs严格校验通过，所有原始验证证据随Change完整保留。此次归档仅调整规格/归档路径及README证据链接，不修改业务代码，也不执行数据库迁移。
