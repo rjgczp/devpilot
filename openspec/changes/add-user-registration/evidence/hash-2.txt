@@ -1,0 +1,6 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/rjgczp/devpilot/internal/password
+cpu: Apple M4
+BenchmarkHashResources/2-10  	      20	 109118231 ns/op	       107.6 p50-ms	       112.9 p95-ms	134228936 B/op	     101 allocs/op
+PASS

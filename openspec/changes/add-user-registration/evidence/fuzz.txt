@@ -1,0 +1,7 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/5 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 5/5 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 80462 (26819/sec), new interesting: 92 (total: 97)
+fuzz: elapsed: 6s, execs: 80462 (0/sec), new interesting: 92 (total: 97)
+fuzz: elapsed: 6s, execs: 80462 (0/sec), new interesting: 92 (total: 97)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/registration	7.089s

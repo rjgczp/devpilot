@@ -1,0 +1,4 @@
+{"time":"2026-10-14T12:03:19.38586+08:00","level":"INFO","msg":"server started","address":"127.0.0.1:49322"}
+{"time":"2026-10-14T12:03:19.562924+08:00","level":"ERROR","msg":"registration failed","reason":"schema_missing","status":500}
+{"time":"2026-10-14T12:03:21.735558+08:00","level":"ERROR","msg":"database readiness check failed","reason":"unavailable"}
+{"time":"2026-10-14T12:03:21.798017+08:00","level":"INFO","msg":"server stopped"}
