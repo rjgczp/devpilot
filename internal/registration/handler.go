@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/rjgczp/devpilot/internal/password"
 	"github.com/rjgczp/devpilot/internal/user"
 )
 
@@ -23,13 +24,13 @@ type Handler struct {
 	store             Store
 	hasher            Hasher
 	logger            *slog.Logger
-	slots             chan struct{}
+	budget            *password.Budget
 	processingTimeout time.Duration
 	databaseTimeout   time.Duration
 }
 
-func New(store Store, hasher Hasher, logger *slog.Logger) *Handler {
-	return &Handler{store: store, hasher: hasher, logger: logger, slots: make(chan struct{}, 2), processingTimeout: 5 * time.Second, databaseTimeout: 2 * time.Second}
+func New(store Store, hasher Hasher, logger *slog.Logger, budget *password.Budget) *Handler {
+	return &Handler{store: store, hasher: hasher, logger: logger, budget: budget, processingTimeout: 5 * time.Second, databaseTimeout: 2 * time.Second}
 }
 
 type responseWriter struct {
@@ -155,12 +156,10 @@ func (h *Handler) ServeHTTP(output http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) hash(password string) (hash string, busy bool, err error) {
-	select {
-	case h.slots <- struct{}{}:
-	default:
+	if !h.budget.Acquire() {
 		return "", true, nil
 	}
-	defer func() { <-h.slots }()
+	defer h.budget.Release()
 	hash, err = h.hasher.Hash(password)
 	return hash, false, err
 }

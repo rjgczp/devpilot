@@ -1,0 +1,3 @@
+gofmt -l cmd internal tests: no output
+git diff --check: no output
+go mod verify: all modules verified

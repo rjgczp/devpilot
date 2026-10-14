@@ -1,0 +1,84 @@
+=== RUN   TestAuthenticationWithPostgreSQL
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestAuthenticationWithPostgreSQL/loopback-http
+=== RUN   TestAuthenticationWithPostgreSQL/production-https
+=== NAME  TestAuthenticationWithPostgreSQL
+    auth_test.go:106: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestAuthenticationWithPostgreSQL (16.36s)
+    --- PASS: TestAuthenticationWithPostgreSQL/loopback-http (8.12s)
+    --- PASS: TestAuthenticationWithPostgreSQL/production-https (8.15s)
+=== RUN   TestAuthenticationDatabaseFailuresAndCancellation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    auth_test.go:280: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestAuthenticationDatabaseFailuresAndCancellation (10.73s)
+=== RUN   TestCleanupBatchMultiInstanceAndFaults
+    registration_test.go:78: native Goose up expected-success=true: verified
+    cleanup_test.go:19: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCleanupBatchMultiInstanceAndFaults (0.14s)
+=== RUN   TestMigrationAndConstraints
+    registration_test.go:91: native Goose down-to 0 expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:102: native Goose status expected-success=true: verified
+    registration_test.go:103: native Goose down expected-success=true: verified
+    registration_test.go:107: native Goose down expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMigrationAndConstraints/null-email
+=== RUN   TestMigrationAndConstraints/null-hash
+=== RUN   TestMigrationAndConstraints/empty-hash
+=== RUN   TestMigrationAndConstraints/long-hash
+=== RUN   TestMigrationAndConstraints/state
+=== RUN   TestMigrationAndConstraints/uppercase
+=== RUN   TestMigrationAndConstraints/space
+=== RUN   TestMigrationAndConstraints/unicode
+=== RUN   TestMigrationAndConstraints/empty-email
+=== RUN   TestMigrationAndConstraints/long-email
+=== NAME  TestMigrationAndConstraints
+    registration_test.go:177: native Goose up expected-success=false: verified
+    registration_test.go:93: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMigrationAndConstraints (0.16s)
+    --- PASS: TestMigrationAndConstraints/null-email (0.00s)
+    --- PASS: TestMigrationAndConstraints/null-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/empty-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/long-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/state (0.00s)
+    --- PASS: TestMigrationAndConstraints/uppercase (0.00s)
+    --- PASS: TestMigrationAndConstraints/space (0.00s)
+    --- PASS: TestMigrationAndConstraints/unicode (0.00s)
+    --- PASS: TestMigrationAndConstraints/empty-email (0.00s)
+    --- PASS: TestMigrationAndConstraints/long-email (0.00s)
+=== RUN   TestRegistrationWithPostgreSQL
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestRegistrationWithPostgreSQL/missing-schema-is500
+=== RUN   TestRegistrationWithPostgreSQL/database-deadline
+=== RUN   TestRegistrationWithPostgreSQL/client-cancel-during-insert
+=== NAME  TestRegistrationWithPostgreSQL
+    registration_test.go:221: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestRegistrationWithPostgreSQL (8.50s)
+    --- PASS: TestRegistrationWithPostgreSQL/missing-schema-is500 (0.90s)
+    --- PASS: TestRegistrationWithPostgreSQL/database-deadline (2.92s)
+    --- PASS: TestRegistrationWithPostgreSQL/client-cancel-during-insert (0.97s)
+=== RUN   TestUnavailableDatabaseAndRecovery
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:423: verified PostgreSQL18 recovery with native migrations and actual Argon2id
+    registration_test.go:381: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestUnavailableDatabaseAndRecovery (1.88s)
+=== RUN   TestSessionStoreAndUpgrade
+    session_test.go:19: native Goose down-to 0 expected-success=true: verified
+    session_test.go:20: native Goose up-to 1 expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:115: native Goose down expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:21: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSessionStoreAndUpgrade (1.06s)
+=== RUN   TestSessionCreationRechecksConcurrentUpdate
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:131: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSessionCreationRechecksConcurrentUpdate (0.07s)
+=== RUN   TestCreationLockSerializesDisableAndConcurrentRevocation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:180: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCreationLockSerializesDisableAndConcurrentRevocation (0.08s)
+PASS
+ok  	github.com/rjgczp/devpilot/tests/integration	40.561s

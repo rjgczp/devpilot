@@ -7,6 +7,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -18,6 +19,7 @@ var (
 	ErrCanceled    = errors.New("request canceled")
 	ErrSchema      = errors.New("schema missing")
 	ErrInternal    = errors.New("user persistence error")
+	ErrNotFound    = errors.New("user not found")
 )
 
 // Public intentionally has no password hash, verification claim or internal fields.
@@ -29,6 +31,25 @@ type Public struct {
 }
 
 type Store struct{ Pool *pgxpool.Pool }
+
+// Credentials is internal only. HTTP responses always project Public instead.
+type Credentials struct {
+	Public
+	PasswordHash string
+}
+
+func (s Store) FindCredentials(ctx context.Context, email string) (Credentials, error) {
+	var u Credentials
+	err := s.Pool.QueryRow(ctx, `SELECT id::text,email,status,created_at,password_hash FROM users WHERE email=$1`, email).Scan(&u.ID, &u.Email, &u.Status, &u.CreatedAt, &u.PasswordHash)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return Credentials{}, ErrNotFound
+	}
+	if err != nil {
+		return Credentials{}, Classify(ctx, err)
+	}
+	u.CreatedAt = u.CreatedAt.UTC()
+	return u, nil
+}
 
 func (s Store) Create(ctx context.Context, email, hash string) (Public, error) {
 	var u Public

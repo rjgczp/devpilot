@@ -59,7 +59,8 @@ func goose(t *testing.T, dir, command string, wantSuccess bool) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, "goose", "-env=none", "-dir", dir, "-timeout", "30s", command)
+	args := append([]string{"-env=none", "-dir", dir, "-timeout", "30s"}, strings.Fields(command)...)
+	cmd := exec.CommandContext(ctx, "goose", args...)
 	for _, env := range os.Environ() {
 		if !strings.HasPrefix(env, "GOOSE_") {
 			cmd.Env = append(cmd.Env, env)
@@ -87,8 +88,9 @@ func queryInt(t *testing.T, db *pgxpool.Pool, sql string, args ...any) int {
 
 func TestMigrationAndConstraints(t *testing.T) {
 	db := openDB(t)
+	goose(t, filepath.Join(root(), "migrations"), "down-to 0", true)
 	migrate(t)
-	t.Cleanup(func() { goose(t, filepath.Join(root(), "migrations"), "down", true) })
+	t.Cleanup(func() { goose(t, filepath.Join(root(), "migrations"), "down-to 0", true) })
 	ctx := context.Background()
 	if _, err := db.Exec(ctx, `INSERT INTO users(email,password_hash) VALUES('preserved@example.com','future-PHC-with-other-parameters')`); err != nil {
 		t.Fatal("parameter-agnostic schema rejected value")
@@ -98,6 +100,10 @@ func TestMigrationAndConstraints(t *testing.T) {
 		t.Fatal("repeat up changed data")
 	}
 	goose(t, filepath.Join(root(), "migrations"), "status", true)
+	goose(t, filepath.Join(root(), "migrations"), "down", true)
+	if queryInt(t, db, `SELECT count(*) FROM users WHERE email='preserved@example.com'`) != 1 || queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='sessions' AND table_schema='public'`) != 0 {
+		t.Fatal("session down damaged users")
+	}
 	goose(t, filepath.Join(root(), "migrations"), "down", true)
 	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='users' AND table_schema='public'`) != 0 {
 		t.Fatal("down retained table")
@@ -161,11 +167,15 @@ func TestMigrationAndConstraints(t *testing.T) {
 	if os.WriteFile(filepath.Join(dir, "00001_create_users.sql"), original, 0600) != nil {
 		t.Fatal("copy migration")
 	}
-	if os.WriteFile(filepath.Join(dir, "00002_intentionally_bad.sql"), []byte("-- +goose Up\nCREATE TABLE must_rollback(id integer);\nSELECT 1/0;\n-- +goose Down\nDROP TABLE must_rollback;\n"), 0600) != nil {
+	sessionSQL, err := os.ReadFile(filepath.Join(root(), "migrations/00002_create_sessions.sql"))
+	if err != nil || os.WriteFile(filepath.Join(dir, "00002_create_sessions.sql"), sessionSQL, 0600) != nil {
+		t.Fatal("copy sessions migration")
+	}
+	if os.WriteFile(filepath.Join(dir, "00003_intentionally_bad.sql"), []byte("-- +goose Up\nCREATE TABLE must_rollback(id integer);\nSELECT 1/0;\n-- +goose Down\nDROP TABLE must_rollback;\n"), 0600) != nil {
 		t.Fatal("write failure fixture")
 	}
 	goose(t, dir, "up", false)
-	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='must_rollback'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=2 AND is_applied`) != 0 {
+	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='must_rollback'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=3 AND is_applied`) != 0 {
 		t.Fatal("failed migration partially committed")
 	}
 }
@@ -173,7 +183,7 @@ func TestMigrationAndConstraints(t *testing.T) {
 func newRouter(db *pgxpool.Pool, logs *bytes.Buffer) http.Handler {
 	logger := app.NewLogger(logs, slog.LevelInfo)
 	var draining atomic.Bool
-	return app.NewRoutes(health.Handler{Checker: db, Timeout: time.Second, Draining: &draining, Logger: logger}.Routes(), registration.New(user.Store{Pool: db}, password.New(), logger))
+	return app.NewRoutes(health.Handler{Checker: db, Timeout: time.Second, Draining: &draining, Logger: logger}.Routes(), registration.New(user.Store{Pool: db}, password.New(), logger, password.NewBudget()))
 }
 
 const testPassword = "sentinel exact 密码 password 🔐 "
@@ -208,7 +218,7 @@ func code(t *testing.T, body map[string]json.RawMessage) string {
 func TestRegistrationWithPostgreSQL(t *testing.T) {
 	db := openDB(t)
 	migrate(t)
-	t.Cleanup(func() { goose(t, filepath.Join(root(), "migrations"), "down", true) })
+	t.Cleanup(func() { goose(t, filepath.Join(root(), "migrations"), "down-to 0", true) })
 	var logs bytes.Buffer
 	server := httptest.NewServer(newRouter(db, &logs))
 	defer server.Close()
@@ -368,7 +378,7 @@ func TestRegistrationWithPostgreSQL(t *testing.T) {
 func TestUnavailableDatabaseAndRecovery(t *testing.T) {
 	db := openDB(t)
 	migrate(t)
-	t.Cleanup(func() { goose(t, filepath.Join(root(), "migrations"), "down", true) })
+	t.Cleanup(func() { goose(t, filepath.Join(root(), "migrations"), "down-to 0", true) })
 	config, err := pgxpool.ParseConfig("postgres://test:sentinel@127.0.0.1:1/" + testdb.Name + "?sslmode=disable")
 	if err != nil {
 		t.Fatal("config")
