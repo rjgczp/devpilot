@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - codex/bootstrap-go-backend
+      - codex/add-user-registration
   pull_request:
     branches:
       - main
@@ -34,3 +34,30 @@ jobs:
         run: go test ./... -count=1
       - name: Run race tests
         run: go test -race ./... -count=1
+
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+        env:
+          POSTGRES_USER: devpilot_test
+          POSTGRES_PASSWORD: registration_test_only
+          POSTGRES_DB: devpilot_registration_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U devpilot_test -d devpilot_registration_test"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://devpilot_test:registration_test_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: Install pinned native Goose CLI
+        run: go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.26.0
+      - name: Verify PostgreSQL 18 integration
+        run: go test -tags=integration ./... -count=1 -timeout=120s
