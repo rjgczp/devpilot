@@ -1,0 +1,5 @@
+--- FAIL: TestSessionStoreAndUpgrade (0.00s)
+    session_test.go:18: TEST_DATABASE_URL must name the isolated registration test database
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.473s
+FAIL

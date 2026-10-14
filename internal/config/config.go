@@ -19,6 +19,7 @@ const (
 )
 
 type Config struct {
+	Auth             AuthConfig
 	HTTPAddr         string
 	Database         *pgxpool.Config
 	LogLevel         slog.Level
@@ -60,6 +61,10 @@ func Load(getenv func(string) string) (Config, error) {
 	cfg.Database, err = pgxpool.ParseConfig(dsn)
 	if err != nil {
 		return Config{}, fmt.Errorf("DATABASE_URL: invalid PostgreSQL URL")
+	}
+	cfg.Auth, err = loadAuth(getenv, cfg.HTTPAddr)
+	if err != nil {
+		return Config{}, err
 	}
 
 	return cfg, nil

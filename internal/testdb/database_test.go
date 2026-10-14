@@ -36,3 +36,17 @@ func TestUnavailableDatabaseIsFailure(t *testing.T) {
 		t.Fatal("unreachable database must fail safely")
 	}
 }
+
+func TestServerIdentityAndVersionGuard(t *testing.T) {
+	for _, tc := range []struct {
+		name    string
+		version int
+		allowed bool
+	}{
+		{Name, 179999, false}, {Name, 180000, true}, {Name, 180006, true}, {Name, 189999, true}, {Name, 190000, false}, {Name, 0, false}, {"devpilot", 180006, false},
+	} {
+		if validServer(tc.name, tc.version) != tc.allowed {
+			t.Fatal("unsafe server guard")
+		}
+	}
+}

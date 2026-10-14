@@ -14,6 +14,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rjgczp/devpilot/internal/password"
 	"github.com/rjgczp/devpilot/internal/user"
 )
 
@@ -28,7 +29,7 @@ func (f hashFunc) Hash(p string) (string, error) { return f(p) }
 func newTestHandler() *Handler {
 	return New(storeFunc(func(_ context.Context, e, p string) (user.Public, error) {
 		return user.Public{ID: "0199a000-0000-7000-8000-000000000001", Email: e, Status: "active", CreatedAt: time.Date(2026, 10, 14, 0, 0, 0, 0, time.UTC)}, nil
-	}), hashFunc(func(string) (string, error) { return "safe-test-PHC", nil }), slog.New(slog.NewJSONHandler(io.Discard, nil)))
+	}), hashFunc(func(string) (string, error) { return "safe-test-PHC", nil }), slog.New(slog.NewJSONHandler(io.Discard, nil)), password.NewBudget())
 }
 
 func payload(email, password string) string {
@@ -101,8 +102,12 @@ func TestStrictRequestsAndCheapRejection(t *testing.T) {
 			})
 			for _, busy := range []bool{false, true} {
 				if busy {
-					h.slots <- struct{}{}
-					h.slots <- struct{}{}
+					if !h.budget.Acquire() {
+						t.Fatal("fixture capacity")
+					}
+					if !h.budget.Acquire() {
+						t.Fatal("fixture capacity")
+					}
 				}
 				w := httptest.NewRecorder()
 				r := request(tc.body)
@@ -110,8 +115,8 @@ func TestStrictRequestsAndCheapRejection(t *testing.T) {
 				h.ServeHTTP(w, r)
 				assertResponse(t, w, tc.status, tc.code)
 				if busy {
-					<-h.slots
-					<-h.slots
+					h.budget.Release()
+					h.budget.Release()
 				}
 			}
 		})
@@ -260,7 +265,7 @@ func TestCancellationKeepsSlotsUntilHashReturns(t *testing.T) {
 	for _, cancel := range cancelers {
 		cancel()
 	}
-	if len(h.slots) != 2 {
+	if h.budget.Active() != 2 {
 		t.Fatal("slots released while hashing")
 	}
 	w := perform(h, payload("b@example.com", validPassword))
@@ -276,7 +281,7 @@ func TestCancellationKeepsSlotsUntilHashReturns(t *testing.T) {
 			t.Fatal("canceled response attempted")
 		}
 	}
-	if len(h.slots) != 0 {
+	if h.budget.Active() != 0 {
 		t.Fatal("slots leaked")
 	}
 	h.hasher = newTestHandler().hasher
@@ -316,7 +321,7 @@ func TestErrorResponsesAndSlotRelease(t *testing.T) {
 		})
 		w := perform(h, payload("a@example.com", validPassword))
 		assertResponse(t, w, 500, "internal_error")
-		if len(h.slots) != 0 || strings.Contains(w.Body.String(), "sentinel") {
+		if h.budget.Active() != 0 || strings.Contains(w.Body.String(), "sentinel") {
 			t.Fatal("hash failure unsafe")
 		}
 	}

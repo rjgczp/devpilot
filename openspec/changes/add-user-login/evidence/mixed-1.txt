@@ -1,0 +1,24 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/rjgczp/devpilot/internal/password
+cpu: Apple M4
+BenchmarkMixedResources/1-10  	      20	 109179202 ns/op	       103.1 p50-ms	       143.2 p95-ms	        20.00 samples	67114770 B/op	      53 allocs/op
+PASS
+        2.30 real         2.23 user         0.03 sys
+           142163968  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                8722  page reclaims
+                 177  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                 244  signals received
+                  27  voluntary context switches
+                3703  involuntary context switches
+         33784860054  instructions retired
+          9315821711  cycles elapsed
+           139428416  peak memory footprint

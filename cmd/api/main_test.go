@@ -135,6 +135,23 @@ func TestProcessRejectsInvalidConfigurationWithoutSecret(t *testing.T) {
 	}
 }
 
+func TestProcessRejectsAuthenticationPolicyBeforeListening(t *testing.T) {
+	binary := buildBinary(t)
+	for _, tc := range []struct{ key, value string }{{"AUTH_ORIGIN", ""}, {"AUTH_ORIGIN", "https://user:sentinel@example.com/"}, {"AUTH_MODE", "unknown"}, {"SESSION_TTL", "25h"}} {
+		cmd := exec.Command(binary)
+		for _, entry := range os.Environ() {
+			if !strings.HasPrefix(entry, "AUTH_") && !strings.HasPrefix(entry, "SESSION_TTL=") && !strings.HasPrefix(entry, "DATABASE_URL=") && !strings.HasPrefix(entry, "HTTP_ADDR=") {
+				cmd.Env = append(cmd.Env, entry)
+			}
+		}
+		cmd.Env = append(cmd.Env, "DATABASE_URL=postgres://test:top-secret@127.0.0.1:1/test?sslmode=disable", "HTTP_ADDR=127.0.0.1:8099", "AUTH_MODE=production", "AUTH_ORIGIN=https://example.com", "SESSION_TTL=24h", tc.key+"="+tc.value)
+		output, err := cmd.CombinedOutput()
+		if err == nil || !strings.Contains(string(output), tc.key) || strings.Contains(string(output), "server started") || strings.Contains(string(output), "sentinel") || strings.Contains(string(output), "top-secret") {
+			t.Fatal("unsafe configuration startup")
+		}
+	}
+}
+
 func TestProcessShutdownTimeout(t *testing.T) {
 	binary := buildBinary(t)
 	address := freeAddress(t)
@@ -188,6 +205,9 @@ func startBinary(t *testing.T, binary, address, timeout string, extraEnv ...stri
 	cmd.Env = append(os.Environ(),
 		"DATABASE_URL=postgres://devpilot:top-secret@127.0.0.1:1/devpilot?sslmode=disable",
 		"HTTP_ADDR="+address,
+		"AUTH_MODE=development",
+		"AUTH_ORIGIN=http://"+address,
+		"SESSION_TTL=24h",
 		"SHUTDOWN_TIMEOUT="+timeout,
 	)
 	cmd.Env = append(cmd.Env, extraEnv...)
