@@ -1,0 +1,4 @@
+API started against reachable PostgreSQL18 with no users table: registration=500, readiness=200, users remains absent; no automatic migration.
+Paused dedicated PostgreSQL18 container: liveness=200, readiness=503.
+Unpaused database: readiness=200 in same API process, with no restart.
+SIGTERM graceful shutdown: exit 0.

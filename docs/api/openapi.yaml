@@ -1,0 +1,534 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "DevPilot AI registration API",
+    "version": "1.0.0"
+  },
+  "security": [],
+  "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "registerUser",
+        "summary": "Register an enabled account with unverified email ownership",
+        "description": "Body maximum 4096 bytes including trailing whitespace; one UTF-8 JSON object with exactly email/password string fields. Duplicate/unknown keys and malformed original Unicode escapes or unpaired surrogates are rejected before hashing. Two per-process hash slots are resource protection, not rate limiting; public exposure requires separate reviewed anti-abuse controls. No tokens, sessions, cookies or mail. Client cancellation propagates and stops further work without attempting to guarantee a 503; a possibly committed INSERT is never described as definitely rolled back.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "MVP ASCII dot-atom local part (1-64 bytes), DNS domain with at least two labels (1-63 bytes each). Trim outer ASCII SP/HT/CR/LF and lowercase whole address; canonical total <=254 bytes. No DNS validation, provider dot/tag folding or Unicode mailbox support. Unsupported formats may be valid elsewhere."
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 15,
+                    "maxLength": 128,
+                    "writeOnly": true,
+                    "description": "15-128 Unicode scalar/code points and <=512 UTF-8 bytes after strict raw escape validation. Valid surrogate pair counts as one, literal U+FFFD allowed. Never trim, truncate or Unicode-normalize. No composition rules."
+                  }
+                }
+              },
+              "example": {
+                "email": "Alice.Example+tag@Example.COM",
+                "password": "a long local test phrase"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created only after confirmed persistence. active means not disabled; email_verified_at remains NULL and email ownership is unverified.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON, raw UTF-8, Unicode escapes/surrogates or object keys/types. No hashing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "invalid_request"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Fixed safe text; never raw database error or submitted values."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "POST only. HEAD returns no body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "method_not_allowed"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Fixed safe text; never raw database error or submitted values."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Normalized email already exists. Existing password, status and timestamps are unchanged. Intentionally reveals email occupancy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "email_conflict"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Fixed safe text; never raw database error or submitted values."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Full request body exceeds 4096 bytes, including trailing data. No hashing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "request_too_large"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Fixed safe text; never raw database error or submitted values."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Requires application/json with optional UTF-8 charset, no content encoding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "unsupported_media_type"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Fixed safe text; never raw database error or submitted values."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Outside current MVP email/password policy; does not claim unsupported mailbox formats are universally invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_failed"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Fixed safe text; never raw database error or submitted values."
+                        },
+                        "fields": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "email": {
+                              "type": "string",
+                              "enum": [
+                                "required",
+                                "invalid_length",
+                                "invalid_format"
+                              ]
+                            },
+                            "password": {
+                              "type": "string",
+                              "enum": [
+                                "required",
+                                "invalid_length",
+                                "invalid_format"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error, including missing users deployment schema. Safe generic text.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "internal_error"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Fixed safe text; never raw database error or submitted values."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Hash capacity exhausted (registration_busy; Retry-After: 1), unavailable DB connection/server processing budget (service_unavailable), or DB deadline/confirmed statement timeout (database_timeout). INSERT may already have committed: registration could not be confirmed. No automatic retry. Does not describe client cancellation, for which no HTTP response is guaranteed or attempted after cancellation is observed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "registration_busy",
+                            "service_unavailable",
+                            "database_timeout"
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Fixed safe text; never raw database error or submitted values."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Only registration_busy, value 1.",
+                "schema": {
+                  "const": "1"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "email",
+          "status",
+          "created_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "DB-generated UUIDv7; not a secret or authorization credential."
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "const": "active",
+            "description": "Only not disabled, never proof of mailbox ownership or authentication."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC RFC3339 database timestamp."
+          }
+        }
+      }
+    }
+  }
+}
