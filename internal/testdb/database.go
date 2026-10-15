@@ -37,9 +37,13 @@ func Open(ctx context.Context, testURL, applicationURL string) (*pgxpool.Pool, e
 	var name string
 	var version int
 	err = pool.QueryRow(ctx, `SELECT current_database(), current_setting('server_version_num')::integer`).Scan(&name, &version)
-	if err != nil || name != Name || version < 180000 || version >= 190000 {
+	if err != nil || !validServer(name, version) {
 		pool.Close()
 		return nil, errors.New("isolated PostgreSQL 18 test database unavailable")
 	}
 	return pool, nil
+}
+
+func validServer(name string, version int) bool {
+	return name == Name && version >= 180000 && version < 190000
 }

@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - codex/add-user-registration
+      - codex/add-user-login
   pull_request:
     branches:
       - main
@@ -23,7 +24,7 @@ jobs:
           cache-dependency-path: go.sum
       - name: Check gofmt
         run: |
-          unformatted="$(gofmt -l cmd internal)"
+          unformatted="$(gofmt -l cmd internal tests)"
           if [ -n "$unformatted" ]; then
             echo "$unformatted"
             exit 1
@@ -61,3 +62,6 @@ jobs:
         run: go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.26.0
       - name: Verify PostgreSQL 18 integration
         run: go test -tags=integration ./... -count=1 -timeout=120s
+
+      - name: Verify PostgreSQL integration with race detector
+        run: go test -race -tags=integration ./tests/integration -count=1 -timeout=120s

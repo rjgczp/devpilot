@@ -1,0 +1,5 @@
+--- FAIL: TestSessionStoreAndUpgrade (0.02s)
+    session_test.go:18: integration requires pinned native Goose v3.26.0
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.294s
+FAIL

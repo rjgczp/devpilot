@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "DevPilot AI registration API",
+    "title": "DevPilot AI authentication API",
     "version": "1.0.0"
   },
   "security": [],
@@ -10,7 +10,7 @@
       "post": {
         "operationId": "registerUser",
         "summary": "Register an enabled account with unverified email ownership",
-        "description": "Body maximum 4096 bytes including trailing whitespace; one UTF-8 JSON object with exactly email/password string fields. Duplicate/unknown keys and malformed original Unicode escapes or unpaired surrogates are rejected before hashing. Two per-process hash slots are resource protection, not rate limiting; public exposure requires separate reviewed anti-abuse controls. No tokens, sessions, cookies or mail. Client cancellation propagates and stops further work without attempting to guarantee a 503; a possibly committed INSERT is never described as definitely rolled back.",
+        "description": "Body maximum 4096 bytes including trailing whitespace; one UTF-8 JSON object with exactly email/password string fields. Duplicate/unknown keys and malformed original Unicode escapes or unpaired surrogates are rejected before hashing. Two per-process Argon slots shared by registration and real/dummy login verification are resource protection, not rate limiting; public exposure requires separate reviewed anti-abuse controls. No tokens, sessions, cookies or mail. Client cancellation propagates and stops further work without attempting to guarantee a 503; a possibly committed INSERT is never described as definitely rolled back.",
         "requestBody": {
           "required": true,
           "content": {
@@ -496,6 +496,1113 @@
           }
         }
       }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "loginUser",
+        "summary": "Create a new PostgreSQL Cookie session",
+        "security": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one serialized origin matching AUTH_ORIGIN by scheme, host and effective port; missing/null/duplicates rejected. No Host/Referer fallback."
+          },
+          {
+            "in": "header",
+            "name": "X-DevPilot-CSRF",
+            "required": true,
+            "schema": {
+              "const": "1"
+            },
+            "description": "Exactly one header. CLI clients must also supply it. If Sec-Fetch-Site exists it must be exactly one same-origin value. No CORS permission."
+          }
+        ],
+        "description": "Strict 4096-byte JSON and original UTF-8/escape validation as registration. Login password accepts 1-128 code points and at most 512 UTF-8 bytes, preserving exact decoded bytes. Missing/disabled/wrong-password/invalid-PHC rejection uses identical 401 with one real or approved-cost dummy verification; dummy cannot authenticate. Shared two Argon slots, separate two complete login workflow slots, no queues. 5s processing and at most 2s per DB operation. State and password snapshot are rechecked under FOR SHARE in the creation transaction. Cookie issued only after confirmed commit. Unknown commit/cancellation is not evidence of rollback; no automatic retry. Default 24h absolute lifetime (configured range 5m-24h); no sliding renewal, Refresh Token or refresh endpoint. Every successful login creates an independent token; it does not revoke prior sessions. Login mitigation does not remove registration 409 enumeration. Public deployment still requires implemented/reviewed rate limiting and anti-brute-force controls.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "MVP ASCII dot-atom local part (1-64 bytes), DNS domain with at least two labels (1-63 bytes each). Trim outer ASCII SP/HT/CR/LF and lowercase whole address; canonical total <=254 bytes. No DNS validation, provider dot/tag folding or Unicode mailbox support. Unsupported formats may be valid elsewhere."
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "writeOnly": true,
+                    "description": "1-128 Unicode code points, <=512 UTF-8 bytes. No trimming, truncation or normalization; creation-only 15-character registration minimum is not applied."
+                  }
+                }
+              },
+              "example": {
+                "email": "Alice.Example+tag@Example.COM",
+                "password": "a long local test phrase"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmed current active user identity; no proof of email ownership or Workspace permissions.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              },
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Production: __Host-devpilot_session=<43-character unpadded Base64URL>; Path=/; Secure; HttpOnly; SameSite=Lax; no Domain; bounded remaining Max-Age and UTC Expires. Explicit loopback HTTP development: devpilot_session, Secure omitted, all other scope attributes equal. Only the configured environment name is accepted; no token in JSON. Raw secret is 32 CSPRNG bytes; database stores only SHA-256(decoded secret)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid login request.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "invalid_request"
+                        },
+                        "message": {
+                          "const": "Invalid login request."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid email or password.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "invalid_credentials"
+                        },
+                        "message": {
+                          "const": "Invalid email or password."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request origin could not be verified.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "csrf_rejected"
+                        },
+                        "message": {
+                          "const": "Request origin could not be verified."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "method_not_allowed"
+                        },
+                        "message": {
+                          "const": "Method not allowed."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "request_too_large"
+                        },
+                        "message": {
+                          "const": "Request body too large."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "unsupported_media_type"
+                        },
+                        "message": {
+                          "const": "Unsupported media type."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid login fields.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "validation_failed"
+                        },
+                        "message": {
+                          "const": "Invalid login fields."
+                        },
+                        "fields": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "email": {
+                              "enum": [
+                                "required",
+                                "invalid_length",
+                                "invalid_format"
+                              ]
+                            },
+                            "password": {
+                              "enum": [
+                                "required",
+                                "invalid_length",
+                                "invalid_format"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unable to complete authentication operation.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "internal_error"
+                        },
+                        "message": {
+                          "const": "Unable to complete authentication operation."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Capacity exhausted or dependency outcome unconfirmed; not a guarantee of no session commit.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              },
+              "Retry-After": {
+                "description": "Only authentication_busy; value 1.",
+                "schema": {
+                  "const": "1"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "const": "authentication_busy"
+                            },
+                            "message": {
+                              "const": "Authentication is temporarily busy."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "const": "service_unavailable"
+                            },
+                            "message": {
+                              "const": "Authentication operation could not be confirmed."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "const": "database_timeout"
+                            },
+                            "message": {
+                              "const": "Authentication operation could not be confirmed."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "logoutUser",
+        "summary": "Idempotently revoke the current session",
+        "security": [
+          {},
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one serialized origin matching AUTH_ORIGIN by scheme, host and effective port; missing/null/duplicates rejected. No Host/Referer fallback."
+          },
+          {
+            "in": "header",
+            "name": "X-DevPilot-CSRF",
+            "required": true,
+            "schema": {
+              "const": "1"
+            },
+            "description": "Exactly one header. CLI clients must also supply it. If Sec-Fetch-Site exists it must be exactly one same-origin value. No CORS permission."
+          }
+        ],
+        "description": "No JSON body required or parsed. CSRF proof required even without a usable Cookie. Exactly one parseable current-mode Cookie selects a single digest to revoke regardless of expiry/account status. Missing, malformed or duplicated Cookie is idempotent 204 without choosing an arbitrary token. Confirmed revoke or no row returns empty 204 and deletes the current-mode Cookie. DB failure/timeout returns 500/503 and preserves Cookie for explicit idempotent retry; no automatic retry or claim of rollback. Previously validated requests may complete; overlapping login/logout responses have no deterministic browser Cookie ordering. Other sessions are unaffected.",
+        "responses": {
+          "204": {
+            "description": "Confirmed revoke, no matching row or no usable Cookie. Empty body; delete only current environment Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              },
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Same name, Path=/, no Domain, same Secure/HttpOnly/SameSite as issue; Max-Age=0 and past Expires."
+              }
+            }
+          },
+          "403": {
+            "description": "Request origin could not be verified.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "csrf_rejected"
+                        },
+                        "message": {
+                          "const": "Request origin could not be verified."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "method_not_allowed"
+                        },
+                        "message": {
+                          "const": "Method not allowed."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unable to complete authentication operation.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "internal_error"
+                        },
+                        "message": {
+                          "const": "Unable to complete authentication operation."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Revocation could not be confirmed; Cookie is preserved.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "const": "service_unavailable"
+                            },
+                            "message": {
+                              "const": "Authentication operation could not be confirmed."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "const": "database_timeout"
+                            },
+                            "message": {
+                              "const": "Authentication operation could not be confirmed."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "currentUser",
+        "summary": "Read query-time authenticated user identity",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "description": "Exactly one canonical current-mode Cookie required. Every request joins current users and checks expires_at > database statement time, revoked_at IS NULL and users.status=active. Missing/ambiguous/malformed/unknown/expired/revoked/disabled identities share 401; DB failure is not 401 or cached authentication fallback. Read-only: no expiry/timestamp renewal or Set-Cookie on any me response. Default 24h absolute lifetime; physical cleanup is not needed to reject expired/revoked retained rows. No Refresh Token or refresh endpoint. Identity is only a query-time snapshot; entry authentication or an ordinary permission read in one transaction cannot guarantee Workspace authority throughout a future business operation. Future resource/action authorization must define coordination with membership/session/account changes and time expiry; Workspace/RBAC is not implemented here.",
+        "responses": {
+          "200": {
+            "description": "Confirmed current active user identity; no proof of email ownership or Workspace permissions.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "unauthenticated"
+                        },
+                        "message": {
+                          "const": "Authentication required."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "const": "GET"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "method_not_allowed"
+                        },
+                        "message": {
+                          "const": "Method not allowed."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unable to complete authentication operation.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "const": "internal_error"
+                        },
+                        "message": {
+                          "const": "Unable to complete authentication operation."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Live identity could not be established; no authentication fallback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "const": "service_unavailable"
+                            },
+                            "message": {
+                              "const": "Authentication operation could not be confirmed."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "const": "database_timeout"
+                            },
+                            "message": {
+                              "const": "Authentication operation could not be confirmed."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -528,6 +1635,20 @@
             "description": "UTC RFC3339 database timestamp."
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "SessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-devpilot_session",
+        "description": "Only production HTTPS mode accepts this name."
+      },
+      "DevelopmentSessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "devpilot_session",
+        "description": "Only explicitly configured loopback HTTP development accepts this name; not simultaneously accepted with production name."
       }
     }
   }

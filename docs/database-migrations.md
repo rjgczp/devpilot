@@ -53,3 +53,15 @@ go test -tags=integration ./... -count=1 -timeout=120s
 测试只接受库名 `devpilot_registration_test`，连接后再核对 current_database 和 PostgreSQL 18 版本。若 DATABASE_URL 也指向这个库，直接拒绝，即使连接用户/主机写法不同。不允许回退到应用连接串；无配置或无法连接必须失败，不得跳过。不要并行启动两个集成 suite 操作该库。测试用固定版本 Goose 和同一 SQL 目录验证 up/up、up/down/up 与失败回滚，运行期间会删除测试数据。
 
 结束后仅清理这个专用容器：`docker rm -f devpilot-registration-test`。不要对开发 Compose 环境运行 down -v 来清理本测试。
+
+## Session migration（版本 2）
+
+`00002_create_sessions.sql` 是追加迁移，版本 1 保持不变。sessions 存储完整 32-byte SHA-256 摘要、用户外键、UUIDv7、创建/绝对过期/撤销时间；用户删除会级联删除会话。共享/生产仍由单一发布步骤执行 status/up/status，API 不自动迁移。
+
+版本 2 原生单步 down **只用于已确认可丢弃的开发/测试库**，删除 sessions 而保留 users。完整测试往返使用受保护隔离库的 down-to 0 再 up；共享/生产不允许此操作，应用回滚保留所有用户和会话数据，修复使用前向迁移。
+
+会话创建在短事务中 FOR SHARE 重验账户仍 active 且 password_hash 等于已验证快照，再 INSERT/commit；不在密码计算期间持有锁。超时/连接中断不能证明未提交，未确认结果不签发 Cookie，不自动重试。撤销未知提交可由客户端显式幂等重试，失败响应保留 Cookie；原始驱动诊断仍仅用于受限操作环境。
+
+Session查询以数据库当前statement time/撤销/用户active强制失效，不依赖清理。Runner管理清理Worker，每15m一批、最多1000行、每批2s，锁候选SKIP LOCKED；失败等待下一周期，无耗尽循环，SIGINT/SIGTERM取消并按原总关闭期限等待。删除撤销行不提供审计保留承诺；公开部署需评审增长/清理容量。直接SQL解禁可恢复未撤销会话，未来禁用操作须事务内撤销所有Session。
+
+版本2套件仍使用同一个隔离库名，不改测试目标保护。CI及本地完整验收先普通集成，再顺序执行 `go test -race -tags=integration ./tests/integration -count=1 -timeout=120s`，不得让两个破坏性schema套件并行访问同一库。

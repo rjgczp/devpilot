@@ -1,0 +1,339 @@
+=== RUN   TestProcessSignals
+=== RUN   TestProcessSignals/interrupt
+=== RUN   TestProcessSignals/terminated
+--- PASS: TestProcessSignals (0.64s)
+    --- PASS: TestProcessSignals/interrupt (0.21s)
+    --- PASS: TestProcessSignals/terminated (0.02s)
+=== RUN   TestProcessSignalsWithInFlightRequest
+=== RUN   TestProcessSignalsWithInFlightRequest/interrupt
+=== RUN   TestProcessSignalsWithInFlightRequest/terminated
+--- PASS: TestProcessSignalsWithInFlightRequest (1.21s)
+    --- PASS: TestProcessSignalsWithInFlightRequest/interrupt (0.49s)
+    --- PASS: TestProcessSignalsWithInFlightRequest/terminated (0.30s)
+=== RUN   TestProcessStartsWhenDatabaseIsUnavailable
+--- PASS: TestProcessStartsWhenDatabaseIsUnavailable (0.60s)
+=== RUN   TestProcessRejectsInvalidConfigurationWithoutSecret
+--- PASS: TestProcessRejectsInvalidConfigurationWithoutSecret (0.59s)
+=== RUN   TestProcessRejectsAuthenticationPolicyBeforeListening
+--- PASS: TestProcessRejectsAuthenticationPolicyBeforeListening (0.71s)
+=== RUN   TestProcessShutdownTimeout
+--- PASS: TestProcessShutdownTimeout (0.66s)
+PASS
+ok  	github.com/rjgczp/devpilot/cmd/api	5.146s
+=== RUN   TestRoutesKeepHealthAndRegistrationSeparate
+--- PASS: TestRoutesKeepHealthAndRegistrationSeparate (0.00s)
+=== RUN   TestAuthenticationRoutesUseDedicatedHandler
+--- PASS: TestAuthenticationRoutesUseDedicatedHandler (0.00s)
+=== RUN   TestRunnerGracefulShutdown
+--- PASS: TestRunnerGracefulShutdown (0.00s)
+=== RUN   TestRunnerClosesResourceAfterWorkerExit
+--- PASS: TestRunnerClosesResourceAfterWorkerExit (0.03s)
+=== RUN   TestRunnerShutdownDeadline
+--- PASS: TestRunnerShutdownDeadline (0.06s)
+=== RUN   TestRunnerShutdownError
+--- PASS: TestRunnerShutdownError (0.02s)
+=== RUN   TestRunnerResourceCloseError
+--- PASS: TestRunnerResourceCloseError (0.02s)
+=== RUN   TestRunnerResourceCloseDeadline
+--- PASS: TestRunnerResourceCloseDeadline (0.07s)
+=== RUN   TestNewServerTimeouts
+--- PASS: TestNewServerTimeouts (0.00s)
+=== RUN   TestIncompleteHeadersTimeOut
+--- PASS: TestIncompleteHeadersTimeOut (0.05s)
+=== RUN   TestJSONLogger
+--- PASS: TestJSONLogger (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/app	0.691s
+=== RUN   TestOpenAPIAuthenticationContract
+--- PASS: TestOpenAPIAuthenticationContract (0.00s)
+=== RUN   TestLoginStrictInputAndCheapRejection
+--- PASS: TestLoginStrictInputAndCheapRejection (0.00s)
+=== RUN   TestCSRFProofAndMethods
+--- PASS: TestCSRFProofAndMethods (0.00s)
+=== RUN   TestUniformCredentialFailuresAndDummyIsolation
+--- PASS: TestUniformCredentialFailuresAndDummyIsolation (0.00s)
+=== RUN   TestCookieIdentityAndLogoutContracts
+--- PASS: TestCookieIdentityAndLogoutContracts (0.00s)
+=== RUN   TestDependencyFailurePrivacyAndUnknownCommit
+--- PASS: TestDependencyFailurePrivacyAndUnknownCommit (0.00s)
+=== RUN   TestMixedBudgetCancellationAndFaultRecovery
+--- PASS: TestMixedBudgetCancellationAndFaultRecovery (0.00s)
+=== RUN   TestWorkflowBoundAndTimeouts
+--- PASS: TestWorkflowBoundAndTimeouts (0.01s)
+=== RUN   TestClientCancellationPropagatesWithoutResponse
+--- PASS: TestClientCancellationPropagatesWithoutResponse (0.00s)
+=== RUN   TestPanicAfterResponseStartsAbortsConnection
+--- PASS: TestPanicAfterResponseStartsAbortsConnection (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/auth	0.665s
+=== RUN   TestAuthDefaultsLocalAndInvalidPolicies
+--- PASS: TestAuthDefaultsLocalAndInvalidPolicies (0.00s)
+=== RUN   TestOriginCompleteTuple
+--- PASS: TestOriginCompleteTuple (0.00s)
+=== RUN   TestLoadDoesNotReadDotEnvFile
+--- PASS: TestLoadDoesNotReadDotEnvFile (0.00s)
+=== RUN   TestLoadDefaultsAndOverrides
+--- PASS: TestLoadDefaultsAndOverrides (0.00s)
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/missing_database_URL
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_database_URL
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_listen_address
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_port
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_log_level
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/zero_readiness_timeout
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/malformed_readiness_timeout
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/negative_shutdown_timeout
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/malformed_shutdown_timeout
+--- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/missing_database_URL (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_database_URL (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_listen_address (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_port (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_log_level (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/zero_readiness_timeout (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/malformed_readiness_timeout (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/negative_shutdown_timeout (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/malformed_shutdown_timeout (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/config	0.731s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+=== RUN   TestHealthAndReadinessTransitions
+--- PASS: TestHealthAndReadinessTransitions (0.00s)
+=== RUN   TestReadinessTimeoutAndResponsePrivacy
+--- PASS: TestReadinessTimeoutAndResponsePrivacy (0.02s)
+=== RUN   TestShutdownDuringPingIsNotReady
+--- PASS: TestShutdownDuringPingIsNotReady (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/health	0.673s
+=== RUN   TestPHCAndIndependentSalts
+--- PASS: TestPHCAndIndependentSalts (0.71s)
+=== RUN   TestRandomFailure
+--- PASS: TestRandomFailure (0.00s)
+=== RUN   TestVerifyAndApprovedPolicy
+--- PASS: TestVerifyAndApprovedPolicy (0.47s)
+=== RUN   TestDummyPHC
+--- PASS: TestDummyPHC (0.11s)
+=== RUN   TestBudgetNeverQueues
+--- PASS: TestBudgetNeverQueues (0.00s)
+=== RUN   FuzzPHC
+=== RUN   FuzzPHC/seed#0
+=== RUN   FuzzPHC/seed#1
+=== RUN   FuzzPHC/seed#2
+=== RUN   FuzzPHC/seed#3
+--- PASS: FuzzPHC (0.00s)
+    --- PASS: FuzzPHC/seed#0 (0.00s)
+    --- PASS: FuzzPHC/seed#1 (0.00s)
+    --- PASS: FuzzPHC/seed#2 (0.00s)
+    --- PASS: FuzzPHC/seed#3 (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/password	1.995s
+=== RUN   TestOpenAPIContract
+--- PASS: TestOpenAPIContract (0.00s)
+=== RUN   TestStrictRequestsAndCheapRejection
+=== RUN   TestStrictRequestsAndCheapRejection/empty
+=== RUN   TestStrictRequestsAndCheapRejection/null
+=== RUN   TestStrictRequestsAndCheapRejection/array
+=== RUN   TestStrictRequestsAndCheapRejection/extra-value
+=== RUN   TestStrictRequestsAndCheapRejection/missing
+=== RUN   TestStrictRequestsAndCheapRejection/unknown
+=== RUN   TestStrictRequestsAndCheapRejection/duplicate
+=== RUN   TestStrictRequestsAndCheapRejection/escaped-duplicate
+=== RUN   TestStrictRequestsAndCheapRejection/case-key
+=== RUN   TestStrictRequestsAndCheapRejection/null-password
+=== RUN   TestStrictRequestsAndCheapRejection/number
+=== RUN   TestStrictRequestsAndCheapRejection/invalid-utf8
+=== RUN   TestStrictRequestsAndCheapRejection/huge
+=== RUN   TestStrictRequestsAndCheapRejection/email-policy
+=== RUN   TestStrictRequestsAndCheapRejection/password-policy
+--- PASS: TestStrictRequestsAndCheapRejection (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/empty (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/null (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/array (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/extra-value (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/missing (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/unknown (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/duplicate (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/escaped-duplicate (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/case-key (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/null-password (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/number (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/invalid-utf8 (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/huge (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/email-policy (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/password-policy (0.00s)
+=== RUN   TestRepresentationAndMethods
+--- PASS: TestRepresentationAndMethods (0.00s)
+=== RUN   TestUnicodeRawEscapes
+=== RUN   TestUnicodeRawEscapes/\ud800
+=== RUN   TestUnicodeRawEscapes/\udfff
+=== RUN   TestUnicodeRawEscapes/\udc00\ud800
+=== RUN   TestUnicodeRawEscapes/\ud800\u0061
+=== RUN   TestUnicodeRawEscapes/\ud800x
+=== RUN   TestUnicodeRawEscapes/\ud800\\udc00
+=== RUN   TestUnicodeRawEscapes/\u12
+=== RUN   TestUnicodeRawEscapes/\uxxxx
+=== RUN   TestUnicodeRawEscapes/\ud800\u12xz
+--- PASS: TestUnicodeRawEscapes (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\udfff (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\udc00\ud800 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800\u0061 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800x (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800\\udc00 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\u12 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\uxxxx (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800\u12xz (0.00s)
+=== RUN   TestValidationBoundaries
+--- PASS: TestValidationBoundaries (0.00s)
+=== RUN   TestCancellationKeepsSlotsUntilHashReturns
+--- PASS: TestCancellationKeepsSlotsUntilHashReturns (0.00s)
+=== RUN   TestErrorResponsesAndSlotRelease
+--- PASS: TestErrorResponsesAndSlotRelease (0.00s)
+=== RUN   TestServerDeadlineAndUnknownCommit
+--- PASS: TestServerDeadlineAndUnknownCommit (0.01s)
+=== RUN   TestClientCancellationInStoreAndRealHTTP
+--- PASS: TestClientCancellationInStoreAndRealHTTP (0.00s)
+=== RUN   FuzzParseInput
+=== RUN   FuzzParseInput/seed#0
+=== RUN   FuzzParseInput/seed#1
+=== RUN   FuzzParseInput/seed#2
+=== RUN   FuzzParseInput/seed#3
+=== RUN   FuzzParseInput/seed#4
+--- PASS: FuzzParseInput (0.00s)
+    --- PASS: FuzzParseInput/seed#0 (0.00s)
+    --- PASS: FuzzParseInput/seed#1 (0.00s)
+    --- PASS: FuzzParseInput/seed#2 (0.00s)
+    --- PASS: FuzzParseInput/seed#3 (0.00s)
+    --- PASS: FuzzParseInput/seed#4 (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/registration	0.703s
+=== RUN   TestTokenCanonicalAndDigest
+--- PASS: TestTokenCanonicalAndDigest (0.00s)
+=== RUN   TestWorkerBudgetCancellationNoOverlapOrImmediateRetry
+--- PASS: TestWorkerBudgetCancellationNoOverlapOrImmediateRetry (0.00s)
+=== RUN   TestWorkerDatabaseDeadline
+--- PASS: TestWorkerDatabaseDeadline (0.00s)
+=== RUN   TestCleanupWorkerDrainsBeforeResourcesClose
+--- PASS: TestCleanupWorkerDrainsBeforeResourcesClose (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/session	0.990s
+=== RUN   TestDatabaseGuard
+--- PASS: TestDatabaseGuard (0.00s)
+=== RUN   TestUnavailableDatabaseIsFailure
+--- PASS: TestUnavailableDatabaseIsFailure (0.00s)
+=== RUN   TestServerIdentityAndVersionGuard
+--- PASS: TestServerIdentityAndVersionGuard (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/testdb	0.962s
+=== RUN   TestErrorClassification
+=== RUN   TestErrorClassification/email
+=== RUN   TestErrorClassification/primary
+=== RUN   TestErrorClassification/check
+=== RUN   TestErrorClassification/schema
+=== RUN   TestErrorClassification/connect
+=== RUN   TestErrorClassification/eof
+=== RUN   TestErrorClassification/deadline
+=== RUN   TestErrorClassification/canceled
+=== RUN   TestErrorClassification/statement
+=== RUN   TestErrorClassification/unknown-cancel
+=== RUN   TestErrorClassification/shutdown
+=== RUN   TestErrorClassification/unknown
+--- PASS: TestErrorClassification (0.00s)
+    --- PASS: TestErrorClassification/email (0.00s)
+    --- PASS: TestErrorClassification/primary (0.00s)
+    --- PASS: TestErrorClassification/check (0.00s)
+    --- PASS: TestErrorClassification/schema (0.00s)
+    --- PASS: TestErrorClassification/connect (0.00s)
+    --- PASS: TestErrorClassification/eof (0.00s)
+    --- PASS: TestErrorClassification/deadline (0.00s)
+    --- PASS: TestErrorClassification/canceled (0.00s)
+    --- PASS: TestErrorClassification/statement (0.00s)
+    --- PASS: TestErrorClassification/unknown-cancel (0.00s)
+    --- PASS: TestErrorClassification/shutdown (0.00s)
+    --- PASS: TestErrorClassification/unknown (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/user	0.935s
+=== RUN   TestAuthenticationWithPostgreSQL
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestAuthenticationWithPostgreSQL/loopback-http
+=== RUN   TestAuthenticationWithPostgreSQL/production-https
+=== NAME  TestAuthenticationWithPostgreSQL
+    auth_test.go:106: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestAuthenticationWithPostgreSQL (2.20s)
+    --- PASS: TestAuthenticationWithPostgreSQL/loopback-http (1.08s)
+    --- PASS: TestAuthenticationWithPostgreSQL/production-https (1.03s)
+=== RUN   TestAuthenticationDatabaseFailuresAndCancellation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    auth_test.go:280: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestAuthenticationDatabaseFailuresAndCancellation (6.72s)
+=== RUN   TestCleanupBatchMultiInstanceAndFaults
+    registration_test.go:78: native Goose up expected-success=true: verified
+    cleanup_test.go:19: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCleanupBatchMultiInstanceAndFaults (0.12s)
+=== RUN   TestMigrationAndConstraints
+    registration_test.go:91: native Goose down-to 0 expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:102: native Goose status expected-success=true: verified
+    registration_test.go:103: native Goose down expected-success=true: verified
+    registration_test.go:107: native Goose down expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMigrationAndConstraints/null-email
+=== RUN   TestMigrationAndConstraints/null-hash
+=== RUN   TestMigrationAndConstraints/empty-hash
+=== RUN   TestMigrationAndConstraints/long-hash
+=== RUN   TestMigrationAndConstraints/state
+=== RUN   TestMigrationAndConstraints/uppercase
+=== RUN   TestMigrationAndConstraints/space
+=== RUN   TestMigrationAndConstraints/unicode
+=== RUN   TestMigrationAndConstraints/empty-email
+=== RUN   TestMigrationAndConstraints/long-email
+=== NAME  TestMigrationAndConstraints
+    registration_test.go:177: native Goose up expected-success=false: verified
+    registration_test.go:93: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMigrationAndConstraints (0.16s)
+    --- PASS: TestMigrationAndConstraints/null-email (0.00s)
+    --- PASS: TestMigrationAndConstraints/null-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/empty-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/long-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/state (0.00s)
+    --- PASS: TestMigrationAndConstraints/uppercase (0.00s)
+    --- PASS: TestMigrationAndConstraints/space (0.00s)
+    --- PASS: TestMigrationAndConstraints/unicode (0.00s)
+    --- PASS: TestMigrationAndConstraints/empty-email (0.00s)
+    --- PASS: TestMigrationAndConstraints/long-email (0.00s)
+=== RUN   TestRegistrationWithPostgreSQL
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestRegistrationWithPostgreSQL/missing-schema-is500
+=== RUN   TestRegistrationWithPostgreSQL/database-deadline
+=== RUN   TestRegistrationWithPostgreSQL/client-cancel-during-insert
+=== NAME  TestRegistrationWithPostgreSQL
+    registration_test.go:221: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestRegistrationWithPostgreSQL (2.90s)
+    --- PASS: TestRegistrationWithPostgreSQL/missing-schema-is500 (0.11s)
+    --- PASS: TestRegistrationWithPostgreSQL/database-deadline (2.11s)
+    --- PASS: TestRegistrationWithPostgreSQL/client-cancel-during-insert (0.18s)
+=== RUN   TestUnavailableDatabaseAndRecovery
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:423: verified PostgreSQL18 recovery with native migrations and actual Argon2id
+    registration_test.go:381: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestUnavailableDatabaseAndRecovery (0.27s)
+=== RUN   TestSessionStoreAndUpgrade
+    session_test.go:19: native Goose down-to 0 expected-success=true: verified
+    session_test.go:20: native Goose up-to 1 expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:115: native Goose down expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:21: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSessionStoreAndUpgrade (0.24s)
+=== RUN   TestSessionCreationRechecksConcurrentUpdate
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:131: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSessionCreationRechecksConcurrentUpdate (0.05s)
+=== RUN   TestCreationLockSerializesDisableAndConcurrentRevocation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:180: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCreationLockSerializesDisableAndConcurrentRevocation (0.05s)
+PASS
+ok  	github.com/rjgczp/devpilot/tests/integration	13.141s

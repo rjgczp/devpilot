@@ -12,7 +12,14 @@ import (
 const testDSN = "postgres://devpilot:top-secret@127.0.0.1:5432/devpilot?sslmode=disable"
 
 func env(values map[string]string) func(string) string {
-	return func(key string) string { return values[key] }
+	return func(key string) string {
+		if key == "AUTH_ORIGIN" {
+			if _, ok := values[key]; !ok {
+				return "https://example.com"
+			}
+		}
+		return values[key]
+	}
 }
 
 func TestLoadDoesNotReadDotEnvFile(t *testing.T) {

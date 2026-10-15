@@ -27,3 +27,20 @@ func TestRoutesKeepHealthAndRegistrationSeparate(t *testing.T) {
 		t.Fatal("registration route missing")
 	}
 }
+
+func TestAuthenticationRoutesUseDedicatedHandler(t *testing.T) {
+	miss := http.HandlerFunc(http.NotFound)
+	routes := NewRoutes(miss, miss, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(204) }))
+	for _, path := range []string{"/api/v1/auth/login", "/api/v1/auth/logout", "/api/v1/auth/me"} {
+		w := httptest.NewRecorder()
+		routes.ServeHTTP(w, httptest.NewRequest("POST", path, nil))
+		if w.Code != 204 {
+			t.Fatal("auth route missing")
+		}
+	}
+	w := httptest.NewRecorder()
+	routes.ServeHTTP(w, httptest.NewRequest("GET", "/not-a-route", nil))
+	if w.Code != 404 {
+		t.Fatal("unrelated route changed")
+	}
+}

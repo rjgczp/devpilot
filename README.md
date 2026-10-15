@@ -35,9 +35,9 @@ curl -i http://127.0.0.1:8080/api/v1/auth/register \
 
 数据库超时/连接中断后，INSERT可能已经提交，错误只表示**无法确认注册结果**，不保证一定失败；服务端不自动重试。重试可能收到409，不能据此覆盖密码。客户端主动取消或断连时传播取消并停止发起后续工作，不尝试保证或写入503响应；服务端预算超时与客户端取消分开处理。
 
-Argon2id暂定64 MiB、t=3、p=1，16-byte随机盐、32-byte输出、PHC编码。每进程最多2次同时哈希，无等待队列；4096-byte上限和廉价验证先于获取槽位，取消不能释放仍在计算的槽位。哈希真实返回才释放，GC/RSS回收不保证立即发生；这不是128 MiB进程内存硬上限。处理/数据库context预算为5s/2s，不能中断Argon本身。[基准与测试证据](openspec/changes/archive/2026-10-14-add-user-registration/verification.md)记录实际资源与延迟；不得为了性能目标擅自降低安全参数。
+Argon2id暂定64 MiB、t=3、p=1，16-byte随机盐、32-byte输出、PHC编码。注册Hash与登录real/dummy Verify共用每进程最多2次同时计算，无等待队列；4096-byte上限和廉价验证先于获取槽位，取消不能释放仍在计算的槽位。哈希真实返回才释放，GC/RSS回收不保证立即发生；这不是128 MiB进程内存硬上限。处理/数据库context预算为5s/2s，不能中断Argon本身。[基准与测试证据](openspec/changes/archive/2026-10-14-add-user-registration/verification.md)记录实际资源与延迟；不得为了性能目标擅自降低安全参数。
 
-**公开部署前必须另行实现并评审注册限流与防滥用控制**。两个槽仅控制本进程并发资源，不防止持续批量注册或跨实例滥用；本Change不实现限流系统，不扩展登录、JWT、Workspace、Redis或AI能力。
+**公开部署前必须另行实现并评审注册限流与防滥用控制**。两个槽仅控制本进程并发资源，不防止持续批量注册或跨实例滥用；注册与登录Change均不实现限流系统，公开部署前必须完成相应防滥用验收。
 
 单元测试无需数据库：`go test ./... -count=1`；竞态检查：`go test -race ./... -count=1`。真实PG18测试和安全隔离/清理步骤见[迁移说明](docs/database-migrations.md)。缺少TEST_DATABASE_URL或Goose时显式集成测试失败，不跳过。
 
@@ -64,6 +64,9 @@ set +a
 | `LOG_LEVEL` | `info` | `debug`、`info`、`warn`、`error` |
 | `READINESS_TIMEOUT` | `2s` | 单次数据库就绪检查上限 |
 | `SHUTDOWN_TIMEOUT` | `10s` | 收到退出信号后的总关闭预算 |
+| `AUTH_MODE` | `production` | 仅production/development，生产HTTPS安全Cookie；开发HTTP必须显式选择 |
+| `AUTH_ORIGIN` | 必填 | 唯一HTTP(S) origin，不含路径、末尾/、凭据、query、fragment或列表 |
+| `SESSION_TTL` | `24h` | 绝对期限，可配置5m–24h，无滑动续期/Refresh Token |
 | `POSTGRES_USER` | `devpilot`（示例） | 本地 Compose 数据库用户 |
 | `POSTGRES_DB` | `devpilot`（示例） | 本地 Compose 数据库名 |
 | `POSTGRES_PASSWORD` | 必填 | 本地 Compose 数据库密码 |
@@ -124,3 +127,61 @@ api_pid=$!
 kill -TERM "$api_pid" # 也可使用 kill -INT
 wait "$api_pid"
 ```
+
+## 共享密码计算预算
+
+注册 Hash 与登录的真实/Dummy Verify 共用每进程两个 Argon2 槽，无等待队列；取消不能释放仍在运行的计算，真实返回或异常退出后才释放。登录另有两个完整流程槽，数据库等待不继续占用密码槽。共享容量竞争及共同 PostgreSQL/连接池故障仍可能影响注册，不承诺公平调度或完全故障隔离。
+
+密码 Verify 严格接受当前规范 PHC：Argon2id v19、m=65536 KiB/t=3/p=1、16-byte盐、32-byte输出及严格无padding标准Base64；其他组合在计算前拒绝，未来参数演进必须先评审允许列表和资源预算。不存在邮箱或坏PHC使用预计算的同成本Dummy Verify，其结果永远不能认证用户。
+
+## 用户登录与 PostgreSQL Session
+
+先显式执行版本2迁移。默认生产配置要求 `AUTH_MODE=production` 和 `AUTH_ORIGIN=https://你的API域名`；Cookie 固定 `__Host-devpilot_session`、Secure、HttpOnly、SameSite=Lax、Path=/、无Domain。Go可以在受信任HTTPS入口后通过内部HTTP服务，但入口必须强制外部HTTPS并保护内部监听，不得记录Cookie；请求Host/Forwarded/X-Forwarded-*不能改变策略。
+
+示例 `.env` 显式使用本地例外：`AUTH_MODE=development`、`AUTH_ORIGIN=http://127.0.0.1:8080`、`HTTP_ADDR=127.0.0.1:8080`。开发Origin仅HTTP localhost/回环IP，监听必须显式IP回环且端口匹配，Cookie名称为devpilot_session、仅此模式省略Secure。本地Cookie没有端口隔离；不能把本模式用于公开部署。AUTH_ORIGIN缺失/不合法、非法模式或TTL范围会在监听前失败；原配置需补充此必填项。
+
+```sh
+# 以下仅用于本地可丢弃测试账户。Cookie jar含bearer secret，限制权限。
+cookie_jar=$(mktemp)
+chmod 600 "$cookie_jar"
+curl -i -c "$cookie_jar" http://127.0.0.1:8080/api/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: http://127.0.0.1:8080' -H 'X-DevPilot-CSRF: 1' \
+  --data '{"email":"Alice.Example+tag@Example.COM","password":"a long local test phrase"}'
+curl -i -b "$cookie_jar" http://127.0.0.1:8080/api/v1/auth/me
+curl -i -b "$cookie_jar" -c "$cookie_jar" -X POST \
+  -H 'Origin: http://127.0.0.1:8080' -H 'X-DevPilot-CSRF: 1' \
+  http://127.0.0.1:8080/api/v1/auth/logout
+rm "$cookie_jar"
+```
+
+两个POST都要求唯一Origin（完整scheme/host/effective-port匹配配置）和唯一 `X-DevPilot-CSRF: 1`；固定头不是秘密。Sec-Fetch-Site若出现只能唯一same-origin；缺/null/重复/跨源Origin、错误头和Referer-only返回403，不查询账户或改Cookie。CLI也必须带两个头。无CORS授权，OPTIONS为405，GET不能退出。me只读，不需要这两个头。
+
+登录沿用注册严格4096-byte JSON、原始Unicode/重复键/媒体和邮箱政策。验证密码接受1–128 Unicode码点/最多512 bytes，不trim/normalize；注册创建新密码仍最少15码点。邮箱不存在、错误密码、disabled及坏PHC统一401 invalid_credentials，固定消息 `Invalid email or password.`，每类执行一遍相同参数real/dummy验证；不发/删Cookie。网络耗时并非恒时，注册409仍暴露占用，本系统不宣称完全防枚举。
+
+成功login=200及原Public DTO；仅确认session commit后签发新32-byte随机令牌的Cookie，数据库只存SHA-256(decoded secret)完整32-byte摘要。每次登录创建独立会话，不自动撤销之前会话，不改用户密码、状态、验证或时间字段。仅接受当前模式唯一规范Cookie，拒绝重复/非规范值，不接受Authorization/URL/body Token。Token/摘要/密码/PHC/邮箱/原始错误不进入日志或错误体，Token只在成功Set-Cookie出现。
+
+默认 `expires_at-created_at=24h`，每次数据库查询强制 `expires_at > statement_timestamp()`、`revoked_at IS NULL` 和用户active。me成功200，任何无效身份同样401 unauthenticated / `Authentication required.`；me不改时间、不发Set-Cookie，无滑动续期、Refresh Token或refresh端点。即使过期/撤销行尚未删除或浏览器继续发送Cookie，也必须拒绝认证。
+
+logout只撤销当前token；无/坏/重复Cookie也幂等204（不挑选任一重复token），空body并清当前模式Cookie。disabled/过期的token也可撤销，其他Session不受影响。DB故障返回500/503并保留Cookie，不能宣称退出已完成；未知commit只能由客户端显式幂等重试，服务器不自动重试。Cookie清除不是撤销证据。已经在撤销前获得身份快照的在途请求可完成；login/logout响应可能乱序，客户端应串行认证变更。本轮无多设备管理UI。
+
+| HTTP | error.code | 新端点适用情况 |
+| --- | --- | --- |
+| 400 | invalid_request | login JSON结构/字段/原始Unicode错误 |
+| 401 | invalid_credentials / unauthenticated | login统一凭据拒绝 / me无有效身份 |
+| 403 | csrf_rejected | login/logout来源或头证明失败 |
+| 405 | method_not_allowed | login/logout仅POST，me仅GET，精确Allow；HEAD无body |
+| 413 / 415 / 422 | request_too_large / unsupported_media_type / validation_failed | login输入界限，422只含固定字段原因码 |
+| 503 | authentication_busy | login共享Argon或完整流程槽满，Retry-After:1 |
+| 503 | service_unavailable / database_timeout | 连接/处理预算失败或DB期限/确认statement timeout，无法确认结果 |
+| 500 | internal_error | 缺users/sessions、随机源/验证器/内部故障 |
+
+三个端点带no-store/nosniff，JSON采用data/error envelope，204无JSON。完整固定message和字段契约见OpenAPI。DB故障不能伪装401、使用缓存或默认认证通过；取消后不写响应，不据此承诺回滚。
+
+清理Worker由Runner管理，每15分钟尝试一个最多1000行/2s批次，SKIP LOCKED避免多实例等待同一候选。只删除过期/撤销行，不循环耗尽；失败只记安全类别，下一周期再试，认证有效性不受清理失败影响。关闭取消Worker，在原总期限内等待后关池。当前无审计保留承诺，清理吞吐/表增长须随部署容量评审。
+
+身份验证仅是查询时点的user UUID，不是整个业务操作期间的授权租约。未来Workspace必须分别检查资源/动作/membership/role，定义权限变更与写提交的锁/条件写/版本或隔离协议；普通事务内的一次SELECT或入口middleware都不能自动保证全程权限，锁也不能停止时钟到期。本轮无Workspace/RBAC。active仍不证明邮箱所有权；直接SQL禁用后再解禁可能恢复未撤销会话，未来disable操作必须事务内revoke-all。
+
+**公开部署前仍必须另行实现并评审登录限流、防暴力破解/撞库与注册反滥用**：可信来源IP和canonical account键的速率/突发及失败预算、跨实例一致性、渐进延迟/恢复窗口、429与监测告警验收；不存在邮箱也需一致处理，避免硬锁账户产生DoS，不信任任意代理头。资源槽不是这些控制的替代，本轮没有实现或验收此限流系统。
+
+登录与Session的实际测试、场景映射和混合Argon2资源基线见 [add-user-login验收记录](openspec/changes/add-user-login/verification.md)。

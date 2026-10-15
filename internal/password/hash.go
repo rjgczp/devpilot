@@ -1,4 +1,4 @@
-// Package password produces salted PHC password hashes; it provides no login API.
+// Package password hashes and verifies the approved Argon2id PHC policy.
 package password
 
 import (
