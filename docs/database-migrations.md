@@ -78,3 +78,20 @@ Session查询以数据库当前statement time/撤销/用户active强制失效，
 版本3原生单步down仅限已确认可丢弃库，先删workspace_members再删workspaces，保留users/sessions。共享或生产串行status/up/status后部署API，应用回退保留新增数据，修复用forward migration；不自动down/reset。readiness依旧只Ping，不能证明Workspace schema可用，未应用迁移时已认证业务请求安全500。
 
 测试在同一个受保护PG18专用库串行运行，验证0→3、保留用户与会话2→3、up/up、v3单步down保留旧数据、1/2独立回退、失败版本4原子回滚。不要并行运行普通integration与integration-race，也不要将DATABASE_URL指向此测试库。
+
+## Workspace invitations（版本 4）与兼容性切换
+
+`00004_create_workspace_invitations.sql` 在同一Goose事务中给存量workspace_members逐行生成UUIDv7 membership_id，并设置NOT NULL/default/UNIQUE；保留复合PK、外键、role、created_at及旧索引。uuidv7为volatile，回填每行不同，重复up不改变已分配代际。增加workspace_invitations及索引，已应用1/2/3字节不变，无运行时DDL/新Worker。小规模MVP使用维护窗口；回填和常规索引需要表锁，发布前备份并评估数据规模和锁耗时，不在事务Migration中运行CONCURRENTLY。
+
+邀请ID不是秘密，目标/发起人用户外键RESTRICT，Workspace外键CASCADE。pending部分唯一键仅依赖status，不把当前时间写入索引谓词；过期由最终数据库时间门控。接受和member插入一事务提交，不保存邀请码/凭证。没有账户/Workspace删除或角色修改新接口，原最后Owner仍为协调应用协议，不宣称任意SQL强制。
+
+发布步骤必须串行执行：
+
+1. 阻止新的写请求进入，停止旧API实例接流量；关闭/停止旧实例，并等待在途写请求完成或被取消、连接释放。确认没有旧DELETE写者、旧任务或自动重试仍在运行。
+2. 备份后由唯一受控步骤执行status/up/status到4；缺schema的API不会自行迁移，readiness只Ping不能证明版本就绪。
+3. 原子切换到强制If-Match的新版本，所有调用方先读名单捕获目标membership_id/role。验证无条件DELETE428、旧条件412，注册/登录/Workspace/最后Owner回归通过后再允许邀请创建/接受和成员写请求。
+4. 不做新旧二进制混合滚动共存。旧DELETE在等待前尚未绑定关系代际时可误删重加M2，Workspace锁不能修复请求前的意图绑定。
+
+回退：保持Schema4和数据，停止邀请/接受及成员DELETE写入口，排空写请求后前向修复；不得直接重开旧二进制的无条件DELETE，即便已经关闭新接受，因为已有重加关系仍在。共享/生产禁用down/down-to/redo/reset自动回滚。
+
+4单步Down只限已确认可丢弃库：删除邀请表/历史、再删除成员代际列/唯一索引；原v3成员、角色、created_at及用户/Session/Workspace保留。重新Up生成新代际，旧validator失效。集成在守护的PG18独立库验证0→4、存量3→4、up/up、4→3→4和真实Migration4中途失败回滚；旧v3用例显式up-to3，旧临时失败migration移至版本5。普通integration和integration-race不得并行操作同一库。

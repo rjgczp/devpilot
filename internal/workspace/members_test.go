@@ -16,9 +16,9 @@ func (s *repositoryStub) ListMembers(ctx context.Context, d session.Digest, id s
 	if s.members != nil {
 		return s.members(ctx, d, id, n, after)
 	}
-	return MemberPage{Data: []Member{{UserID: exampleID, Role: "member", JoinedAt: time.Unix(0, 0).UTC()}}}, nil
+	return MemberPage{Data: []Member{{MembershipID: exampleID, UserID: exampleID, Role: "member", JoinedAt: time.Unix(0, 0).UTC()}}}, nil
 }
-func (s *repositoryStub) DeleteMember(ctx context.Context, d session.Digest, wid, target string) error {
+func (s *repositoryStub) DeleteMember(ctx context.Context, d session.Digest, wid, target, condition string) error {
 	s.calls.Add(1)
 	if s.remove != nil {
 		return s.remove(ctx, d, wid, target)
@@ -29,7 +29,7 @@ func TestMemberRosterProtocol(t *testing.T) {
 	path := collection + "/" + exampleID + "/members"
 	s := &repositoryStub{}
 	w := response(t, testHandler(s, io.Discard), request("GET", path, "ignored"), 200, "")
-	if w.Body.String() != "{\"data\":[{\"user_id\":\""+exampleID+"\",\"role\":\"member\",\"joined_at\":\"1970-01-01T00:00:00Z\"}],\"pagination\":{\"next_after\":null}}\n" || s.calls.Load() != 1 {
+	if w.Body.String() != "{\"data\":[{\"membership_id\":\""+exampleID+"\",\"user_id\":\""+exampleID+"\",\"role\":\"member\",\"joined_at\":\"1970-01-01T00:00:00Z\"}],\"pagination\":{\"next_after\":null}}\n" || s.calls.Load() != 1 {
 		t.Fatal("roster projection")
 	}
 	for _, q := range []string{"limit=0", "limit=101", "limit=01", "limit=+1", "limit=1&limit=2", "after=", "after=bad", "user_id=other", "%xx=x", "x=%zz"} {
@@ -82,7 +82,7 @@ func TestMemberRosterOpenAPIContract(t *testing.T) {
 }
 
 func TestMemberNamedInvalidWorkspaceKeepsDetailContract(t *testing.T) {
-	for _, id := range []string{"members", "members-extra"} {
+	for _, id := range []string{"members", "members-extra", "invitations", "invitations-extra"} {
 		s := &repositoryStub{detail: func(context.Context, session.Digest, string) (Public, error) { return Public{}, ErrNotFound }}
 		h := testHandler(s, io.Discard)
 		response(t, h, request("GET", collection+"/"+id, ""), 404, "workspace_not_found")

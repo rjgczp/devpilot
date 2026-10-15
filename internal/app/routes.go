@@ -18,6 +18,8 @@ func NewRoutes(health, registration http.Handler, authentication ...http.Handler
 		}
 	}
 	if len(authentication) > 1 {
+		mux.Handle("/api/v1/invitations", authentication[1])
+		mux.Handle("/api/v1/invitations/", authentication[1])
 		mux.Handle("/api/v1/workspaces", authentication[1])
 		mux.Handle("/api/v1/workspaces/{workspace_id}", authentication[1])
 	}
@@ -25,7 +27,11 @@ func NewRoutes(health, registration http.Handler, authentication ...http.Handler
 	// Bypass ServeMux path cleaning for the member namespace: reject ambiguous
 	// member paths in the handler instead of redirecting a mutation to an alias.
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if len(authentication) > 1 && strings.HasPrefix(path.Clean(r.URL.Path), "/api/v1/workspaces/") && strings.Contains(strings.TrimPrefix(r.URL.Path, "/api/v1/workspaces/"), "/members") {
+		if len(authentication) > 1 && strings.HasPrefix(path.Clean(r.URL.Path), "/api/v1/invitations") {
+			authentication[1].ServeHTTP(w, r)
+			return
+		}
+		if len(authentication) > 1 && strings.HasPrefix(path.Clean(r.URL.Path), "/api/v1/workspaces/") && (strings.Contains(strings.TrimPrefix(r.URL.Path, "/api/v1/workspaces/"), "/members") || strings.Contains(r.URL.Path, "/invitations")) {
 			authentication[1].ServeHTTP(w, r)
 			return
 		}

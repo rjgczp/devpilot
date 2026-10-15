@@ -79,9 +79,9 @@ func (tx memberObservedTx) Query(ctx context.Context, sql string, args ...any) (
 func (tx memberObservedTx) Commit(ctx context.Context) error {
 	return (workspaceObservedTx{Tx: tx.Tx, after: tx.after, commitOutcome: tx.commitOutcome, commits: tx.commits}).Commit(ctx)
 }
-func startMemberDelete(ctx context.Context, s workspace.Store, d session.Digest, wid, target string) <-chan error {
+func startMemberDelete(ctx context.Context, s workspace.Store, d session.Digest, wid, target, condition string) <-chan error {
 	done := make(chan error, 1)
-	go func() { done <- s.DeleteMember(ctx, d, wid, target) }()
+	go func() { done <- s.DeleteMember(ctx, d, wid, target, condition) }()
 	return done
 }
 func awaitMember(t *testing.T, done <-chan error, want error) {
@@ -111,7 +111,7 @@ func TestMemberWriteLockOrder(t *testing.T) {
 			}
 		}}
 	}}
-	done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID)
+	done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 	p.wait(t)
 	if strings.Join(stages, ",") != "candidate,user,session,workspace,scope,members" {
 		t.Fatal("member lock sequence", stages)
@@ -139,11 +139,17 @@ func TestMemberWriteLockOrder(t *testing.T) {
 
 func addFixtureOwner(t *testing.T, tx interface {
 	Exec(context.Context, string, ...any) (pgconn.CommandTag, error)
+	QueryRow(context.Context, string, ...any) pgx.Row
 }, f memberFixture) {
 	t.Helper()
 	if _, err := tx.Exec(context.Background(), `INSERT INTO workspace_members(workspace_id,user_id,role) VALUES($1,$2,'owner')`, f.w.ID, f.other.ID); err != nil {
 		t.Fatal("second owner fixture")
 	}
+	var id string
+	if err := tx.QueryRow(context.Background(), `SELECT membership_id::text FROM workspace_members WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.other.ID).Scan(&id); err != nil {
+		t.Fatal(err)
+	}
+	f.validators[f.w.ID+f.other.ID] = workspace.MemberCondition(id, "owner")
 }
 func TestMemberConcurrentOwnerAndExitRaces(t *testing.T) {
 	db := workspaceDB(t)
@@ -170,6 +176,7 @@ func TestMemberConcurrentOwnerAndExitRaces(t *testing.T) {
 					firstWant = workspace.ErrMemberForbidden
 					secondWant = workspace.ErrMemberForbidden
 				case "duplicate-delete":
+					secondWant = workspace.ErrPreconditionFailed
 					at, bt = f.member.ID, f.member.ID
 				case "owner-exit-race":
 					b = f.md
@@ -180,7 +187,7 @@ func TestMemberConcurrentOwnerAndExitRaces(t *testing.T) {
 					a, b = b, a
 					at, bt = bt, at
 					if kind == "owner-exit-race" {
-						secondWant = nil
+						secondWant = workspace.ErrPreconditionFailed
 					}
 				}
 				pause := newWorkspacePause(t)
@@ -198,10 +205,10 @@ func TestMemberConcurrentOwnerAndExitRaces(t *testing.T) {
 						}
 					}}
 				}}
-				first := startMemberDelete(ctx, workspace.Store{Pool: observed}, a, f.w.ID, at)
+				first := startMemberDelete(ctx, workspace.Store{Pool: observed}, a, f.w.ID, at, f.condition(f.w.ID, at))
 				pause.wait(t)
 				pid := make(chan int, 1)
-				second := startMemberDelete(ctx, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, b, f.w.ID, bt)
+				second := startMemberDelete(ctx, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, b, f.w.ID, bt, f.condition(f.w.ID, bt))
 				waitWorkspaceBlock(t, db, <-pid)
 				pause.resume()
 				awaitMember(t, first, firstWant)
@@ -265,7 +272,7 @@ func TestMemberPermissionChangeOrdering(t *testing.T) {
 						t.Fatal("maintenance change")
 					}
 					pid := make(chan int, 1)
-					done := startMemberDelete(ctx, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, f.od, f.w.ID, f.member.ID)
+					done := startMemberDelete(ctx, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 					waitWorkspaceBlock(t, db, <-pid)
 					if tx.Commit(ctx) != nil {
 						t.Fatal("maintenance commit")
@@ -287,7 +294,7 @@ func TestMemberPermissionChangeOrdering(t *testing.T) {
 							}
 						}}
 					}}
-					done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID)
+					done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 					pause.wait(t)
 					pid := int(tx.Conn().PgConn().PID())
 					changedDone := make(chan error, 1)
@@ -335,7 +342,7 @@ func TestMemberIdentityChangeOrdering(t *testing.T) {
 						t.Fatal("identity fixture")
 					}
 					pid := make(chan int, 1)
-					done := startMemberDelete(ctx, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, f.od, f.w.ID, f.member.ID)
+					done := startMemberDelete(ctx, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 					waitWorkspaceBlock(t, db, <-pid)
 					if tx.Commit(ctx) != nil {
 						t.Fatal("identity commit")
@@ -353,7 +360,7 @@ func TestMemberIdentityChangeOrdering(t *testing.T) {
 							}
 						}}
 					}}
-					done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID)
+					done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 					pause.wait(t)
 					pid := int(tx.Conn().PgConn().PID())
 					changed := make(chan error, 1)
@@ -436,7 +443,7 @@ func TestMemberExpiryAfterEveryLockWait(t *testing.T) {
 				expireMemberSoon(t, db, f.od)
 			}
 			pid := make(chan int, 1)
-			done := startMemberDelete(ctx, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, f.od, f.w.ID, f.member.ID)
+			done := startMemberDelete(ctx, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 			waitWorkspaceBlock(t, db, <-pid)
 			if kind == "session" {
 				// The expiry update is uncommitted: read the blocker transaction's clock,
@@ -482,7 +489,7 @@ func TestMemberPostGateExpiryAndCleanup(t *testing.T) {
 			}
 		}}
 	}}
-	done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID)
+	done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 	pause.wait(t)
 	waitMemberExpiry(t, db, f.od)
 	if _, err := (session.Store{Pool: db}).Cleanup(ctx); err != nil {

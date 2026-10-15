@@ -1,0 +1,5 @@
+--- FAIL: TestInvitationMigration (0.01s)
+    invitations_test.go:51: integration requires pinned native Goose v3.26.0
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.172s
+FAIL

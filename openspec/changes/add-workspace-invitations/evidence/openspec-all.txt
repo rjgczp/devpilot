@@ -1,0 +1,14 @@
+- Validating...
+✓ change/add-workspace-invitations
+✓ spec/backend-runtime
+✓ spec/service-health
+✓ spec/session-management
+✗ spec/user-authentication
+  ⚠ [WARNING] requirements[11]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+✓ spec/user-persistence
+✓ spec/user-registration
+✓ spec/workspace-access
+✓ spec/workspace-members
+✓ spec/workspace-persistence
+Totals: 9 passed, 1 failed (10 items)
+Details: openspec validate user-authentication --type spec

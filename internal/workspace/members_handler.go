@@ -49,7 +49,12 @@ func (h *Handler) serveMembers(w http.ResponseWriter, r *http.Request, ctx conte
 		h.fail(w, r, 400, "invalid_request", nil)
 		return
 	}
+	condition := r.Header.Get("If-Match")
 	if !isList {
+		if len(r.Header.Values("If-Match")) > 1 || (len(r.Header.Values("If-Match")) == 1 && !validMemberCondition(condition)) {
+			h.fail(w, r, 400, "invalid_request", nil)
+			return
+		}
 		empty, err := emptyMemberBody(ctx, w, r)
 		if r.Context().Err() != nil {
 			// A read deadline can cancel the net/http request context. Returning
@@ -80,7 +85,7 @@ func (h *Handler) serveMembers(w http.ResponseWriter, r *http.Request, ctx conte
 	if isList {
 		result, err = h.store.ListMembers(dbctx, digest, parts[0], limit, after)
 	} else {
-		err = h.store.DeleteMember(dbctx, digest, parts[0], parts[2])
+		err = h.store.DeleteMember(dbctx, digest, parts[0], parts[2], condition)
 		status = 204
 	}
 	if r.Context().Err() != nil || errors.Is(err, user.ErrCanceled) {

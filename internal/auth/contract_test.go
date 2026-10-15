@@ -76,7 +76,12 @@ func TestOpenAPIAuthenticationContract(t *testing.T) {
 		t.Fatal("registration contract changed")
 	}
 	allowed := map[string][]string{
-		"/api/v1/auth/register": {"post"}, "/api/v1/auth/login": {"post"},
+		"/api/v1/workspaces/{workspace_id}/invitations": {"get", "post"},
+		"/api/v1/invitations":                           {"get"},
+		"/api/v1/invitations/{invitation_id}":           {"delete"},
+		"/api/v1/invitations/{invitation_id}/accept":    {"post"},
+		"/api/v1/invitations/{invitation_id}/decline":   {"post"},
+		"/api/v1/auth/register":                         {"post"}, "/api/v1/auth/login": {"post"},
 		"/api/v1/auth/logout": {"post"}, "/api/v1/auth/me": {"get"},
 		"/api/v1/workspaces": {"get", "post"}, "/api/v1/workspaces/{workspace_id}": {"get"},
 		"/api/v1/workspaces/{workspace_id}/members":           {"get"},
