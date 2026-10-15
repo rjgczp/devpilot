@@ -99,3 +99,9 @@ CI保持固定PG18 digest/Goose版本，新增登录分支push，gofmt覆盖cmd/
 - `go test -race ./internal/session ./internal/auth -count=1 -timeout=120s`：通过，无data race（1.502s / 1.514s）。
 - `go vet ./internal/session ./internal/auth`、`gofmt`及`git diff --check`：通过。
 - `openspec validate add-user-login --strict`：通过；原27项任务保持完成。本次本地未重跑PG18或Argon资源测量，原始证据保留，托管CI按更新后的提交重新运行完整验收。
+
+## 2026-10-15 审查批准、合并与归档
+
+用户最终代码审查通过并明确批准合并与归档。[PR #3](https://github.com/rjgczp/devpilot/pull/3) 已于2026-10-15合并至main，合并提交 `9e55635129fdbcb314458d6c8d632463d92b5902`；最终实现提交为 `b39fb3ec96b1c76905acd583c02808a2763332ef`。该提交的 [PR CI](https://github.com/rjgczp/devpilot/actions/runs/38668544223) 和 [push CI](https://github.com/rjgczp/devpilot/actions/runs/38668539793) 均成功，包含verify、真实PostgreSQL 18 integration及integration-race。
+
+归档检查确认27/27任务完成、全部规划artifact完成。主规格新增user-authentication的12项Requirement、session-management的8项Requirement，user-registration修改1项并新增1项；逐块比对确认delta全部同步，既有Purpose及未涉及要求保留，`openspec validate --specs --strict`通过（6/6）。Change及原始验收证据保留于 `openspec/changes/archive/2026-10-15-add-user-login/`，README验收链接同步更新。原文中的“等待审查/不归档”描述为当时交付边界，本节记录其后的明确批准；公开部署前置条件仍未交付，本次未部署。

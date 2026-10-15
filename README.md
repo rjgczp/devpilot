@@ -184,4 +184,4 @@ logout只撤销当前token；无/坏/重复Cookie也幂等204（不挑选任一�
 
 **公开部署前仍必须另行实现并评审登录限流、防暴力破解/撞库与注册反滥用**：可信来源IP和canonical account键的速率/突发及失败预算、跨实例一致性、渐进延迟/恢复窗口、429与监测告警验收；不存在邮箱也需一致处理，避免硬锁账户产生DoS，不信任任意代理头。资源槽不是这些控制的替代，本轮没有实现或验收此限流系统。
 
-登录与Session的实际测试、场景映射和混合Argon2资源基线见 [add-user-login验收记录](openspec/changes/add-user-login/verification.md)。
+登录与Session的实际测试、场景映射和混合Argon2资源基线见 [add-user-login验收记录](openspec/changes/archive/2026-10-15-add-user-login/verification.md)。

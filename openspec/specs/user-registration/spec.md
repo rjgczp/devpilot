@@ -114,7 +114,7 @@ The service SHALL return 409 email_conflict when normalized email uniqueness pre
 - **THEN** it receives 409, returns no existing user data and preserves the original password hash and account state
 
 ### Requirement: Bounded registration processing
-The service SHALL allow at most two concurrent password hashes per process, with no waiting queue, and return 503 registration_busy with Retry-After: 1 when full. Registration SHALL use a 5-second processing deadline and at most 2 seconds for database work within that budget. Cancellation before insertion SHALL prevent database writes; a running hash MAY finish but SHALL retain its concurrency slot until finished.
+The service SHALL share at most two concurrent Argon computations per process across registration hashing and login real/dummy verification, with no waiting queue, and return 503 registration_busy with Retry-After: 1 when full. Registration SHALL use a 5-second processing deadline and at most 2 seconds for database work within that budget. Cancellation before insertion SHALL prevent database writes; a running hash MAY finish but SHALL retain its concurrency slot until finished.
 
 #### Scenario: Capacity available
 - **WHEN** one or two valid registrations are in progress and dependencies respond within the deadline
@@ -125,7 +125,7 @@ The service SHALL allow at most two concurrent password hashes per process, with
 - **THEN** it returns its documented 4xx response without acquiring a hash slot, invoking Argon2id or writing to the database
 
 #### Scenario: Hash capacity exhausted
-- **WHEN** two hashes are running and another valid registration arrives
+- **WHEN** two registration/login Argon computations are running and another valid registration arrives
 - **THEN** it returns 503 registration_busy without hashing, queueing or inserting, and health endpoints remain available
 
 #### Scenario: Server processing deadline
@@ -143,6 +143,10 @@ The service SHALL allow at most two concurrent password hashes per process, with
 #### Scenario: Resource release and measured occupancy
 - **WHEN** concurrent success, hash-error and cancellation tests complete, and a benchmark runs with real parameters at concurrency one and two
 - **THEN** tests observe at most two running hashes and eventual reuse of every slot, while the benchmark records latency distribution and process memory including overhead rather than asserting an exact 128 MiB process cap
+
+#### Scenario: Mixed endpoint capacity
+- **WHEN** one registration hash and one real or dummy login verification occupy the process budget
+- **THEN** another valid registration receives 503 registration_busy with Retry-After: 1, and no third Argon computation starts; login database work after verification does not retain an Argon slot
 
 ### Requirement: Hash resource limits do not establish abuse protection
 Documentation SHALL identify the two hash slots as a per-process resource bound, not complete rate limiting or abuse prevention. Public deployment SHALL require implemented and reviewed registration rate limiting and anti-abuse controls as separate follow-up work. Performance targets SHALL be established from real benchmarks; safety parameters SHALL NOT be lowered without explicit review.
@@ -200,3 +204,26 @@ The repository SHALL provide unit tests, PostgreSQL 18 integration tests mandato
 #### Scenario: Test cleanup isolation
 - **WHEN** integration setup receives the application's development database URL or an unapproved database name
 - **THEN** it rejects the target before any schema mutation, migration down or row deletion
+
+### Requirement: Shared password budget preserves registration isolation
+Sharing the password budget SHALL preserve registration input, status, message, projection, hashing parameters and no-auth-artifact contracts. Login/session-specific faults SHALL not poison shared capacity or mutate registration state. Both endpoints SHALL release capacity after actual computation ends, including failures and panics. Intentional shared saturation and common DB failures SHALL remain explicit limitations rather than guarantees of endpoint independence.
+
+#### Scenario: Success - Existing registration contract remains intact
+- **WHEN** valid registration succeeds or duplicates an existing canonical email after shared-budget wiring
+- **THEN** it returns the existing 201 Public projection or 409 email_conflict, uses unchanged PHC parameters, and issues no token, Cookie, Session or mail while preserving prior credentials/state
+
+#### Scenario: Exception - Login-specific failures do not poison registration
+- **WHEN** an admitted login encounters injected Verify panic, invalid PHC, missing sessions table or session-token RNG/create failure, and its password work has returned
+- **THEN** all acquired capacity is reusable and an otherwise healthy registration can complete with users/schema/password dependencies available; no global authentication-failed flag is propagated to registration
+
+#### Scenario: Security - Cheap rejection and privacy regressions are forbidden
+- **WHEN** malformed, oversized, policy-invalid or raw-Unicode-invalid registration arrives during login load
+- **THEN** its existing 4xx occurs before shared-slot acquisition or Argon/DB work; responses/logs expose no credentials and duplicates cannot overwrite password, status or verification fields
+
+#### Scenario: Concurrency - Mixed cancellation and endpoint-specific busy codes
+- **WHEN** real/dummy login work and registration hashing occupy both slots, then one client cancels
+- **THEN** no third Argon call starts until a computation actually returns; registration uses registration_busy and login authentication_busy with Retry-After: 1, after which released capacity is reusable by either endpoint
+
+#### Scenario: Concurrency - Database waiting does not reserve password capacity
+- **WHEN** both login workflow slots are waiting on session database operations after verification has returned
+- **THEN** they do not hold Argon slots and a registration with available password capacity can hash; the shared pool still imposes its normal bounded DB wait and no starvation-free guarantee is claimed
