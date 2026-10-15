@@ -83,3 +83,7 @@ PG17/19边界由既有testdb单元测试验证；本次没有启动PG17/19，不
 ## CI与交付
 
 CI保留Go/PG18 digest/Goose版本，push增加本分支；PR仍以main为目标，verify与integration两作业保留，普通PG与integration-race串行。上述是实际本地验收，**不替代托管CI结论**。创建PR后将按最终head SHA核对托管检查并在交付回复报告状态，期间不合并、不归档、不公开部署。
+
+首次分支push已实际触发[Go CI run 38700800231](https://github.com/rjgczp/devpilot/actions/runs/38700800231)，对应实现提交`04ff2ca142f429e3619d68b55c4e2a99de7d9e88`，任务6.1据此完成。记录时该run为in_progress，不写成已通过；最终文档提交仍将重新触发CI，并在PR及交付回复按最新head SHA核验。
+
+首次Git HTTPS push被GitHub拒绝，原因是原Git凭据缺workflow scope；使用已登录、具workflow权限的gh凭据作为单次git credential helper后推送成功，未修改全局凭据配置或暴露令牌。

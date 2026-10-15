@@ -43,7 +43,7 @@
 
 ## 6. CI与全量集成验收
 
-- [ ] 6.1 CI push触发加入`codex/add-workspace-members`并保留原main/PR规则、Go工具链、PG18 digest和Goose v3.26.0；以配置差异审阅及实际CI任务触发验证，集成/race套件串行共享专用库。
+- [x] 6.1 CI push触发加入`codex/add-workspace-members`并保留原main/PR规则、Go工具链、PG18 digest和Goose v3.26.0；以配置差异审阅及实际CI任务触发验证，集成/race套件串行共享专用库。
 - [x] 6.2 运行gofmt、git diff --check、go vet、全量unit和race，回归注册/登录/me/logout/Session TTL/cleanup/健康与关闭/Workspace三个原API；以成功命令输出验证，不因本轮范围缩小删旧用例。
 - [x] 6.3 在testdb守护的独立PG18数据库运行完整integration及integration-race、原迁移链/约束回归与缺URL/Goose/PG18硬失败检查；以实际服务器版本、命令输出、迁移1/2/3哈希和版本仍3验证，不读开发.env、不连接应用库、不跳过必需测试。
 - [x] 6.4 运行openspec严格校验并审阅最终API/Spec/Design/README一致性，整理可复现验证记录；以全部成功/异常/安全/并发Requirement证据映射及未交付加入功能清单验证，明确本地结果与托管CI结果，不自动PR/部署/合并/归档。
