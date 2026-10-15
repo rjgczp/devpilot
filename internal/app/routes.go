@@ -3,6 +3,8 @@ package app
 import "net/http"
 
 // NewRoutes composes business routes without changing health endpoint contracts.
+// Optional handlers are authentication first, then workspace; old callers retain
+// their existing routes when either is absent.
 func NewRoutes(health, registration http.Handler, authentication ...http.Handler) http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/api/v1/auth/register", registration)
@@ -10,6 +12,10 @@ func NewRoutes(health, registration http.Handler, authentication ...http.Handler
 		for _, path := range []string{"/api/v1/auth/login", "/api/v1/auth/logout", "/api/v1/auth/me"} {
 			mux.Handle(path, authentication[0])
 		}
+	}
+	if len(authentication) > 1 {
+		mux.Handle("/api/v1/workspaces", authentication[1])
+		mux.Handle("/api/v1/workspaces/{workspace_id}", authentication[1])
 	}
 	mux.Handle("/", health)
 	return mux

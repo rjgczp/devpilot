@@ -32,7 +32,7 @@ Goose 原生失败输出可能包含 SQL 和驱动诊断，只能保留在受限
 
 ## Down 和数据保护
 
-常规 Down **仅用于操作人员明确确认可丢弃的开发或测试库**，会删除 users 及其数据。确认 GOOSE_DBSTRING 指向专用 disposable 库后，原生单步命令为 `goose -env=none -dir ./migrations -timeout 30s down`。Goose 不替本项目识别环境或弹出确认，不存在自定义 `--allow-destructive` 参数。
+常规 Down **仅用于操作人员明确确认可丢弃的开发或测试库**，删除当前最高版本对应的表及其数据；版本3删除Workspace/成员，版本2删除sessions，版本1删除users。确认 GOOSE_DBSTRING 指向专用 disposable 库后，原生单步命令为 `goose -env=none -dir ./migrations -timeout 30s down`。Goose 不替本项目识别环境或弹出确认，不存在自定义 `--allow-destructive` 参数。
 
 共享或生产日常发布只允许 status/up，禁止 down、down-to、redo、reset 作为自动回滚。回滚 API 保留新增表和用户数据，Schema 错误优先前向修复。异常破坏性恢复需要独立授权、已验证备份、恢复方案评审；不得承诺无损恢复。本 PR 不部署到生产。
 
@@ -65,3 +65,16 @@ go test -tags=integration ./... -count=1 -timeout=120s
 Session查询以数据库当前statement time/撤销/用户active强制失效，不依赖清理。Runner管理清理Worker，每15m一批、最多1000行、每批2s，锁候选SKIP LOCKED；失败等待下一周期，无耗尽循环，SIGINT/SIGTERM取消并按原总关闭期限等待。删除撤销行不提供审计保留承诺；公开部署需评审增长/清理容量。直接SQL解禁可恢复未撤销会话，未来禁用操作须事务内撤销所有Session。
 
 版本2套件仍使用同一个隔离库名，不改测试目标保护。CI及本地完整验收先普通集成，再顺序执行 `go test -race -tags=integration ./tests/integration -count=1 -timeout=120s`，不得让两个破坏性schema套件并行访问同一库。
+
+
+## Workspace migration（版本 3）
+
+`00003_create_workspaces.sql` 追加 workspaces/workspace_members；版本1/2不修改。数据库生成UUIDv7，显示名称允许重名，成员复合主键(workspace_id,user_id)和owner/member约束，反向(user_id,workspace_id)索引支持用户列表。workspace删除级联其成员；users删除在有任何成员关系时RESTRICT，不能通过删用户静默丢失Workspace所有权。sessions原有用户级联约束不变，被拒绝的用户删除也不会留下部分删除的会话。
+
+创建事务按User→Session的FOR SHARE顺序保护账户/会话状态，再在新的INSERT语句用statement_timestamp()检查有效期，原子提交Workspace和初始Owner。SQL约束不单独保证“至少一个Owner”，本轮只有创建流程能写成员；成员管理与最后Owner保护需另行Change。事务门控之后到期仍可提交，锁不冻结数据库时间。
+
+未知Commit结果不自动重试、不补偿删除；错误只表示无法确认。显式客户端重试可能创建第二个同名Workspace，名称不是幂等键。列表可帮助恢复观察，但不能仅凭名称可靠关联一次未知请求。
+
+版本3原生单步down仅限已确认可丢弃库，先删workspace_members再删workspaces，保留users/sessions。共享或生产串行status/up/status后部署API，应用回退保留新增数据，修复用forward migration；不自动down/reset。readiness依旧只Ping，不能证明Workspace schema可用，未应用迁移时已认证业务请求安全500。
+
+测试在同一个受保护PG18专用库串行运行，验证0→3、保留用户与会话2→3、up/up、v3单步down保留旧数据、1/2独立回退、失败版本4原子回滚。不要并行运行普通integration与integration-race，也不要将DATABASE_URL指向此测试库。

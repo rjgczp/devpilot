@@ -100,20 +100,7 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handler) csrf(r *http.Request) bool {
-	origins, proof := r.Header.Values("Origin"), r.Header.Values("X-DevPilot-CSRF")
-	if len(origins) != 1 || len(proof) != 1 || proof[0] != "1" {
-		return false
-	}
-	origin, err := config.ParseOrigin(origins[0])
-	if err != nil || origin != h.policy.Origin {
-		return false
-	}
-	if sites, exists := r.Header["Sec-Fetch-Site"]; exists && (len(sites) != 1 || sites[0] != "same-origin") {
-		return false
-	}
-	return true
-}
+func (h *Handler) csrf(r *http.Request) bool { return ValidCSRF(r, h.policy) }
 
 func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), h.processingTimeout)
@@ -309,12 +296,7 @@ func (h *Handler) logout(w http.ResponseWriter, r *http.Request) {
 	h.write(w, r, 204, nil)
 }
 
-func (h *Handler) cookieName() string {
-	if h.policy.Mode == "development" {
-		return "devpilot_session"
-	}
-	return "__Host-devpilot_session"
-}
+func (h *Handler) cookieName() string { return CookieName(h.policy) }
 func (h *Handler) cookie(value string) *http.Cookie {
 	return &http.Cookie{Name: h.cookieName(), Value: value, Path: "/", Secure: h.policy.Mode != "development", HttpOnly: true, SameSite: http.SameSiteLaxMode}
 }

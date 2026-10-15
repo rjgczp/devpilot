@@ -1,0 +1,7 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/3 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 3/3 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 124728 (41554/sec), new interesting: 100 (total: 103)
+fuzz: elapsed: 6s, execs: 143795 (6357/sec), new interesting: 111 (total: 114)
+fuzz: elapsed: 6s, execs: 143795 (0/sec), new interesting: 111 (total: 114)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/workspace	6.418s

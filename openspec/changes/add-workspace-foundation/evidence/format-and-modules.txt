@@ -1,0 +1,12 @@
+$ gofmt -l cmd internal tests
+exit=0
+
+$ git diff --check
+exit=0
+
+$ go mod verify
+exit=0
+all modules verified
+
+$ git diff --exit-code main -- migrations/00001_create_users.sql migrations/00002_create_sessions.sql openspec/specs
+exit=0

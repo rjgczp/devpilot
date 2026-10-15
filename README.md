@@ -185,3 +185,24 @@ logout只撤销当前token；无/坏/重复Cookie也幂等204（不挑选任一�
 **公开部署前仍必须另行实现并评审登录限流、防暴力破解/撞库与注册反滥用**：可信来源IP和canonical account键的速率/突发及失败预算、跨实例一致性、渐进延迟/恢复窗口、429与监测告警验收；不存在邮箱也需一致处理，避免硬锁账户产生DoS，不信任任意代理头。资源槽不是这些控制的替代，本轮没有实现或验收此限流系统。
 
 登录与Session的实际测试、场景映射和混合Argon2资源基线见 [add-user-login验收记录](openspec/changes/archive/2026-10-15-add-user-login/verification.md)。
+
+## Workspace 基础
+
+版本3迁移增加Workspace与成员关系，版本1/2保持不变，按[迁移说明](docs/database-migrations.md)显式升级。用户可以创建多个Workspace；成员管理单独交付，本轮没有加入、邀请、更新、删除或角色变更入口。owner/member仅能读取所属Workspace，创建者自动成为owner。
+
+三个接口为`POST /api/v1/workspaces`、`GET /api/v1/workspaces`、`GET /api/v1/workspaces/{workspace_id}`。Cookie名称和严格解析沿用认证协议，POST必须携带匹配AUTH_ORIGIN的唯一Origin和`X-DevPilot-CSRF: 1`，GET只读无需CSRF头。接口不修改Cookie、不续期。正常请求无效身份401；已认证非成员与未知资源同为404；有效用户无成员关系返回200空数组。
+
+```sh
+curl --cookie "$COOKIE_JAR" --header "Origin: $AUTH_ORIGIN" \
+  --header 'X-DevPilot-CSRF: 1' --header 'Content-Type: application/json' \
+  --data '{"name":"研发团队"}' "$API_BASE/api/v1/workspaces"
+curl --cookie "$COOKIE_JAR" "$API_BASE/api/v1/workspaces?limit=50"
+```
+
+以上环境变量由调用者显式设置，Cookie文件须私密保存。名称允许重复，无slug；仅裁剪边缘ASCII空白，保留大小写/Unicode，要求1–100码点/最多400bytes，无Cc控制字符及剩余Unicode边缘空白。成功投影仅id/name/role/created_at/updated_at，role属于调用者。
+
+创建返回201和Location，Workspace与初始owner在一个短事务原子提交。事务按User→Session锁定，取锁后以新的数据库语句时间校验Session。提交结果未知时不会返回成功或自动重试；客户端重新提交可能创建第二个同名Workspace，名称不能作幂等键。列表可用于检查实际存储，不能可靠关联同名的未知请求。
+
+列表返回`{"data":[],"pagination":{"next_after":null}}`或授权资源数组，按UUID升序；limit默认50、1–100，after为规范小写UUID，next_after仅有更多记录时为最后返回ID。游标不提供权限，无总数及跨页快照保证。详情无查询参数，列表仅接受limit/after；重复、未知或非法参数400。完整状态/字段见[OpenAPI](docs/api/openapi.yaml)。
+
+租户隔离由每次查询同时校验Session、active账户、成员关系和资源归属，不启用RLS；未来租户业务表必须含workspace_id，租户内唯一及父子外键也需包含租户边界。数据库管理员不受应用授权约束。成员关系使users删除RESTRICT，防止静默丢失所有权；本轮不提供账户删除或最后owner管理。公开部署前沿用既有认证反滥用要求，并需评审Workspace创建频率/容量，当前没有配额系统。

@@ -1,0 +1,13 @@
+=== RUN   TestWorkspaceMigrationAndConstraints
+    workspace_test.go:50: native Goose down-to 0 expected-success=true: verified
+    workspace_test.go:52: native Goose up-to 2 expected-success=true: verified
+    workspace_test.go:54: native Goose up expected-success=true: verified
+    workspace_test.go:55: native Goose up expected-success=true: verified
+    workspace_test.go:102: native Goose down expected-success=true: verified
+    workspace_test.go:106: native Goose up expected-success=true: verified
+    workspace_test.go:107: native Goose down-to 0 expected-success=true: verified
+    workspace_test.go:108: native Goose up expected-success=true: verified
+    workspace_test.go:51: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceMigrationAndConstraints (0.23s)
+PASS
+ok  	github.com/rjgczp/devpilot/tests/integration	1.968s

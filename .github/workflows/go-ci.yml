@@ -6,6 +6,7 @@ on:
       - main
       - codex/add-user-registration
       - codex/add-user-login
+      - codex/add-workspace-foundation
   pull_request:
     branches:
       - main

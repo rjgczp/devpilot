@@ -18,6 +18,7 @@ import (
 	"github.com/rjgczp/devpilot/internal/registration"
 	"github.com/rjgczp/devpilot/internal/session"
 	"github.com/rjgczp/devpilot/internal/user"
+	"github.com/rjgczp/devpilot/internal/workspace"
 )
 
 func main() { os.Exit(run()) }
@@ -56,7 +57,7 @@ func run() int {
 	users := user.Store{Pool: pool}
 	sessions := session.Store{Pool: pool}
 	authentication := auth.New(users, sessions, passwords, session.NewTokens(), budget, cfg.Auth, logger)
-	handler := app.NewRoutes(healthRoutes, registration.New(users, passwords, logger, budget), authentication)
+	handler := app.NewRoutes(healthRoutes, registration.New(users, passwords, logger, budget), authentication, workspace.New(workspace.Store{Pool: pool}, cfg.Auth, logger))
 	cleanup := session.NewWorker(sessions, logger)
 	runner := app.Runner{
 		Server:          app.NewServer(cfg.HTTPAddr, handler),

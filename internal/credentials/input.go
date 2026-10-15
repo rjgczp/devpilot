@@ -17,7 +17,7 @@ type Input struct{ Email, Password string }
 var errJSON = errors.New("invalid credential JSON")
 
 func Parse(body []byte) (Input, error) {
-	if !utf8.Valid(body) || !json.Valid(body) || !validEscapes(body) {
+	if !ValidJSON(body) {
 		return Input{}, errJSON
 	}
 	d := json.NewDecoder(bytes.NewReader(body))
@@ -52,6 +52,12 @@ func Parse(body []byte) (Input, error) {
 		return Input{}, errJSON
 	}
 	return Input{Email: values["email"], Password: values["password"]}, nil
+}
+
+// ValidJSON rejects invalid UTF-8 and unpaired raw surrogate escapes before
+// any endpoint decodes strings. json.Valid also establishes validEscapes' bounds.
+func ValidJSON(body []byte) bool {
+	return utf8.Valid(body) && json.Valid(body) && validEscapes(body)
 }
 
 // encoding/json accepts unpaired surrogates by replacing them with U+FFFD.

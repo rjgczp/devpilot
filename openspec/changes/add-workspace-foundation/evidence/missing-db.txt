@@ -1,0 +1,5 @@
+--- FAIL: TestWorkspaceMigrationAndConstraints (0.00s)
+    workspace_test.go:48: TEST_DATABASE_URL must name the isolated registration test database
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.375s
+FAIL

@@ -100,6 +100,7 @@ func TestMigrationAndConstraints(t *testing.T) {
 		t.Fatal("repeat up changed data")
 	}
 	goose(t, filepath.Join(root(), "migrations"), "status", true)
+	goose(t, filepath.Join(root(), "migrations"), "down-to 2", true)
 	goose(t, filepath.Join(root(), "migrations"), "down", true)
 	if queryInt(t, db, `SELECT count(*) FROM users WHERE email='preserved@example.com'`) != 1 || queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='sessions' AND table_schema='public'`) != 0 {
 		t.Fatal("session down damaged users")
@@ -171,11 +172,15 @@ func TestMigrationAndConstraints(t *testing.T) {
 	if err != nil || os.WriteFile(filepath.Join(dir, "00002_create_sessions.sql"), sessionSQL, 0600) != nil {
 		t.Fatal("copy sessions migration")
 	}
-	if os.WriteFile(filepath.Join(dir, "00003_intentionally_bad.sql"), []byte("-- +goose Up\nCREATE TABLE must_rollback(id integer);\nSELECT 1/0;\n-- +goose Down\nDROP TABLE must_rollback;\n"), 0600) != nil {
+	workspaceSQL, err := os.ReadFile(filepath.Join(root(), "migrations/00003_create_workspaces.sql"))
+	if err != nil || os.WriteFile(filepath.Join(dir, "00003_create_workspaces.sql"), workspaceSQL, 0600) != nil {
+		t.Fatal("copy workspace migration")
+	}
+	if os.WriteFile(filepath.Join(dir, "00004_intentionally_bad.sql"), []byte("-- +goose Up\nCREATE TABLE must_rollback(id integer);\nSELECT 1/0;\n-- +goose Down\nDROP TABLE must_rollback;\n"), 0600) != nil {
 		t.Fatal("write failure fixture")
 	}
 	goose(t, dir, "up", false)
-	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='must_rollback'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=3 AND is_applied`) != 0 {
+	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='must_rollback'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=4 AND is_applied`) != 0 {
 		t.Fatal("failed migration partially committed")
 	}
 }
@@ -346,7 +351,10 @@ func TestRegistrationWithPostgreSQL(t *testing.T) {
 			}
 			done <- err
 		}()
-		deadline := time.Now().Add(time.Second)
+		// Race instrumentation and concurrent hashing can exceed one second before
+		// INSERT. Observe within the existing 5s workflow budget, still requiring
+		// a real database lock before cancellation (never a sleep-based pass).
+		deadline := time.Now().Add(5 * time.Second)
 		for queryInt(t, db, `SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE 'INSERT INTO users%'`) == 0 {
 			if time.Now().After(deadline) {
 				t.Fatal("INSERT did not reach DB lock")
@@ -357,7 +365,7 @@ func TestRegistrationWithPostgreSQL(t *testing.T) {
 		if <-done == nil {
 			t.Fatal("client cancellation unexpectedly succeeded")
 		}
-		deadline = time.Now().Add(time.Second)
+		deadline = time.Now().Add(2 * time.Second)
 		for queryInt(t, db, `SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE 'INSERT INTO users%'`) > 0 {
 			if time.Now().After(deadline) {
 				t.Fatal("DB cancellation not propagated")
