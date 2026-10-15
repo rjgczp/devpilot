@@ -67,3 +67,12 @@
 当前没有已知未修复的测试失败。仍保留设计已接受的限制：应用层租户授权（无RLS）、创建非幂等且显式重试可能产生同名重复、未实现配额/公开反滥用系统、任意受信任SQL可破坏最后Owner条件；账户有任何成员关系时不能直接删除。成员管理、更新/删除、完整加入流程均不在本轮。
 
 PR面向main；交付回复提供PR链接、最新提交SHA及对应GitHub CI运行结果，本文记录本地可复现验收，PR工作流日志提供远端证据。完成后等待独立代码审查，不自动合并、归档或公开部署。
+
+
+## Archive completion（2026-10-15）
+
+用户明确授权合并PR #4、同步主Specs及归档。PR以merge commit `b28562ff7c19d5dc42af2c23725cc1abaa641dae` 合入main，合并前当前PR头的全部CI检查成功。23/23任务完成，全部产物齐全。
+
+同步新增workspace-access（9项Requirement）、workspace-persistence（6项），修改user-authentication的事务授权边界（1项）；所有delta描述/场景逐块比对一致，原认证Purpose及其余Requirement未改。常规`openspec validate --specs`为8/8通过；额外的`--strict`为7/8，唯一原因是已评审认证授权Requirement正文569字符超过500建议上限。为保持已批准契约，没有仅为长度校验缩写或拆分该Requirement；这项格式警告不代表缺失需求或场景。归档CLI另提示本Change超过10项delta的非阻塞建议，保持已评审范围不拆分。
+
+主Specs通过逐块同步比对后，用原生archive命令保留验证地移动Change；`--skip-specs`仅避免原生命令再次应用已经核验同步的delta，并未省略同步。本次仅合并与文档同步归档，不修改业务代码、执行真实迁移或公开部署。归档目标为`openspec/changes/archive/2026-10-15-add-workspace-foundation/`，原验证证据保持不变。
