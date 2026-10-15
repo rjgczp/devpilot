@@ -48,3 +48,48 @@ func TestTokenCanonicalAndDigest(t *testing.T) {
 		t.Fatal("RNG error not safe")
 	}
 }
+
+func TestCookieDigestPreservesTokenBytes(t *testing.T) {
+	token := base64.RawURLEncoding.EncodeToString(make([]byte, 32))
+	wantDigest, err := HashToken(token)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		name    string
+		headers []string
+		valid   bool
+	}{
+		{"canonical", []string{"s=" + token}, true},
+		{"separator space", []string{"other=x; s=" + token}, true},
+		{"separator tab", []string{"other=x;\ts=" + token}, true},
+		{"separator mixed whitespace", []string{"other=x; \t s=" + token + "; other2=y"}, true},
+		{"header leading whitespace", []string{" \ts=" + token}, true},
+		{"separate headers", []string{"other=x", "s=" + token}, true},
+		{"leading value space", []string{"s= " + token}, false},
+		{"leading value tab", []string{"s=\t" + token}, false},
+		{"trailing value space", []string{"s=" + token + " "}, false},
+		{"trailing value tab", []string{"s=" + token + "\t"}, false},
+		{"surrounding value whitespace", []string{"s= \t" + token + "\t "}, false},
+		{"space before separator", []string{"s=" + token + " ; other=x"}, false},
+		{"tab before separator", []string{"s=" + token + "\t; other=x"}, false},
+		{"embedded space", []string{"s=" + token[:20] + " " + token[20:]}, false},
+		{"embedded tab", []string{"s=" + token[:20] + "\t" + token[20:]}, false},
+		{"unicode whitespace", []string{"s=\u00a0" + token + "\u00a0"}, false},
+		{"duplicate malformed value", []string{"s=" + token, "s=\t" + token}, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			r := httptest.NewRequest("GET", "/api/v1/auth/me", nil)
+			for _, header := range tc.headers {
+				r.Header.Add("Cookie", header)
+			}
+			got, valid := CookieDigest(r, "s")
+			if valid != tc.valid {
+				t.Fatalf("valid = %v, want %v", valid, tc.valid)
+			}
+			if valid && got != wantDigest {
+				t.Fatal("canonical token digest changed")
+			}
+		})
+	}
+}

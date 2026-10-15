@@ -45,13 +45,15 @@ func CookieDigest(r *http.Request, name string) (Digest, bool) {
 	count, token := 0, ""
 	for _, header := range r.Header.Values("Cookie") {
 		for _, pair := range strings.Split(header, ";") {
-			key, value, hasValue := strings.Cut(strings.TrimSpace(pair), "=")
+			// Allow delimiter whitespace before a pair, but preserve credential
+			// bytes after '=' so noncanonical token values fail HashToken.
+			key, value, hasValue := strings.Cut(strings.TrimLeft(pair, " \t"), "=")
 			if strings.TrimSpace(key) == name {
 				count++
 				if !hasValue {
 					return Digest{}, false
 				}
-				token = strings.TrimSpace(value)
+				token = value
 			}
 		}
 	}

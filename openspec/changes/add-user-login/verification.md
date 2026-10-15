@@ -85,3 +85,17 @@ CI保持固定PG18 digest/Goose版本，新增登录分支push，gofmt覆盖cmd/
 已实现部分没有已知阻塞未解决项。以下限制按已批准设计保留：注册409仍可枚举；24h为绝对期限无idle/refresh；重新登录不自动撤销旧会话；入口认证/已在途请求仅具有快照语义；直接SQL解禁可能恢复未撤销会话；清理固定吞吐不提供审计保留或无限容量保证；两个槽不承诺公平调度、全局限流或共同DB故障隔离。
 
 公开部署前**必须另行实现并评审**登录限流、防暴力破解/撞库及注册反滥用，并审查HTTPS入口、时间/容量预算和清理负载；这些控制没有被标记为本轮已实现。PR等待用户最终代码审查，不自动合并，不同步/归档主Specs，不公开部署。
+
+## 2026-10-15 代码审查：Cookie 令牌严格格式
+
+修正任务2.2的解析边界：只移除Cookie pair前用于分隔的ASCII空格/制表符，不再修剪pair尾部或`=`后的原始值。非规范值交给现有43字符规范Base64URL校验拒绝；重复同名Cookie仍拒绝。这里校验的是应用收到的Header值，无法恢复HTTP传输层已经移除的字段外围空白。
+
+新增 `TestCookieDigestPreservesTokenBytes`，17个场景覆盖分隔符空格/制表符、多Header、值前后/内部空白、分号前空白、Unicode空白及含非规范值的重复Cookie。先在原实现运行，8个拒绝场景如预期失败；修复后全部通过，有效令牌的摘要保持相同。
+
+本次实际执行：
+
+- `go test ./internal/session -run '^Test(TokenCanonicalAndDigest|CookieDigestPreservesTokenBytes)$' -count=1`：通过。
+- `go test ./internal/session ./internal/auth -count=1 -timeout=120s`：通过（0.239s / 0.483s）。
+- `go test -race ./internal/session ./internal/auth -count=1 -timeout=120s`：通过，无data race（1.502s / 1.514s）。
+- `go vet ./internal/session ./internal/auth`、`gofmt`及`git diff --check`：通过。
+- `openspec validate add-user-login --strict`：通过；原27项任务保持完成。本次本地未重跑PG18或Argon资源测量，原始证据保留，托管CI按更新后的提交重新运行完整验收。
