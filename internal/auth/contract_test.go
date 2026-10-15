@@ -75,7 +75,7 @@ func TestOpenAPIAuthenticationContract(t *testing.T) {
 	if doc.Paths["/api/v1/auth/register"]["post"].RequestBody.Content["application/json"].Schema.Properties["password"].MinLength != 15 {
 		t.Fatal("registration contract changed")
 	}
-	if len(doc.Paths) != 4 {
-		t.Fatal("unexpected auth or refresh route")
+	if len(doc.Paths) != 6 {
+		t.Fatal("unexpected API or refresh route")
 	}
 }

@@ -1,0 +1,5 @@
+--- FAIL: TestWorkspaceMigrationAndConstraints (0.01s)
+    workspace_test.go:48: integration requires pinned native Goose v3.26.0
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.184s
+FAIL

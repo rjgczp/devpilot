@@ -112,6 +112,7 @@ func TestSessionStoreAndUpgrade(t *testing.T) {
 	if _, err := store.Lookup(ctx, second); err != session.ErrInvalid || queryInt(t, db, `SELECT count(*) FROM sessions WHERE token_hash=$1`, second[:]) != 1 {
 		t.Fatal("revoke depends on deletion")
 	}
+	goose(t, filepath.Join(root(), "migrations"), "down-to 2", true)
 	goose(t, filepath.Join(root(), "migrations"), "down", true)
 	if queryInt(t, db, `SELECT count(*) FROM users WHERE id=$1`, u.ID) != 1 {
 		t.Fatal("session down deleted user")
