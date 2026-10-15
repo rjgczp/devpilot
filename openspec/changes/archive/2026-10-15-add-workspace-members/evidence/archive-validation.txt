@@ -1,0 +1,56 @@
+workspace-access: all 4 delta blocks match exactly; unchanged requirements and Purpose/title preserved
+workspace-members: all 7 delta blocks match exactly; unchanged requirements and Purpose/title preserved
+workspace-persistence: all 5 delta blocks match exactly; unchanged requirements and Purpose/title preserved
+
+$ openspec validate add-workspace-members --strict
+Change 'add-workspace-members' is valid
+
+exit=0
+
+$ openspec validate --specs
+✓ spec/backend-runtime
+✓ spec/service-health
+✓ spec/session-management
+✓ spec/user-authentication
+✓ spec/user-persistence
+✓ spec/user-registration
+✓ spec/workspace-access
+✓ spec/workspace-members
+✓ spec/workspace-persistence
+Totals: 9 passed, 0 failed (9 items)
+- Validating...
+  ⚠ [WARNING] requirements[11]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+exit=0
+
+$ openspec validate --specs --strict
+✓ spec/backend-runtime
+✓ spec/service-health
+✓ spec/session-management
+✓ spec/user-persistence
+✓ spec/user-registration
+✓ spec/workspace-access
+✓ spec/workspace-members
+✓ spec/workspace-persistence
+Totals: 8 passed, 1 failed (9 items)
+Details: openspec validate user-authentication --type spec
+- Validating...
+✗ spec/user-authentication
+  ⚠ [WARNING] requirements[11]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+exit=1
+
+$ openspec validate workspace-members --type spec --strict
+Specification 'workspace-members' is valid
+
+exit=0
+
+$ openspec validate workspace-access --type spec --strict
+Specification 'workspace-access' is valid
+
+exit=0
+
+$ openspec validate workspace-persistence --type spec --strict
+Specification 'workspace-persistence' is valid
+
+exit=0
+
+The single all-spec strict warning is inherited user-authentication requirement length; no authentication main spec edit.

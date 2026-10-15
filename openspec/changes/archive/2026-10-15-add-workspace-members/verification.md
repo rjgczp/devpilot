@@ -87,3 +87,16 @@ CI保留Go/PG18 digest/Goose版本，push增加本分支；PR仍以main为目标
 首次分支push已实际触发[Go CI run 38700800231](https://github.com/rjgczp/devpilot/actions/runs/38700800231)，对应实现提交`04ff2ca142f429e3619d68b55c4e2a99de7d9e88`，任务6.1据此完成。记录时该run为in_progress，不写成已通过；最终文档提交仍将重新触发CI，并在PR及交付回复按最新head SHA核验。
 
 首次Git HTTPS push被GitHub拒绝，原因是原Git凭据缺workflow scope；使用已登录、具workflow权限的gh凭据作为单次git credential helper后推送成功，未修改全局凭据配置或暴露令牌。
+
+## 合并与归档完成记录（2026-10-15）
+
+用户在实施交付后明确批准 PR #5 合并到 main，随后要求完成归档；此处记录后续授权和实际结果，前文“不合并、不归档”描述保留为实施阶段的历史边界。
+
+- [PR #5](https://github.com/rjgczp/devpilot/pull/5) 已于2026-10-15T08:13:26Z合并，merge SHA为 `bba324be1ec1873fa5a3234ac48cfc37a2285e23`；最终实现head为 `e41f7089791fba5e809ea0a97fac53c820ce6baf`。
+- 最终head的[PR CI](https://github.com/rjgczp/devpilot/actions/runs/38701197012)与[push CI](https://github.com/rjgczp/devpilot/actions/runs/38701133107)均已实际核验为completed/success。合并提交的[main CI](https://github.com/rjgczp/devpilot/actions/runs/38704138412)同样completed/success，verify与integration两个作业均通过，覆盖gofmt、vet、普通/race及PG18 integration/integration-race。
+- 归档前 `openspec status --change add-workspace-members --json` 显示proposal/specs/design/tasks均done；`openspec list --json`确认28/28任务完成。归档前main与origin/main同为上述merge SHA，工作区干净。
+- 已按智能合并同步全部三份delta：新增workspace-members主契约7项Requirement，workspace-access修改4项，workspace-persistence修改1项并新增4项，总计新增11项、修改5项。16项Requirement的描述和全部Scenario逐块精确比对一致；已有主Spec标题、Purpose和未涉及Requirement保留；新主Spec的Purpose逐字复制已审核delta，无操作类型标题残留。
+- `openspec validate add-workspace-members --strict`通过；三份受影响主Specs单独严格校验均通过；`openspec validate --specs`为9/9通过。额外全主Specs严格校验8/9：唯一失败为已有user-authentication第12项Requirement正文超过500字符的建议告警，与前次foundation归档记录一致，本次未擅改该已审核契约。实际命令输出见[archive-validation.txt](evidence/archive-validation.txt)。
+- 同步并完成逐块复核后执行 `openspec archive add-workspace-members --skip-specs --yes`，CLI确认任务Complete并归档至 `openspec/changes/archive/2026-10-15-add-workspace-members/`。`--skip-specs`仅避免CLI重复同步，主Specs已在前一步完整同步。CLI另有超过10项delta的非阻塞拆分建议，不代表任务或验证缺失。
+- 移动后对归档前全部43个Git跟踪文件做SHA-256比对通过，包含`.openspec.yaml`、规划和既有测试证据；随后仅在本文件追加此完成记录，并新增归档验证证据。活动Change目录已移除。初次全目录校验包含了Finder自动维护的忽略文件`.DS_Store`并出现元数据差异，改为核对全部Git跟踪交付文件后通过；未改写原规划和测试证据。
+- 本次归档只有OpenSpec文档同步、记录追加与目录移动；未修改业务代码、已应用Migration或真实数据库，未公开部署。归档未重新运行本地Go/PG测试，上述托管CI是对已合并实现提交的实际全量回归结果。
