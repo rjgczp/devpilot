@@ -31,8 +31,10 @@ func workspaceRequest(t *testing.T, client *http.Client, base, method, path, bod
 	if err != nil {
 		t.Fatal("workspace HTTP fixture")
 	}
-	if method == "POST" {
-		r.Header.Set("Content-Type", "application/json")
+	if method == "POST" || method == "DELETE" {
+		if method == "POST" {
+			r.Header.Set("Content-Type", "application/json")
+		}
 		if proof {
 			r.Header.Set("Origin", base)
 			r.Header.Set("X-DevPilot-CSRF", "1")
@@ -186,8 +188,8 @@ func TestWorkspaceHTTPAuthenticationAndTenantIsolation(t *testing.T) {
 				t.Fatal("extra route request")
 			}
 			extra.Body.Close()
-			if extra.StatusCode != 404 {
-				t.Fatal("unregistered member route or redirect")
+			if extra.StatusCode != 200 {
+				t.Fatal("member roster route or redirect")
 			}
 			// All live-state failures share 401, no deletion Cookie.
 			if _, err := db.Exec(ctx, `UPDATE sessions SET created_at=statement_timestamp()-interval '2h',expires_at=statement_timestamp()-interval '1h' WHERE token_hash=$1`, cDigest[:]); err != nil {

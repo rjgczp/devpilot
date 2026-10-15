@@ -1,0 +1,6 @@
+# github.com/rjgczp/devpilot/internal/workspace [github.com/rjgczp/devpilot/internal/workspace.test]
+internal/workspace/members_test.go:12:105: undefined: MemberPage
+internal/workspace/members_test.go:14:9: undefined: MemberPage
+internal/workspace/members_test.go:14:27: undefined: Member
+FAIL	github.com/rjgczp/devpilot/internal/workspace [build failed]
+FAIL

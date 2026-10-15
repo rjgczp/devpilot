@@ -308,7 +308,9 @@ func (h *Handler) expired(w http.ResponseWriter, r *http.Request, ctx context.Co
 	if r.Context().Err() != nil {
 		return true
 	}
-	if ctx.Err() != nil {
+	// Context timer delivery can lag the actual deadline under scheduler load.
+	deadline, hasDeadline := ctx.Deadline()
+	if ctx.Err() != nil || (hasDeadline && !time.Now().Before(deadline)) {
 		h.fail(w, r, 503, "service_unavailable", nil)
 		return true
 	}

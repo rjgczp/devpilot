@@ -1,0 +1,9 @@
+# github.com/rjgczp/devpilot/tests/integration [github.com/rjgczp/devpilot/tests/integration.test]
+tests/integration/members_test.go:119:22: undefined: workspace.ErrMemberForbidden
+tests/integration/members_test.go:122:22: undefined: workspace.ErrLastOwner
+tests/integration/members_test.go:129:23: undefined: workspace.ErrMemberForbidden
+tests/integration/members_test.go:143:22: undefined: workspace.ErrMemberNotFound
+tests/integration/members_test.go:160:13: s.DeleteMember undefined (type workspace.Store has no field or method DeleteMember)
+tests/integration/members_test.go:168:16: s.DeleteMember undefined (type workspace.Store has no field or method DeleteMember)
+FAIL	github.com/rjgczp/devpilot/tests/integration [build failed]
+FAIL

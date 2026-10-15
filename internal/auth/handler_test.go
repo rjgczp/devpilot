@@ -545,3 +545,18 @@ func TestClientCancellationPropagatesWithoutResponse(t *testing.T) {
 		}
 	}
 }
+
+// Models the observed scheduling gap between a passed deadline and delivery
+// of context timer cancellation, without relying on sleeps or OS scheduling.
+type elapsedDeadlineContext struct{ context.Context }
+
+func (elapsedDeadlineContext) Deadline() (time.Time, bool) { return time.Now().Add(-time.Second), true }
+func TestElapsedDeadlineDoesNotWaitForTimerDelivery(t *testing.T) {
+	h := newHandler()
+	w := httptest.NewRecorder()
+	r := req("POST", "login", body("a@example.com", "a"))
+	if !h.expired(w, r, elapsedDeadlineContext{context.Background()}) {
+		t.Fatal("elapsed deadline accepted before timer delivery")
+	}
+	assert(t, w, 503, "service_unavailable")
+}

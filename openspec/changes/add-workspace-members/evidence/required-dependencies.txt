@@ -1,0 +1,20 @@
+missing-url expected nonzero: 1
+--- FAIL: TestMemberRosterStore (0.00s)
+    members_test.go:49: TEST_DATABASE_URL must name the isolated registration test database
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.390s
+FAIL
+
+missing-goose expected nonzero: 1
+--- FAIL: TestMemberRosterStore (0.01s)
+    members_test.go:49: integration requires pinned native Goose v3.26.0
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.326s
+FAIL
+
+unavailable-pg18 expected nonzero: 1
+--- FAIL: TestMemberRosterStore (0.00s)
+    members_test.go:49: isolated PostgreSQL 18 test database unavailable
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.863s
+FAIL

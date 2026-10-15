@@ -24,6 +24,8 @@ type Repository interface {
 	Create(context.Context, session.Digest, string) (Public, error)
 	Detail(context.Context, session.Digest, string) (Public, error)
 	List(context.Context, session.Digest, int, string) (Page, error)
+	ListMembers(context.Context, session.Digest, string, int, string) (MemberPage, error)
+	DeleteMember(context.Context, session.Digest, string, string) error
 }
 
 type Handler struct {
@@ -41,6 +43,8 @@ type responseWriter struct {
 	http.ResponseWriter
 	written bool
 }
+
+func (w *responseWriter) Unwrap() http.ResponseWriter { return w.ResponseWriter }
 
 func (w *responseWriter) WriteHeader(status int) {
 	w.written = true
@@ -70,6 +74,10 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), h.processingTimeout)
 	defer cancel()
+	if strings.HasPrefix(r.URL.Path, collection+"/") && strings.Contains(strings.TrimPrefix(r.URL.Path, collection+"/"), "/members") {
+		h.serveMembers(w, r, ctx)
+		return
+	}
 	isCollection := r.URL.Path == collection
 	id := strings.TrimPrefix(r.URL.Path, collection+"/")
 	if !isCollection && (id == r.URL.Path || id == "" || strings.Contains(id, "/")) {
@@ -185,6 +193,15 @@ func (h *Handler) operationError(w http.ResponseWriter, r *http.Request, err err
 	case errors.Is(err, ErrNotFound):
 		h.fail(w, r, 404, "workspace_not_found", nil)
 		return
+	case errors.Is(err, ErrMemberForbidden):
+		h.fail(w, r, 403, "membership_forbidden", nil)
+		return
+	case errors.Is(err, ErrMemberNotFound):
+		h.fail(w, r, 404, "member_not_found", nil)
+		return
+	case errors.Is(err, ErrLastOwner):
+		h.fail(w, r, 409, "last_owner_required", nil)
+		return
 	case errors.Is(err, user.ErrUnavailable):
 		status, code, reason = 503, "service_unavailable", "db_unavailable"
 	case errors.Is(err, user.ErrTimeout):
@@ -197,7 +214,10 @@ func (h *Handler) operationError(w http.ResponseWriter, r *http.Request, err err
 }
 
 var messages = map[string]string{
-	"invalid_request": "Invalid workspace request.", "unauthenticated": "Authentication required.",
+	"membership_forbidden": "Membership operation is not permitted.",
+	"member_not_found":     "Member not found.",
+	"last_owner_required":  "Workspace must retain an owner.",
+	"invalid_request":      "Invalid workspace request.", "unauthenticated": "Authentication required.",
 	"csrf_rejected": "Request origin could not be verified.", "workspace_not_found": "Workspace not found.",
 	"method_not_allowed": "Method not allowed.", "request_too_large": "Request body too large.",
 	"unsupported_media_type": "Unsupported media type.", "validation_failed": "Invalid workspace fields.",
@@ -220,9 +240,11 @@ func (h *Handler) write(w http.ResponseWriter, r *http.Request, status int, body
 	}
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
-	w.Header().Set("Content-Type", "application/json")
+	if status != http.StatusNoContent {
+		w.Header().Set("Content-Type", "application/json")
+	}
 	w.WriteHeader(status)
-	if r.Method != http.MethodHead {
+	if r.Method != http.MethodHead && status != http.StatusNoContent {
 		_ = json.NewEncoder(w).Encode(body)
 	}
 }

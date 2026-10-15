@@ -75,7 +75,24 @@ func TestOpenAPIAuthenticationContract(t *testing.T) {
 	if doc.Paths["/api/v1/auth/register"]["post"].RequestBody.Content["application/json"].Schema.Properties["password"].MinLength != 15 {
 		t.Fatal("registration contract changed")
 	}
-	if len(doc.Paths) != 6 {
+	allowed := map[string][]string{
+		"/api/v1/auth/register": {"post"}, "/api/v1/auth/login": {"post"},
+		"/api/v1/auth/logout": {"post"}, "/api/v1/auth/me": {"get"},
+		"/api/v1/workspaces": {"get", "post"}, "/api/v1/workspaces/{workspace_id}": {"get"},
+		"/api/v1/workspaces/{workspace_id}/members":           {"get"},
+		"/api/v1/workspaces/{workspace_id}/members/{user_id}": {"delete"},
+	}
+	if len(doc.Paths) != len(allowed) {
 		t.Fatal("unexpected API or refresh route")
+	}
+	for path, methods := range allowed {
+		if len(doc.Paths[path]) != len(methods) {
+			t.Fatal("unexpected API method", path)
+		}
+		for _, method := range methods {
+			if _, ok := doc.Paths[path][method]; !ok {
+				t.Fatal("missing API method", path, method)
+			}
+		}
 	}
 }

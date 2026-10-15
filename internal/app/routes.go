@@ -1,6 +1,10 @@
 package app
 
-import "net/http"
+import (
+	"net/http"
+	"path"
+	"strings"
+)
 
 // NewRoutes composes business routes without changing health endpoint contracts.
 // Optional handlers are authentication first, then workspace; old callers retain
@@ -18,5 +22,13 @@ func NewRoutes(health, registration http.Handler, authentication ...http.Handler
 		mux.Handle("/api/v1/workspaces/{workspace_id}", authentication[1])
 	}
 	mux.Handle("/", health)
-	return mux
+	// Bypass ServeMux path cleaning for the member namespace: reject ambiguous
+	// member paths in the handler instead of redirecting a mutation to an alias.
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if len(authentication) > 1 && strings.HasPrefix(path.Clean(r.URL.Path), "/api/v1/workspaces/") && strings.Contains(strings.TrimPrefix(r.URL.Path, "/api/v1/workspaces/"), "/members") {
+			authentication[1].ServeHTTP(w, r)
+			return
+		}
+		mux.ServeHTTP(w, r)
+	})
 }
