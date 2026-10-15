@@ -2313,7 +2313,7 @@
       "get": {
         "operationId": "listWorkspaceMembers",
         "summary": "List workspace members as owner or member",
-        "description": "One statement snapshot validates active User, unrevoked/unexpired Cookie Session and current Workspace membership. Owner and Member may view user_id/role/joined_at only; no email/name/status. Nonmember, unknown or noncanonical workspace UUID share 404 workspace_not_found. Invalid live identity is 401. Only single limit/after accepted, ordered by member user_id, at most limit+1 candidates. No cursor existence lookup, total or traversal snapshot. Earlier authorized snapshots may finish; later requests recheck authority. GET ignores body and requires no CSRF proof. HEAD/OPTIONS and all other methods including POST return405/Allow: GET before DB work. No joining, acceptance, rejoin or role grants. No Cookie mutation, no-store/nosniff, 5s processing/2s DB budget; safe500/503 without cached fallback.",
+        "description": "One statement snapshot validates active User, unrevoked/unexpired Cookie Session and current Workspace membership. Owner and Member may view membership_id/user_id/role/joined_at only; no email/name/status. Nonmember, unknown or noncanonical workspace UUID share 404 workspace_not_found. Invalid live identity is 401. Only single limit/after accepted, ordered by member user_id, at most limit+1 candidates. No cursor existence lookup, total or traversal snapshot. Earlier authorized snapshots may finish; later requests recheck authority. GET ignores body and requires no CSRF proof. HEAD/OPTIONS and all other methods including POST return405/Allow: GET before DB work. Invitation acceptance is the only consent-based joining/rejoining API; no role grants. No Cookie mutation, no-store/nosniff, 5s processing/2s DB budget; safe500/503 without cached fallback.",
         "security": [
           {
             "SessionCookie": []
@@ -2537,7 +2537,7 @@
       "delete": {
         "operationId": "deleteWorkspaceMember",
         "summary": "Remove an ordinary member or leave the workspace",
-        "description": "No query or nonempty body; no JSON input. Actor only comes from strict current environment Cookie. Same-origin CSRF before identity/DB. Owner may delete ordinary Members; Member may only delete itself; Owner cannot delete another Owner. Owner self-exit only if another owner relationship remains (409 last_owner_required otherwise); no active-owner availability guarantee. User FOR SHARE -> Session FOR SHARE -> Workspace FOR NO KEY UPDATE -> Membership FOR UPDATE sorted by user_id. Fresh statement after all waits rechecks active User, unrevoked/unexpired Session, current memberships/roles and owner count. Workspace serializes supported mutations. Expiry after final gate may still commit. Confirmed commit only204; Owner absence no-op204 without global user lookup. Self-exit retry404 after loss of membership; no old204 replay. Malformed target404 member_not_found only after Workspace authorization. No automatic retry or exactly-once/rejoin guarantee; unknown Commit may have committed. Client cancellation stops further work/responses. 5s/2s whole transaction budget, safe500/503; no Cookie mutation. Last-owner guarantee is application transaction protocol, not arbitrary SQL/RLS enforcement. No joining or role mutation endpoints.",
+        "description": "Strict conditional member deletion; no unconditional compatibility entry. No query or nonempty body; no JSON input. Actor only comes from strict current environment Cookie. Same-origin CSRF before identity/DB. Owner may delete ordinary Members; Member may only delete itself; Owner cannot delete another Owner. Owner self-exit only if another owner relationship remains (409 last_owner_required otherwise); no active-owner availability guarantee. User FOR SHARE -> Session FOR SHARE -> Workspace FOR NO KEY UPDATE -> Membership FOR UPDATE sorted by user_id. Fresh statement after all waits rechecks active User, unrevoked/unexpired Session, current memberships/roles and owner count. Workspace serializes supported mutations. Expiry after final gate may still commit. Confirmed commit only204; Absent/mismatched generation or role412 precondition_failed without global user lookup. Self-exit retry404 after loss of membership; no old204 replay. Malformed target404 member_not_found only after Workspace authorization. No automatic retry or validator refresh; stale M1 cannot delete rejoined M2; unknown Commit may have committed. Client cancellation stops further work/responses. 5s/2s whole transaction budget, safe500/503; no Cookie mutation. Last-owner guarantee is application transaction protocol, not arbitrary SQL/RLS enforcement. Joining only through recipient invitation acceptance; no public role mutation.",
         "security": [
           {
             "SessionCookie": []
@@ -2585,6 +2585,16 @@
               "const": "1"
             },
             "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"membership:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}:(owner|member)\"$"
+            },
+            "description": "Exactly one strong item validator captured from the roster; missing428, absent/mismatch412; weak, wildcard, list, duplicate or malformed400. Never refresh during retry."
           }
         ],
         "responses": {
@@ -2794,7 +2804,7 @@
             }
           },
           "204": {
-            "description": "Confirmed deletion or authorized Owner no-op. Empty body, no JSON Content-Type, Location or Set-Cookie.",
+            "description": "Confirmed conditional deletion of exactly one matching relation. Empty body, no JSON Content-Type, Location or Set-Cookie.",
             "headers": {
               "Cache-Control": {
                 "schema": {
@@ -2909,6 +2919,2184 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LastOwnerRequired"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/precondition_required"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/precondition_failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/invitations": {
+      "get": {
+        "operationId": "listWorkspaceInvitations",
+        "summary": "listWorkspaceInvitations",
+        "description": "Cookie Session live identity, no-store/nosniff, no Set-Cookie; 5s processing / 2s whole database operation. UUID is not a secret. Terminal records never reopen. Fixed7-day TTL, Workspace-owned invitations survive creator loss. Effective expiry uses database statement time, GET never writes. Strict canonical selectors, no CORS. No email/token/search/direct-add/owner grant. Only limit1..100/default50, canonical after UUID and status pending/default or all; id ASC, limit+1, no totals/traversal snapshot.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Canonical lowercase hyphenated UUID. Malformed values receive the same authenticated 404."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": "Canonical unsigned decimal, no leading zeros/sign/whitespace; at most one."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "description": "Canonical lowercase hyphenated UUID; need not exist or belong to caller."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "all"
+              ],
+              "default": "pending"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError401"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError405"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError500"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie. Creation may have committed. No automatic server retry; explicit retry can create a second same-name workspace.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError503"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "invitation_forbidden"
+                        },
+                        "message": {
+                          "type": "string",
+                          "const": "Invitation operation is not permitted."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerInvitationPage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError404"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createWorkspaceInvitation",
+        "summary": "createWorkspaceInvitation",
+        "description": "Cookie Session live identity, no-store/nosniff, no Set-Cookie; 5s processing / 2s whole database operation. UUID is not a secret. Terminal records never reopen. Fixed7-day TTL, Workspace-owned invitations survive creator loss. Effective expiry uses database statement time, GET never writes. Strict canonical selectors, no CORS. No email/token/search/direct-add/owner grant. Same-origin CSRF required. Empty body and no query unless creating.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Canonical lowercase hyphenated UUID. Malformed values receive the same authenticated 404."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one non-null Origin matching configured AUTH_ORIGIN by scheme, host and effective port. Host/Forwarded/Referer do not replace it."
+          },
+          {
+            "name": "X-DevPilot-CSRF",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            },
+            "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError401"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError405"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError500"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie. Creation may have committed. No automatic server retry; explicit retry can create a second same-name workspace.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError503"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "csrf_rejected"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Request origin could not be verified."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_forbidden"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Invitation operation is not permitted."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "invitee_unavailable"
+                        },
+                        "message": {
+                          "type": "string",
+                          "const": "Invitee is not available."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_pending"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "A pending invitation already exists."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_limit_reached"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Workspace invitation limit reached."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/OwnerInvitation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError404"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError413"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError415"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "4096-byte strict single JSON object; no duplicate/unknown fields, invalid UTF8/raw escapes, encoding, TTL, role or actor. Unavailable/noncanonical target422 only after Owner authorization. No consent or member insertion.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "invitee_user_id"
+                ],
+                "properties": {
+                  "invitee_user_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invitations": {
+      "get": {
+        "operationId": "listReceivedInvitations",
+        "summary": "listReceivedInvitations",
+        "description": "Cookie Session live identity, no-store/nosniff, no Set-Cookie; 5s processing / 2s whole database operation. UUID is not a secret. Terminal records never reopen. Fixed7-day TTL, Workspace-owned invitations survive creator loss. Effective expiry uses database statement time, GET never writes. Strict canonical selectors, no CORS. No email/token/search/direct-add/owner grant. Only limit1..100/default50, canonical after UUID and status pending/default or all; id ASC, limit+1, no totals/traversal snapshot.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": "Canonical unsigned decimal, no leading zeros/sign/whitespace; at most one."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "description": "Canonical lowercase hyphenated UUID; need not exist or belong to caller."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "all"
+              ],
+              "default": "pending"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError401"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError405"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError500"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie. Creation may have committed. No automatic server retry; explicit retry can create a second same-name workspace.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError503"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipientInvitationPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invitations/{invitation_id}/accept": {
+      "post": {
+        "operationId": "acceptWorkspaceInvitation",
+        "summary": "acceptWorkspaceInvitation",
+        "description": "Cookie Session live identity, no-store/nosniff, no Set-Cookie; 5s processing / 2s whole database operation. UUID is not a secret. Terminal records never reopen. Fixed7-day TTL, Workspace-owned invitations survive creator loss. Effective expiry uses database statement time, GET never writes. Strict canonical selectors, no CORS. No email/token/search/direct-add/owner grant. Same-origin CSRF required. Empty body and no query unless creating. Target own valid Session only for accept/decline; current scoped Owner only for revoke. Unknown/noncanonical/inaccessible invitation404. Expired pending is persisted and Commit confirmed before409; failed Commit is503/500. Accepted plus member INSERT commit atomically. No automatic replay; known accepted409 even after removal. ",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "invitation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one non-null Origin matching configured AUTH_ORIGIN by scheme, host and effective port. Host/Forwarded/Referer do not replace it."
+          },
+          {
+            "name": "X-DevPilot-CSRF",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            },
+            "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError401"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError405"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError500"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie. Creation may have committed. No automatic server retry; explicit retry can create a second same-name workspace.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError503"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "csrf_rejected"
+                        },
+                        "message": {
+                          "type": "string",
+                          "const": "Request origin could not be verified."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "invitation_not_found"
+                        },
+                        "message": {
+                          "type": "string",
+                          "const": "Invitation not found."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_not_pending"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Invitation is not pending."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_expired"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Invitation has expired."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "already_member"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Workspace membership already exists."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/InvitationAcceptance"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invitations/{invitation_id}/decline": {
+      "post": {
+        "operationId": "declineWorkspaceInvitation",
+        "summary": "declineWorkspaceInvitation",
+        "description": "Cookie Session live identity, no-store/nosniff, no Set-Cookie; 5s processing / 2s whole database operation. UUID is not a secret. Terminal records never reopen. Fixed7-day TTL, Workspace-owned invitations survive creator loss. Effective expiry uses database statement time, GET never writes. Strict canonical selectors, no CORS. No email/token/search/direct-add/owner grant. Same-origin CSRF required. Empty body and no query unless creating. Target own valid Session only for accept/decline; current scoped Owner only for revoke. Unknown/noncanonical/inaccessible invitation404. Expired pending is persisted and Commit confirmed before409; failed Commit is503/500. Accepted plus member INSERT commit atomically. No automatic replay; known accepted409 even after removal. ",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "invitation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one non-null Origin matching configured AUTH_ORIGIN by scheme, host and effective port. Host/Forwarded/Referer do not replace it."
+          },
+          {
+            "name": "X-DevPilot-CSRF",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            },
+            "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError401"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError405"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError500"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie. Creation may have committed. No automatic server retry; explicit retry can create a second same-name workspace.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError503"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "csrf_rejected"
+                        },
+                        "message": {
+                          "type": "string",
+                          "const": "Request origin could not be verified."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "invitation_not_found"
+                        },
+                        "message": {
+                          "type": "string",
+                          "const": "Invitation not found."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_not_pending"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Invitation is not pending."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_expired"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Invitation has expired."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invitations/{invitation_id}": {
+      "delete": {
+        "operationId": "revokeWorkspaceInvitation",
+        "summary": "revokeWorkspaceInvitation",
+        "description": "Cookie Session live identity, no-store/nosniff, no Set-Cookie; 5s processing / 2s whole database operation. UUID is not a secret. Terminal records never reopen. Fixed7-day TTL, Workspace-owned invitations survive creator loss. Effective expiry uses database statement time, GET never writes. Strict canonical selectors, no CORS. No email/token/search/direct-add/owner grant. Same-origin CSRF required. Empty body and no query unless creating. Target own valid Session only for accept/decline; current scoped Owner only for revoke. Unknown/noncanonical/inaccessible invitation404. Expired pending is persisted and Commit confirmed before409; failed Commit is503/500. Accepted plus member INSERT commit atomically. No automatic replay; known accepted409 even after removal. ",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "invitation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one non-null Origin matching configured AUTH_ORIGIN by scheme, host and effective port. Host/Forwarded/Referer do not replace it."
+          },
+          {
+            "name": "X-DevPilot-CSRF",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            },
+            "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError401"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "DELETE"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError405"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError500"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie. Creation may have committed. No automatic server retry; explicit retry can create a second same-name workspace.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceError503"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error. No submitted values, raw driver details or Set-Cookie.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "csrf_rejected"
+                        },
+                        "message": {
+                          "type": "string",
+                          "const": "Request origin could not be verified."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "invitation_not_found"
+                        },
+                        "message": {
+                          "type": "string",
+                          "const": "Invitation not found."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_not_pending"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Invitation is not pending."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "error"
+                      ],
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "const": "invitation_expired"
+                            },
+                            "message": {
+                              "type": "string",
+                              "const": "Invitation has expired."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Confirmed result. No Set-Cookie or Location.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
                 }
               }
             }
@@ -3357,6 +5545,7 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
+          "membership_id",
           "user_id",
           "role",
           "joined_at"
@@ -3376,6 +5565,10 @@
           "joined_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "membership_id": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -3489,6 +5682,481 @@
               "message": {
                 "type": "string",
                 "const": "Workspace must retain an owner."
+              }
+            }
+          }
+        }
+      },
+      "invitee_unavailable": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invitee_unavailable"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invitee is not available."
+              }
+            }
+          }
+        }
+      },
+      "invitation_forbidden": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invitation_forbidden"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invitation operation is not permitted."
+              }
+            }
+          }
+        }
+      },
+      "invitation_not_found": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invitation_not_found"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invitation not found."
+              }
+            }
+          }
+        }
+      },
+      "invitation_pending": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invitation_pending"
+              },
+              "message": {
+                "type": "string",
+                "const": "A pending invitation already exists."
+              }
+            }
+          }
+        }
+      },
+      "invitation_limit_reached": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invitation_limit_reached"
+              },
+              "message": {
+                "type": "string",
+                "const": "Workspace invitation limit reached."
+              }
+            }
+          }
+        }
+      },
+      "invitation_not_pending": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invitation_not_pending"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invitation is not pending."
+              }
+            }
+          }
+        }
+      },
+      "invitation_expired": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invitation_expired"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invitation has expired."
+              }
+            }
+          }
+        }
+      },
+      "already_member": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "already_member"
+              },
+              "message": {
+                "type": "string",
+                "const": "Workspace membership already exists."
+              }
+            }
+          }
+        }
+      },
+      "precondition_required": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "precondition_required"
+              },
+              "message": {
+                "type": "string",
+                "const": "Membership precondition required."
+              }
+            }
+          }
+        }
+      },
+      "precondition_failed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "precondition_failed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Membership precondition failed."
+              }
+            }
+          }
+        }
+      },
+      "OwnerInvitation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "workspace_id",
+          "invitee_user_id",
+          "created_by_user_id",
+          "status",
+          "created_at",
+          "updated_at",
+          "expires_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "invitee_user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created_by_user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "accepted",
+              "declined",
+              "revoked",
+              "expired"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RecipientInvitation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "workspace_id",
+          "workspace_name",
+          "status",
+          "created_at",
+          "updated_at",
+          "expires_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workspace_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Current name only for effective pending; terminal history null."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "accepted",
+              "declined",
+              "revoked",
+              "expired"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "InvitationAcceptance": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "invitation_id",
+          "workspace_id",
+          "membership_id",
+          "role",
+          "joined_at"
+        ],
+        "properties": {
+          "invitation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "membership_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "role": {
+            "type": "string",
+            "const": "member"
+          },
+          "joined_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "OwnerInvitationPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/OwnerInvitation"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "next_after"
+            ],
+            "properties": {
+              "next_after": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "RecipientInvitationPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/RecipientInvitation"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "next_after"
+            ],
+            "properties": {
+              "next_after": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
               }
             }
           }

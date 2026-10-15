@@ -25,7 +25,7 @@ import (
 	"github.com/rjgczp/devpilot/internal/workspace"
 )
 
-func workspaceRequest(t *testing.T, client *http.Client, base, method, path, body string, proof bool) (int, http.Header, []byte) {
+func workspaceRequest(t *testing.T, client *http.Client, base, method, path, body string, proof bool, conditions ...string) (int, http.Header, []byte) {
 	t.Helper()
 	r, err := http.NewRequest(method, base+path, strings.NewReader(body))
 	if err != nil {
@@ -39,6 +39,9 @@ func workspaceRequest(t *testing.T, client *http.Client, base, method, path, bod
 			r.Header.Set("Origin", base)
 			r.Header.Set("X-DevPilot-CSRF", "1")
 		}
+	}
+	if len(conditions) > 0 {
+		r.Header.Set("If-Match", conditions[0])
 	}
 	resp, err := client.Do(r)
 	if err != nil {

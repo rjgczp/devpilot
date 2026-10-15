@@ -1,0 +1,5 @@
+--- FAIL: TestInvitationMigration (0.00s)
+    invitations_test.go:51: isolated PostgreSQL 18 test database unavailable
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.289s
+FAIL

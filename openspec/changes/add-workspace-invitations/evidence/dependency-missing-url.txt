@@ -1,0 +1,5 @@
+--- FAIL: TestInvitationMigration (0.00s)
+    invitations_test.go:51: TEST_DATABASE_URL must name the isolated registration test database
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.220s
+FAIL

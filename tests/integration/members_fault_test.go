@@ -22,13 +22,14 @@ import (
 	"github.com/rjgczp/devpilot/internal/workspace"
 )
 
-func memberFaultResponse(t *testing.T, store workspace.Store, token, wid, target string, status int, code string) {
+func memberFaultResponse(t *testing.T, store workspace.Store, token, wid, target string, condition string, status int, code string) {
 	t.Helper()
 	var logs bytes.Buffer
 	origin, _ := config.ParseOrigin("https://app.example.com")
 	h := workspace.New(store, config.AuthConfig{Mode: "production", Origin: origin}, slog.New(slog.NewJSONHandler(&logs, nil)))
 	r := httptest.NewRequest("DELETE", "/api/v1/workspaces/"+wid+"/members/"+target, nil)
 	r.Header.Set("Cookie", "__Host-devpilot_session="+token)
+	r.Header.Set("If-Match", condition)
 	r.Header.Set("Origin", "https://app.example.com")
 	r.Header.Set("X-DevPilot-CSRF", "1")
 	w := httptest.NewRecorder()
@@ -68,7 +69,7 @@ func TestMemberTransactionFailures(t *testing.T) {
 				}
 				return memberObservedTx{Tx: tx, commitOutcome: tc.outcome, commits: &commits, faultStage: stage, fault: tc.fault}
 			}}
-			memberFaultResponse(t, workspace.Store{Pool: observed}, f.ownerToken, f.w.ID, f.member.ID, tc.status, tc.code)
+			memberFaultResponse(t, workspace.Store{Pool: observed}, f.ownerToken, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID), tc.status, tc.code)
 			want := 1
 			if tc.outcome == "lost" {
 				want = 0
@@ -80,7 +81,7 @@ func TestMemberTransactionFailures(t *testing.T) {
 				t.Fatal("automatic commit replay")
 			}
 			// A fresh authorized request recovers without process-global failure state.
-			if err := (workspace.Store{Pool: db}).DeleteMember(context.Background(), f.od, f.w.ID, f.member.ID); err != nil {
+			if err := (workspace.Store{Pool: db}).DeleteMember(context.Background(), f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID)); err != nil && !(tc.outcome == "lost" && errors.Is(err, workspace.ErrPreconditionFailed)) {
 				t.Fatal("member fault recovery", err)
 			}
 		})
@@ -100,7 +101,7 @@ func TestMemberTransactionFailures(t *testing.T) {
 		done := make(chan struct{})
 		go func() {
 			defer close(done)
-			memberFaultResponse(t, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, f.ownerToken, f.w.ID, f.member.ID, 503, "database_timeout")
+			memberFaultResponse(t, workspace.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}, f.ownerToken, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID), 503, "database_timeout")
 		}()
 		waitWorkspaceBlock(t, db, <-pid)
 		select {
@@ -123,7 +124,7 @@ func TestMemberTransactionFailures(t *testing.T) {
 				}
 			}}
 		}}
-		err := (workspace.Store{Pool: observed}).DeleteMember(ctx, f.od, f.w.ID, f.member.ID)
+		err := (workspace.Store{Pool: observed}).DeleteMember(ctx, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 		if err == nil || !errors.Is(err, context.Canceled) && !strings.Contains(err.Error(), "canceled") {
 			t.Fatal("cancellation not propagated", err)
 		}
@@ -151,7 +152,7 @@ func TestMemberPoolTimeoutAndMissingSchema(t *testing.T) {
 	if err != nil {
 		t.Fatal("pool acquire")
 	}
-	memberFaultResponse(t, workspace.Store{Pool: pool}, f.ownerToken, f.w.ID, f.member.ID, 503, "database_timeout")
+	memberFaultResponse(t, workspace.Store{Pool: pool}, f.ownerToken, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID), 503, "database_timeout")
 	held.Release()
 	if _, err := db.Exec(ctx, `ALTER TABLE workspace_members RENAME TO member_fixture_hidden`); err != nil {
 		t.Fatal("guarded schema fixture")
@@ -161,7 +162,7 @@ func TestMemberPoolTimeoutAndMissingSchema(t *testing.T) {
 			t.Error("schema fixture restore")
 		}
 	}()
-	memberFaultResponse(t, workspace.Store{Pool: db}, f.ownerToken, f.w.ID, f.member.ID, 500, "internal_error")
+	memberFaultResponse(t, workspace.Store{Pool: db}, f.ownerToken, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID), 500, "internal_error")
 	if _, err := (workspace.Store{Pool: db}).ListMembers(ctx, f.od, f.w.ID, 50, ""); err == nil {
 		t.Fatal("roster accepted missing schema")
 	}
@@ -182,6 +183,7 @@ func TestMemberHTTPCancellationAfterGate(t *testing.T) {
 	origin, _ := config.ParseOrigin("https://app.example.com")
 	h := workspace.New(workspace.Store{Pool: observed}, config.AuthConfig{Mode: "production", Origin: origin}, slog.New(slog.NewJSONHandler(io.Discard, nil)))
 	r := httptest.NewRequest("DELETE", "/api/v1/workspaces/"+f.w.ID+"/members/"+f.member.ID, nil).WithContext(ctx)
+	r.Header.Set("If-Match", f.condition(f.w.ID, f.member.ID))
 	r.Header.Set("Cookie", "__Host-devpilot_session="+f.ownerToken)
 	r.Header.Set("Origin", "https://app.example.com")
 	r.Header.Set("X-DevPilot-CSRF", "1")

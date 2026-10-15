@@ -1,0 +1,15 @@
+=== RUN   TestInvitationQuotaAndLazyExpiry
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestInvitationQuotaAndLazyExpiry/duplicate
+=== RUN   TestInvitationQuotaAndLazyExpiry/quota
+=== RUN   TestInvitationQuotaAndLazyExpiry/expired-quota
+=== RUN   TestInvitationQuotaAndLazyExpiry/expired-replace
+=== NAME  TestInvitationQuotaAndLazyExpiry
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestInvitationQuotaAndLazyExpiry (0.24s)
+    --- PASS: TestInvitationQuotaAndLazyExpiry/duplicate (0.06s)
+    --- PASS: TestInvitationQuotaAndLazyExpiry/quota (0.03s)
+    --- PASS: TestInvitationQuotaAndLazyExpiry/expired-quota (0.02s)
+    --- PASS: TestInvitationQuotaAndLazyExpiry/expired-replace (0.01s)
+PASS
+ok  	github.com/rjgczp/devpilot/tests/integration	1.767s

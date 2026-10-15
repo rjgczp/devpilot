@@ -15,6 +15,7 @@ import (
 )
 
 type memberFixture struct {
+	validators                          map[string]string
 	owner, member, other                user.Public
 	ownerToken, memberToken, otherToken string
 	od, md, xd                          session.Digest
@@ -41,6 +42,24 @@ func membersFixture(t *testing.T, db *pgxpool.Pool) memberFixture {
 	}
 	if _, err = db.Exec(ctx, `INSERT INTO workspace_members(workspace_id,user_id,role) VALUES($1,$2,'member'),($3,$2,'member')`, f.w.ID, f.member.ID, f.z.ID); err != nil {
 		t.Fatal("member fixture relations")
+	}
+	f.validators = make(map[string]string)
+	if queryInt(t, db, `SELECT count(*) FROM information_schema.columns WHERE table_name='workspace_members' AND column_name='membership_id'`) > 0 {
+		rows, e := db.Query(ctx, `SELECT workspace_id::text,user_id::text,membership_id::text,role FROM workspace_members WHERE workspace_id=$1 OR workspace_id=$2`, f.w.ID, f.z.ID)
+		if e != nil {
+			t.Fatal(e)
+		}
+		for rows.Next() {
+			var w, u, id, role string
+			if e = rows.Scan(&w, &u, &id, &role); e != nil {
+				t.Fatal(e)
+			}
+			f.validators[w+u] = workspace.MemberCondition(id, role)
+		}
+		if e = rows.Err(); e != nil {
+			t.Fatal(e)
+		}
+		rows.Close()
 	}
 	return f
 }
@@ -131,8 +150,10 @@ func TestMemberDeleteStore(t *testing.T) {
 					target = f.owner.ID
 				}
 			case "missing":
+				want = workspace.ErrPreconditionFailed
 				target = "00000000-0000-0000-0000-000000000000"
 			case "foreign-target":
+				want = workspace.ErrPreconditionFailed
 				target = f.other.ID
 			case "disabled-target":
 				if _, err := db.Exec(ctx, `UPDATE users SET status='disabled' WHERE id=$1`, f.member.ID); err != nil {
@@ -157,7 +178,7 @@ func TestMemberDeleteStore(t *testing.T) {
 					t.Fatal("guarded corruption")
 				}
 			}
-			err := s.DeleteMember(ctx, actor, wid, target)
+			err := s.DeleteMember(ctx, actor, wid, target, f.condition(wid, target))
 			if !errors.Is(err, want) {
 				t.Fatalf("delete got %v want %v", err, want)
 			}
@@ -165,12 +186,12 @@ func TestMemberDeleteStore(t *testing.T) {
 				if queryInt(t, db, `SELECT count(*) FROM workspace_members WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, target) != 0 {
 					t.Fatal("target relation retained")
 				}
-				retry := s.DeleteMember(ctx, actor, wid, target)
+				retry := s.DeleteMember(ctx, actor, wid, target, f.condition(wid, target))
 				if kind == "member-self" || kind == "two-owner-self" {
 					if !errors.Is(retry, workspace.ErrNotFound) {
 						t.Fatal("stale self permission", retry)
 					}
-				} else if retry != nil {
+				} else if !errors.Is(retry, workspace.ErrPreconditionFailed) {
 					t.Fatal("owner repeat", retry)
 				}
 			}
@@ -182,4 +203,12 @@ func TestMemberDeleteStore(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Captured at fixture creation, never re-read or refreshed by a retry helper.
+func (f memberFixture) condition(wid, target string) string {
+	if c, ok := f.validators[wid+target]; ok {
+		return c
+	}
+	return workspace.MemberCondition("00000000-0000-0000-0000-000000000000", "member")
 }

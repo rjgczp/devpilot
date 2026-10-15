@@ -33,7 +33,7 @@ func TestMemberHTTPPermissionsAndRevocation(t *testing.T) {
 				var generic map[string]any
 				json.Unmarshal(body, &generic)
 				for _, row := range generic["data"].([]any) {
-					if len(row.(map[string]any)) != 3 {
+					if len(row.(map[string]any)) != 4 {
 						t.Fatal("member privacy projection")
 					}
 				}
@@ -58,18 +58,18 @@ func TestMemberHTTPPermissionsAndRevocation(t *testing.T) {
 				}
 			}
 			for _, target := range []string{f.owner.ID, f.other.ID, "00000000-0000-0000-0000-000000000000"} {
-				status, _, body := workspaceRequest(t, m, server.URL, "DELETE", path+"/"+target, "", true)
+				status, _, body := workspaceRequest(t, m, server.URL, "DELETE", path+"/"+target, "", true, f.condition(f.w.ID, target))
 				if status != 403 {
 					t.Fatal("member removed other")
 				}
 				requireCode(t, body, "membership_forbidden")
 			}
-			status, _, body := workspaceRequest(t, o, server.URL, "DELETE", path+"/"+f.owner.ID, "", true)
+			status, _, body := workspaceRequest(t, o, server.URL, "DELETE", path+"/"+f.owner.ID, "", true, f.condition(f.w.ID, f.owner.ID))
 			if status != 409 {
 				t.Fatal("last owner HTTP")
 			}
 			requireCode(t, body, "last_owner_required")
-			status, _, body = workspaceRequest(t, x, server.URL, "DELETE", path+"/bad", "", true)
+			status, _, body = workspaceRequest(t, x, server.URL, "DELETE", path+"/bad", "", true, f.condition(f.w.ID, f.member.ID))
 			if status != 404 || !bytes.Equal(body, missing) {
 				t.Fatal("target format leaked to outsider")
 			}
@@ -79,16 +79,22 @@ func TestMemberHTTPPermissionsAndRevocation(t *testing.T) {
 					t.Fatal("unapproved join method")
 				}
 			}
-			status, _, _ = workspaceRequest(t, o, server.URL, "DELETE", path+"/"+f.member.ID, "", false)
+			status, _, _ = workspaceRequest(t, o, server.URL, "DELETE", path+"/"+f.member.ID, "", false, f.condition(f.w.ID, f.member.ID))
 			if status != 403 {
 				t.Fatal("delete CSRF")
 			}
-			status, _, _ = workspaceRequest(t, o, server.URL, "DELETE", path+"/"+f.member.ID, `{"actor_id":"`+f.owner.ID+`"}`, true)
+			status, _, _ = workspaceRequest(t, o, server.URL, "DELETE", path+"/"+f.member.ID, `{"actor_id":"`+f.owner.ID+`"}`, true, f.condition(f.w.ID, f.owner.ID))
 			if status != 400 {
 				t.Fatal("identity injection body")
 			}
-			for _, target := range []string{f.member.ID, f.member.ID, f.other.ID} {
-				status, h, b := workspaceRequest(t, o, server.URL, "DELETE", path+"/"+target, "", true)
+			for index, target := range []string{f.member.ID, f.member.ID, f.other.ID} {
+				status, h, b := workspaceRequest(t, o, server.URL, "DELETE", path+"/"+target, "", true, f.condition(f.w.ID, target))
+				if index > 0 {
+					if status != 412 {
+						t.Fatal("stale deletion", status)
+					}
+					continue
+				}
 				if status != 204 || len(b) != 0 || h.Get("Content-Type") != "" || h.Get("Location") != "" {
 					t.Fatal("confirmed no-content/idempotence")
 				}
@@ -99,7 +105,7 @@ func TestMemberHTTPPermissionsAndRevocation(t *testing.T) {
 					t.Fatal("old cookie kept permission")
 				}
 			}
-			status, _, _ = workspaceRequest(t, m, server.URL, "DELETE", path+"/"+f.member.ID, "", true)
+			status, _, _ = workspaceRequest(t, m, server.URL, "DELETE", path+"/"+f.member.ID, "", true, f.condition(f.w.ID, f.member.ID))
 			if status != 404 {
 				t.Fatal("exit/removal retry authority")
 			}
@@ -112,11 +118,11 @@ func TestMemberHTTPPermissionsAndRevocation(t *testing.T) {
 			if status != 200 {
 				t.Fatal("removal changed global session")
 			}
-			status, _, _ = workspaceRequest(t, m, server.URL, "DELETE", "/api/v1/workspaces/"+f.z.ID+"/members/"+f.member.ID, "", true)
+			status, _, _ = workspaceRequest(t, m, server.URL, "DELETE", "/api/v1/workspaces/"+f.z.ID+"/members/"+f.member.ID, "", true, f.condition(f.z.ID, f.member.ID))
 			if status != 204 {
 				t.Fatal("member self exit")
 			}
-			status, _, _ = workspaceRequest(t, m, server.URL, "DELETE", "/api/v1/workspaces/"+f.z.ID+"/members/"+f.member.ID, "", true)
+			status, _, _ = workspaceRequest(t, m, server.URL, "DELETE", "/api/v1/workspaces/"+f.z.ID+"/members/"+f.member.ID, "", true, f.condition(f.z.ID, f.member.ID))
 			if status != 404 {
 				t.Fatal("self exit retry")
 			}

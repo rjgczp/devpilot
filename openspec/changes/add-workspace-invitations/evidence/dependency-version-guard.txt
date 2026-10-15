@@ -1,0 +1,8 @@
+=== RUN   TestDatabaseGuard
+--- PASS: TestDatabaseGuard (0.00s)
+=== RUN   TestUnavailableDatabaseIsFailure
+--- PASS: TestUnavailableDatabaseIsFailure (0.00s)
+=== RUN   TestServerIdentityAndVersionGuard
+--- PASS: TestServerIdentityAndVersionGuard (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/testdb	0.389s

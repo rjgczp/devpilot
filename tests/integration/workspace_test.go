@@ -51,8 +51,8 @@ func TestWorkspaceMigrationAndConstraints(t *testing.T) {
 	t.Cleanup(func() { goose(t, dir, "down-to 0", true) })
 	goose(t, dir, "up-to 2", true)
 	u, _, digest := workspaceIdentity(t, db, "upgrade-workspace@example.com")
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 3", true)
+	goose(t, dir, "up-to 3", true)
 	if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 3 || queryInt(t, db, `SELECT count(*) FROM sessions WHERE token_hash=$1`, digest[:]) != 1 {
 		t.Fatal("version-2 upgrade/repeat changed existing session")
 	}
@@ -103,9 +103,9 @@ func TestWorkspaceMigrationAndConstraints(t *testing.T) {
 	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('workspaces','workspace_members')`) != 0 || queryInt(t, db, `SELECT count(*) FROM users WHERE id=$1`, u.ID) != 1 || queryInt(t, db, `SELECT count(*) FROM sessions WHERE user_id=$1`, u.ID) != 1 {
 		t.Fatal("version-3 down damaged previous data")
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 3", true)
 	goose(t, dir, "down-to 0", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 3", true)
 	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('users','sessions','workspaces','workspace_members')`) != 4 {
 		t.Fatal("fresh migration chain")
 	}

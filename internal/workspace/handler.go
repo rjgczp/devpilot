@@ -25,7 +25,7 @@ type Repository interface {
 	Detail(context.Context, session.Digest, string) (Public, error)
 	List(context.Context, session.Digest, int, string) (Page, error)
 	ListMembers(context.Context, session.Digest, string, int, string) (MemberPage, error)
-	DeleteMember(context.Context, session.Digest, string, string) error
+	DeleteMember(context.Context, session.Digest, string, string, string) error
 }
 
 type Handler struct {
@@ -74,6 +74,10 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), h.processingTimeout)
 	defer cancel()
+	if invitationPath(r.URL.Path) {
+		h.serveInvitations(w, r, ctx)
+		return
+	}
 	if strings.HasPrefix(r.URL.Path, collection+"/") && strings.Contains(strings.TrimPrefix(r.URL.Path, collection+"/"), "/members") {
 		h.serveMembers(w, r, ctx)
 		return
@@ -185,10 +189,24 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) operationError(w http.ResponseWriter, r *http.Request, err error) {
+	var business InvitationError
+	if errors.As(err, &business) {
+		status, ok := invitationStatuses[business]
+		if ok {
+			h.fail(w, r, status, string(business), nil)
+			return
+		}
+	}
 	status, code, reason := 500, "internal_error", "internal_error"
 	switch {
 	case errors.Is(err, session.ErrInvalid):
 		h.fail(w, r, 401, "unauthenticated", nil)
+		return
+	case errors.Is(err, ErrPreconditionRequired):
+		h.fail(w, r, 428, "precondition_required", nil)
+		return
+	case errors.Is(err, ErrPreconditionFailed):
+		h.fail(w, r, 412, "precondition_failed", nil)
 		return
 	case errors.Is(err, ErrNotFound):
 		h.fail(w, r, 404, "workspace_not_found", nil)
@@ -214,10 +232,20 @@ func (h *Handler) operationError(w http.ResponseWriter, r *http.Request, err err
 }
 
 var messages = map[string]string{
-	"membership_forbidden": "Membership operation is not permitted.",
-	"member_not_found":     "Member not found.",
-	"last_owner_required":  "Workspace must retain an owner.",
-	"invalid_request":      "Invalid workspace request.", "unauthenticated": "Authentication required.",
+	"invitee_unavailable":      "Invitee is not available.",
+	"invitation_forbidden":     "Invitation operation is not permitted.",
+	"invitation_not_found":     "Invitation not found.",
+	"invitation_pending":       "A pending invitation already exists.",
+	"invitation_limit_reached": "Workspace invitation limit reached.",
+	"invitation_not_pending":   "Invitation is not pending.",
+	"invitation_expired":       "Invitation has expired.",
+	"already_member":           "Workspace membership already exists.",
+	"precondition_required":    "Membership precondition required.",
+	"precondition_failed":      "Membership precondition failed.",
+	"membership_forbidden":     "Membership operation is not permitted.",
+	"member_not_found":         "Member not found.",
+	"last_owner_required":      "Workspace must retain an owner.",
+	"invalid_request":          "Invalid workspace request.", "unauthenticated": "Authentication required.",
 	"csrf_rejected": "Request origin could not be verified.", "workspace_not_found": "Workspace not found.",
 	"method_not_allowed": "Method not allowed.", "request_too_large": "Request body too large.",
 	"unsupported_media_type": "Unsupported media type.", "validation_failed": "Invalid workspace fields.",
@@ -248,3 +276,5 @@ func (h *Handler) write(w http.ResponseWriter, r *http.Request, status int, body
 		_ = json.NewEncoder(w).Encode(body)
 	}
 }
+
+var invitationStatuses = map[InvitationError]int{ErrInviteeUnavailable: 422, ErrInvitationForbidden: 403, ErrInvitationNotFound: 404, ErrInvitationPending: 409, ErrInvitationLimit: 409, ErrInvitationNotPending: 409, ErrInvitationExpired: 409, ErrAlreadyMember: 409}

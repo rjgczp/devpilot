@@ -36,7 +36,7 @@ func TestMemberRosterSnapshotAndCursorRevocation(t *testing.T) {
 			p.wait(t)
 			switch kind {
 			case "remove":
-				if err := (workspace.Store{Pool: db}).DeleteMember(ctx, f.od, f.w.ID, f.member.ID); err != nil {
+				if err := (workspace.Store{Pool: db}).DeleteMember(ctx, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID)); err != nil {
 					t.Fatal("roster read blocked removal")
 				}
 			case "role":
@@ -100,7 +100,7 @@ func TestMemberMixedOperationsAndCleanup(t *testing.T) {
 				}
 			}}
 		}}
-		done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID)
+		done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 		p.wait(t)
 		// These operations must finish while the existing tenant mutation is held.
 		if _, err := (workspace.Store{Pool: db}).Create(ctx, f.od, "parallel create"); err != nil {
@@ -116,7 +116,7 @@ func TestMemberMixedOperationsAndCleanup(t *testing.T) {
 		if _, err := (session.Store{Pool: db}).Cleanup(ctx); err != nil {
 			t.Fatal("mixed cleanup", err)
 		}
-		if err := (workspace.Store{Pool: db}).DeleteMember(ctx, f.xd, f.z.ID, f.member.ID); err != nil {
+		if err := (workspace.Store{Pool: db}).DeleteMember(ctx, f.xd, f.z.ID, f.member.ID, f.condition(f.z.ID, f.member.ID)); err != nil {
 			t.Fatal("unrelated tenant was serialized", err)
 		}
 		p.resume()
@@ -134,7 +134,7 @@ func TestMemberMixedOperationsAndCleanup(t *testing.T) {
 				}
 			}}
 		}}
-		done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID)
+		done := startMemberDelete(ctx, workspace.Store{Pool: observed}, f.od, f.w.ID, f.member.ID, f.condition(f.w.ID, f.member.ID))
 		p.wait(t)
 		if (session.Store{Pool: db}).Revoke(ctx, f.od) != nil {
 			t.Fatal("cleanup revoke")

@@ -62,6 +62,9 @@ func request(method, path, body string) *http.Request {
 	r.Header.Set("Origin", "https://app.example.com")
 	r.Header.Set("X-DevPilot-CSRF", "1")
 	r.Header.Set("Cookie", "__Host-devpilot_session="+strings.Repeat("A", 43))
+	if method == "DELETE" {
+		r.Header.Set("If-Match", MemberCondition(exampleID, "member"))
+	}
 	return r
 }
 func response(t *testing.T, h *Handler, r *http.Request, status int, code string) *httptest.ResponseRecorder {

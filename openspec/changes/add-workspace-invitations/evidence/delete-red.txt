@@ -1,0 +1,8 @@
+=== RUN   TestDelayedDeletePreservesRejoin
+    registration_test.go:78: native Goose up expected-success=true: verified
+    invitation_delete_test.go:51: OLD DELETE REMOVED THE REJOINED RELATIONSHIP
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- FAIL: TestDelayedDeletePreservesRejoin (0.16s)
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	0.758s
+FAIL

@@ -188,7 +188,7 @@ logout只撤销当前token；无/坏/重复Cookie也幂等204（不挑选任一�
 
 ## Workspace 基础
 
-版本3迁移增加Workspace与成员关系，版本1/2保持不变，按[迁移说明](docs/database-migrations.md)显式升级。用户可以创建多个Workspace；成员名单、移除与退出见下节；没有加入、邀请、Workspace更新/删除或角色变更入口。owner/member可读取所属Workspace，创建者自动成为owner。
+版本3迁移增加Workspace与成员关系，版本1/2保持不变，按[迁移说明](docs/database-migrations.md)显式升级。用户可以创建多个Workspace；成员名单、移除与退出见下节；加入与邀请见后文；没有Workspace更新/删除或角色变更入口。owner/member可读取所属Workspace，创建者自动成为owner。
 
 三个接口为`POST /api/v1/workspaces`、`GET /api/v1/workspaces`、`GET /api/v1/workspaces/{workspace_id}`。Cookie名称和严格解析沿用认证协议，POST必须携带匹配AUTH_ORIGIN的唯一Origin和`X-DevPilot-CSRF: 1`，GET只读无需CSRF头。接口不修改Cookie、不续期。正常请求无效身份401；已认证非成员与未知资源同为404；有效用户无成员关系返回200空数组。
 
@@ -209,25 +209,51 @@ curl --cookie "$COOKIE_JAR" "$API_BASE/api/v1/workspaces?limit=50"
 
 ## Workspace 成员名单、移除与退出
 
-仅支持 `GET /api/v1/workspaces/{workspace_id}/members` 与 `DELETE /api/v1/workspaces/{workspace_id}/members/{user_id}`。无POST成员、邀请/接受、重加或角色授予接口；加入将另做需要目标用户明确同意的Change，知道UUID不等于同意，新加入角色只能为member。
+仅支持 `GET /api/v1/workspaces/{workspace_id}/members` 与 `DELETE /api/v1/workspaces/{workspace_id}/members/{user_id}`。无POST成员或角色授予接口；加入/重加只通过下述目标Session明确接受邀请，知道UUID不等于同意，新加入角色只能为member。
 
-Owner和Member均可查看名单，仅含user_id、role、joined_at（成员关系创建时间，UTC RFC3339），不含邮箱、昵称或账户status。GET接受单一limit/after，默认50、最大100，按user_id升序，无total或跨页快照；游标不授予权限，也不检查它对应的用户是否存在。每一页通过一次数据库语句同时检查active账户、有效Session与当前成员关系。
+Owner和Member均可查看名单，仅含membership_id、user_id、role、joined_at（成员关系创建时间，UTC RFC3339），不含邮箱、昵称或账户status。GET接受单一limit/after，默认50、最大100，按user_id升序，无total或跨页快照；游标不授予权限，也不检查它对应的用户是否存在。每一页通过一次数据库语句同时检查active账户、有效Session与当前成员关系。
 
 DELETE只接受路径中的目标UUID，无query/非空body，无JSON输入要求；操作者只能来自Cookie。DELETE必须带与既有POST相同的Origin、X-DevPilot-CSRF: 1及可选same-origin Fetch Metadata。Member仅可自退；Owner可移除普通Member（含disabled账户的关系），不能移除其他Owner。Owner仅在仍有其他Owner关系时自退，最后Owner自退409 last_owner_required；只保证Owner关系数量，不保证至少一名active Owner。
 
-确认提交后204空body，无JSON Content-Type、Location或Set-Cookie；Owner删不存在的目标关系仍204，不查询全局用户存在性。成员退出后重试因无成员资格404；无效Session401，禁止移除403 membership_forbidden。非成员、未知或非规范Workspace同404 workspace_not_found；已授权Workspace下非规范目标UUID为404 member_not_found。参数/非空body400；依赖/锁期限503，schema/内部错误500，固定错误文本见OpenAPI。
+确认提交后204空body，无JSON Content-Type、Location或Set-Cookie；严格强If-Match必须为 `"membership:<membership_id>:<role>"`（来自名单当次关系）；缺失428 precondition_required，关系缺失/代际或角色不匹配412 precondition_failed，弱tag/通配/列表/重复/非法tag400，不查询全局用户存在性。Owner重复旧删除变412，自退后无权限404。成员退出后重试因无成员资格404；无效Session401，禁止移除403 membership_forbidden。非成员、未知或非规范Workspace同404 workspace_not_found；已授权Workspace下非规范目标UUID为404 member_not_found。参数/非空body400；依赖/锁期限503，schema/内部错误500，固定错误文本见OpenAPI。
 
-所有成员写遵循User FOR SHARE → Session FOR SHARE → Workspace FOR NO KEY UPDATE → Membership按user_id排序FOR UPDATE，同Workspace串行；取得全部可能阻塞的保护锁之后发新语句重新验证身份、过期时间、权限及Owner数量，删除始终同时绑定workspace_id与user_id。5s处理/2s整个事务预算。未来成员/角色writer和受支持维护事务也必须使用同样顺序，不能先锁Membership/Session再反向锁Workspace/User。没有新增Migration、计数器、触发器或RLS；原PK/FK/CHECK不保证最后Owner，受信任直接SQL、特权DDL或TRUNCATE仍可绕过应用协议。不提供生产SQL加入/角色修改流程。
+所有成员写遵循User FOR SHARE → Session FOR SHARE → Workspace FOR NO KEY UPDATE → Membership按user_id排序FOR UPDATE，同Workspace串行；取得全部可能阻塞的保护锁之后发新语句重新验证身份、过期时间、权限及Owner数量，删除始终同时绑定workspace_id、user_id、membership_id和role。5s处理/2s整个事务预算。未来成员/角色writer和受支持维护事务也必须使用同样顺序，不能先锁Membership/Session再反向锁Workspace/User。本阶段追加Migration4增加成员代际和邀请，无计数器、触发器或RLS；原PK/FK/CHECK不保证最后Owner，受信任直接SQL、特权DDL或TRUNCATE仍可绕过应用协议。不提供生产SQL加入/角色修改流程。
 
 撤销/禁用/成员移除在新读取快照前提交即生效；已取得授权快照的在途读取可以完成。写先取得保护锁时，冲突的撤销或权限变更等待其结束；最终门控后的自然过期不强制回滚。旧Cookie、游标或先前响应不能授权新请求，移除也不会清除整个用户Session。
 
-未知Commit、超时或取消不能证明回滚，不自动重试、不补偿添加、不返回未确认204；客户端取消不再尝试响应。Owner可重新读取名单/显式删除检查状态，自退用户可查看自己的Workspace列表；401本身不是删除成功证据。没有请求去重或未来重加关系的exactly-once承诺。日志不含成员UUID、原始路径/query、Cookie、头/body、邮箱/名称、SQL/原始错误。
+未知Commit、超时或取消不能证明回滚，不自动重试、不补偿添加、不返回未确认204；客户端取消不再尝试响应。Owner可重新读取名单/显式删除检查状态，自退用户可查看自己的Workspace列表；401本身不是删除成功证据。没有请求去重或exactly-once承诺；旧validator不会匹配重加的新关系，客户端不得自动刷新条件并重试。日志不含成员UUID、原始路径/query、Cookie、头/body、邮箱/名称、SQL/原始错误。
 
 ```sh
 curl --cookie "$COOKIE_JAR" "$API_BASE/api/v1/workspaces/$WORKSPACE_ID/members?limit=50"
 curl --cookie "$COOKIE_JAR" --request DELETE \
   --header "Origin: $AUTH_ORIGIN" --header 'X-DevPilot-CSRF: 1' \
+  --header "If-Match: \"membership:$MEMBERSHIP_ID:$MEMBER_ROLE\"" \
   "$API_BASE/api/v1/workspaces/$WORKSPACE_ID/members/$TARGET_USER_ID"
 ```
 
-变量由调用者显式设置，自己的UUID可从auth/me取得。数据库角色、迁移1/2/3、Session绝对TTL与健康检查均不改变；回退应用不会恢复已经移除的权限。公开部署前仍需完成既有认证防滥用评审。
+变量由调用者显式设置，自己的UUID可从auth/me取得。MEMBERSHIP_ID和MEMBER_ROLE必须来自先前名单的目标关系，重试复用旧值。数据库角色、迁移1/2/3字节、Session绝对TTL与健康检查均不改变；回退应用不会恢复已经移除的权限。公开部署前仍需完成既有认证防滥用评审。
+
+## Workspace 平台内定向邀请
+
+Owner先通过既有沟通获得目标在auth/me中的UUID；不提供用户搜索、邮件或邀请码。创建成功只建立pending邀请，不建立成员关系。邀请归属Workspace；发起者移除/降为Member/禁用不使它失效，任何现任Owner可撤销。仅目标自己的active账户及有效Cookie Session可接受/拒绝；Owner不能代替同意。角色固定member，退出后必须新邀请，不重放accepted。
+
+| 接口 | 请求/权限 | 成功 |
+| --- | --- | --- |
+| POST /api/v1/workspaces/{workspace_id}/invitations | Owner，严格单字段invitee_user_id JSON | 201 OwnerInvitation |
+| GET /api/v1/workspaces/{workspace_id}/invitations | Owner，limit/after/status | 200 Owner列表 |
+| GET /api/v1/invitations | 本人Session，limit/after/status | 200 本人收件箱 |
+| POST /api/v1/invitations/{invitation_id}/accept | 接收者Session，空body/无query | 200 invitation_id/workspace_id/membership_id/role/joined_at |
+| POST /api/v1/invitations/{invitation_id}/decline | 接收者Session，空body/无query | 204 |
+| DELETE /api/v1/invitations/{invitation_id} | 现任Owner，空body/无query | 204撤销，保留记录 |
+
+所有写要求同源CSRF，GET不写。创建最多4096 bytes、application/json（可带UTF-8 charset）、无编码，拒绝重复/未知/缺失/非字符串字段及非法Unicode。错误400/413/415；有Owner权限后，unknown/disabled/self/已有成员及非规范目标UUID统一422 invitee_unavailable。Member创建/Owner列表403，非成员Workspace404；item未知/非规范/不属接收者或非Owner撤销统一404 invitation_not_found。路径别名不重定向到写入。完整固定消息/响应/schema见OpenAPI。
+
+pending仅能到accepted/declined/revoked/expired，固定604800秒；终态重复409 invitation_not_pending，过期409 invitation_expired；不会复活或覆盖角色。每对最多1存储pending，重复409 invitation_pending；每Workspace最多100有效pending，超限409 invitation_limit_reached。Owner创建成功意味着UUID可邀请，已承认有限可邀请性泄露，不宣称零枚举。
+
+两个列表limit默认50/1–100、after为规范UUID、status仅pending（默认）/all，按邀请UUID升序、最多limit+1，无total/跨页快照。Owner字段恰好id/workspace_id/invitee_user_id/created_by_user_id/status/created_at/updated_at/expires_at；目标字段恰好id/workspace_id/workspace_name/status/created_at/updated_at/expires_at。当前名称仅对有效pending可见，终态历史workspace_name=null，不能跟踪撤销后的改名；邀请不是detail/roster权限。
+
+所有mutation按Users UUID升序→Session→Workspace→Membership→Invitation保护后，以新statement_timestamp重验active、Session/邀请严格未过期、当前权限/归属与owner完整性。接受状态转换和新member原子提交，确认Commit才成功；门控后的自然过期可提交。未知提交不自动重试/补偿；all列表和成员列表帮助观察。没有RLS/任意SQL最后Owner保护保证。
+
+过期不依赖Worker。GET只投影effective expired（updated_at=expires_at）；授权accept/decline/revoke触及过期pending会持久化expired、确认Commit再返回409。创建替换先验证Owner/目标；旧过期pending在替换成功时同事务提交，若有效pending配额已满，则**仍确认过期转换Commit后返回409**。授权/目标校验失败不转换状态；SQL/Commit失败503/500不能假称过期已落库。
+
+**旧二进制不可与新邀请/重加混合运行，也不能在接受曾开放后直接回退旧DELETE。** 发布排空和停写步骤见迁移文档。公开部署前仍须追加账户/IP/Workspace网关限流、接收者跨租户频次/拒绝冷却、注册滥用控制、脱敏监控和历史容量/保留评审；100条配额不是完整防轰炸。本阶段不实现Redis、HTTP监控、告警或通知系统。
