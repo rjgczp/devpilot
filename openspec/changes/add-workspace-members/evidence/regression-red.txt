@@ -1,0 +1,9 @@
+--- FAIL: TestElapsedDeadlineDoesNotWaitForTimerDelivery (0.00s)
+    handler_test.go:559: elapsed deadline accepted before timer delivery
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/auth	0.883s
+--- FAIL: TestMemberNamedInvalidWorkspaceKeepsDetailContract (0.00s)
+    members_test.go:88: safe headers
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/workspace	0.890s
+FAIL

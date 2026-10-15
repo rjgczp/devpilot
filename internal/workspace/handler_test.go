@@ -23,10 +23,12 @@ import (
 const exampleID = "019a5abc-1234-7123-8123-123456789abc"
 
 type repositoryStub struct {
-	calls  atomic.Int32
-	create func(context.Context, session.Digest, string) (Public, error)
-	detail func(context.Context, session.Digest, string) (Public, error)
-	list   func(context.Context, session.Digest, int, string) (Page, error)
+	calls   atomic.Int32
+	members func(context.Context, session.Digest, string, int, string) (MemberPage, error)
+	remove  func(context.Context, session.Digest, string, string) error
+	create  func(context.Context, session.Digest, string) (Public, error)
+	detail  func(context.Context, session.Digest, string) (Public, error)
+	list    func(context.Context, session.Digest, int, string) (Page, error)
 }
 
 func (s *repositoryStub) Create(ctx context.Context, d session.Digest, n string) (Public, error) {
@@ -69,7 +71,7 @@ func response(t *testing.T, h *Handler, r *http.Request, status int, code string
 	if w.Code != status {
 		t.Fatalf("status=%d want=%d body=%s", w.Code, status, w.Body.String())
 	}
-	if w.Header().Get("Cache-Control") != "no-store" || w.Header().Get("X-Content-Type-Options") != "nosniff" || w.Header().Get("Content-Type") != "application/json" || w.Header().Get("Set-Cookie") != "" || w.Header().Get("Access-Control-Allow-Origin") != "" {
+	if w.Header().Get("Cache-Control") != "no-store" || w.Header().Get("X-Content-Type-Options") != "nosniff" || (status != 204 && w.Header().Get("Content-Type") != "application/json") || (status == 204 && (w.Header().Get("Content-Type") != "" || w.Body.Len() != 0)) || w.Header().Get("Set-Cookie") != "" || w.Header().Get("Access-Control-Allow-Origin") != "" {
 		t.Fatal("safe headers")
 	}
 	if r.Method == "HEAD" {

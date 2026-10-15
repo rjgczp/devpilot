@@ -1,0 +1,5 @@
+--- FAIL: TestMemberRejectedChunkedBodyDoesNotDrain (1.00s)
+    member_protocol_test.go:247: rejected body still drained the unfinished request
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/workspace	4.032s
+FAIL

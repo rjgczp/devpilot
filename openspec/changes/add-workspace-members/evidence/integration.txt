@@ -1,0 +1,773 @@
+=== RUN   TestProcessSignals
+=== RUN   TestProcessSignals/interrupt
+=== RUN   TestProcessSignals/terminated
+--- PASS: TestProcessSignals (0.83s)
+    --- PASS: TestProcessSignals/interrupt (0.32s)
+    --- PASS: TestProcessSignals/terminated (0.02s)
+=== RUN   TestProcessSignalsWithInFlightRequest
+=== RUN   TestProcessSignalsWithInFlightRequest/interrupt
+=== RUN   TestProcessSignalsWithInFlightRequest/terminated
+--- PASS: TestProcessSignalsWithInFlightRequest (1.35s)
+    --- PASS: TestProcessSignalsWithInFlightRequest/interrupt (0.63s)
+    --- PASS: TestProcessSignalsWithInFlightRequest/terminated (0.30s)
+=== RUN   TestProcessStartsWhenDatabaseIsUnavailable
+--- PASS: TestProcessStartsWhenDatabaseIsUnavailable (0.75s)
+=== RUN   TestProcessRejectsInvalidConfigurationWithoutSecret
+--- PASS: TestProcessRejectsInvalidConfigurationWithoutSecret (0.74s)
+=== RUN   TestProcessRejectsAuthenticationPolicyBeforeListening
+--- PASS: TestProcessRejectsAuthenticationPolicyBeforeListening (0.76s)
+=== RUN   TestProcessShutdownTimeout
+--- PASS: TestProcessShutdownTimeout (0.79s)
+PASS
+ok  	github.com/rjgczp/devpilot/cmd/api	6.124s
+=== RUN   TestRoutesKeepHealthAndRegistrationSeparate
+--- PASS: TestRoutesKeepHealthAndRegistrationSeparate (0.00s)
+=== RUN   TestAuthenticationRoutesUseDedicatedHandler
+--- PASS: TestAuthenticationRoutesUseDedicatedHandler (0.00s)
+=== RUN   TestRunnerGracefulShutdown
+--- PASS: TestRunnerGracefulShutdown (0.00s)
+=== RUN   TestRunnerClosesResourceAfterWorkerExit
+--- PASS: TestRunnerClosesResourceAfterWorkerExit (0.03s)
+=== RUN   TestRunnerShutdownDeadline
+--- PASS: TestRunnerShutdownDeadline (0.06s)
+=== RUN   TestRunnerShutdownError
+--- PASS: TestRunnerShutdownError (0.02s)
+=== RUN   TestRunnerResourceCloseError
+--- PASS: TestRunnerResourceCloseError (0.02s)
+=== RUN   TestRunnerResourceCloseDeadline
+--- PASS: TestRunnerResourceCloseDeadline (0.07s)
+=== RUN   TestNewServerTimeouts
+--- PASS: TestNewServerTimeouts (0.00s)
+=== RUN   TestIncompleteHeadersTimeOut
+--- PASS: TestIncompleteHeadersTimeOut (0.05s)
+=== RUN   TestJSONLogger
+--- PASS: TestJSONLogger (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/app	1.164s
+=== RUN   TestOpenAPIAuthenticationContract
+--- PASS: TestOpenAPIAuthenticationContract (0.00s)
+=== RUN   TestLoginStrictInputAndCheapRejection
+--- PASS: TestLoginStrictInputAndCheapRejection (0.00s)
+=== RUN   TestCSRFProofAndMethods
+--- PASS: TestCSRFProofAndMethods (0.00s)
+=== RUN   TestUniformCredentialFailuresAndDummyIsolation
+--- PASS: TestUniformCredentialFailuresAndDummyIsolation (0.00s)
+=== RUN   TestCookieIdentityAndLogoutContracts
+--- PASS: TestCookieIdentityAndLogoutContracts (0.00s)
+=== RUN   TestDependencyFailurePrivacyAndUnknownCommit
+--- PASS: TestDependencyFailurePrivacyAndUnknownCommit (0.00s)
+=== RUN   TestMixedBudgetCancellationAndFaultRecovery
+--- PASS: TestMixedBudgetCancellationAndFaultRecovery (0.00s)
+=== RUN   TestWorkflowBoundAndTimeouts
+--- PASS: TestWorkflowBoundAndTimeouts (0.01s)
+=== RUN   TestClientCancellationPropagatesWithoutResponse
+--- PASS: TestClientCancellationPropagatesWithoutResponse (0.00s)
+=== RUN   TestElapsedDeadlineDoesNotWaitForTimerDelivery
+--- PASS: TestElapsedDeadlineDoesNotWaitForTimerDelivery (0.00s)
+=== RUN   TestPanicAfterResponseStartsAbortsConnection
+--- PASS: TestPanicAfterResponseStartsAbortsConnection (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/auth	0.910s
+=== RUN   TestAuthDefaultsLocalAndInvalidPolicies
+--- PASS: TestAuthDefaultsLocalAndInvalidPolicies (0.00s)
+=== RUN   TestOriginCompleteTuple
+--- PASS: TestOriginCompleteTuple (0.00s)
+=== RUN   TestLoadDoesNotReadDotEnvFile
+--- PASS: TestLoadDoesNotReadDotEnvFile (0.00s)
+=== RUN   TestLoadDefaultsAndOverrides
+--- PASS: TestLoadDefaultsAndOverrides (0.00s)
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/missing_database_URL
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_database_URL
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_listen_address
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_port
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_log_level
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/zero_readiness_timeout
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/malformed_readiness_timeout
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/negative_shutdown_timeout
+=== RUN   TestLoadRejectsInvalidConfigurationWithoutSecrets/malformed_shutdown_timeout
+--- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/missing_database_URL (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_database_URL (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_listen_address (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_port (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/invalid_log_level (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/zero_readiness_timeout (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/malformed_readiness_timeout (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/negative_shutdown_timeout (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfigurationWithoutSecrets/malformed_shutdown_timeout (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/config	0.902s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+=== RUN   TestHealthAndReadinessTransitions
+--- PASS: TestHealthAndReadinessTransitions (0.00s)
+=== RUN   TestReadinessTimeoutAndResponsePrivacy
+--- PASS: TestReadinessTimeoutAndResponsePrivacy (0.02s)
+=== RUN   TestShutdownDuringPingIsNotReady
+--- PASS: TestShutdownDuringPingIsNotReady (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/health	0.913s
+=== RUN   TestPHCAndIndependentSalts
+--- PASS: TestPHCAndIndependentSalts (0.77s)
+=== RUN   TestRandomFailure
+--- PASS: TestRandomFailure (0.00s)
+=== RUN   TestVerifyAndApprovedPolicy
+--- PASS: TestVerifyAndApprovedPolicy (0.48s)
+=== RUN   TestDummyPHC
+--- PASS: TestDummyPHC (0.12s)
+=== RUN   TestBudgetNeverQueues
+--- PASS: TestBudgetNeverQueues (0.00s)
+=== RUN   FuzzPHC
+=== RUN   FuzzPHC/seed#0
+=== RUN   FuzzPHC/seed#1
+=== RUN   FuzzPHC/seed#2
+=== RUN   FuzzPHC/seed#3
+--- PASS: FuzzPHC (0.00s)
+    --- PASS: FuzzPHC/seed#0 (0.00s)
+    --- PASS: FuzzPHC/seed#1 (0.00s)
+    --- PASS: FuzzPHC/seed#2 (0.00s)
+    --- PASS: FuzzPHC/seed#3 (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/password	2.250s
+=== RUN   TestOpenAPIContract
+--- PASS: TestOpenAPIContract (0.00s)
+=== RUN   TestStrictRequestsAndCheapRejection
+=== RUN   TestStrictRequestsAndCheapRejection/empty
+=== RUN   TestStrictRequestsAndCheapRejection/null
+=== RUN   TestStrictRequestsAndCheapRejection/array
+=== RUN   TestStrictRequestsAndCheapRejection/extra-value
+=== RUN   TestStrictRequestsAndCheapRejection/missing
+=== RUN   TestStrictRequestsAndCheapRejection/unknown
+=== RUN   TestStrictRequestsAndCheapRejection/duplicate
+=== RUN   TestStrictRequestsAndCheapRejection/escaped-duplicate
+=== RUN   TestStrictRequestsAndCheapRejection/case-key
+=== RUN   TestStrictRequestsAndCheapRejection/null-password
+=== RUN   TestStrictRequestsAndCheapRejection/number
+=== RUN   TestStrictRequestsAndCheapRejection/invalid-utf8
+=== RUN   TestStrictRequestsAndCheapRejection/huge
+=== RUN   TestStrictRequestsAndCheapRejection/email-policy
+=== RUN   TestStrictRequestsAndCheapRejection/password-policy
+--- PASS: TestStrictRequestsAndCheapRejection (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/empty (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/null (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/array (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/extra-value (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/missing (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/unknown (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/duplicate (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/escaped-duplicate (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/case-key (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/null-password (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/number (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/invalid-utf8 (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/huge (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/email-policy (0.00s)
+    --- PASS: TestStrictRequestsAndCheapRejection/password-policy (0.00s)
+=== RUN   TestRepresentationAndMethods
+--- PASS: TestRepresentationAndMethods (0.00s)
+=== RUN   TestUnicodeRawEscapes
+=== RUN   TestUnicodeRawEscapes/\ud800
+=== RUN   TestUnicodeRawEscapes/\udfff
+=== RUN   TestUnicodeRawEscapes/\udc00\ud800
+=== RUN   TestUnicodeRawEscapes/\ud800\u0061
+=== RUN   TestUnicodeRawEscapes/\ud800x
+=== RUN   TestUnicodeRawEscapes/\ud800\\udc00
+=== RUN   TestUnicodeRawEscapes/\u12
+=== RUN   TestUnicodeRawEscapes/\uxxxx
+=== RUN   TestUnicodeRawEscapes/\ud800\u12xz
+--- PASS: TestUnicodeRawEscapes (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\udfff (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\udc00\ud800 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800\u0061 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800x (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800\\udc00 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\u12 (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\uxxxx (0.00s)
+    --- PASS: TestUnicodeRawEscapes/\ud800\u12xz (0.00s)
+=== RUN   TestValidationBoundaries
+--- PASS: TestValidationBoundaries (0.00s)
+=== RUN   TestCancellationKeepsSlotsUntilHashReturns
+--- PASS: TestCancellationKeepsSlotsUntilHashReturns (0.00s)
+=== RUN   TestErrorResponsesAndSlotRelease
+--- PASS: TestErrorResponsesAndSlotRelease (0.00s)
+=== RUN   TestServerDeadlineAndUnknownCommit
+--- PASS: TestServerDeadlineAndUnknownCommit (0.01s)
+=== RUN   TestClientCancellationInStoreAndRealHTTP
+--- PASS: TestClientCancellationInStoreAndRealHTTP (0.00s)
+=== RUN   FuzzParseInput
+=== RUN   FuzzParseInput/seed#0
+=== RUN   FuzzParseInput/seed#1
+=== RUN   FuzzParseInput/seed#2
+=== RUN   FuzzParseInput/seed#3
+=== RUN   FuzzParseInput/seed#4
+--- PASS: FuzzParseInput (0.00s)
+    --- PASS: FuzzParseInput/seed#0 (0.00s)
+    --- PASS: FuzzParseInput/seed#1 (0.00s)
+    --- PASS: FuzzParseInput/seed#2 (0.00s)
+    --- PASS: FuzzParseInput/seed#3 (0.00s)
+    --- PASS: FuzzParseInput/seed#4 (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/registration	0.916s
+=== RUN   TestTokenCanonicalAndDigest
+--- PASS: TestTokenCanonicalAndDigest (0.00s)
+=== RUN   TestCookieDigestPreservesTokenBytes
+=== RUN   TestCookieDigestPreservesTokenBytes/canonical
+=== RUN   TestCookieDigestPreservesTokenBytes/separator_space
+=== RUN   TestCookieDigestPreservesTokenBytes/separator_tab
+=== RUN   TestCookieDigestPreservesTokenBytes/separator_mixed_whitespace
+=== RUN   TestCookieDigestPreservesTokenBytes/header_leading_whitespace
+=== RUN   TestCookieDigestPreservesTokenBytes/separate_headers
+=== RUN   TestCookieDigestPreservesTokenBytes/leading_value_space
+=== RUN   TestCookieDigestPreservesTokenBytes/leading_value_tab
+=== RUN   TestCookieDigestPreservesTokenBytes/trailing_value_space
+=== RUN   TestCookieDigestPreservesTokenBytes/trailing_value_tab
+=== RUN   TestCookieDigestPreservesTokenBytes/surrounding_value_whitespace
+=== RUN   TestCookieDigestPreservesTokenBytes/space_before_separator
+=== RUN   TestCookieDigestPreservesTokenBytes/tab_before_separator
+=== RUN   TestCookieDigestPreservesTokenBytes/embedded_space
+=== RUN   TestCookieDigestPreservesTokenBytes/embedded_tab
+=== RUN   TestCookieDigestPreservesTokenBytes/unicode_whitespace
+=== RUN   TestCookieDigestPreservesTokenBytes/duplicate_malformed_value
+--- PASS: TestCookieDigestPreservesTokenBytes (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/canonical (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/separator_space (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/separator_tab (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/separator_mixed_whitespace (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/header_leading_whitespace (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/separate_headers (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/leading_value_space (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/leading_value_tab (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/trailing_value_space (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/trailing_value_tab (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/surrounding_value_whitespace (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/space_before_separator (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/tab_before_separator (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/embedded_space (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/embedded_tab (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/unicode_whitespace (0.00s)
+    --- PASS: TestCookieDigestPreservesTokenBytes/duplicate_malformed_value (0.00s)
+=== RUN   TestWorkerBudgetCancellationNoOverlapOrImmediateRetry
+--- PASS: TestWorkerBudgetCancellationNoOverlapOrImmediateRetry (0.00s)
+=== RUN   TestWorkerDatabaseDeadline
+--- PASS: TestWorkerDatabaseDeadline (0.00s)
+=== RUN   TestCleanupWorkerDrainsBeforeResourcesClose
+--- PASS: TestCleanupWorkerDrainsBeforeResourcesClose (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/session	0.789s
+=== RUN   TestDatabaseGuard
+--- PASS: TestDatabaseGuard (0.00s)
+=== RUN   TestUnavailableDatabaseIsFailure
+--- PASS: TestUnavailableDatabaseIsFailure (0.01s)
+=== RUN   TestServerIdentityAndVersionGuard
+--- PASS: TestServerIdentityAndVersionGuard (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/testdb	0.812s
+=== RUN   TestErrorClassification
+=== RUN   TestErrorClassification/email
+=== RUN   TestErrorClassification/primary
+=== RUN   TestErrorClassification/check
+=== RUN   TestErrorClassification/schema
+=== RUN   TestErrorClassification/connect
+=== RUN   TestErrorClassification/eof
+=== RUN   TestErrorClassification/deadline
+=== RUN   TestErrorClassification/canceled
+=== RUN   TestErrorClassification/statement
+=== RUN   TestErrorClassification/unknown-cancel
+=== RUN   TestErrorClassification/shutdown
+=== RUN   TestErrorClassification/unknown
+--- PASS: TestErrorClassification (0.00s)
+    --- PASS: TestErrorClassification/email (0.00s)
+    --- PASS: TestErrorClassification/primary (0.00s)
+    --- PASS: TestErrorClassification/check (0.00s)
+    --- PASS: TestErrorClassification/schema (0.00s)
+    --- PASS: TestErrorClassification/connect (0.00s)
+    --- PASS: TestErrorClassification/eof (0.00s)
+    --- PASS: TestErrorClassification/deadline (0.00s)
+    --- PASS: TestErrorClassification/canceled (0.00s)
+    --- PASS: TestErrorClassification/statement (0.00s)
+    --- PASS: TestErrorClassification/unknown-cancel (0.00s)
+    --- PASS: TestErrorClassification/shutdown (0.00s)
+    --- PASS: TestErrorClassification/unknown (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/user	0.772s
+=== RUN   TestWorkspaceOpenAPIContract
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-201-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-400-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-401-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-403-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-405-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-413-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-415-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-422-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-500-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-503-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-post-503-true
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-get-200-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-get-400-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-get-401-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-get-405-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-get-500-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-get-503-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces-get-503-true
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-200-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-400-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-401-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-404-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-405-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-500-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-503-false
+=== RUN   TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-503-true
+--- PASS: TestWorkspaceOpenAPIContract (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-201-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-400-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-401-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-403-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-405-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-413-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-415-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-422-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-500-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-503-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-post-503-true (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-get-200-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-get-400-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-get-401-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-get-405-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-get-500-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-get-503-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces-get-503-true (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-200-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-400-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-401-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-404-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-405-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-500-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-503-false (0.00s)
+    --- PASS: TestWorkspaceOpenAPIContract//api/v1/workspaces/{workspace_id}-get-503-true (0.00s)
+=== RUN   TestStrictInputAndNamePolicy
+--- PASS: TestStrictInputAndNamePolicy (0.00s)
+=== RUN   TestRepresentationMethodsAndSelectors
+--- PASS: TestRepresentationMethodsAndSelectors (0.00s)
+=== RUN   TestCSRFAndCookieReuse
+--- PASS: TestCSRFAndCookieReuse (0.00s)
+=== RUN   TestFailuresPrivacyCancellationAndBudgets
+--- PASS: TestFailuresPrivacyCancellationAndBudgets (0.00s)
+=== RUN   TestPanicAndConcurrentRequestIsolation
+--- PASS: TestPanicAndConcurrentRequestIsolation (0.00s)
+=== RUN   TestMemberDeleteHTTPContract
+=== RUN   TestMemberDeleteHTTPContract/204
+=== RUN   TestMemberDeleteHTTPContract/unauthenticated401
+=== RUN   TestMemberDeleteHTTPContract/membership_forbidden403
+=== RUN   TestMemberDeleteHTTPContract/workspace_not_found404
+=== RUN   TestMemberDeleteHTTPContract/member_not_found404
+=== RUN   TestMemberDeleteHTTPContract/last_owner_required409
+=== RUN   TestMemberDeleteHTTPContract/service_unavailable503
+=== RUN   TestMemberDeleteHTTPContract/database_timeout503
+=== RUN   TestMemberDeleteHTTPContract/internal_error500
+=== RUN   TestMemberDeleteHTTPContract/internal_error500#01
+--- PASS: TestMemberDeleteHTTPContract (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/204 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/unauthenticated401 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/membership_forbidden403 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/workspace_not_found404 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/member_not_found404 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/last_owner_required409 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/service_unavailable503 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/database_timeout503 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/internal_error500 (0.00s)
+    --- PASS: TestMemberDeleteHTTPContract/internal_error500#01 (0.00s)
+=== RUN   TestMemberCSRFIdentityAndIsolation
+--- PASS: TestMemberCSRFIdentityAndIsolation (0.00s)
+=== RUN   TestMemberCancellationBudgetsAndPanic
+--- PASS: TestMemberCancellationBudgetsAndPanic (0.02s)
+=== RUN   TestMemberSlowChunkedBodyIsBounded
+--- PASS: TestMemberSlowChunkedBodyIsBounded (0.03s)
+=== RUN   TestMemberRejectedChunkedBodyDoesNotDrain
+--- PASS: TestMemberRejectedChunkedBodyDoesNotDrain (0.00s)
+=== RUN   TestMemberEarlyRejectionBodyIsBounded
+--- PASS: TestMemberEarlyRejectionBodyIsBounded (0.03s)
+=== RUN   TestMemberRosterProtocol
+--- PASS: TestMemberRosterProtocol (0.00s)
+=== RUN   TestMemberRosterOpenAPIContract
+--- PASS: TestMemberRosterOpenAPIContract (0.00s)
+=== RUN   TestMemberNamedInvalidWorkspaceKeepsDetailContract
+--- PASS: TestMemberNamedInvalidWorkspaceKeepsDetailContract (0.00s)
+=== RUN   FuzzWorkspaceNameJSON
+=== RUN   FuzzWorkspaceNameJSON/seed#0
+=== RUN   FuzzWorkspaceNameJSON/seed#1
+=== RUN   FuzzWorkspaceNameJSON/seed#2
+--- PASS: FuzzWorkspaceNameJSON (0.00s)
+    --- PASS: FuzzWorkspaceNameJSON/seed#0 (0.00s)
+    --- PASS: FuzzWorkspaceNameJSON/seed#1 (0.00s)
+    --- PASS: FuzzWorkspaceNameJSON/seed#2 (0.00s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/workspace	0.423s
+=== RUN   TestAuthenticationWithPostgreSQL
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestAuthenticationWithPostgreSQL/loopback-http
+=== RUN   TestAuthenticationWithPostgreSQL/production-https
+=== NAME  TestAuthenticationWithPostgreSQL
+    auth_test.go:108: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestAuthenticationWithPostgreSQL (2.26s)
+    --- PASS: TestAuthenticationWithPostgreSQL/loopback-http (1.11s)
+    --- PASS: TestAuthenticationWithPostgreSQL/production-https (1.04s)
+=== RUN   TestAuthenticationDatabaseFailuresAndCancellation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    auth_test.go:282: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestAuthenticationDatabaseFailuresAndCancellation (6.74s)
+=== RUN   TestCleanupBatchMultiInstanceAndFaults
+    registration_test.go:78: native Goose up expected-success=true: verified
+    cleanup_test.go:19: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCleanupBatchMultiInstanceAndFaults (0.13s)
+=== RUN   TestMemberWriteLockOrder
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberWriteLockOrder (0.08s)
+=== RUN   TestMemberConcurrentOwnerAndExitRaces
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-rollback-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-rollback-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-lost-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-lost-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/mutual-owner-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/mutual-owner-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/duplicate-delete-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/duplicate-delete-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/owner-exit-race-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/owner-exit-race-reverse-true
+=== NAME  TestMemberConcurrentOwnerAndExitRaces
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberConcurrentOwnerAndExitRaces (0.19s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-reverse-false (0.02s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-reverse-true (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-rollback-reverse-false (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-rollback-reverse-true (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-lost-reverse-false (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-lost-reverse-true (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/mutual-owner-reverse-false (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/mutual-owner-reverse-true (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/duplicate-delete-reverse-false (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/duplicate-delete-reverse-true (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/owner-exit-race-reverse-false (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/owner-exit-race-reverse-true (0.01s)
+=== RUN   TestMemberPermissionChangeOrdering
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberPermissionChangeOrdering/demote-change
+=== RUN   TestMemberPermissionChangeOrdering/demote-member
+=== RUN   TestMemberPermissionChangeOrdering/remove-change
+=== RUN   TestMemberPermissionChangeOrdering/remove-member
+=== RUN   TestMemberPermissionChangeOrdering/promote-change
+=== RUN   TestMemberPermissionChangeOrdering/promote-member
+=== NAME  TestMemberPermissionChangeOrdering
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberPermissionChangeOrdering (0.12s)
+    --- PASS: TestMemberPermissionChangeOrdering/demote-change (0.02s)
+    --- PASS: TestMemberPermissionChangeOrdering/demote-member (0.01s)
+    --- PASS: TestMemberPermissionChangeOrdering/remove-change (0.01s)
+    --- PASS: TestMemberPermissionChangeOrdering/remove-member (0.01s)
+    --- PASS: TestMemberPermissionChangeOrdering/promote-change (0.01s)
+    --- PASS: TestMemberPermissionChangeOrdering/promote-member (0.01s)
+=== RUN   TestMemberIdentityChangeOrdering
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberIdentityChangeOrdering/revoke-change
+=== RUN   TestMemberIdentityChangeOrdering/revoke-member
+=== RUN   TestMemberIdentityChangeOrdering/disable-change
+=== RUN   TestMemberIdentityChangeOrdering/disable-member
+=== NAME  TestMemberIdentityChangeOrdering
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberIdentityChangeOrdering (0.10s)
+    --- PASS: TestMemberIdentityChangeOrdering/revoke-change (0.02s)
+    --- PASS: TestMemberIdentityChangeOrdering/revoke-member (0.01s)
+    --- PASS: TestMemberIdentityChangeOrdering/disable-change (0.01s)
+    --- PASS: TestMemberIdentityChangeOrdering/disable-member (0.01s)
+=== RUN   TestMemberExpiryAfterEveryLockWait
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberExpiryAfterEveryLockWait/user
+=== RUN   TestMemberExpiryAfterEveryLockWait/session
+=== RUN   TestMemberExpiryAfterEveryLockWait/workspace
+=== RUN   TestMemberExpiryAfterEveryLockWait/membership
+=== NAME  TestMemberExpiryAfterEveryLockWait
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberExpiryAfterEveryLockWait (1.37s)
+    --- PASS: TestMemberExpiryAfterEveryLockWait/user (0.32s)
+    --- PASS: TestMemberExpiryAfterEveryLockWait/session (0.33s)
+    --- PASS: TestMemberExpiryAfterEveryLockWait/workspace (0.32s)
+    --- PASS: TestMemberExpiryAfterEveryLockWait/membership (0.32s)
+=== RUN   TestMemberPostGateExpiryAndCleanup
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberPostGateExpiryAndCleanup (0.45s)
+=== RUN   TestMemberTransactionFailures
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberTransactionFailures/lost
+=== RUN   TestMemberTransactionFailures/rollback
+=== RUN   TestMemberTransactionFailures/gate-unavailable
+=== RUN   TestMemberTransactionFailures/gate-deadline
+=== RUN   TestMemberTransactionFailures/schema
+=== RUN   TestMemberTransactionFailures/deadlock
+=== RUN   TestMemberTransactionFailures/serialization
+=== RUN   TestMemberTransactionFailures/unexplained-cancel
+=== RUN   TestMemberTransactionFailures/actual-lock-timeout
+=== RUN   TestMemberTransactionFailures/cancel-after-delete-gate
+=== NAME  TestMemberTransactionFailures
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberTransactionFailures (2.24s)
+    --- PASS: TestMemberTransactionFailures/lost (0.02s)
+    --- PASS: TestMemberTransactionFailures/rollback (0.01s)
+    --- PASS: TestMemberTransactionFailures/gate-unavailable (0.01s)
+    --- PASS: TestMemberTransactionFailures/gate-deadline (0.01s)
+    --- PASS: TestMemberTransactionFailures/schema (0.01s)
+    --- PASS: TestMemberTransactionFailures/deadlock (0.01s)
+    --- PASS: TestMemberTransactionFailures/serialization (0.01s)
+    --- PASS: TestMemberTransactionFailures/unexplained-cancel (0.01s)
+    --- PASS: TestMemberTransactionFailures/actual-lock-timeout (2.01s)
+    --- PASS: TestMemberTransactionFailures/cancel-after-delete-gate (0.02s)
+=== RUN   TestMemberPoolTimeoutAndMissingSchema
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberPoolTimeoutAndMissingSchema (2.14s)
+=== RUN   TestMemberHTTPCancellationAfterGate
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberHTTPCancellationAfterGate (0.10s)
+=== RUN   TestMemberHTTPPermissionsAndRevocation
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberHTTPPermissionsAndRevocation/http
+=== RUN   TestMemberHTTPPermissionsAndRevocation/tls
+=== RUN   TestMemberHTTPPermissionsAndRevocation/revoke
+=== RUN   TestMemberHTTPPermissionsAndRevocation/disable
+=== RUN   TestMemberHTTPPermissionsAndRevocation/expire
+=== NAME  TestMemberHTTPPermissionsAndRevocation
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberHTTPPermissionsAndRevocation (0.16s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/http (0.04s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/tls (0.04s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/revoke (0.01s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/disable (0.01s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/expire (0.01s)
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation/remove
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation/role
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation/revoke
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation/disable
+=== NAME  TestMemberRosterSnapshotAndCursorRevocation
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberRosterSnapshotAndCursorRevocation (0.08s)
+    --- PASS: TestMemberRosterSnapshotAndCursorRevocation/remove (0.02s)
+    --- PASS: TestMemberRosterSnapshotAndCursorRevocation/role (0.01s)
+    --- PASS: TestMemberRosterSnapshotAndCursorRevocation/revoke (0.01s)
+    --- PASS: TestMemberRosterSnapshotAndCursorRevocation/disable (0.01s)
+=== RUN   TestMemberMixedOperationsAndCleanup
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberMixedOperationsAndCleanup/member-first
+=== RUN   TestMemberMixedOperationsAndCleanup/cleanup-first
+=== NAME  TestMemberMixedOperationsAndCleanup
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberMixedOperationsAndCleanup (0.07s)
+    --- PASS: TestMemberMixedOperationsAndCleanup/member-first (0.02s)
+    --- PASS: TestMemberMixedOperationsAndCleanup/cleanup-first (0.01s)
+=== RUN   TestMemberRosterStore
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberRosterStore (0.05s)
+=== RUN   TestMemberDeleteStore
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMemberDeleteStore/owner-member
+=== RUN   TestMemberDeleteStore/member-self
+=== RUN   TestMemberDeleteStore/member-other
+=== RUN   TestMemberDeleteStore/owner-self
+=== RUN   TestMemberDeleteStore/owner-other-owner
+=== RUN   TestMemberDeleteStore/two-owner-self
+=== RUN   TestMemberDeleteStore/missing
+=== RUN   TestMemberDeleteStore/foreign-target
+=== RUN   TestMemberDeleteStore/disabled-target
+=== RUN   TestMemberDeleteStore/malformed-target
+=== RUN   TestMemberDeleteStore/outside
+=== RUN   TestMemberDeleteStore/invalid-identity
+=== RUN   TestMemberDeleteStore/corrupt
+=== NAME  TestMemberDeleteStore
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMemberDeleteStore (0.15s)
+    --- PASS: TestMemberDeleteStore/owner-member (0.02s)
+    --- PASS: TestMemberDeleteStore/member-self (0.01s)
+    --- PASS: TestMemberDeleteStore/member-other (0.01s)
+    --- PASS: TestMemberDeleteStore/owner-self (0.01s)
+    --- PASS: TestMemberDeleteStore/owner-other-owner (0.01s)
+    --- PASS: TestMemberDeleteStore/two-owner-self (0.01s)
+    --- PASS: TestMemberDeleteStore/missing (0.01s)
+    --- PASS: TestMemberDeleteStore/foreign-target (0.01s)
+    --- PASS: TestMemberDeleteStore/disabled-target (0.01s)
+    --- PASS: TestMemberDeleteStore/malformed-target (0.01s)
+    --- PASS: TestMemberDeleteStore/outside (0.01s)
+    --- PASS: TestMemberDeleteStore/invalid-identity (0.01s)
+    --- PASS: TestMemberDeleteStore/corrupt (0.01s)
+=== RUN   TestMigrationAndConstraints
+    registration_test.go:91: native Goose down-to 0 expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:102: native Goose status expected-success=true: verified
+    registration_test.go:103: native Goose down-to 2 expected-success=true: verified
+    registration_test.go:104: native Goose down expected-success=true: verified
+    registration_test.go:108: native Goose down expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMigrationAndConstraints/null-email
+=== RUN   TestMigrationAndConstraints/null-hash
+=== RUN   TestMigrationAndConstraints/empty-hash
+=== RUN   TestMigrationAndConstraints/long-hash
+=== RUN   TestMigrationAndConstraints/state
+=== RUN   TestMigrationAndConstraints/uppercase
+=== RUN   TestMigrationAndConstraints/space
+=== RUN   TestMigrationAndConstraints/unicode
+=== RUN   TestMigrationAndConstraints/empty-email
+=== RUN   TestMigrationAndConstraints/long-email
+=== NAME  TestMigrationAndConstraints
+    registration_test.go:182: native Goose up expected-success=false: verified
+    registration_test.go:93: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMigrationAndConstraints (0.17s)
+    --- PASS: TestMigrationAndConstraints/null-email (0.00s)
+    --- PASS: TestMigrationAndConstraints/null-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/empty-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/long-hash (0.00s)
+    --- PASS: TestMigrationAndConstraints/state (0.00s)
+    --- PASS: TestMigrationAndConstraints/uppercase (0.00s)
+    --- PASS: TestMigrationAndConstraints/space (0.00s)
+    --- PASS: TestMigrationAndConstraints/unicode (0.00s)
+    --- PASS: TestMigrationAndConstraints/empty-email (0.00s)
+    --- PASS: TestMigrationAndConstraints/long-email (0.00s)
+=== RUN   TestRegistrationWithPostgreSQL
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestRegistrationWithPostgreSQL/missing-schema-is500
+=== RUN   TestRegistrationWithPostgreSQL/database-deadline
+=== RUN   TestRegistrationWithPostgreSQL/client-cancel-during-insert
+=== NAME  TestRegistrationWithPostgreSQL
+    registration_test.go:226: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestRegistrationWithPostgreSQL (2.91s)
+    --- PASS: TestRegistrationWithPostgreSQL/missing-schema-is500 (0.11s)
+    --- PASS: TestRegistrationWithPostgreSQL/database-deadline (2.11s)
+    --- PASS: TestRegistrationWithPostgreSQL/client-cancel-during-insert (0.17s)
+=== RUN   TestUnavailableDatabaseAndRecovery
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:431: verified PostgreSQL18 recovery with native migrations and actual Argon2id
+    registration_test.go:389: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestUnavailableDatabaseAndRecovery (0.29s)
+=== RUN   TestSessionStoreAndUpgrade
+    session_test.go:19: native Goose down-to 0 expected-success=true: verified
+    session_test.go:20: native Goose up-to 1 expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:115: native Goose down-to 2 expected-success=true: verified
+    session_test.go:116: native Goose down expected-success=true: verified
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:21: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSessionStoreAndUpgrade (0.27s)
+=== RUN   TestSessionCreationRechecksConcurrentUpdate
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:132: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSessionCreationRechecksConcurrentUpdate (0.06s)
+=== RUN   TestCreationLockSerializesDisableAndConcurrentRevocation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    session_test.go:181: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCreationLockSerializesDisableAndConcurrentRevocation (0.06s)
+=== RUN   TestWorkspaceCreationLockOrdering
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceCreationLockOrdering/revoke-change-first
+=== RUN   TestWorkspaceCreationLockOrdering/revoke-create-first
+=== RUN   TestWorkspaceCreationLockOrdering/disable-change-first
+=== RUN   TestWorkspaceCreationLockOrdering/disable-create-first
+=== NAME  TestWorkspaceCreationLockOrdering
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceCreationLockOrdering (0.07s)
+    --- PASS: TestWorkspaceCreationLockOrdering/revoke-change-first (0.01s)
+    --- PASS: TestWorkspaceCreationLockOrdering/revoke-create-first (0.01s)
+    --- PASS: TestWorkspaceCreationLockOrdering/disable-change-first (0.00s)
+    --- PASS: TestWorkspaceCreationLockOrdering/disable-create-first (0.01s)
+=== RUN   TestWorkspaceExpiryAndCleanupBoundaries
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceExpiryAndCleanupBoundaries/before-insert
+=== RUN   TestWorkspaceExpiryAndCleanupBoundaries/after-insert
+=== NAME  TestWorkspaceExpiryAndCleanupBoundaries
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceExpiryAndCleanupBoundaries (0.70s)
+    --- PASS: TestWorkspaceExpiryAndCleanupBoundaries/before-insert (0.32s)
+    --- PASS: TestWorkspaceExpiryAndCleanupBoundaries/after-insert (0.31s)
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges/remove
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges/role
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges/revoke
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges/disable
+=== NAME  TestWorkspaceReadSnapshotMembershipAndIdentityChanges
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges (0.09s)
+    --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges/remove (0.01s)
+    --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges/role (0.01s)
+    --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges/revoke (0.00s)
+    --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges/disable (0.00s)
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit/begin
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit/candidate
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit/user
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit/session
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit/insert
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit/member
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit/rollback
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit/lost
+=== NAME  TestWorkspaceTransactionFaultsAndUnknownCommit
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit (0.09s)
+    --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit/begin (0.00s)
+    --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit/candidate (0.00s)
+    --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit/user (0.00s)
+    --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit/session (0.00s)
+    --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit/insert (0.00s)
+    --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit/member (0.00s)
+    --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit/rollback (0.00s)
+    --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit/lost (0.00s)
+=== RUN   TestWorkspaceHTTPAuthenticationAndTenantIsolation
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceHTTPAuthenticationAndTenantIsolation/development
+=== RUN   TestWorkspaceHTTPAuthenticationAndTenantIsolation/production
+=== NAME  TestWorkspaceHTTPAuthenticationAndTenantIsolation
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceHTTPAuthenticationAndTenantIsolation (0.56s)
+    --- PASS: TestWorkspaceHTTPAuthenticationAndTenantIsolation/development (0.26s)
+    --- PASS: TestWorkspaceHTTPAuthenticationAndTenantIsolation/production (0.25s)
+=== RUN   TestWorkspaceHTTPDatabaseFailuresAndRecovery
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceHTTPDatabaseFailuresAndRecovery (2.11s)
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges/remove
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges/role
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges/revoke
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges/disable
+=== NAME  TestWorkspaceListSnapshotAndCursorChanges
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceListSnapshotAndCursorChanges (0.11s)
+    --- PASS: TestWorkspaceListSnapshotAndCursorChanges/remove (0.02s)
+    --- PASS: TestWorkspaceListSnapshotAndCursorChanges/role (0.01s)
+    --- PASS: TestWorkspaceListSnapshotAndCursorChanges/revoke (0.01s)
+    --- PASS: TestWorkspaceListSnapshotAndCursorChanges/disable (0.01s)
+=== RUN   TestWorkspaceMigrationAndConstraints
+    workspace_test.go:50: native Goose down-to 0 expected-success=true: verified
+    workspace_test.go:52: native Goose up-to 2 expected-success=true: verified
+    workspace_test.go:54: native Goose up expected-success=true: verified
+    workspace_test.go:55: native Goose up expected-success=true: verified
+    workspace_test.go:102: native Goose down expected-success=true: verified
+    workspace_test.go:106: native Goose up expected-success=true: verified
+    workspace_test.go:107: native Goose down-to 0 expected-success=true: verified
+    workspace_test.go:108: native Goose up expected-success=true: verified
+    workspace_test.go:51: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceMigrationAndConstraints (0.23s)
+=== RUN   TestWorkspaceTenantQueriesAndConcurrentCreation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestWorkspaceTenantQueriesAndConcurrentCreation (0.08s)
+PASS
+ok  	github.com/rjgczp/devpilot/tests/integration	24.602s

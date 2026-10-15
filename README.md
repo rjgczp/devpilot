@@ -180,7 +180,7 @@ logout只撤销当前token；无/坏/重复Cookie也幂等204（不挑选任一�
 
 清理Worker由Runner管理，每15分钟尝试一个最多1000行/2s批次，SKIP LOCKED避免多实例等待同一候选。只删除过期/撤销行，不循环耗尽；失败只记安全类别，下一周期再试，认证有效性不受清理失败影响。关闭取消Worker，在原总期限内等待后关池。当前无审计保留承诺，清理吞吐/表增长须随部署容量评审。
 
-身份验证仅是查询时点的user UUID，不是整个业务操作期间的授权租约。未来Workspace必须分别检查资源/动作/membership/role，定义权限变更与写提交的锁/条件写/版本或隔离协议；普通事务内的一次SELECT或入口middleware都不能自动保证全程权限，锁也不能停止时钟到期。本轮无Workspace/RBAC。active仍不证明邮箱所有权；直接SQL禁用后再解禁可能恢复未撤销会话，未来disable操作必须事务内revoke-all。
+身份验证仅是查询时点的user UUID，不是整个业务操作期间的授权租约。未来Workspace必须分别检查资源/动作/membership/role，定义权限变更与写提交的锁/条件写/版本或隔离协议；普通事务内的一次SELECT或入口middleware都不能自动保证全程权限，锁也不能停止时钟到期。认证端点本身不授予Workspace权限。active仍不证明邮箱所有权；直接SQL禁用后再解禁可能恢复未撤销会话，未来disable操作必须事务内revoke-all。
 
 **公开部署前仍必须另行实现并评审登录限流、防暴力破解/撞库与注册反滥用**：可信来源IP和canonical account键的速率/突发及失败预算、跨实例一致性、渐进延迟/恢复窗口、429与监测告警验收；不存在邮箱也需一致处理，避免硬锁账户产生DoS，不信任任意代理头。资源槽不是这些控制的替代，本轮没有实现或验收此限流系统。
 
@@ -188,7 +188,7 @@ logout只撤销当前token；无/坏/重复Cookie也幂等204（不挑选任一�
 
 ## Workspace 基础
 
-版本3迁移增加Workspace与成员关系，版本1/2保持不变，按[迁移说明](docs/database-migrations.md)显式升级。用户可以创建多个Workspace；成员管理单独交付，本轮没有加入、邀请、更新、删除或角色变更入口。owner/member仅能读取所属Workspace，创建者自动成为owner。
+版本3迁移增加Workspace与成员关系，版本1/2保持不变，按[迁移说明](docs/database-migrations.md)显式升级。用户可以创建多个Workspace；成员名单、移除与退出见下节；没有加入、邀请、Workspace更新/删除或角色变更入口。owner/member可读取所属Workspace，创建者自动成为owner。
 
 三个接口为`POST /api/v1/workspaces`、`GET /api/v1/workspaces`、`GET /api/v1/workspaces/{workspace_id}`。Cookie名称和严格解析沿用认证协议，POST必须携带匹配AUTH_ORIGIN的唯一Origin和`X-DevPilot-CSRF: 1`，GET只读无需CSRF头。接口不修改Cookie、不续期。正常请求无效身份401；已认证非成员与未知资源同为404；有效用户无成员关系返回200空数组。
 
@@ -205,4 +205,29 @@ curl --cookie "$COOKIE_JAR" "$API_BASE/api/v1/workspaces?limit=50"
 
 列表返回`{"data":[],"pagination":{"next_after":null}}`或授权资源数组，按UUID升序；limit默认50、1–100，after为规范小写UUID，next_after仅有更多记录时为最后返回ID。游标不提供权限，无总数及跨页快照保证。详情无查询参数，列表仅接受limit/after；重复、未知或非法参数400。完整状态/字段见[OpenAPI](docs/api/openapi.yaml)。
 
-租户隔离由每次查询同时校验Session、active账户、成员关系和资源归属，不启用RLS；未来租户业务表必须含workspace_id，租户内唯一及父子外键也需包含租户边界。数据库管理员不受应用授权约束。成员关系使users删除RESTRICT，防止静默丢失所有权；本轮不提供账户删除或最后owner管理。公开部署前沿用既有认证反滥用要求，并需评审Workspace创建频率/容量，当前没有配额系统。
+租户隔离由每次查询同时校验Session、active账户、成员关系和资源归属，不启用RLS；未来租户业务表必须含workspace_id，租户内唯一及父子外键也需包含租户边界。数据库管理员不受应用授权约束。成员关系使users删除RESTRICT，防止静默丢失所有权；本轮不提供账户删除；最后Owner退出由下述事务协议保护。公开部署前沿用既有认证反滥用要求，并需评审Workspace创建频率/容量，当前没有配额系统。
+
+## Workspace 成员名单、移除与退出
+
+仅支持 `GET /api/v1/workspaces/{workspace_id}/members` 与 `DELETE /api/v1/workspaces/{workspace_id}/members/{user_id}`。无POST成员、邀请/接受、重加或角色授予接口；加入将另做需要目标用户明确同意的Change，知道UUID不等于同意，新加入角色只能为member。
+
+Owner和Member均可查看名单，仅含user_id、role、joined_at（成员关系创建时间，UTC RFC3339），不含邮箱、昵称或账户status。GET接受单一limit/after，默认50、最大100，按user_id升序，无total或跨页快照；游标不授予权限，也不检查它对应的用户是否存在。每一页通过一次数据库语句同时检查active账户、有效Session与当前成员关系。
+
+DELETE只接受路径中的目标UUID，无query/非空body，无JSON输入要求；操作者只能来自Cookie。DELETE必须带与既有POST相同的Origin、X-DevPilot-CSRF: 1及可选same-origin Fetch Metadata。Member仅可自退；Owner可移除普通Member（含disabled账户的关系），不能移除其他Owner。Owner仅在仍有其他Owner关系时自退，最后Owner自退409 last_owner_required；只保证Owner关系数量，不保证至少一名active Owner。
+
+确认提交后204空body，无JSON Content-Type、Location或Set-Cookie；Owner删不存在的目标关系仍204，不查询全局用户存在性。成员退出后重试因无成员资格404；无效Session401，禁止移除403 membership_forbidden。非成员、未知或非规范Workspace同404 workspace_not_found；已授权Workspace下非规范目标UUID为404 member_not_found。参数/非空body400；依赖/锁期限503，schema/内部错误500，固定错误文本见OpenAPI。
+
+所有成员写遵循User FOR SHARE → Session FOR SHARE → Workspace FOR NO KEY UPDATE → Membership按user_id排序FOR UPDATE，同Workspace串行；取得全部可能阻塞的保护锁之后发新语句重新验证身份、过期时间、权限及Owner数量，删除始终同时绑定workspace_id与user_id。5s处理/2s整个事务预算。未来成员/角色writer和受支持维护事务也必须使用同样顺序，不能先锁Membership/Session再反向锁Workspace/User。没有新增Migration、计数器、触发器或RLS；原PK/FK/CHECK不保证最后Owner，受信任直接SQL、特权DDL或TRUNCATE仍可绕过应用协议。不提供生产SQL加入/角色修改流程。
+
+撤销/禁用/成员移除在新读取快照前提交即生效；已取得授权快照的在途读取可以完成。写先取得保护锁时，冲突的撤销或权限变更等待其结束；最终门控后的自然过期不强制回滚。旧Cookie、游标或先前响应不能授权新请求，移除也不会清除整个用户Session。
+
+未知Commit、超时或取消不能证明回滚，不自动重试、不补偿添加、不返回未确认204；客户端取消不再尝试响应。Owner可重新读取名单/显式删除检查状态，自退用户可查看自己的Workspace列表；401本身不是删除成功证据。没有请求去重或未来重加关系的exactly-once承诺。日志不含成员UUID、原始路径/query、Cookie、头/body、邮箱/名称、SQL/原始错误。
+
+```sh
+curl --cookie "$COOKIE_JAR" "$API_BASE/api/v1/workspaces/$WORKSPACE_ID/members?limit=50"
+curl --cookie "$COOKIE_JAR" --request DELETE \
+  --header "Origin: $AUTH_ORIGIN" --header 'X-DevPilot-CSRF: 1' \
+  "$API_BASE/api/v1/workspaces/$WORKSPACE_ID/members/$TARGET_USER_ID"
+```
+
+变量由调用者显式设置，自己的UUID可从auth/me取得。数据库角色、迁移1/2/3、Session绝对TTL与健康检查均不改变；回退应用不会恢复已经移除的权限。公开部署前仍需完成既有认证防滥用评审。
