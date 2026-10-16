@@ -183,7 +183,7 @@ Workspace and invitation endpoints SHALL use JSON data/error except empty204, no
 - **THEN** exact endpoint Allow headers follow workspace-invitations, mutation aliases never redirect into writes, bounded parser/body deadlines apply, HEAD has no body and OPTIONS grants no CORS
 
 ### Requirement: Tenant boundaries and acceptance remain verifiable
-The repository SHALL verify workspace behavior with unit tests, mandatory real PostgreSQL 18 integration/race tests and matching API documentation. Each tenant resource query SHALL use trusted identity plus membership and resource ownership. Future tenant-owned rows SHALL require workspace_id and tenant-consistent relationships. Public membership and invitation APIs SHALL follow workspace-members and workspace-invitations, including narrowly recipient-scoped consent preview. Only the reviewed invitation schema addition SHALL be introduced; no unrelated business tables or RLS enforcement SHALL be claimed.
+The repository SHALL verify workspace behavior with unit tests, mandatory real PostgreSQL 18 integration/race tests and matching API documentation. Each tenant resource query SHALL use trusted identity plus membership and resource ownership. Future tenant-owned rows SHALL require workspace_id and tenant-consistent relationships. Public membership and invitation APIs SHALL follow workspace-members and workspace-invitations, including narrowly recipient-scoped consent preview. Only the reviewed invitation and project schema additions SHALL be introduced; no unrelated business tables or RLS enforcement SHALL be claimed.
 
 #### Scenario: Success - End-to-end contract and many-to-many fixtures
 - **WHEN** guarded PG18 tests register/login users, create workspaces and exercise invitation-backed member joins and roster/conditional removal/exit, using multi-owner or role-change SQL only as guarded fixtures
@@ -216,3 +216,19 @@ The repository SHALL verify workspace behavior with unit tests, mandatory real P
 #### Scenario: Exception - CI and legacy fixtures follow the reviewed migration
 - **WHEN** full normal and race integration suites run after version4 is added
 - **THEN** they preserve explicit version3 migration coverage, move the intentionally failed next-version fixture beyond version4, update precise roster/DELETE contracts, fail on missing guarded dependencies, and serialize schema-changing suites rather than masking failures or skipping old APIs
+
+#### Scenario: Success - Projects extend the reviewed tenant foundation
+- **WHEN** the reviewed project-management and project-persistence capabilities add Project creation, reading and conditional updating
+- **THEN** only the four scoped Project operations and Migration5 are introduced, while existing Workspace/member/invitation DTOs, methods, roles and Cookie behavior remain unchanged
+
+#### Scenario: Exception - Project scope does not silently add future resources
+- **WHEN** a request or implementation attempts Monitor, Incident, Alert, project transfer, archive or deletion in this Change
+- **THEN** those operations remain unavailable and no unrelated schema or project-role table is introduced
+
+#### Scenario: Security - Project identifiers require current tenant authority
+- **WHEN** users substitute a known foreign Project UUID, combine an authorized Workspace with a foreign Project, or retain a Cookie after membership loss
+- **THEN** fresh Project reads/writes use live identity, membership and resource ownership together and deny unauthorized data/changes under the project contracts
+
+#### Scenario: Concurrency - Project protection composes with existing member operations
+- **WHEN** Project create/PATCH races with invitation acceptance, conditional removal, self-exit, revocation or coordinated role changes
+- **THEN** the existing User→Session→Workspace→Membership order remains intact, Project protection follows it and deterministic PG18/race tests cover both orderings without weakening old member-generation protection

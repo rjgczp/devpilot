@@ -1,0 +1,21 @@
+- Validating...
+✓ spec/backend-runtime
+✓ spec/project-management
+✓ spec/project-persistence
+✓ spec/service-health
+✓ spec/session-management
+✓ spec/user-authentication
+  ⚠ [WARNING] requirements[11]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+✓ spec/user-persistence
+✓ spec/user-registration
+✓ spec/workspace-access
+  ⚠ [WARNING] requirements[7]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+  ⚠ [WARNING] requirements[8]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+✓ spec/workspace-invitations
+✓ spec/workspace-members
+  ⚠ [WARNING] requirements[2]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+  ⚠ [WARNING] requirements[3]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+✓ spec/workspace-persistence
+  ⚠ [WARNING] requirements[1]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+  ⚠ [WARNING] requirements[8]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+Totals: 12 passed, 0 failed (12 items)

@@ -1,0 +1,23 @@
+[
+  {
+    "capability": "project-management",
+    "delta_requirements": 9,
+    "delta_scenarios": 37,
+    "all_delta_content_matches": true,
+    "unmentioned_content_preserved": true
+  },
+  {
+    "capability": "project-persistence",
+    "delta_requirements": 7,
+    "delta_scenarios": 30,
+    "all_delta_content_matches": true,
+    "unmentioned_content_preserved": true
+  },
+  {
+    "capability": "workspace-access",
+    "delta_requirements": 1,
+    "delta_scenarios": 12,
+    "all_delta_content_matches": true,
+    "unmentioned_content_preserved": true
+  }
+]

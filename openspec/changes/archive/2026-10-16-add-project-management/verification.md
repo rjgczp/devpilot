@@ -86,3 +86,16 @@
 最终自查额外拒绝重复charset参数，并校正慢POST测试确保真正进入body读取路径（早期该TCP样例带不适用于POST的If-Match，只测试到了早拒绝drain）。完整Go/race及全部12项Project integration-race已复验通过。创建者退出后再禁用/撤销的现任Owner读取/更新也有真实PG断言。
 
 默认Git HTTPS helper的Token缺workflow scope曾导致推送被GitHub拒绝；随后只对该次push使用本机已有workflow权限的gh登录凭据，成功推送，未修改Token权限或全局Git设置。没有删掉CI文件规避验证要求。未自动合并、归档或公开部署。
+
+
+## 2026-10-16 合并、规格同步与归档
+
+用户明确授权“可合并与归档”，本次不公开部署。
+
+- GitHub已确认[PR #7](https://github.com/rjgczp/devpilot/pull/7)为MERGED，实际合并时间`2026-10-16T02:51:40Z`（北京时间10:51:40），合并提交`61ffbbd57081738526f392e1b011a6d201a32d70`，head为`6e8ceefe1edd9e81e9882d39a80c2cfeb0a762fe`。开始检查时已经合并，没有重复发起合并。见[archive-pr-merge.json](evidence/archive-pr-merge.json)。本地main使用fetch、switch main、pull --ff-only同步。
+- 最终head的[push CI](https://github.com/rjgczp/devpilot/actions/runs/38841011197)和[PR CI](https://github.com/rjgczp/devpilot/actions/runs/38841016542)现在均已整体completed/SUCCESS，verify/integration四项作业均SUCCESS。此前观察到的PR汇总延迟已消失；这是本次实时GitHub结果，见[push](evidence/archive-final-push-ci.json)、[PR](evidence/archive-final-pr-ci.json)。
+- 归档前确认spec-driven四类artifact全部done、CLI实际34/34任务完成；单Change strict退出0，见[archive-change-strict.txt](evidence/archive-change-strict.txt)。未重跑Go/PG数据库测试，复用最终实现head已通过的全量本地和托管证据，不将文档归档宣称为新一轮业务测试。
+- 三份delta全部同步到主Specs：新增project-management（9项要求/37场景）、project-persistence（7项/30场景），更新workspace-access一项完整要求（12场景，其中8个既有场景原文保留）。共17项delta Requirement/79个Scenario与主规格逐项匹配；其他要求、既有title/Purpose保持原文，新Purpose取自delta，主Specs无delta操作标题。见[archive-delta-sync.json](evidence/archive-delta-sync.json)。
+- 同步后标准主Specs校验12通过/0失败，归档后再次相同。同步后、移动前全库strict为9通过/4失败（13项含本Change）；归档后为**8通过/4失败（12项主Specs，退出1）**。仍仅为user-authentication、workspace-access、workspace-members、workspace-persistence既有描述长度WARNING，没有新增Project strict问题或为“全绿”改写历史条款。见[archive-after-specs.txt](evidence/archive-after-specs.txt)、[archive-before-all-strict.json](evidence/archive-before-all-strict.json)、[archive-after-all-strict.json](evidence/archive-after-all-strict.json)。
+- 整目录移动到`openspec/changes/archive/2026-10-16-add-project-management/`，包括`.openspec.yaml`及全部实施证据。追加本归档记录前，31份原始Git文件与合并HEAD逐字节相同，SHA256记录见[archive-files-preserved.json](evidence/archive-files-preserved.json)；Finder的.DS_Store不属于Git内容且不用于文档完整性证明。之后仅本verification追加归档记录并新增归档检查证据。
+- `openspec list --json`确认没有active changes，见[archive-active-changes.json](evidence/archive-active-changes.json)。本次只同步Specs、归档和记录证据；业务代码、Migration1–5、CI及数据库未改动，未公开部署。

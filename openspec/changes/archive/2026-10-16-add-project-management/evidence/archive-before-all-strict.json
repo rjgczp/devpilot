@@ -1,0 +1,158 @@
+{
+  "items": [
+    {
+      "id": "add-project-management",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 20
+    },
+    {
+      "id": "backend-runtime",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 5
+    },
+    {
+      "id": "project-management",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
+    },
+    {
+      "id": "project-persistence",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "service-health",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "session-management",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "user-authentication",
+      "type": "spec",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[11]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "user-persistence",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "user-registration",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "workspace-access",
+      "type": "spec",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[7]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        },
+        {
+          "level": "WARNING",
+          "path": "requirements[8]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "workspace-invitations",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 0
+    },
+    {
+      "id": "workspace-members",
+      "type": "spec",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[2]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        },
+        {
+          "level": "WARNING",
+          "path": "requirements[3]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "workspace-persistence",
+      "type": "spec",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[1]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        },
+        {
+          "level": "WARNING",
+          "path": "requirements[8]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        }
+      ],
+      "durationMs": 1
+    }
+  ],
+  "summary": {
+    "totals": {
+      "items": 13,
+      "passed": 9,
+      "failed": 4
+    },
+    "byType": {
+      "change": {
+        "items": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "spec": {
+        "items": 12,
+        "passed": 8,
+        "failed": 4
+      }
+    }
+  },
+  "version": "1.0",
+  "root": {
+    "path": "/Users/sansea/Documents/ChatGPT/devpilot",
+    "source": "nearest"
+  }
+}
