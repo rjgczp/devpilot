@@ -65,7 +65,11 @@ Confirmed creation SHALL return 201 with Location: /api/v1/workspaces/{id}. Deta
 
 #### Scenario: Success - Separate member roster projection
 - **WHEN** the separate member roster endpoint returns an authorized list
-- **THEN** its user_id/role/joined_at projection is governed by workspace-members without expanding the existing Workspace DTO or changing Cookie behavior
+- **THEN** its membership_id/user_id/role/joined_at projection is governed by workspace-members without expanding the existing Workspace DTO or changing Cookie behavior
+
+#### Scenario: Security - Consent preview does not expand Workspace access
+- **WHEN** a nonmember reads its own invitation inbox
+- **THEN** only the separate workspace-invitations projection may disclose the invited Workspace name/id, existing Workspace detail/list/roster DTOs are not expanded, and the invitation is not itself membership authority
 
 ### Requirement: Workspace lists are bounded and user scoped
 GET /api/v1/workspaces SHALL return only the caller's memberships, ordered by workspace UUID ascending. It SHALL accept only optional single limit (canonical decimal 1–100, default 50) and after (canonical lowercase hyphenated UUID), fetching at most limit+1 candidates. Success SHALL use data as an array of the detail projection and pagination.next_after as the last returned UUID only when another row exists, otherwise null.
@@ -125,10 +129,10 @@ Workspace reads SHALL validate the selected environment Cookie using the existin
 - **THEN** the former is 401 and the latter may finish; a valid entry check does not override changed state at the actual resource-read snapshot
 
 ### Requirement: Workspace mutations reuse the same-origin CSRF protocol
-Supported Workspace POST and member DELETE SHALL require exactly one valid non-null Origin matching AUTH_ORIGIN and exactly one X-DevPilot-CSRF: 1 before identity/database work. Present Sec-Fetch-Site SHALL be a single same-origin value. Rejection SHALL be 403 csrf_rejected with no writes or Cookie effects. GET SHALL remain read-only and need no CSRF header. No CORS grant or Referer/Host fallback SHALL be added.
+Supported Workspace POST, member DELETE and invitation create/accept/decline/revoke mutations SHALL require exactly one valid non-null Origin matching AUTH_ORIGIN and exactly one X-DevPilot-CSRF: 1 before identity/database work. Present Sec-Fetch-Site SHALL be a single same-origin value. Rejection SHALL be 403 csrf_rejected with no writes or Cookie effects. GET SHALL remain read-only and need no CSRF header. No CORS grant or Referer/Host fallback SHALL be added.
 
 #### Scenario: Success - Same-origin client and CLI
-- **WHEN** a browser or CLI sends valid proof and its session Cookie for a valid create or member delete
+- **WHEN** a browser or CLI sends valid proof and its session Cookie for a valid Workspace/member/invitation mutation
 - **THEN** it may proceed; list/detail use Cookie without requiring the custom header or changing state
 
 #### Scenario: Exception - Missing or ambiguous proof
@@ -148,7 +152,7 @@ Supported Workspace POST and member DELETE SHALL require exactly one valid non-n
 - **THEN** fixed403 occurs before identity lookup, transaction, deletion or Cookie effects, including self-exit and a target that is already absent
 
 ### Requirement: Workspace responses and processing fail safely
-Workspace endpoints SHALL use JSON data/error except empty204, no-store, nosniff and fixed safe messages. DB unavailability SHALL be 503 service_unavailable, confirmed timeout 503 database_timeout and schema/unexpected faults 500 internal_error. Requests SHALL have a 5s processing budget and each read/whole mutation transaction at most 2s within it. Logs SHALL omit secrets, raw SQL/errors, headers, bodies, names and member IDs. Cancellation SHALL stop further work and attempted responses.
+Workspace and invitation endpoints SHALL use JSON data/error except empty204, no-store, nosniff and fixed safe messages. DB unavailability SHALL be 503 service_unavailable, confirmed timeout 503 database_timeout and schema/unexpected faults 500 internal_error. Requests SHALL have a 5s processing budget and each read/whole mutation transaction at most 2s within it. Logs SHALL omit secrets, raw SQL/errors, headers, bodies, names and user/member/invitation IDs. Cancellation SHALL stop further work and attempted responses.
 
 #### Scenario: Success - Documented headers and recovery
 - **WHEN** a workspace request succeeds, or dependencies recover after failure
@@ -167,19 +171,23 @@ Workspace endpoints SHALL use JSON data/error except empty204, no-store, nosniff
 - **THEN** deadlines bound DB waiting, requests do not share mutable identity/result state or acquire Argon slots; wrong methods return 405 with Allow: GET, POST on the workspace collection, GET on workspace detail/member collection or DELETE on member item and HEAD has no body
 
 #### Scenario: Success - Confirmed empty member deletion response
-- **WHEN** an authorized member deletion or no-op decision commits
+- **WHEN** an authorized conditional member deletion with a matching current validator commits
 - **THEN** empty204 has no JSON body, JSON Content-Type, Location or Set-Cookie, while no-store/nosniff remain present
 
 #### Scenario: Exception - Member mutation failure categories
 - **WHEN** a member transaction suffers unknown Commit, pool/lock deadline, cancellation, missing schema, deadlock or unexplained database fault
 - **THEN** no unconfirmed204 is issued, connected clients receive the safe503/500 category, canceled clients receive no attempted response and no automatic business retry occurs
 
+#### Scenario: Exception - Invitation methods and parsing remain bounded
+- **WHEN** invitation namespaces receive unsupported methods, ambiguous encoded/cleaned paths, malformed create JSON or a nonempty/slow accept/decline/revoke body
+- **THEN** exact endpoint Allow headers follow workspace-invitations, mutation aliases never redirect into writes, bounded parser/body deadlines apply, HEAD has no body and OPTIONS grants no CORS
+
 ### Requirement: Tenant boundaries and acceptance remain verifiable
-The repository SHALL verify workspace behavior with unit tests, mandatory real PostgreSQL 18 integration/race tests and matching API documentation. Each tenant resource query SHALL use trusted identity plus membership and resource ownership. Future tenant-owned rows SHALL require workspace_id and tenant-consistent relationships. Public member APIs SHALL be limited to workspace-members. No future business tables or RLS enforcement SHALL be introduced.
+The repository SHALL verify workspace behavior with unit tests, mandatory real PostgreSQL 18 integration/race tests and matching API documentation. Each tenant resource query SHALL use trusted identity plus membership and resource ownership. Future tenant-owned rows SHALL require workspace_id and tenant-consistent relationships. Public membership and invitation APIs SHALL follow workspace-members and workspace-invitations, including narrowly recipient-scoped consent preview. Only the reviewed invitation schema addition SHALL be introduced; no unrelated business tables or RLS enforcement SHALL be claimed.
 
 #### Scenario: Success - End-to-end contract and many-to-many fixtures
-- **WHEN** guarded PG18 tests register/login users, create workspaces and seed extra member/owner relations only in fixtures and exercise roster/removal/exit APIs
-- **THEN** API/DB contracts, multi-workspace lists, per-workspace roles and atomic creation are verified; fixture membership insertion is not presented as a shipped join API and no POST member endpoint is exposed
+- **WHEN** guarded PG18 tests register/login users, create workspaces and exercise invitation-backed member joins and roster/conditional removal/exit, using multi-owner or role-change SQL only as guarded fixtures
+- **THEN** API/DB contracts, multi-workspace lists, per-workspace roles and atomic creation are verified; real consent-backed joining is verified, fixture membership insertion is never presented as consent and no direct POST member endpoint is exposed
 
 #### Scenario: Exception - Required test dependencies absent
 - **WHEN** explicit integration runs lack the guarded URL, PG18, reachable DB or pinned Goose
@@ -199,4 +207,12 @@ The repository SHALL verify workspace behavior with unit tests, mandatory real P
 
 #### Scenario: Concurrency - Membership verification is required evidence
 - **WHEN** real PG18 tests order owner exits, remove/exit races, role changes, revocation/disable/cleanup and lock-wait expiry with controlled connections
-- **THEN** both documented orderings and all resource/identity gates are verified; missing dependencies fail and fixture-only add/rejoin cases are explicitly deferred rather than reported as product success
+- **THEN** both documented orderings and all resource/identity gates are verified; missing dependencies fail and real invite acceptance/rejoin, old DELETE generation protection, acceptance/revocation/decline and quota races are verified in both orderings rather than replaced by fixture-only inserts
+
+#### Scenario: Concurrency - Required deterministic delayed request evidence
+- **WHEN** a DELETE request begins before removal/rejoin but is paused before obtaining its Workspace lock
+- **THEN** PostgreSQL18 tests demonstrate the old composite-key-only protocol's failure and the conditional protocol's rejection of M1 after M2 joins; a distinct test proves that already holding the Workspace lock blocks rejoin
+
+#### Scenario: Exception - CI and legacy fixtures follow the reviewed migration
+- **WHEN** full normal and race integration suites run after version4 is added
+- **THEN** they preserve explicit version3 migration coverage, move the intentionally failed next-version fixture beyond version4, update precise roster/DELETE contracts, fail on missing guarded dependencies, and serialize schema-changing suites rather than masking failures or skipping old APIs

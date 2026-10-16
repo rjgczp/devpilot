@@ -1,0 +1,137 @@
+{
+  "items": [
+    {
+      "id": "backend-runtime",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 5
+    },
+    {
+      "id": "service-health",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "session-management",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "user-authentication",
+      "type": "spec",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[11]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "user-persistence",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 0
+    },
+    {
+      "id": "user-registration",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 0
+    },
+    {
+      "id": "workspace-access",
+      "type": "spec",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[7]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        },
+        {
+          "level": "WARNING",
+          "path": "requirements[8]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "workspace-invitations",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 0
+    },
+    {
+      "id": "workspace-members",
+      "type": "spec",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[2]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        },
+        {
+          "level": "WARNING",
+          "path": "requirements[3]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        }
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "workspace-persistence",
+      "type": "spec",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[1]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        },
+        {
+          "level": "WARNING",
+          "path": "requirements[8]",
+          "message": "Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior."
+        }
+      ],
+      "durationMs": 0
+    }
+  ],
+  "summary": {
+    "totals": {
+      "items": 10,
+      "passed": 6,
+      "failed": 4
+    },
+    "byType": {
+      "change": {
+        "items": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      "spec": {
+        "items": 10,
+        "passed": 6,
+        "failed": 4
+      }
+    }
+  },
+  "version": "1.0",
+  "root": {
+    "path": "/Users/sansea/Documents/ChatGPT/devpilot",
+    "source": "nearest"
+  }
+}

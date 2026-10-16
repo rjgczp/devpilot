@@ -88,3 +88,17 @@
 - UUID需人工交换；Owner创建成功暴露有限可邀请性，已由用户接受；无搜索/邮件/邀请码。公开前还需网关账户/IP/Workspace限流、跨Workspace接收者频控/拒绝冷却、防注册绕过、脱敏监控及增长/历史保留评审；100配额不是完整防轰炸，本PR不实现Redis/监控/通知。
 - 无邀请清理Worker不影响即时过期，但物理pending/终态历史会增长；保留/容量策略仍需发布评审。发起者失权后邀请仍有效是已确认的Workspace归属规则；最后Owner是关系数量不变量，不保证active Owner可用性。
 - CI保留固定Go/Goose/PG18 digest与verify/integration两作业；普通PG与integration-race在同一作业内串行。最终PR链接、head SHA和托管CI状态将在交付回复中按GitHub实际结果报告，不将本地通过当作CI通过。
+
+
+## 2026-10-16 合并、规格同步与归档
+
+用户后续明确授权“完成合并与归档”，取代实施阶段仅交付PR、等待审查的工作流限制；未授权公开部署。
+
+- GitHub核对：[PR #6](https://github.com/rjgczp/devpilot/pull/6) 已为 `MERGED`，实际合并时间 `2026-10-15T09:44:21Z`，合并提交 `edcb73fb2d79196803ce12c988ca50ae13bb8a55`，PR head `19dd61ab49210e68a9255450f266f49f9a5bb95d`。本次发现已合并，因此没有重复执行合并。主分支通过 `git fetch origin`、`git switch main`、`git pull --ff-only origin main` 同步。
+- PR head 的 [push CI](https://github.com/rjgczp/devpilot/actions/runs/38713909988) 与 [PR CI](https://github.com/rjgczp/devpilot/actions/runs/38713955864) 均已完成，四项 `verify`/`integration` 检查均 `SUCCESS`；这是GitHub实际查询结果。
+- 归档前 `openspec status --change add-workspace-invitations --json` 四类artifact均done，`openspec list --json` 明确29/29任务完成。使用 `spec-driven` schema，保留全部原任务及原测试证据；本次仅同步规格、补充归档记录并移动目录，没有修改业务代码、Migration或数据库，没有公开部署。
+- 四份delta按已审核文本同步至主规格：新增workspace-invitations，更新workspace-access、workspace-members、workspace-persistence。26项delta Requirement、122个Scenario逐项匹配；既有标题/Purpose和未涉及Requirement保持原文，既有Scenario名称全部保留，没有delta操作标题遗留。见 [archive-delta-sync.json](evidence/archive-delta-sync.json)。
+- 归档前 `openspec validate add-workspace-invitations --strict` 退出0，见 [archive-change-strict.txt](evidence/archive-change-strict.txt)。同步后 `openspec validate --specs` 为10通过/0失败（退出0），归档后再次相同，见 [archive-after-specs.txt](evidence/archive-after-specs.txt)。
+- 同步后、移动前 `openspec validate --all --strict --json` 为7通过/4失败（11项含本Change），见 [archive-before-all-strict.json](evidence/archive-before-all-strict.json)。归档后相同命令为**6通过/4失败（10项主规格，退出1）**，见 [archive-after-all-strict.json](evidence/archive-after-all-strict.json)。所有问题均是Requirement描述超过500字符的WARNING，在strict下计失败：既有user-authentication requirements[11]；本次同步文本的workspace-access requirements[7]/[8]、workspace-members requirements[2]/[3]、workspace-persistence requirements[1]/[8]。未把失败归因仅限于旧认证问题，也未将局部严格通过冒充全库严格通过。为保持审核文本，未在归档步骤擅自拆分/改写Requirement。
+- 整目录移动到 `openspec/changes/archive/2026-10-16-add-workspace-invitations/`，包括 `.openspec.yaml`。移动后逐文件SHA256核对全部30份原始文件，均与移动前相同；之后仅本verification附加归档记录。归档后 `openspec list --json` 返回空active changes，见 [archive-active-changes.json](evidence/archive-active-changes.json)。
+- 归档仅涉及OpenSpec文档和证据迁移，复用已通过的完整本地Go/PG18/race及PR CI验收，不宣称本次重新执行数据库测试。`git diff --check` 通过；主规格标准校验通过，严格格式警告如上保留为已知问题。

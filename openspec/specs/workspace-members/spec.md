@@ -7,11 +7,11 @@
 ## Requirements
 
 ### Requirement: Member roster is live authorized and minimally projected
-GET /api/v1/workspaces/{workspace_id}/members SHALL allow current owner/member identities only. One statement snapshot SHALL validate active user, valid session and workspace membership before projecting data[].user_id,role,joined_at only. joined_at SHALL be the membership creation time in UTC RFC3339. Missing membership, unknown or noncanonical workspace UUID SHALL share 404 workspace_not_found; invalid live identity SHALL be 401 unauthenticated.
+GET /api/v1/workspaces/{workspace_id}/members SHALL allow current owner/member identities only. One statement snapshot SHALL validate active user, valid session and workspace membership before projecting data[].membership_id,user_id,role,joined_at only. joined_at SHALL be the membership creation time in UTC RFC3339. Missing membership, unknown or noncanonical workspace UUID SHALL share 404 workspace_not_found; invalid live identity SHALL be 401 unauthenticated.
 
 #### Scenario: Success - Both roles read a minimal roster
 - **WHEN** an active Owner or Member with a valid Cookie reads its Workspace roster
-- **THEN** 200 returns only member UUIDs, roles and joined_at, including existing disabled-user relationships without exposing account status, email, names, credentials or sessions
+- **THEN** 200 returns only membership UUIDs, member UUIDs, roles and joined_at, including existing disabled-user relationships without exposing account status, email, names, credentials or sessions
 
 #### Scenario: Exception - Missing identity resource or membership
 - **WHEN** a well-formed request has expired/revoked/unknown/disabled identity, or a valid identity has an unknown/noncanonical Workspace or no membership
@@ -24,6 +24,10 @@ GET /api/v1/workspaces/{workspace_id}/members SHALL allow current owner/member i
 #### Scenario: Concurrency - Roster snapshots and permission removal
 - **WHEN** removal/revocation/disable commits before the roster statement snapshot or after that snapshot is authorized
 - **THEN** the former applies immediately as 404/401 and the latter snapshot may finish; later requests and pages cannot reuse its authority
+
+#### Scenario: Success - Relation validator is available without changing pagination
+- **WHEN** a current member reads the roster after upgrade or a later rejoin
+- **THEN** each row includes the current nonreused membership_id; the documented item validator is "membership:<membership_id>:<role>", while ordering/cursors remain user_id and existing Workspace projections are unchanged
 
 ### Requirement: Member pagination has strict bounded selectors
 Roster GET SHALL accept only single optional limit and after selectors, order by user_id ascending, and fetch at most limit+1 candidates. limit SHALL be canonical decimal 1–100 with default 50; after SHALL be a lowercase hyphenated UUID without requiring a particular UUID version. Success SHALL return data and pagination.next_after, set to the last returned UUID only when more rows exist, otherwise null. Invalid selectors SHALL return 400 invalid_request.
@@ -45,11 +49,11 @@ Roster GET SHALL accept only single optional limit and after selectors, order by
 - **THEN** each page uses fresh identity/membership authorization and current rows, without a whole-traversal snapshot or total-count guarantee
 
 ### Requirement: Member deletion has a narrow permission matrix
-DELETE /api/v1/workspaces/{workspace_id}/members/{user_id} SHALL derive its actor only from the valid Cookie. A member SHALL delete only itself; an owner SHALL delete ordinary members or itself subject to Owner retention, never another owner. Other-user deletion by a member and other-owner deletion SHALL return 403 membership_forbidden. A non-member SHALL receive 404 workspace_not_found before target lookup. Confirmed authorized deletion SHALL return empty 204.
+DELETE /api/v1/workspaces/{workspace_id}/members/{user_id} SHALL derive its actor only from the valid Cookie. A member SHALL delete only itself; an owner SHALL delete ordinary members or itself subject to Owner retention, never another owner. Other-user deletion by a member and other-owner deletion SHALL return 403 membership_forbidden. A non-member SHALL receive 404 workspace_not_found before target lookup. Confirmed authorized conditional deletion SHALL return empty 204; missing or mismatched conditions SHALL follow the mandatory membership precondition contract.
 
 #### Scenario: Success - Owner removal and member exit
 - **WHEN** an Owner removes an ordinary Member, including a disabled target, or a Member deletes its own relationship
-- **THEN** confirmed commit returns 204 without body, JSON Content-Type or Location, and only the exact target relationship in that Workspace is removed
+- **THEN** a matching membership condition and confirmed commit return 204 without body, JSON Content-Type or Location, and only the exact target relationship in that Workspace is removed
 
 #### Scenario: Exception - Forbidden target role or operation
 - **WHEN** a Member attempts another-user deletion or an Owner attempts to delete another Owner
@@ -61,14 +65,14 @@ DELETE /api/v1/workspaces/{workspace_id}/members/{user_id} SHALL derive its acto
 
 #### Scenario: Concurrency - Target and actor changes while waiting
 - **WHEN** another supported write removes or changes the actor/target before this delete gains protection
-- **THEN** current actor membership/role and target relationship determine 404/403/204/409; stale entry authorization cannot perform a write
+- **THEN** current actor membership/role, target relationship and supplied condition determine 404/403/428/412/204/409; stale entry authorization cannot perform a write
 
 ### Requirement: Delete selectors and representations are unambiguous
-DELETE SHALL accept no query selectors and no nonempty body. Noncanonical workspace UUID SHALL yield the same authenticated 404 as an inaccessible Workspace. Noncanonical target UUID SHALL yield 404 member_not_found only after current Workspace membership is established, without querying users. UUIDs SHALL use canonical lowercase hyphenated form. Input rejection SHALL never select an arbitrary identity, tenant or member.
+DELETE SHALL accept no query selectors and no nonempty body, and SHALL require the single strong If-Match defined by the membership precondition contract. Noncanonical workspace UUID SHALL yield the same authenticated 404 as an inaccessible Workspace. Noncanonical target UUID SHALL yield 404 member_not_found only after current Workspace membership is established, without querying users. UUIDs SHALL use canonical lowercase hyphenated form. Input rejection SHALL never select an arbitrary identity, tenant or member.
 
 #### Scenario: Success - Canonical target and empty representation
-- **WHEN** a CSRF-valid authenticated delete has canonical path UUIDs, no query and no body
-- **THEN** it reaches transaction authorization without requiring a JSON Content-Type or accepting client role/actor claims
+- **WHEN** a CSRF-valid authenticated delete has canonical path UUIDs, a valid single strong If-Match, no query and no body
+- **THEN** it reaches transaction authorization without requiring a JSON Content-Type; the role inside its validator is a comparison condition, never an authority or role assignment
 
 #### Scenario: Exception - Query body and path boundaries
 - **WHEN** DELETE has any query or nonempty body, or an authorized Workspace request has uppercase/compact/malformed target UUID
@@ -102,11 +106,11 @@ An owner SHALL be allowed to delete itself only if another owner relationship re
 - **THEN** self-exit serializes so only one deletion can commit and the remaining-owner exit gets409; mutual other-owner removal gets403/403 and retains both, regardless of lock acquisition order
 
 ### Requirement: Delete is state idempotent under current authorization
-An owner deleting an absent canonical target relationship SHALL receive confirmed204 without global target-user lookup. A caller that has already left or been removed SHALL receive404 on a fresh request, and invalid identity SHALL receive401. Idempotence SHALL concern resource state, not identical responses, cached permission, request deduplication or exactly-once deletion of a future rejoined relationship.
+Conditional DELETE SHALL change at most the matching current relationship once. An authorized Owner with an absent or mismatched target SHALL receive412 precondition_failed without global user lookup. A removed caller SHALL receive404 and invalid identity401. Retries SHALL NOT refresh an old condition into a later relationship's condition or reuse cached authority.
 
 #### Scenario: Success - Owner repeats a removal
 - **WHEN** an authorized Owner repeats DELETE for an absent relation, including a canonical UUID with no global user
-- **THEN** each confirmed decision returns204 and no other member, user, session or Workspace changes
+- **THEN** each request with a stale condition returns412 precondition_failed and no other member, user, session or Workspace changes
 
 #### Scenario: Exception - Self-exit replay loses authority
 - **WHEN** a Member or nonfinal Owner retries its successful self-exit with a still-valid Cookie
@@ -114,18 +118,18 @@ An owner deleting an absent canonical target relationship SHALL receive confirme
 
 #### Scenario: Security - Other-tenant target existence stays hidden
 - **WHEN** an Owner supplies the UUID of a user belonging only to another Workspace, or a Member probes absent targets
-- **THEN** the Owner gets the same no-op204 as any absent relationship and the Member gets the same forbidden response as other-user deletion, without unscoped user queries
+- **THEN** the Owner gets the same412 as any absent/mismatched relationship after satisfying the required precondition syntax and the Member gets the same forbidden response as other-user deletion, without unscoped user queries
 
 #### Scenario: Concurrency - Overlapping remove and exit
 - **WHEN** two Owners remove one Member, or an Owner removal races that Member's self-exit
-- **THEN** duplicate authorized Owner deletes are204/204; Owner-first removal makes later self-exit404, while self-exit-first makes later Owner delete204, with one relationship removal and no stale privilege reuse
+- **THEN** duplicate authorized Owner deletes with one relation condition are204/412; Owner-first removal makes later self-exit404, while self-exit-first makes later Owner delete412, with one relationship removal and no stale privilege reuse
 
 ### Requirement: Joining remains a separate consent-based capability
-This delivery SHALL expose no POST /members, invitation, acceptance, rejoin or role-grant endpoint. Unsupported collection methods SHALL return405 with Allow: GET; unsupported item methods SHALL return405 with Allow: DELETE. HEAD SHALL have no body and OPTIONS SHALL grant no CORS. Documentation SHALL state joining requires a separate change with target consent and new memberships limited to member, without claiming fixtures implement joining.
+Joining/rejoining SHALL be available only through the bound-recipient invitation acceptance in workspace-invitations, granting member. Direct POST /members and public role-grant SHALL remain unavailable. Unsupported member collection/item methods SHALL return405 with Allow: GET/DELETE respectively; HEAD SHALL have no body and OPTIONS SHALL grant no CORS. Fixtures SHALL NOT substitute for consent.
 
 #### Scenario: Success - Smaller delivery is accurately described
 - **WHEN** API documentation and acceptance evidence are reviewed
-- **THEN** listing/removal/exit are the shipped scope and adding/rejoining/consent are explicitly deferred, with no production SQL or seed endpoint substituting for them
+- **THEN** listing/removal/conditional exit plus the separate invitation acceptance are documented, and only the target Session can consent to joining/rejoining, with no production SQL or seed endpoint substituting for them
 
 #### Scenario: Exception - Direct add or role mutation request
 - **WHEN** any caller POSTs a registered/unknown/disabled user UUID to /members or uses unsupported PUT/PATCH/HEAD/OPTIONS methods
@@ -133,8 +137,35 @@ This delivery SHALL expose no POST /members, invitation, acceptance, rejoin or r
 
 #### Scenario: Security - UUID and owner role are not consent
 - **WHEN** an Owner knows a target UUID or submits role:owner with an add request
-- **THEN** no membership is created and no account existence is disclosed; subsequent joining design must require explicit consent under the target's valid identity and cannot grant owner from client input
+- **THEN** no membership is created and no account existence is disclosed; the separate invitation acceptance requires explicit consent under the target's valid identity and cannot grant owner from client input
 
 #### Scenario: Concurrency - Rejected joins cannot race into existence
 - **WHEN** unsupported joins or role updates overlap roster reads and allowed removals
 - **THEN** rejected requests perform zero DB operations and cannot restore a removed member, change its role or manufacture a success result
+
+### Requirement: Membership deletion requires a current relation precondition
+DELETE SHALL require exactly one strong If-Match: "membership:<canonical membership_id>:<role>". Missing SHALL be428 precondition_required after live identity/scope/action checks; absent, changed role or different generation SHALL be412 precondition_failed. Invalid syntax SHALL be400. Only matching protected deletion with confirmed commit SHALL be204. No unconditional fallback SHALL exist.
+
+#### Scenario: Success - Current relation can be removed
+- **WHEN** an authorized Owner removes a member, or a member/eligible Owner exits using its current roster-derived validator
+- **THEN** exactly the specified Workspace/user/membership_id/role is removed, with last-Owner409 still enforced, and204 follows confirmed commit only
+
+#### Scenario: Exception - Missing wildcard weak or stale condition
+- **WHEN** a request omits If-Match, uses duplicate/list/wildcard/weak/noncanonical/empty tags, or supplies a well-formed stale/absent relation validator
+- **THEN** after the applicable documented parsing/authorization precedence it receives428,400 or412 respectively without deletion; forbidden target roles remain403 and lost actor scope404
+
+#### Scenario: Security - Generation condition does not grant permission
+- **WHEN** an outsider or Member supplies a known valid other-user validator, a role in a tag, or a membership_id from another Workspace
+- **THEN** existing scope/role checks still apply, no target account lookup occurs, and the condition cannot select another tenant or assign a role
+
+#### Scenario: Concurrency - Delayed old delete cannot delete rejoined membership
+- **WHEN** D_old for M1 pauses before its Workspace lock, another removal commits M1 deletion, and invitation acceptance commits M2 before D_old resumes
+- **THEN** D_old's M1 validator receives412, M2 remains and its membership_id differs; if D_old already holds the Workspace lock, rejoin waits and any later M2 still survives that M1 deletion
+
+#### Scenario: Concurrency - Delayed self exit and explicit replay
+- **WHEN** a delayed self-exit or client replay carries M1's condition after the caller rejoins as M2
+- **THEN** a still-valid current actor cannot delete M2 through M1's condition, and no automatic retry or validator refresh turns the old request into a newly authorized M2 removal
+
+#### Scenario: Exception - Legacy clients and mixed releases
+- **WHEN** a legacy client sends no condition, or deployment/rollback would coexist with an unconditional-delete binary
+- **THEN** the new API rejects the request428, and the release plan requires draining/stopping old writers before inviting/rejoining; no compatibility mode silently permits unconditional deletes

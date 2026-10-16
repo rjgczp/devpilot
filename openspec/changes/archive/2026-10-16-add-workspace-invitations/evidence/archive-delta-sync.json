@@ -1,0 +1,30 @@
+[
+  {
+    "capability": "workspace-access",
+    "deltaRequirements": 4,
+    "deltaScenarios": 26,
+    "allDeltaContentMatches": true,
+    "unmentionedContentPreserved": true
+  },
+  {
+    "capability": "workspace-invitations",
+    "deltaRequirements": 9,
+    "deltaScenarios": 36,
+    "allDeltaContentMatches": true,
+    "unmentionedContentPreserved": true
+  },
+  {
+    "capability": "workspace-members",
+    "deltaRequirements": 6,
+    "deltaScenarios": 27,
+    "allDeltaContentMatches": true,
+    "unmentionedContentPreserved": true
+  },
+  {
+    "capability": "workspace-persistence",
+    "deltaRequirements": 7,
+    "deltaScenarios": 33,
+    "allDeltaContentMatches": true,
+    "unmentionedContentPreserved": true
+  }
+]
