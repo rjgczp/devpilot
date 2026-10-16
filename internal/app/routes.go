@@ -7,7 +7,7 @@ import (
 )
 
 // NewRoutes composes business routes without changing health endpoint contracts.
-// Optional handlers are authentication first, then workspace; old callers retain
+// Optional handlers are authentication first, then workspace and project; old callers retain
 // their existing routes when either is absent.
 func NewRoutes(health, registration http.Handler, authentication ...http.Handler) http.Handler {
 	mux := http.NewServeMux()
@@ -27,6 +27,11 @@ func NewRoutes(health, registration http.Handler, authentication ...http.Handler
 	// Bypass ServeMux path cleaning for the member namespace: reject ambiguous
 	// member paths in the handler instead of redirecting a mutation to an alias.
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Project namespace is intercepted before ServeMux path normalization.
+		if len(authentication) > 2 && (strings.HasPrefix(r.URL.Path, "/api/v1/workspaces/") || strings.HasPrefix(path.Clean(r.URL.Path), "/api/v1/workspaces/")) && strings.Contains(r.URL.Path, "/projects") {
+			authentication[2].ServeHTTP(w, r)
+			return
+		}
 		if len(authentication) > 1 && strings.HasPrefix(path.Clean(r.URL.Path), "/api/v1/invitations") {
 			authentication[1].ServeHTTP(w, r)
 			return

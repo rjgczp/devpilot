@@ -60,13 +60,13 @@ func TestInvitationMigration(t *testing.T) {
 	if err := db.QueryRow(ctx, `SELECT created_at FROM workspace_members WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.member.ID).Scan(&joined); err != nil {
 		t.Fatal(err)
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 4", true)
 	var id string
 	var after time.Time
 	if err := db.QueryRow(ctx, `SELECT membership_id::text,created_at FROM workspace_members WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.member.ID).Scan(&id, &after); err != nil || !after.Equal(joined) || id[14] != '7' {
 		t.Fatal("backfill preservation", err)
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 4", true)
 	if queryInt(t, db, `SELECT count(*) FROM workspace_members WHERE membership_id=$1`, id) != 1 || queryInt(t, db, `SELECT count(DISTINCT membership_id) FROM workspace_members`) != before {
 		t.Fatal("backfill uniqueness/repeat")
 	}
@@ -95,7 +95,7 @@ func TestInvitationMigration(t *testing.T) {
 	if queryInt(t, db, `SELECT count(*) FROM workspace_members`) != left || queryInt(t, db, `SELECT count(*) FROM users`) != 3 {
 		t.Fatal("down damaged v3 data")
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 4", true)
 	// Fail the real migration after its schema/backfill work, preserving version3.
 	goose(t, dir, "down", true)
 	tmp := t.TempDir()
@@ -115,7 +115,7 @@ func TestInvitationMigration(t *testing.T) {
 	if queryInt(t, db, `SELECT count(*) FROM information_schema.columns WHERE table_name='workspace_members' AND column_name='membership_id'`) != 0 || queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='workspace_invitations'`) != 0 || queryInt(t, db, `SELECT count(*) FROM workspace_members`) != left {
 		t.Fatal("failed migration not atomic")
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 4", true)
 	if queryInt(t, db, `SELECT count(*) FROM pg_indexes WHERE tablename='workspace_invitations'`) != 8 {
 		t.Fatal("invitation indexes")
 	}

@@ -9,6 +9,7 @@ on:
       - codex/add-workspace-foundation
       - codex/add-workspace-members
       - codex/add-workspace-invitations
+      - codex/add-project-management
   pull_request:
     branches:
       - main

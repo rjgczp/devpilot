@@ -95,3 +95,15 @@ Session查询以数据库当前statement time/撤销/用户active强制失效，
 回退：保持Schema4和数据，停止邀请/接受及成员DELETE写入口，排空写请求后前向修复；不得直接重开旧二进制的无条件DELETE，即便已经关闭新接受，因为已有重加关系仍在。共享/生产禁用down/down-to/redo/reset自动回滚。
 
 4单步Down只限已确认可丢弃库：删除邀请表/历史、再删除成员代际列/唯一索引；原v3成员、角色、created_at及用户/Session/Workspace保留。重新Up生成新代际，旧validator失效。集成在守护的PG18独立库验证0→4、存量3→4、up/up、4→3→4和真实Migration4中途失败回滚；旧v3用例显式up-to3，旧临时失败migration移至版本5。普通integration和integration-race不得并行操作同一库。
+
+## Project migration（版本 5）
+
+`00005_create_projects.sql` 仅追加projects、约束/索引及不可变字段函数/trigger；1–4保持字节不变，不回填旧表/默认项目。UUIDv7由DB生成，(workspace_id,id)复合UNIQUE同时支持租户分页及未来子表复合FK，creator索引用于引用检查。Workspace与creator外键RESTRICT；不引用membership，创建者失去成员关系不销毁Project，也不授予终身权限。未来账户/Workspace硬删除需单独设计资源处置，不能假定CASCADE。无Project删除/归档/转移/状态接口。
+
+BEFORE UPDATE trigger拒绝id/workspace_id/created_by_user_id/created_at实际变化，即使新Workspace合法也拒绝；它不查询其他行或取得额外业务锁。name/description在DB限制码点、字节及ASCII控制子集，Go额外限制Unicode Cc/边缘空白。version>0与时间CHECK保障基本形状；受支持业务更新必须通过Project Store，按条件UPDATE递增version（包括同值写），禁止其他模块直接改可变字段。任意特权SQL不具备应用授权保证，维护需遵守协议。
+
+发布顺序：有存量数据先审查备份及锁规模，由唯一受控步骤status/up/status到5，再部署API并冒烟四Project操作及前六阶段。API不自动DDL，readiness只Ping，缺5时Project请求safe500。无需升级工具或改变Cookie/Session；回退应用保留Schema5和项目数据，停项目写并前向修复，不回退已禁用的旧无条件成员DELETE二进制。共享/生产不down/down-to/redo/reset。
+
+原生单步5→4 Down仅限经testdb守护确认可丢弃的PG18库：先DROP projects（包括trigger），再DROP其函数，保留所有用户/Session/Workspace/member代际和邀请历史。测试临时child表必须先清理，不使用CASCADE隐藏依赖；再Up不恢复已删除项目数据。真实v5失败测试在临时副本的全部DDL后、Down前注入失败，要求表/索引/函数及applied版本记录一起回滚。历史v4测试固定up-to4并保留4→3/失败路径；临时下一失败迁移改为6并复制真实1–5。普通integration和integration-race仍串行，不操作开发数据卷。
+
+Project写遵循User SHARE→Session SHARE→Workspace NO KEY UPDATE→Membership UPDATE→Project UPDATE；全部保护性等待后用新数据库语句检查active、撤销、严格expiry、Owner与wid/pid/version。门控后自然过期可提交。Commit丢回执可已落库，无自动重试/补偿；创建重试可能产生同名资源，条件修改需保留原tag。所有错误只表示当前可确认的结果，不能凭超时断言回滚。

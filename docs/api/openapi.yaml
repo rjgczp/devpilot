@@ -5103,6 +5103,1250 @@
           }
         }
       }
+    },
+    "/api/v1/workspaces/{workspace_id}/projects": {
+      "get": {
+        "operationId": "listProjects",
+        "summary": "Read projects",
+        "description": "Project inherits current Workspace membership: Owner writes, Owner/Member read. All reads bind live active User, unrevoked Session with expires_at > database statement time, current membership and resource ownership in one snapshot. Nonmember/unknown/malformed/mismatched tenant resource all return404 project_not_found. Writes lock User -> Session -> Workspace -> Membership -> Project (update), then use a NEW statement for live Owner/expiry and scoped DML. Version increments for every successful PATCH including equal values; no automatic merge/retry/compensation. Confirmed Commit is required. Unknown Commit can have persisted; POST repeat can create duplicates. Request budget5s, whole DB operation2s. All outcomes forbid Set-Cookie and expose only fixed safe diagnostics, no-store/nosniff. No RLS, project roles, deletion, status, archive, transfer, slug, quota, aggregate listing or create idempotency. Invalid encoded/cleaned paths return404 without redirect. HEAD/OPTIONS405, no CORS. No query except list limit/after. If-Match on GET/POST and any If-None-Match/If-Modified-Since/If-Unmodified-Since/If-Range return400. id ASC, keyset id > after, at most limit+1. Cursor need not exist or belong to tenant; grants no access. next_after is last returned id only if extra row exists. Fresh snapshots; UUIDv7 is not commit order, late commits below cursor can be missed; no total or traversal snapshot.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": "Single canonical decimal, no leading zero or sign."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Single canonical lowercase UUID range lower bound only."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_project_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProjectError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProject",
+        "summary": "Write project with current Owner authority",
+        "description": "Project inherits current Workspace membership: Owner writes, Owner/Member read. All reads bind live active User, unrevoked Session with expires_at > database statement time, current membership and resource ownership in one snapshot. Nonmember/unknown/malformed/mismatched tenant resource all return404 project_not_found. Writes lock User -> Session -> Workspace -> Membership -> Project (update), then use a NEW statement for live Owner/expiry and scoped DML. Version increments for every successful PATCH including equal values; no automatic merge/retry/compensation. Confirmed Commit is required. Unknown Commit can have persisted; POST repeat can create duplicates. Request budget5s, whole DB operation2s. All outcomes forbid Set-Cookie and expose only fixed safe diagnostics, no-store/nosniff. No RLS, project roles, deletion, status, archive, transfer, slug, quota, aggregate listing or create idempotency. Invalid encoded/cleaned paths return404 without redirect. HEAD/OPTIONS405, no CORS. No query except list limit/after. If-Match on GET/POST and any If-None-Match/If-Modified-Since/If-Unmodified-Since/If-Range return400. Method -> CSRF proof -> Cookie syntax -> input -> live database authority/conditions. Single JSON object, case-sensitive only name/description strings, no duplicate/unknown keys, null, malformed UTF-8/surrogate escapes or trailing values. Raw body including escapes/whitespace/chunks at most16384 bytes. One application/json, optional charset=utf-8 only; any Content-Encoding rejected415. Name trims ASCII SP/HT/CR/LF edges then1–100 code points and <=400 UTF-8 bytes; rejects Cc or remaining Unicode edge whitespace. Description0–2000 code points/<=8000 bytes, preserves text/HT/LF, no other Cc including CR; empty string clears. No Unicode normalization. Reasons: required (empty name), invalid_length before invalid_format. PATCH omits unchanged fields; at least one supplied.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one non-null Origin matching configured AUTH_ORIGIN by scheme, host and effective port. Host/Forwarded/Referer do not replace it."
+          },
+          {
+            "name": "X-DevPilot-CSRF",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            },
+            "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Raw input may contain ASCII edge whitespace; post-trim bounds1–100 code points/400 bytes."
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong \"project:<id>:<version>\", fixed role-independent JSON representation and UTC RFC3339Nano times; no representation/compression variants."
+              },
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "/api/v1/workspaces/{workspace_id}/projects/{project_id}, only after confirmed Commit."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_project_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProjectError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectError_csrf_rejected"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProjectError_project_forbidden"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_request_too_large"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_unsupported_media_type"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_validation_failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/projects/{project_id}": {
+      "get": {
+        "operationId": "getProject",
+        "summary": "Read projects",
+        "description": "Project inherits current Workspace membership: Owner writes, Owner/Member read. All reads bind live active User, unrevoked Session with expires_at > database statement time, current membership and resource ownership in one snapshot. Nonmember/unknown/malformed/mismatched tenant resource all return404 project_not_found. Writes lock User -> Session -> Workspace -> Membership -> Project (update), then use a NEW statement for live Owner/expiry and scoped DML. Version increments for every successful PATCH including equal values; no automatic merge/retry/compensation. Confirmed Commit is required. Unknown Commit can have persisted; POST repeat can create duplicates. Request budget5s, whole DB operation2s. All outcomes forbid Set-Cookie and expose only fixed safe diagnostics, no-store/nosniff. No RLS, project roles, deletion, status, archive, transfer, slug, quota, aggregate listing or create idempotency. Invalid encoded/cleaned paths return404 without redirect. HEAD/OPTIONS405, no CORS. No query except list limit/after. If-Match on GET/POST and any If-None-Match/If-Modified-Since/If-Unmodified-Since/If-Range return400.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong \"project:<id>:<version>\", fixed role-independent JSON representation and UTC RFC3339Nano times; no representation/compression variants."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_project_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, PATCH"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProjectError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateProject",
+        "summary": "Write project with current Owner authority",
+        "description": "Project inherits current Workspace membership: Owner writes, Owner/Member read. All reads bind live active User, unrevoked Session with expires_at > database statement time, current membership and resource ownership in one snapshot. Nonmember/unknown/malformed/mismatched tenant resource all return404 project_not_found. Writes lock User -> Session -> Workspace -> Membership -> Project (update), then use a NEW statement for live Owner/expiry and scoped DML. Version increments for every successful PATCH including equal values; no automatic merge/retry/compensation. Confirmed Commit is required. Unknown Commit can have persisted; POST repeat can create duplicates. Request budget5s, whole DB operation2s. All outcomes forbid Set-Cookie and expose only fixed safe diagnostics, no-store/nosniff. No RLS, project roles, deletion, status, archive, transfer, slug, quota, aggregate listing or create idempotency. Invalid encoded/cleaned paths return404 without redirect. HEAD/OPTIONS405, no CORS. No query except list limit/after. If-Match on GET/POST and any If-None-Match/If-Modified-Since/If-Unmodified-Since/If-Range return400. Method -> CSRF proof -> Cookie syntax -> input -> live database authority/conditions. Single JSON object, case-sensitive only name/description strings, no duplicate/unknown keys, null, malformed UTF-8/surrogate escapes or trailing values. Raw body including escapes/whitespace/chunks at most16384 bytes. One application/json, optional charset=utf-8 only; any Content-Encoding rejected415. Name trims ASCII SP/HT/CR/LF edges then1–100 code points and <=400 UTF-8 bytes; rejects Cc or remaining Unicode edge whitespace. Description0–2000 code points/<=8000 bytes, preserves text/HT/LF, no other Cc including CR; empty string clears. No Unicode normalization. Reasons: required (empty name), invalid_length before invalid_format. PATCH omits unchanged fields; at least one supplied. Exactly one strong If-Match: \"project:<uuid>:<version>\", <=96 bytes, canonical lowercase UUID and positive canonical bigint. Weak/wildcard/multiple/invalid/overflow tag400. Business priority401 -> scope404 -> Member403 -> missing428 -> mismatch412; no current tag on error. Stale original condition never auto-refreshed.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one non-null Origin matching configured AUTH_ORIGIN by scheme, host and effective port. Host/Forwarded/Referer do not replace it."
+          },
+          {
+            "name": "X-DevPilot-CSRF",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            },
+            "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 96
+            },
+            "description": "Exactly one strong \"project:<uuid>:<positive bigint>\" tag from a prior detail/create/update; do not auto-refresh."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Raw input may contain ASCII edge whitespace; post-trim bounds1–100 code points/400 bytes."
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong \"project:<id>:<version>\", fixed role-independent JSON representation and UTC RFC3339Nano times; no representation/compression variants."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_project_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, PATCH"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProjectError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectError_csrf_rejected"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProjectError_project_forbidden"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_request_too_large"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_unsupported_media_type"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_validation_failed"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_precondition_failed"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectError_precondition_required"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6157,6 +7401,497 @@
                   "null"
                 ],
                 "format": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "workspace_id",
+          "name",
+          "description",
+          "version",
+          "created_at",
+          "updated_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Positive bigint decimal string, maximum 9223372036854775807."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ProjectResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Project"
+          }
+        }
+      },
+      "ProjectPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "next_after"
+            ],
+            "properties": {
+              "next_after": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_invalid_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invalid_request"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invalid project request."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_unauthenticated": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "unauthenticated"
+              },
+              "message": {
+                "type": "string",
+                "const": "Authentication required."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_csrf_rejected": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "csrf_rejected"
+              },
+              "message": {
+                "type": "string",
+                "const": "Request origin could not be verified."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_project_forbidden": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "project_forbidden"
+              },
+              "message": {
+                "type": "string",
+                "const": "Project operation is not permitted."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_project_not_found": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "project_not_found"
+              },
+              "message": {
+                "type": "string",
+                "const": "Project not found."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_method_not_allowed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "method_not_allowed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Method not allowed."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_precondition_failed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "precondition_failed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Project precondition failed."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_precondition_required": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "precondition_required"
+              },
+              "message": {
+                "type": "string",
+                "const": "Project precondition required."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_request_too_large": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "request_too_large"
+              },
+              "message": {
+                "type": "string",
+                "const": "Request body too large."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_unsupported_media_type": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "unsupported_media_type"
+              },
+              "message": {
+                "type": "string",
+                "const": "Unsupported media type."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_validation_failed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message",
+              "fields"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "validation_failed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invalid project fields."
+              },
+              "fields": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "enum": [
+                      "required",
+                      "invalid_length",
+                      "invalid_format"
+                    ]
+                  },
+                  "description": {
+                    "type": "string",
+                    "enum": [
+                      "invalid_length",
+                      "invalid_format"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_database_timeout": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "database_timeout"
+              },
+              "message": {
+                "type": "string",
+                "const": "Project operation could not be confirmed."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_service_unavailable": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "service_unavailable"
+              },
+              "message": {
+                "type": "string",
+                "const": "Project operation could not be confirmed."
+              }
+            }
+          }
+        }
+      },
+      "ProjectError_internal_error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "internal_error"
+              },
+              "message": {
+                "type": "string",
+                "const": "Unable to complete project operation."
               }
             }
           }
