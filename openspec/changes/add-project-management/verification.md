@@ -73,6 +73,14 @@
 - 强ETag依赖固定投影/编码和所有受支持写者递增version；未来新业务模块必须遵守Store边界，改变表示或压缩变体需重新评审。无RLS或任意SQL用户级隔离承诺。
 - 共享/生产只显式串行status/up/status，API启动不DDL、readiness只Ping；回退保留Schema5/数据并前向修复，不执行共享库Down，不重开旧无条件Member DELETE。
 
+全部34/34任务已按实际实施与验收结果勾选；`openspec instructions apply --change add-project-management --json`返回`all_done`。
+
 ## GitHub PR 与托管CI
 
-创建PR、实现提交SHA和实际CI运行链接将在完成托管检查后补记。本地测试通过不等于托管CI通过；不会自动合并、归档或公开部署。
+[PR #7](https://github.com/rjgczp/devpilot/pull/7) 指向main，保持OPEN，等待独立代码审查。实现提交为`feb3344de8f6a2e2b759029b45871ad2c29b2573`。
+
+该实现提交的[push CI](https://github.com/rjgczp/devpilot/actions/runs/38840364340)和[PR CI](https://github.com/rjgczp/devpilot/actions/runs/38840384990)的verify/integration四项作业均实际SUCCESS；JSON快照见[push](evidence/ci-push-implementation.json)和[PR](evidence/ci-pr-implementation.json)。托管integration包含普通全量PG18及其后的全量integration-race，不是只跑Project筛选。最终补充提交的最新CI会在交付时按PR当前head再次核实；旧SHA通过不替代最新head检查。
+
+最终自查额外拒绝重复charset参数，并校正慢POST测试确保真正进入body读取路径（早期该TCP样例带不适用于POST的If-Match，只测试到了早拒绝drain）。完整Go/race及全部12项Project integration-race已复验通过。创建者退出后再禁用/撤销的现任Owner读取/更新也有真实PG断言。
+
+默认Git HTTPS helper的Token缺workflow scope曾导致推送被GitHub拒绝；随后只对该次push使用本机已有workflow权限的gh登录凭据，成功推送，未修改Token权限或全局Git设置。没有删掉CI文件规避验证要求。未自动合并、归档或公开部署。

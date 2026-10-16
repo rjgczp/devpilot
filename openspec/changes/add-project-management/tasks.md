@@ -52,7 +52,7 @@
 - [x] 6.2 对缺URL/错库/与应用库冲突/不可达/非18/缺Goose运行负向依赖检查，确认fail不skip、不读取开发.env或回退DATABASE_URL；记录实际服务器版本及固定工具版本，不并发运行两个Schema套件。
 - [x] 6.3 运行gofmt、git diff --check、go mod verify、go vet、全量unit与unit-race；记录真实退出码，确认go.mod/go.sum及Migration1–4无意外改动，Project之外只有已计划接入/文档/测试变更。
 - [x] 6.4 在受保护真实PG18库串行运行全量 `go test -tags=integration ./... -count=1 -timeout=120s` 和 `go test -race -tags=integration ./tests/integration -count=1 -timeout=120s`；确认前六阶段全部回归及Project并发/迁移用例实际执行，必要timeout调整必须有实测依据。
-- [ ] 6.5 运行单Change strict、主Specs和全库strict验证，分别记录结果与既有长度warning，不擅自重写旧主Specs以变绿；交付verification及逐Requirement→unit/PG/HTTP/concurrency测试映射，区分本地证据与实际托管CI。
+- [x] 6.5 运行单Change strict、主Specs和全库strict验证，分别记录结果与既有长度warning，不擅自重写旧主Specs以变绿；交付verification及逐Requirement→unit/PG/HTTP/concurrency测试映射，区分本地证据与实际托管CI。
 
 ## Workflow follow-up
 

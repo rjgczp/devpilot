@@ -1,13 +1,13 @@
-ok  	github.com/rjgczp/devpilot/cmd/api	5.397s
-ok  	github.com/rjgczp/devpilot/internal/app	1.441s
-ok  	github.com/rjgczp/devpilot/internal/auth	1.204s
-ok  	github.com/rjgczp/devpilot/internal/config	1.182s
+ok  	github.com/rjgczp/devpilot/cmd/api	6.935s
+ok  	github.com/rjgczp/devpilot/internal/app	1.713s
+ok  	github.com/rjgczp/devpilot/internal/auth	1.480s
+ok  	github.com/rjgczp/devpilot/internal/config	1.439s
 ?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
-ok  	github.com/rjgczp/devpilot/internal/health	1.182s
-ok  	github.com/rjgczp/devpilot/internal/password	11.434s
-ok  	github.com/rjgczp/devpilot/internal/project	1.768s
-ok  	github.com/rjgczp/devpilot/internal/registration	1.215s
-ok  	github.com/rjgczp/devpilot/internal/session	1.180s
-ok  	github.com/rjgczp/devpilot/internal/testdb	1.155s
-ok  	github.com/rjgczp/devpilot/internal/user	1.210s
-ok  	github.com/rjgczp/devpilot/internal/workspace	1.657s
+ok  	github.com/rjgczp/devpilot/internal/health	1.450s
+ok  	github.com/rjgczp/devpilot/internal/password	13.614s
+ok  	github.com/rjgczp/devpilot/internal/project	1.699s
+ok  	github.com/rjgczp/devpilot/internal/registration	1.378s
+ok  	github.com/rjgczp/devpilot/internal/session	1.341s
+ok  	github.com/rjgczp/devpilot/internal/testdb	1.346s
+ok  	github.com/rjgczp/devpilot/internal/user	1.293s
+ok  	github.com/rjgczp/devpilot/internal/workspace	1.819s

@@ -120,7 +120,7 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	var input Input
 	if write {
 		media, params, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-		ok = err == nil && media == "application/json" && len(r.Header.Values("Content-Type")) == 1
+		ok = err == nil && media == "application/json" && len(r.Header.Values("Content-Type")) == 1 && strings.Count(r.Header.Get("Content-Type"), ";") <= 1
 		for k, v := range params {
 			if k != "charset" || !strings.EqualFold(v, "utf-8") {
 				ok = false

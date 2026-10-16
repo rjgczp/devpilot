@@ -4,9 +4,9 @@
 === RUN   TestProjectConcurrentVersions/true
 === NAME  TestProjectConcurrentVersions
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
---- PASS: TestProjectConcurrentVersions (0.23s)
+--- PASS: TestProjectConcurrentVersions (0.26s)
     --- PASS: TestProjectConcurrentVersions/false (0.06s)
-    --- PASS: TestProjectConcurrentVersions/true (0.02s)
+    --- PASS: TestProjectConcurrentVersions/true (0.03s)
 === RUN   TestProjectExpiryAfterEveryProtectiveWait
     registration_test.go:78: native Goose up expected-success=true: verified
 === RUN   TestProjectExpiryAfterEveryProtectiveWait/updatefalse-user
@@ -22,17 +22,17 @@
 === RUN   TestProjectExpiryAfterEveryProtectiveWait/updatetrue-post-gate
 === NAME  TestProjectExpiryAfterEveryProtectiveWait
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
---- PASS: TestProjectExpiryAfterEveryProtectiveWait (2.06s)
-    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-user (0.17s)
+--- PASS: TestProjectExpiryAfterEveryProtectiveWait (2.05s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-user (0.18s)
     --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-session (0.17s)
     --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-workspace (0.18s)
     --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-membership (0.17s)
     --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-post-gate (0.18s)
-    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-user (0.18s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-user (0.19s)
     --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-session (0.18s)
-    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-workspace (0.17s)
-    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-membership (0.18s)
-    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-project (0.18s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-workspace (0.18s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-membership (0.17s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-project (0.17s)
     --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-post-gate (0.18s)
 === RUN   TestProjectIdentityAndMembershipOrderings
     registration_test.go:78: native Goose up expected-success=true: verified
@@ -62,14 +62,14 @@
 === RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-accept-projectfirsttrue
 === NAME  TestProjectIdentityAndMembershipOrderings
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
---- PASS: TestProjectIdentityAndMembershipOrderings (0.46s)
+--- PASS: TestProjectIdentityAndMembershipOrderings (0.44s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-revoke-projectfirstfalse (0.04s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-revoke-projectfirsttrue (0.02s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-disable-projectfirstfalse (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-disable-projectfirsttrue (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-role-projectfirstfalse (0.01s)
-    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-role-projectfirsttrue (0.02s)
-    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-exit-projectfirstfalse (0.02s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-role-projectfirsttrue (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-exit-projectfirstfalse (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-exit-projectfirsttrue (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-remove-projectfirstfalse (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-remove-projectfirsttrue (0.01s)
@@ -82,7 +82,7 @@
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-role-projectfirstfalse (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-role-projectfirsttrue (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-exit-projectfirstfalse (0.01s)
-    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-exit-projectfirsttrue (0.02s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-exit-projectfirsttrue (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-remove-projectfirstfalse (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-remove-projectfirsttrue (0.01s)
     --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-accept-projectfirstfalse (0.02s)
@@ -109,7 +109,7 @@
 === RUN   TestProjectFaultAtomicityAndTenantIndependence/independent-tenants
 === NAME  TestProjectFaultAtomicityAndTenantIndependence
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
---- PASS: TestProjectFaultAtomicityAndTenantIndependence (0.32s)
+--- PASS: TestProjectFaultAtomicityAndTenantIndependence (0.26s)
     --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-candidate (0.02s)
     --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-user (0.01s)
     --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-session (0.01s)
@@ -140,20 +140,20 @@
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
 --- PASS: TestProjectSameTenantSerializationAndParentReferences (0.12s)
     --- PASS: TestProjectSameTenantSerializationAndParentReferences/false (0.01s)
-    --- PASS: TestProjectSameTenantSerializationAndParentReferences/true (0.00s)
+    --- PASS: TestProjectSameTenantSerializationAndParentReferences/true (0.01s)
 === RUN   TestProjectDelayedOwnerRequestCannotUseRejoin
     registration_test.go:78: native Goose up expected-success=true: verified
 === RUN   TestProjectDelayedOwnerRequestCannotUseRejoin/false
 === RUN   TestProjectDelayedOwnerRequestCannotUseRejoin/true
 === NAME  TestProjectDelayedOwnerRequestCannotUseRejoin
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
---- PASS: TestProjectDelayedOwnerRequestCannotUseRejoin (0.12s)
+--- PASS: TestProjectDelayedOwnerRequestCannotUseRejoin (0.13s)
     --- PASS: TestProjectDelayedOwnerRequestCannotUseRejoin/false (0.04s)
     --- PASS: TestProjectDelayedOwnerRequestCannotUseRejoin/true (0.02s)
 === RUN   TestProjectHTTPJourneyAndIsolation
     registration_test.go:78: native Goose up expected-success=true: verified
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
---- PASS: TestProjectHTTPJourneyAndIsolation (3.72s)
+--- PASS: TestProjectHTTPJourneyAndIsolation (3.81s)
 === RUN   TestProjectHTTPFaultsCancellationAndRecovery
     registration_test.go:78: native Goose up expected-success=true: verified
 === RUN   TestProjectHTTPFaultsCancellationAndRecovery/lostcreate
@@ -173,7 +173,7 @@
 === RUN   TestProjectHTTPFaultsCancellationAndRecovery/actual-query-timeout
 === NAME  TestProjectHTTPFaultsCancellationAndRecovery
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
---- PASS: TestProjectHTTPFaultsCancellationAndRecovery (0.33s)
+--- PASS: TestProjectHTTPFaultsCancellationAndRecovery (0.32s)
     --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/lostcreate (0.02s)
     --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/rollbackcreate (0.01s)
     --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/timeoutcreate (0.01s)
@@ -201,7 +201,7 @@
     projects_test.go:145: native Goose down-to 0 expected-success=true: verified
     projects_test.go:146: native Goose up expected-success=true: verified
     projects_test.go:50: native Goose down-to 0 expected-success=true: verified
---- PASS: TestProjectMigration (0.26s)
+--- PASS: TestProjectMigration (0.25s)
 === RUN   TestProjectStorePermissionsPaginationAndVersions
     registration_test.go:78: native Goose up expected-success=true: verified
     workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
@@ -222,4 +222,4 @@
     --- PASS: TestProjectLiveAuthorityAndCreatorLifetime/disable (0.01s)
     --- PASS: TestProjectLiveAuthorityAndCreatorLifetime/creator (0.01s)
 PASS
-ok  	github.com/rjgczp/devpilot/tests/integration	9.507s
+ok  	github.com/rjgczp/devpilot/tests/integration	9.577s

@@ -207,7 +207,7 @@ func TestProjectMethodCSRFSelectorsAndConditions(t *testing.T) {
 		r.Header.Set(header, "x")
 		response(t, testHandler(&repositoryStub{}, io.Discard), r, 400, "invalid_request")
 	}
-	for _, media := range []string{"text/plain", "application/json; charset=latin1", "application/json; x=y"} {
+	for _, media := range []string{"text/plain", "application/json; charset=latin1", "application/json; x=y", "application/json; charset=utf-8; charset=utf-8"} {
 		r := request("POST", listPath, `{"name":"x"}`)
 		r.Header.Set("Content-Type", media)
 		response(t, testHandler(&repositoryStub{}, io.Discard), r, 415, "unsupported_media_type")

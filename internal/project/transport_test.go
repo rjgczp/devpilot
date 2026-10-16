@@ -30,7 +30,11 @@ func TestProjectSlowBodiesAndEarlyDrainAreBounded(t *testing.T) {
 			if method == "PATCH" {
 				route = itemPath
 			}
-			_, err = io.WriteString(conn, method+" "+route+" HTTP/1.1\r\nHost: example.com\r\nOrigin: https://app.example.com\r\nX-DevPilot-CSRF: 1\r\nCookie: __Host-devpilot_session="+strings.Repeat("A", 43)+"\r\nIf-Match: \"project:"+exampleID+":1\"\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\n")
+			tag := ""
+			if method == "PATCH" || method == "GET" {
+				tag = "If-Match: \"project:" + exampleID + ":1\"\r\n"
+			}
+			_, err = io.WriteString(conn, method+" "+route+" HTTP/1.1\r\nHost: example.com\r\nOrigin: https://app.example.com\r\nX-DevPilot-CSRF: 1\r\nCookie: __Host-devpilot_session="+strings.Repeat("A", 43)+"\r\n"+tag+"Content-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\n")
 			if err != nil {
 				t.Fatal(err)
 			}

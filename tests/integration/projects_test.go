@@ -252,14 +252,22 @@ func TestProjectLiveAuthorityAndCreatorLifetime(t *testing.T) {
 				if err := ws.DeleteMember(ctx, f.od, f.w.ID, f.owner.ID, f.condition(f.w.ID, f.owner.ID)); err != nil {
 					t.Fatal(err)
 				}
+				_, err := s.Detail(ctx, f.od, f.w.ID, p.ID)
+				projectWant(t, err, project.ErrNotFound)
+				if _, err = db.Exec(ctx, `UPDATE users SET status='disabled' WHERE id=$1`, f.owner.ID); err != nil {
+					t.Fatal(err)
+				}
+				if err = (session.Store{Pool: db}).Revoke(ctx, f.od); err != nil {
+					t.Fatal(err)
+				}
 				if _, err := s.Detail(ctx, f.md, f.w.ID, p.ID); err != nil {
 					t.Fatal("creator departure destroyed project", err)
 				}
 				if _, err := s.Update(ctx, f.md, f.w.ID, p.ID, projectInput("retained"), project.ETag(p)); err != nil {
 					t.Fatal(err)
 				}
-				_, err := s.Detail(ctx, f.od, f.w.ID, p.ID)
-				projectWant(t, err, project.ErrNotFound)
+				_, err = s.Detail(ctx, f.od, f.w.ID, p.ID)
+				projectWant(t, err, session.ErrInvalid)
 				return
 			}
 			want := project.ErrNotFound
