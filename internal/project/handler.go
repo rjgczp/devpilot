@@ -179,8 +179,14 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	default:
 		p, err = h.store.Detail(dbctx, digest, wid, pid)
 	}
-	if r.Context().Err() != nil || errors.Is(err, user.ErrCanceled) {
+	if r.Context().Err() != nil {
 		return
+	}
+	// Only the request context proves client cancellation. A dependency that
+	// reports cancellation while the request is live must not cause net/http
+	// to synthesize an empty 200 from a silent return.
+	if errors.Is(err, user.ErrCanceled) {
+		err = user.ErrInternal
 	}
 	if err == nil && dbctx.Err() != nil {
 		err = user.ErrTimeout

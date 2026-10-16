@@ -218,7 +218,7 @@ func TestProjectFailuresCancellationAndPanic(t *testing.T) {
 		err    error
 		status int
 		code   string
-	}{{session.ErrInvalid, 401, "unauthenticated"}, {ErrNotFound, 404, "project_not_found"}, {ErrForbidden, 403, "project_forbidden"}, {ErrPreconditionRequired, 428, "precondition_required"}, {ErrPreconditionFailed, 412, "precondition_failed"}, {user.ErrUnavailable, 503, "service_unavailable"}, {user.ErrTimeout, 503, "database_timeout"}, {user.ErrSchema, 500, "internal_error"}, {errors.New("PRIVATE SQL DSN email PHC digest token id If-Match"), 500, "internal_error"}} {
+	}{{session.ErrInvalid, 401, "unauthenticated"}, {ErrNotFound, 404, "project_not_found"}, {ErrForbidden, 403, "project_forbidden"}, {ErrPreconditionRequired, 428, "precondition_required"}, {ErrPreconditionFailed, 412, "precondition_failed"}, {user.ErrUnavailable, 503, "service_unavailable"}, {user.ErrTimeout, 503, "database_timeout"}, {user.ErrSchema, 500, "internal_error"}, {user.ErrCanceled, 500, "internal_error"}, {errors.New("PRIVATE SQL DSN email PHC digest token id If-Match"), 500, "internal_error"}} {
 		for _, m := range []string{"GET", "POST", "PATCH"} {
 			s := &repositoryStub{err: tc.err}
 			var logs bytes.Buffer

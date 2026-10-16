@@ -77,9 +77,11 @@
 
 ## GitHub PR 与托管CI
 
-[PR #7](https://github.com/rjgczp/devpilot/pull/7) 指向main，保持OPEN，等待独立代码审查。实现提交为`feb3344de8f6a2e2b759029b45871ad2c29b2573`。
+[PR #7](https://github.com/rjgczp/devpilot/pull/7) 指向main，保持OPEN，等待独立代码审查。基础实现提交为`feb3344de8f6a2e2b759029b45871ad2c29b2573`（后续协议修正与验证补充见PR最新head）。
 
 该实现提交的[push CI](https://github.com/rjgczp/devpilot/actions/runs/38840364340)和[PR CI](https://github.com/rjgczp/devpilot/actions/runs/38840384990)的verify/integration四项作业均实际SUCCESS；JSON快照见[push](evidence/ci-push-implementation.json)和[PR](evidence/ci-pr-implementation.json)。托管integration包含普通全量PG18及其后的全量integration-race，不是只跑Project筛选。最终补充提交的最新CI会在交付时按PR当前head再次核实；旧SHA通过不替代最新head检查。
+
+最终自查还覆盖依赖返回ErrCanceled但请求仍存活的异常：固定500，不能静默return让net/http合成200；真正客户端取消仍停止响应。
 
 最终自查额外拒绝重复charset参数，并校正慢POST测试确保真正进入body读取路径（早期该TCP样例带不适用于POST的If-Match，只测试到了早拒绝drain）。完整Go/race及全部12项Project integration-race已复验通过。创建者退出后再禁用/撤销的现任Owner读取/更新也有真实PG断言。
 
