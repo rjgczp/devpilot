@@ -23,6 +23,7 @@ import (
 	"github.com/rjgczp/devpilot/internal/config"
 	"github.com/rjgczp/devpilot/internal/health"
 	"github.com/rjgczp/devpilot/internal/password"
+	"github.com/rjgczp/devpilot/internal/project"
 	"github.com/rjgczp/devpilot/internal/registration"
 	"github.com/rjgczp/devpilot/internal/session"
 	"github.com/rjgczp/devpilot/internal/testdb"
@@ -47,7 +48,7 @@ func authServer(t *testing.T, db *pgxpool.Pool, tls bool, logs *bytes.Buffer) (*
 	passwords := password.New()
 	users := user.Store{Pool: db}
 	policy := config.AuthConfig{Mode: mode, Origin: origin, SessionTTL: 24 * time.Hour}
-	server.Config.Handler = app.NewRoutes(health.Handler{Checker: db, Timeout: time.Second, Draining: &draining, Logger: logger}.Routes(), registration.New(users, passwords, logger, budget), auth.New(users, session.Store{Pool: db}, passwords, session.NewTokens(), budget, policy, logger), workspace.New(workspace.Store{Pool: db}, policy, logger))
+	server.Config.Handler = app.NewRoutes(health.Handler{Checker: db, Timeout: time.Second, Draining: &draining, Logger: logger}.Routes(), registration.New(users, passwords, logger, budget), auth.New(users, session.Store{Pool: db}, passwords, session.NewTokens(), budget, policy, logger), workspace.New(workspace.Store{Pool: db}, policy, logger), project.New(project.Store{Pool: db}, policy, logger))
 	if tls {
 		server.StartTLS()
 	} else {

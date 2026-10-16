@@ -1,0 +1,4 @@
+=== RUN   TestProjectMigration
+    projects_test.go:46: integration requires pinned native Goose v3.26.0
+--- FAIL: TestProjectMigration (0.01s)
+FAIL

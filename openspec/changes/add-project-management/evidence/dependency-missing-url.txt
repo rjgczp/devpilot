@@ -1,0 +1,4 @@
+=== RUN   TestProjectMigration
+    projects_test.go:46: TEST_DATABASE_URL must name the isolated registration test database
+--- FAIL: TestProjectMigration (0.00s)
+FAIL

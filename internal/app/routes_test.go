@@ -44,3 +44,20 @@ func TestAuthenticationRoutesUseDedicatedHandler(t *testing.T) {
 		t.Fatal("unrelated route changed")
 	}
 }
+
+func TestProjectNamespaceDoesNotNormalizeMutations(t *testing.T) {
+	called := 0
+	project := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { called++; w.WriteHeader(418) })
+	routes := NewRoutes(http.NotFoundHandler(), http.NotFoundHandler(), http.NotFoundHandler(), http.NotFoundHandler(), project)
+	for _, path := range []string{"/api/v1/workspaces/w/projects", "/api/v1/workspaces/w/projects/p", "/api/v1/workspaces/w//projects/p", "/api/v1/workspaces/w/projects/../../..", "/api/v1/workspaces/w/%70rojects/p"} {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest("PATCH", path, nil)
+		routes.ServeHTTP(w, r)
+		if w.Code != 418 || w.Header().Get("Location") != "" {
+			t.Fatal("Project path cleaned/redirected", path, w.Code)
+		}
+	}
+	if called != 5 {
+		t.Fatal("project handler unreachable")
+	}
+}

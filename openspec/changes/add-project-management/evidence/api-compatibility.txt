@@ -1,0 +1,1 @@
+Existing OpenAPI operations and schemas exactly preserved; two project paths / four operations added.

@@ -257,3 +257,24 @@ pending仅能到accepted/declined/revoked/expired，固定604800秒；终态重�
 过期不依赖Worker。GET只投影effective expired（updated_at=expires_at）；授权accept/decline/revoke触及过期pending会持久化expired、确认Commit再返回409。创建替换先验证Owner/目标；旧过期pending在替换成功时同事务提交，若有效pending配额已满，则**仍确认过期转换Commit后返回409**。授权/目标校验失败不转换状态；SQL/Commit失败503/500不能假称过期已落库。
 
 **旧二进制不可与新邀请/重加混合运行，也不能在接受曾开放后直接回退旧DELETE。** 发布排空和停写步骤见迁移文档。公开部署前仍须追加账户/IP/Workspace网关限流、接收者跨租户频次/拒绝冷却、注册滥用控制、脱敏监控和历史容量/保留评审；100条配额不是完整防轰炸。本阶段不实现Redis、HTTP监控、告警或通知系统。
+
+## Workspace 项目管理
+
+先通过 `GET /api/v1/workspaces` 选择当前Workspace，再使用下列接口。Project继承当前Workspace权限：Owner创建/修改，Owner与Member读取；创建者退出、被移除或禁用后项目继续存在，创建者字段仅内部保留，不授予访问权。不增加项目成员/角色、跨Workspace汇总、slug、唯一名称、配额、创建幂等键、删除/归档/软删除/转移/status。
+
+| 接口 | 请求 | 成功 |
+| --- | --- | --- |
+| POST /api/v1/workspaces/{workspace_id}/projects | name必填、description可省略 | 201、Location、ETag、data |
+| GET /api/v1/workspaces/{workspace_id}/projects | limit默认50/1–100、after规范UUID | 200、data数组、pagination.next_after |
+| GET /api/v1/workspaces/{workspace_id}/projects/{project_id} | 无query | 200、ETag、data |
+| PATCH /api/v1/workspaces/{workspace_id}/projects/{project_id} | name/description至少一项、强If-Match | 200、新ETag、data |
+
+POST/PATCH复用环境Cookie及Origin/X-DevPilot-CSRF:1同源校验。输入严格单JSON对象/字符串，拒绝重复/未知键、null、非法UTF-8/surrogate；只允许单application/json及可选UTF-8 charset，不允许Content-Encoding。项目body上限16384原始bytes，含转义和尾随空白；认证接口仍4096bytes。name沿用Workspace trim与Unicode规则（1–100码点/400bytes）；description最多2000码点/8000bytes，不trim，允许HT/LF、拒绝CR及其他Cc，空串清空。合法Unicode不规范化，名称允许重复。
+
+data固定为id/workspace_id/name/description/version/created_at/updated_at；version为十进制字符串，时间UTC RFC3339Nano。强tag形如 `"project:<project_uuid>:1"`。修改前读取detail或保留创建/修改回执的tag，发送 `If-Match`；即使同值PATCH也递增version。缺tag428，旧版本412，不自动刷新tag/合并；弱tag、星号、多tag/重复或不规范header400。无条件GET/替代条件写协议，其他条件header被拒绝。错误无ETag/Location，所有Project响应禁止Set-Cookie。
+
+查询SQL同时验证active用户、未撤销且未过期Session、当前membership和Project的Workspace归属。失效身份401，Member写403，非成员/不存在/错误Workspace与Project组合统一404 project_not_found。列表按id ASC、limit+1取候选，cursor仅下界，next_after仅有更多数据时提供；每页新快照，UUIDv7不是提交顺序，不能保证遍历涵盖所有并发晚提交。
+
+所有Project可变字段的受支持写入必须通过 `internal/project.Store.Update`，保持授权和version递增；不得由其他业务模块直接UPDATE而破坏强ETag。稳定JSON表示无角色字段或压缩变体，改变投影/编码须重审validator。写事务顺序User→Session→Workspace→Membership→Project，所有保护等待后新语句重验Session时限及Owner；POST/PATCH确认Commit后才成功。请求5s，整个DB操作2s。未知Commit不代表回滚，不自动重试/补偿；POST手动重复可创建第二个同名项目，名称不能可靠恢复一次未知请求；PATCH持原tag重试可能412，需重新读取并决定。
+
+Migration5由显式受控发布步骤执行，项目固定Workspace归属由约束与不可变字段trigger保护。未来子资源必须用(workspace_id,project_id)复合FK，不能仅靠已知Project UUID授权。无删除/配额意味着误建与存储增长需后续产品评审，公开部署的既有限流与容量要求不因本功能而豁免。

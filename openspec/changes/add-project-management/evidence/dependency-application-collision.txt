@@ -1,0 +1,4 @@
+=== RUN   TestProjectMigration
+    projects_test.go:46: test database must be separate from DATABASE_URL
+--- FAIL: TestProjectMigration (0.00s)
+FAIL
