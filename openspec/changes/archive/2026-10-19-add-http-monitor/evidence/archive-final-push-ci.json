@@ -1,0 +1,231 @@
+{
+  "conclusion": "success",
+  "event": "push",
+  "headSha": "e06be97be7c16e06fb62db9e5c9023fdb9743893",
+  "jobs": [
+    {
+      "completedAt": "2026-10-19T03:54:39Z",
+      "conclusion": "success",
+      "databaseId": 117880741300,
+      "name": "integration",
+      "startedAt": "2026-10-19T03:51:24Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-19T03:51:26Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-19T03:51:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:39Z",
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 2,
+          "startedAt": "2026-10-19T03:51:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:40Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 3,
+          "startedAt": "2026-10-19T03:51:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:52Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-go@v7",
+          "number": 4,
+          "startedAt": "2026-10-19T03:51:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:57Z",
+          "conclusion": "success",
+          "name": "Install pinned native Goose CLI",
+          "number": 5,
+          "startedAt": "2026-10-19T03:51:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:53:02Z",
+          "conclusion": "success",
+          "name": "Verify PostgreSQL 18 integration",
+          "number": 6,
+          "startedAt": "2026-10-19T03:51:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:54:15Z",
+          "conclusion": "success",
+          "name": "Verify PostgreSQL integration with race detector",
+          "number": 7,
+          "startedAt": "2026-10-19T03:53:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:54:32Z",
+          "conclusion": "success",
+          "name": "Build Monitor network audit tools",
+          "number": 8,
+          "startedAt": "2026-10-19T03:54:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:54:33Z",
+          "conclusion": "success",
+          "name": "Calibrate probe and audit real Monitor endpoints",
+          "number": 9,
+          "startedAt": "2026-10-19T03:54:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:54:34Z",
+          "conclusion": "success",
+          "name": "Upload Monitor network audit evidence",
+          "number": 10,
+          "startedAt": "2026-10-19T03:54:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:54:34Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-go@v7",
+          "number": 18,
+          "startedAt": "2026-10-19T03:54:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:54:35Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 19,
+          "startedAt": "2026-10-19T03:54:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:54:35Z",
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 20,
+          "startedAt": "2026-10-19T03:54:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:54:35Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "startedAt": "2026-10-19T03:54:35Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/39196640712/job/117880741300"
+    },
+    {
+      "completedAt": "2026-10-19T03:51:55Z",
+      "conclusion": "success",
+      "databaseId": 117880741390,
+      "name": "verify",
+      "startedAt": "2026-10-19T03:51:23Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-19T03:51:25Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-19T03:51:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:26Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-10-19T03:51:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:36Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-go@v7",
+          "number": 3,
+          "startedAt": "2026-10-19T03:51:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:36Z",
+          "conclusion": "success",
+          "name": "Check gofmt",
+          "number": 4,
+          "startedAt": "2026-10-19T03:51:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:37Z",
+          "conclusion": "success",
+          "name": "Test network classifier and audit build contract",
+          "number": 5,
+          "startedAt": "2026-10-19T03:51:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:38Z",
+          "conclusion": "success",
+          "name": "Run go vet",
+          "number": 6,
+          "startedAt": "2026-10-19T03:51:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:43Z",
+          "conclusion": "success",
+          "name": "Run tests",
+          "number": 7,
+          "startedAt": "2026-10-19T03:51:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:52Z",
+          "conclusion": "success",
+          "name": "Run race tests",
+          "number": 8,
+          "startedAt": "2026-10-19T03:51:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:52Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-go@v7",
+          "number": 15,
+          "startedAt": "2026-10-19T03:51:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:52Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 16,
+          "startedAt": "2026-10-19T03:51:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-19T03:51:53Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 17,
+          "startedAt": "2026-10-19T03:51:53Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/39196640712/job/117880741390"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/rjgczp/devpilot/actions/runs/39196640712"
+}

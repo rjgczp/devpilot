@@ -52,7 +52,7 @@
 - [x] 7.1 CI加入`codex/add-http-monitor`触发和可审计零目标网络验收步骤，保留固定PG18镜像/Goosev3.26.0及既有普通/race命令；检查workflow中schema测试串行、仅独立测试DB且无skip/fallback，记录实际运行结果。
 - [x] 7.2 运行格式检查、`go vet ./...`、unit及unit-race、全PG18 integration及顺序integration-race；前七阶段所有API/迁移/并发回归通过，不能把URL输入unit、Go race或planned case当执行期SSRF证明。
 - [x] 7.3 完成verification记录/spec-to-test映射，区分本地与hosted CI结果、真实锁/commit/迁移哈希证据、未实现B阶段验收；`openspec validate add-http-monitor --strict`通过，既有主规格长度警告单独报告，不借机改主规格。
-- [ ] 7.4 独立技术评审验证URL规范化/IDNA、无网络证据、SQL全归属、FK锁与等待expiry、未知Commit和迁移边界；修复评审发现并仅重跑受影响检查，交付可供用户审核的实现及验收记录，创建指向main的PR，记录提交SHA/CI状态，等待独立PR代码评审，不自动合并或归档。
+- [x] 7.4 独立技术评审验证URL规范化/IDNA、无网络证据、SQL全归属、FK锁与等待expiry、未知Commit和迁移边界；修复评审发现并仅重跑受影响检查，交付可供用户审核的实现及验收记录，创建指向main的PR，记录提交SHA/CI状态，等待独立PR代码评审，不自动合并或归档。
 
 ## Workflow follow-up
 
@@ -65,3 +65,6 @@
 
 
 2026-10-19第一轮独立PR审查：`d6914e8` 的网络审计失败作为阻塞项处理，当前不批准合并。本轮下载原Artifact并逐条记录六次NSCD调用，以进程trace和仅ParseConfig的libc标记对照确认来源；保留AF_UNIX全面拒绝，统一纯Go审计构建并加入双工具元数据门控及7项回归。全量本地Go/race及PG18 integration/integration-race重跑通过，证据见verification的review1章节；最新Push/PR CI按明确SHA实际采集。7.4继续未完成，等待第二轮独立代码审查，不能以实现者自检或CI替代。
+
+
+2026-10-19归档批准：用户明确授权“可合并归档”，关闭7.4等待批准状态，任务31/31完成。GitHub已确认PR #8由用户合并到main，合并提交59b0b5236708f4bc9a4b317430fec28fbe2694b5；本次同步主规格并归档，不部署或激活监控。此前30/31和等待评审的段落保留为历史过程记录。

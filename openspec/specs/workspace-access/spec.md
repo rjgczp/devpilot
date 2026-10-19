@@ -183,7 +183,7 @@ Workspace and invitation endpoints SHALL use JSON data/error except empty204, no
 - **THEN** exact endpoint Allow headers follow workspace-invitations, mutation aliases never redirect into writes, bounded parser/body deadlines apply, HEAD has no body and OPTIONS grants no CORS
 
 ### Requirement: Tenant boundaries and acceptance remain verifiable
-The repository SHALL verify workspace behavior with unit tests, mandatory real PostgreSQL 18 integration/race tests and matching API documentation. Each tenant resource query SHALL use trusted identity plus membership and resource ownership. Future tenant-owned rows SHALL require workspace_id and tenant-consistent relationships. Public membership and invitation APIs SHALL follow workspace-members and workspace-invitations, including narrowly recipient-scoped consent preview. Only the reviewed invitation and project schema additions SHALL be introduced; no unrelated business tables or RLS enforcement SHALL be claimed.
+The repository SHALL verify workspace behavior with unit tests, mandatory real PostgreSQL 18 integration/race tests and matching API documentation. Each tenant resource query SHALL use trusted identity plus membership and resource ownership. Future tenant-owned rows SHALL require workspace_id and tenant-consistent relationships. Public membership and invitation APIs SHALL follow workspace-members and workspace-invitations, including narrowly recipient-scoped consent preview. Only the reviewed invitation, project and HTTP Monitor configuration schema additions SHALL be introduced; no unrelated business tables or RLS enforcement SHALL be claimed.
 
 #### Scenario: Success - End-to-end contract and many-to-many fixtures
 - **WHEN** guarded PG18 tests register/login users, create workspaces and exercise invitation-backed member joins and roster/conditional removal/exit, using multi-owner or role-change SQL only as guarded fixtures
@@ -232,3 +232,16 @@ The repository SHALL verify workspace behavior with unit tests, mandatory real P
 #### Scenario: Concurrency - Project protection composes with existing member operations
 - **WHEN** Project create/PATCH races with invitation acceptance, conditional removal, self-exit, revocation or coordinated role changes
 - **THEN** the existing User→Session→Workspace→Membership order remains intact, Project protection follows it and deterministic PG18/race tests cover both orderings without weakening old member-generation protection
+
+
+#### Scenario: Success - Reviewed HTTP Monitor configuration extension
+- **WHEN** the eighth Change adds reviewed http-monitor-management and http-monitor-persistence behavior
+- **THEN** only the four Project-scoped configuration operations and Migration6 are added; no target DNS/HTTP/connection, worker, result, alert, independent role or mutation of existing API contracts occurs; historical Project-only scope scenarios retain their seventh-Change test boundary
+
+#### Scenario: Security - Monitor authority inherits the complete tenant chain
+- **WHEN** a user substitutes Workspace/Project/Monitor UUIDs or loses current identity or membership
+- **THEN** actual Monitor SQL gates active Cookie identity, current membership and matching complete ownership with no id-only access or relaxed existing input/CSRF protocols
+
+#### Scenario: Concurrency - Monitor protection and historical acceptance compose
+- **WHEN** Monitor writes race with Project/member/invitation/session/account changes and full normal/race suites run at schema6
+- **THEN** compatible User→Session→Workspace→Membership→Project→Monitor protection and post-wait time checks are verified on real guarded PG18; historical version1–5 boundaries persist and the current next-version failure fixture moves from6 to7

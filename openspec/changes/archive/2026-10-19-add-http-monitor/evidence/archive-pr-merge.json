@@ -1,0 +1,15 @@
+{
+  "headRefOid": "e06be97be7c16e06fb62db9e5c9023fdb9743893",
+  "mergeCommit": {
+    "oid": "59b0b5236708f4bc9a4b317430fec28fbe2694b5"
+  },
+  "mergedAt": "2026-10-19T06:29:05Z",
+  "mergedBy": {
+    "id": "U_kgDOCJC8lQ",
+    "is_bot": false,
+    "login": "rjgczp",
+    "name": "SanSea"
+  },
+  "state": "MERGED",
+  "url": "https://github.com/rjgczp/devpilot/pull/8"
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "capability": "http-monitor-management",
+    "delta_requirements": 10,
+    "delta_scenarios": 31,
+    "all_delta_blocks_match": true,
+    "canonical_main_structure": true,
+    "purpose_preserved": true,
+    "untouched_requirements_preserved": true
+  },
+  {
+    "capability": "http-monitor-persistence",
+    "delta_requirements": 9,
+    "delta_scenarios": 25,
+    "all_delta_blocks_match": true,
+    "canonical_main_structure": true,
+    "purpose_preserved": true,
+    "untouched_requirements_preserved": true
+  },
+  {
+    "capability": "workspace-access",
+    "delta_requirements": 1,
+    "delta_scenarios": 15,
+    "all_delta_blocks_match": true,
+    "canonical_main_structure": true,
+    "purpose_preserved": true,
+    "untouched_requirements_preserved": true
+  }
+]

@@ -134,3 +134,16 @@ PR #8 at code commit `d6914e8ac8998d8539c8b202225b3a50b3c92603`: hosted verify, 
 最新修复实现提交SHA为 **`ae6c032b93b8967c282b2d09d2c4ade8e5a680b9`**；其 [Push CI run39196187571](https://github.com/rjgczp/devpilot/actions/runs/39196187571) 和 [PR CI run39196191132](https://github.com/rjgczp/devpilot/actions/runs/39196191132) 均为 **success**。两个run的head SHA及逐job/step结果见 `evidence/review1/hosted-push.json`、`hosted-pr.json`，verify、全量PG18 integration、integration-race、build元数据门控、网络正向校准/真实端点审计全部成功。下载的本轮托管Artifact保存在 `hosted-network/`：control child0/audit1、1次违规；real child0/audit0、4次批准、0次未批准，且builds.json证明两个实际工具均CGO=0/Linux。
 
 本文与原始/本地/复现/托管证据作为后续验收文档提交保留上述明确实现SHA的结果；文档提交自身的最终PR head SHA以 `git rev-parse HEAD` 和 [PR #8](https://github.com/rjgczp/devpilot/pull/8) 为准，并需再次等待该head的Push/PR CI成功后才交付，不能将上述run冒充为后续head的运行。PR保持Open，不合并、Archive、部署或激活，等待第二轮独立代码审查。
+
+
+## 2026-10-19 合并、规格同步与归档
+
+用户明确授权“可合并归档”，此前的待审门禁按用户批准关闭，任务31/31完成。此次只归档和同步文档，不公开部署或激活监控。
+
+- GitHub查询时PR #8已由用户rjgczp于`2026-10-19T06:29:05Z`（北京时间14:29:05）合并至main，实际合并提交`59b0b5236708f4bc9a4b317430fec28fbe2694b5`，最终head为`e06be97be7c16e06fb62db9e5c9023fdb9743893`；没有重复合并。本地main以fetch/switch/ff-only同步，与最终PR head的文件树完全一致。见`evidence/archive-pr-merge.json`。
+- 最终head的Push run39196640712与PR run39196645323实时查询均completed/success，verify、真实PG18 integration/integration-race、build provenance和校准网络审计均成功；见`archive-final-push-ci.json`、`archive-final-pr-ci.json`。这不是把历史实现的检查当作新SHA的结果。
+- 归档前四类artifact均done，CLI实际任务31/31、Change strict通过；见`archive-task-status.json`、`archive-change-strict.json`。此次文档归档不重复本地Go/数据库验收，不冒称执行了新一轮业务测试；最新main归档提交的托管CI另以其SHA核验。
+- 三份delta全部同步：新建http-monitor-management（10项要求/31场景）与http-monitor-persistence（9项/25场景），更新workspace-access一项要求（15场景，其中12个既有场景原文保留，仅新增3个）。共20项delta要求/71场景逐块匹配主规格；既有title/Purpose和未提及要求不变，新Purpose原样取自delta，无delta操作标题或TBD。见`archive-delta-sync.json`。
+- 同步后和归档后普通主规格验证均14通过/0失败。移动前全库strict为11通过/4失败（含Change共15项），移动后为10通过/4失败（14份主规格）；仍仅user-authentication、workspace-access、workspace-members、workspace-persistence既有7个描述长度WARNING，未为通过strict而改写历史要求。见`archive-synced-specs.json`、`archive-before-all-strict.json`、`archive-after-specs.json`与`archive-after-all-strict.json`及退出结果。
+- Change完整移动至`openspec/changes/archive/2026-10-19-add-http-monitor/`，保留`.openspec.yaml`与全部实施/失败/修复证据。除任务批准与本verification追加记录外，原Git文件按合并HEAD逐字节保留，清单与SHA256见`archive-files-preserved.json`。两份tests/network README中的当前证据路径已更新。历史命令/诊断脚本仍原样记录审查时路径，复现历史命令应使用其对应实现提交e06be97，而不把归档后的路径差异伪装成原始执行。
+- `openspec list --json`确认没有active changes，见`archive-active-changes.json`。本次不修改业务代码、依赖、Migration1–6或CI，不执行数据库迁移/Down、公开部署或监控激活。
