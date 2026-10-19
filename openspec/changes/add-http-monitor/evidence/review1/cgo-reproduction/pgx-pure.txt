@@ -1,0 +1,2 @@
+pid=10 before pgconn.ParseConfig with explicit IP/user/database
+pid=10 after ParseConfig; no Connect invoked

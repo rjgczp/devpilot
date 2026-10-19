@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-19",
+  "platform": "macOS arm64; Linux arm64 in disposable Docker namespaces",
+  "go": "go1.24.3",
+  "goose": "v3.26.0",
+  "postgres": "PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2), aarch64, pinned postgres:18 digest 74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336",
+  "test_database": "devpilot_registration_test; isolated owned container, loopback 55432; no application database",
+  "audited_database": "separate owned PG18 container without host ports; 127.0.0.1:5432 namespace only",
+  "integration_seconds": 57.982,
+  "integration_race_seconds": 100.237,
+  "audit_build": "CGO_ENABLED=0 for BOTH executables; metadata and hashes in local-network/builds.json",
+  "ordinary_tests": "CGO unchanged; race enabled for race suites"
+}

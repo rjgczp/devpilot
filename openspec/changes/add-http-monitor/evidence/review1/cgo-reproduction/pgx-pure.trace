@@ -1,0 +1,6 @@
+10    execve("/toolbin/pgx-pure", ["/toolbin/pgx-pure"], 0xaaaaf564e970 /* 10 vars */) = 0
+10    clone(child_stack=0x4000020000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 11
+10    clone(child_stack=0x4000068000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 12
+10    clone(child_stack=0x4000064000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 13
+12    clone(child_stack=0x4000096000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 14
+10    exit_group(0)                     = ?

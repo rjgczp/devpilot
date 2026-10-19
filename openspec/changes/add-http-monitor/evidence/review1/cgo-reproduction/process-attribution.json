@@ -1,0 +1,56 @@
+[
+  {
+    "line": 10,
+    "tid": 37,
+    "syscall": "37    connect(5<UNIX-STREAM:[2000915]>, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (No such file or directory)",
+    "executable_evidence": {
+      "exec_line": 1,
+      "exec": "37    execve(\"/toolbin/integration.test\", [\"/toolbin/integration.test\", \"-test.run\", \"^TestMonitorNoTargetNetwork$\", \"-test.v\", \"-test.timeout=60s\"], 0xffffde107af8 /* 14 vars */) = 0"
+    }
+  },
+  {
+    "line": 11,
+    "tid": 37,
+    "syscall": "37    connect(5<UNIX-STREAM:[2000921]>, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (No such file or directory)",
+    "executable_evidence": {
+      "exec_line": 1,
+      "exec": "37    execve(\"/toolbin/integration.test\", [\"/toolbin/integration.test\", \"-test.run\", \"^TestMonitorNoTargetNetwork$\", \"-test.v\", \"-test.timeout=60s\"], 0xffffde107af8 /* 14 vars */) = 0"
+    }
+  },
+  {
+    "line": 49,
+    "tid": 50,
+    "syscall": "50    connect(5<UNIX-STREAM:[1997953]>, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (No such file or directory)",
+    "executable_evidence": {
+      "exec_line": 37,
+      "exec": "50    execve(\"/toolbin/goose\", [\"goose\", \"-env=none\", \"-dir\", \"/repo/migrations\", \"-timeout\", \"30s\", \"up\"], 0x400015c090 /* 16 vars */ <unfinished ...>"
+    }
+  },
+  {
+    "line": 50,
+    "tid": 50,
+    "syscall": "50    connect(5<UNIX-STREAM:[1997954]>, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (No such file or directory)",
+    "executable_evidence": {
+      "exec_line": 37,
+      "exec": "50    execve(\"/toolbin/goose\", [\"goose\", \"-env=none\", \"-dir\", \"/repo/migrations\", \"-timeout\", \"30s\", \"up\"], 0x400015c090 /* 16 vars */ <unfinished ...>"
+    }
+  },
+  {
+    "line": 153,
+    "tid": 60,
+    "syscall": "60    connect(5<UNIX-STREAM:[1996326]>, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (No such file or directory)",
+    "executable_evidence": {
+      "exec_line": 143,
+      "exec": "60    execve(\"/toolbin/goose\", [\"goose\", \"-env=none\", \"-dir\", \"/repo/migrations\", \"-timeout\", \"30s\", \"down-to\", \"0\"], 0x4000346090 /* 16 vars */ <unfinished ...>"
+    }
+  },
+  {
+    "line": 154,
+    "tid": 60,
+    "syscall": "60    connect(5<UNIX-STREAM:[1996327]>, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (No such file or directory)",
+    "executable_evidence": {
+      "exec_line": 143,
+      "exec": "60    execve(\"/toolbin/goose\", [\"goose\", \"-env=none\", \"-dir\", \"/repo/migrations\", \"-timeout\", \"30s\", \"down-to\", \"0\"], 0x4000346090 /* 16 vars */ <unfinished ...>"
+    }
+  }
+]

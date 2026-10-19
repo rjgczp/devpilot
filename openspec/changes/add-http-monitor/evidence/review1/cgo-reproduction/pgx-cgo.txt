@@ -1,0 +1,3 @@
+pid=10 before pgconn.ParseConfig with explicit IP/user/database
+diagnostic libc getpwuid_r pid=10 uid=0
+pid=10 after ParseConfig; no Connect invoked

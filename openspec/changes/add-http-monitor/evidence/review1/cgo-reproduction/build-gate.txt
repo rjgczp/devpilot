@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/network/check_audit_build.py", line 40, in <module>
+    main()
+    ~~~~^^
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/network/check_audit_build.py", line 36, in main
+    print(json.dumps([check(binary) for binary in sys.argv[1:]], indent=2))
+                      ~~~~~^^^^^^^^
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/network/check_audit_build.py", line 28, in check
+    raise ValueError(f"{binary}: requires {key}={expected}")
+ValueError: /private/tmp/devpilot-review1-forensic-tools/integration.test: requires CGO_ENABLED=0

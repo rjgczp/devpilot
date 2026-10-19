@@ -1,0 +1,12 @@
+10    execve("/toolbin/pgx-cgo", ["/toolbin/pgx-cgo"], 0xaaaaf6dfc970 /* 10 vars */) = 0
+10    clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0xffff677ff250, parent_tid=0xffff677ff250, exit_signal=0, stack=0xffff66ff0000, stack_size=0x80ea60, tls=0xffff677ff8a0}, 88) = -1 ENOSYS (Function not implemented)
+10    clone(child_stack=0xffff677fea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[11], tls=0xffff677ff8a0, child_tidptr=0xffff677ff250) = 11
+10    clone(child_stack=0xffff66feea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[12], tls=0xffff66fef8a0, child_tidptr=0xffff66fef250) = 12
+10    clone(child_stack=0xffff5fffea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[13], tls=0xffff5ffff8a0, child_tidptr=0xffff5ffff250) = 13
+12    clone(child_stack=0xffff6679ea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID <unfinished ...>
+10    clone(child_stack=0xffff65f8ea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID <unfinished ...>
+12    <... clone resumed>, parent_tid=[14], tls=0xffff6679f8a0, child_tidptr=0xffff6679f250) = 14
+10    <... clone resumed>, parent_tid=[15], tls=0xffff65f8f8a0, child_tidptr=0xffff65f8f250) = 15
+10    connect(3<UNIX-STREAM:[1995698]>, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+10    connect(3<UNIX-STREAM:[1995704]>, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+10    exit_group(0)                     = ?

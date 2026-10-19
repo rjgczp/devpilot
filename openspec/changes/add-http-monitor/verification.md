@@ -82,7 +82,7 @@ MONITOR_AUDIT_OUTPUT=/absolute/disposable/evidence tests/network/run-monitor-aud
 
 配置可接受不代表域名存在、可达或执行期SSRF安全。URL path仍可含秘密，只对授权单项公开，列表/错误/日志省略。当前同Workspace写串行，POST不幂等，未知提交可能保留配置，不能凭名称/URL唯一恢复请求。未来激活、执行期安全及结果version一致性必须另行Change。
 
-独立PR代码评审待进行，包含URL/IDNA、完整SQL归属、FK/锁顺序、post-wait时间、未知Commit、探针校准和迁移边界；不自动合并、归档、部署或激活。
+第一轮独立PR代码评审已提出网络审计阻塞项；修复后仍须等待第二轮评审，包含URL/IDNA、完整SQL归属、FK/锁顺序、post-wait时间、未知Commit、探针校准和迁移边界；不自动合并、归档、部署或激活。
 
 
 ## Final local acceptance
@@ -104,3 +104,33 @@ PR #8 at code commit `d6914e8ac8998d8539c8b202225b3a50b3c92603`: hosted verify, 
 托管校准结果同本地：控制child0/audit1、1次违规TCP192.0.2.1:80；真实child0/audit0、4次批准TCP连接、0次目标尝试。此前NSCD finding已经由显式纯Go审计构建解决，探针未增加豁免。全库strict的既有长度警告仍单独记录，没有声称全库strict成功。
 
 本段及验收证据作为后续文档提交记录上述**明确SHA**的已完成托管执行；文档提交自身的最新checks以PR页面为准，不能把历史run冒充为之后SHA的检查。任务30/31完成：只剩用户要求等待的独立PR代码评审及其发现可能需要的修复。没有合并、归档、公开部署或激活。
+
+
+## PR #8 first-review repair (2026-10-19)
+
+用户对审查提交 `d6914e8ac8998d8539c8b202225b3a50b3c92603` 明确不批准合并，要求诊断 [失败 run39193625995](https://github.com/rjgczp/devpilot/actions/runs/39193625995)。现已下载原始 `monitor-network-evidence` artifact；API身份、digest及原样文件保存在 `evidence/review1/original-artifact.json`、`original/`。`real.trace` SHA256为 `25d6b00d5c7acb5aee48e529c38a27175507d1d79e9ee3ac6f0651ed6c7c2cc8`，逐调用机器可读记录为 `original-calls.json`。
+
+| 原trace行 | TID | fd / Unix stream inode | 调用及目的 | 返回 | 组件归因 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 38 | 5 / 29356 | connect AF_UNIX `/var/run/nscd/socket` | ENOENT | integration.test 的 pgx v5.8.0 默认配置 |
+| 2 | 38 | 5 / 29357 | 同上 | ENOENT | 同上 |
+| 6 | 51 | 5 / 30228 | 同上 | ENOENT | Goose v3.26.0 up，内含 pgx v5.7.5 |
+| 7 | 51 | 5 / 30229 | 同上 | ENOENT | 同上 |
+| 59 | 59 | 5 / 29362 | 同上 | ENOENT | Goose down-to 0 清理，内含 pgx v5.7.5 |
+| 60 | 59 | 5 / 29363 | 同上 | ENOENT | 同上 |
+
+证据边界：原 trace **没有 exec/clone**，表中调用/TID/fd/type/path/返回为直接观测，组件角色由SIGCHLD顺序、测试输出和源码归因，并由独立复现交叉确认，不能声称历史trace直接记录了可执行文件。新审计增加 `trace=process`，保留exec/clone/exit以映射进程及线程；不输出进程环境内容。
+
+根因是审计工具的构建差异：最初本地wrapper为CGO=0，而托管测试二进制及Goose默认CGO=1。两版pgx的 `pgconn/defaults.go:defaultSettings()` 都会在应用显式DSN覆盖前调用 `os/user.Current()`；Go1.24.3 `os/user/cgo_lookup_unix.go` 将此转换为 `getpwuid_r`，glibc尝试本地NSCD passwd查询。它不需要Monitor目标URL，不是向该URL做DNS/HTTP可达性检测；但它确实是**未经批准的本地IPC连接尝试**，审计器判拒正确。没有把ENOENT当作“零尝试”，没有认定NSCD属于必须批准的运行期IPC。
+
+实际修复沿用 `4f77eee555826df2d75fe76d777505a09c1a9b71` 对审计工具的CGO=0统一，并在本轮增加：二进制元数据门控（两个工具均须Linux/CGO=0，保存SHA256及build settings）、原始六调用fixture与CLI失败回归、真实CGO/纯Go二进制混搭拒绝测试、网络目的边界语料及进程证据。**不增加任何AF_UNIX豁免**；所有Unix/IPv6/未知地址仍fail-closed，精确TCP白名单、防火墙、strace及实际违规正向对照不变。普通Go/race/integration仍保持原有CGO行为；零目标审计结论明确限定于所记录的纯Go构建。
+
+本轮本地实际执行见 `evidence/review1/local/` 的command/output/exit文件及 `local-environment.json`：7项Python回归、gofmt、diff-check、普通及integration vet、全量Go tests/race、真实PG18全量integration（57.982s）及integration-race（100.237s）全部exit0。审计 `local-network/`：正向违规control child0/audit1、1次192.0.2.1:80；真实流程child0/audit0、4次精确批准TCP、0次未批准尝试。该Change strict通过；全库strict仍有既有4份主规格7个长度问题，独立记录为exit1，没有声称全库通过。
+
+本轮独立复现也已实际完成：`evidence/review1/reproduce-cgo.sh` 固定Linux Go1.24.3镜像digest，使用原样未改动的业务/集成源码（与审查提交的 `internal`、`tests/integration`、go.mod/go.sum及Migration均无diff），在独立PG18命名空间故意构建CGO=1的两个工具。`cgo-reproduction/real.trace` 的exec记录映射PID37→integration.test、PID50→Goose up、PID60→Goose down-to 0，每个进程紧接两次NSCD connect，重现4批准/6拒绝，child0/audit1，runner按预期exit1。这是被审计拒绝的反例，**不是**零目标验收成功。构建门控对这两个真实CGO工具也exit1；metadata及二进制hash一并保存。
+
+进一步的独立解析器对照：`pgx-defaults-probe.go` 只执行带明确IP/user/database的 `pgconn.ParseConfig`，不调用Connect。在无网络容器中，诊断专用 `getpwuid-marker.c` 经LD_PRELOAD只向子进程标记 `getpwuid_r` 并原样转发，不修改返回结果。CGO程序PID10在ParseConfig前后之间打印一次libc getpwuid_r，trace记录同PID两次NSCD connect，audit1；同源纯Go程序无libc marker、无目的调用，audit0。原始stdout/trace/exit见 `cgo-reproduction/pgx-*`，依赖/标准库源码位置和hash见 `source-chain.json`。该marker只用于诊断，真实完整CGO反例及正常验收均不加载它。最初尝试strace -k被arm64发行版明确报告不支持（原错误也已保留），因此这里**没有声称取得调用栈**，采用源码链、进程复现和显式函数观测相互印证。
+
+最新修复实现提交SHA为 **`ae6c032b93b8967c282b2d09d2c4ade8e5a680b9`**；其 [Push CI run39196187571](https://github.com/rjgczp/devpilot/actions/runs/39196187571) 和 [PR CI run39196191132](https://github.com/rjgczp/devpilot/actions/runs/39196191132) 均为 **success**。两个run的head SHA及逐job/step结果见 `evidence/review1/hosted-push.json`、`hosted-pr.json`，verify、全量PG18 integration、integration-race、build元数据门控、网络正向校准/真实端点审计全部成功。下载的本轮托管Artifact保存在 `hosted-network/`：control child0/audit1、1次违规；real child0/audit0、4次批准、0次未批准，且builds.json证明两个实际工具均CGO=0/Linux。
+
+本文与原始/本地/复现/托管证据作为后续验收文档提交保留上述明确实现SHA的结果；文档提交自身的最终PR head SHA以 `git rev-parse HEAD` 和 [PR #8](https://github.com/rjgczp/devpilot/pull/8) 为准，并需再次等待该head的Push/PR CI成功后才交付，不能将上述run冒充为后续head的运行。PR保持Open，不合并、Archive、部署或激活，等待第二轮独立代码审查。

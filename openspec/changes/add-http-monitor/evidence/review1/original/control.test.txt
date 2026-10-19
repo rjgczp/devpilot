@@ -1,0 +1,4 @@
+=== RUN   TestMonitorNetworkProbePositiveControl
+    monitors_network_test.go:25: intentional disallowed connect attempted; external audit must reject
+--- PASS: TestMonitorNetworkProbePositiveControl (0.02s)
+PASS
