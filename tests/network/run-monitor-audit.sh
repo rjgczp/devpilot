@@ -44,7 +44,7 @@ for mode in control real; do
     # Keep command and child exit status alongside syscall and classifier output.
     echo "$MONITOR_TEST_BINARY -test.run ^$testname\$ -test.v -test.timeout=60s" > "$MONITOR_AUDIT_OUTPUT/$mode.command"
     set +e
-    strace -f -qq -yy -s 256 -e trace=connect,sendto,sendmsg,sendmmsg -o "$MONITOR_AUDIT_OUTPUT/$mode.trace" \
+    strace -f -qq -yy -s 256 -e trace=process,connect,sendto,sendmsg,sendmmsg -o "$MONITOR_AUDIT_OUTPUT/$mode.trace" \
         "$MONITOR_TEST_BINARY" -test.run "^$testname\$" -test.v -test.timeout=60s > "$MONITOR_AUDIT_OUTPUT/$mode.test.txt" 2>&1
     child=$?
     python3 tests/network/audit_trace.py "$MONITOR_AUDIT_OUTPUT/$mode.trace" > "$MONITOR_AUDIT_OUTPUT/$mode.audit.txt"

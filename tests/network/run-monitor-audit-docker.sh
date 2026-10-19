@@ -28,6 +28,7 @@ if [ -x "$tools/cross/bin/linux_$arch/goose" ]; then
 else
     cp "$tools/cross/bin/goose" "$tools/goose"
 fi
+python3 tests/network/check_audit_build.py "$tools/integration.test" "$tools/goose" > "$MONITOR_AUDIT_OUTPUT/builds.json"
 docker build -t devpilot-monitor-audit -f tests/network/Dockerfile .
 cid=$(docker run -d -e POSTGRES_USER=devpilot_test -e POSTGRES_PASSWORD=registration_test_only \
     -e POSTGRES_DB=devpilot_registration_test \

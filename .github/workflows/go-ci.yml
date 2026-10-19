@@ -34,6 +34,8 @@ jobs:
             echo "$unformatted"
             exit 1
           fi
+      - name: Test network classifier and audit build contract
+        run: python3 -m unittest discover -s tests/network -p 'test_*.py' -v
       - name: Run go vet
         run: go vet ./...
       - name: Run tests
@@ -76,6 +78,8 @@ jobs:
           mkdir -p "$RUNNER_TEMP/monitor-linux" "$RUNNER_TEMP/monitor-tools"
           CGO_ENABLED=0 GOTOOLCHAIN=local go test -c -tags=integration,networkaudit -o "$RUNNER_TEMP/monitor-linux/integration.test" ./tests/integration
           CGO_ENABLED=0 GOTOOLCHAIN=local GOBIN="$RUNNER_TEMP/monitor-tools" go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.26.0
+          mkdir -p "$RUNNER_TEMP/monitor-network-evidence"
+          python3 tests/network/check_audit_build.py "$RUNNER_TEMP/monitor-linux/integration.test" "$RUNNER_TEMP/monitor-tools/goose" > "$RUNNER_TEMP/monitor-network-evidence/builds.json"
           docker build -t devpilot-monitor-audit -f tests/network/Dockerfile .
       - name: Calibrate probe and audit real Monitor endpoints
         run: |
