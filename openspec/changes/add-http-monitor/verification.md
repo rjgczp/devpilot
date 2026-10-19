@@ -95,3 +95,12 @@ MONITOR_AUDIT_OUTPUT=/absolute/disposable/evidence tests/network/run-monitor-aud
 ## Hosted CI initial audit finding
 
 PR #8 at code commit `d6914e8ac8998d8539c8b202225b3a50b3c92603`: hosted verify, full PG18 integration and integration-race passed, but [PR run39193625995](https://github.com/rjgczp/devpilot/actions/runs/39193625995) failed its network audit. The calibrated positive control was correctly rejected. The real flow recorded four approved TCP destinations plus six rejected `/var/run/nscd/socket` attempts. Inspection traced those to libc `os/user.Current()` invoked unconditionally by pgx default configuration (test binary and two Goose child processes), not a Monitor target lookup. The detector was not relaxed: CI now explicitly builds **both** audit test/Goose binaries with CGO_ENABLED=0, matching the locally calibrated wrapper, so default OS-user lookup does not use NSCD IPC. Go networking remains available and observable; normal and race regressions retain existing CGO behavior. Audit evidence is explicitly scoped to the pure-Go build. A new hosted run must pass before this issue is closed.
+
+
+## Hosted implementation acceptance and PR
+
+[PR #8](https://github.com/rjgczp/devpilot/pull/8) 指向main。实现/CI修正提交 `4f77eee555826df2d75fe76d777505a09c1a9b71` 的 [PR CI run39194235088](https://github.com/rjgczp/devpilot/actions/runs/39194235088) 为 **success**：verify、全量PG18 integration、integration-race、审计工具构建、违规连接正向对照、真实配置端点零目标审计、artifact上传均成功。完整job/step状态和对应head SHA见`evidence/ci-implementation.json`，托管探针trace/摘要/退出码以`evidence/ci-control.*`与`evidence/ci-real.*`保存；明确区别于本地`control.*`/`real.*`。
+
+托管校准结果同本地：控制child0/audit1、1次违规TCP192.0.2.1:80；真实child0/audit0、4次批准TCP连接、0次目标尝试。此前NSCD finding已经由显式纯Go审计构建解决，探针未增加豁免。全库strict的既有长度警告仍单独记录，没有声称全库strict成功。
+
+本段及验收证据作为后续文档提交记录上述**明确SHA**的已完成托管执行；文档提交自身的最新checks以PR页面为准，不能把历史run冒充为之后SHA的检查。任务30/31完成：只剩用户要求等待的独立PR代码评审及其发现可能需要的修复。没有合并、归档、公开部署或激活。
