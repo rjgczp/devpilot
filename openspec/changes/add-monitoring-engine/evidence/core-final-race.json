@@ -1,0 +1,12 @@
+{
+  "command": [
+    "go",
+    "test",
+    "-race",
+    "./internal/monitoring",
+    "-count=1"
+  ],
+  "started_at": "2026-10-19T07:44:36.551418+00:00",
+  "duration_seconds": 3.6711287919897586,
+  "exit_code": 0
+}

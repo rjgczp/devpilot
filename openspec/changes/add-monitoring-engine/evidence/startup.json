@@ -1,0 +1,11 @@
+{
+  "command": [
+    "go",
+    "test",
+    "./cmd/api",
+    "-count=1"
+  ],
+  "started_at": "2026-10-19T07:12:39.845784+00:00",
+  "duration_seconds": 6.442647582967766,
+  "exit_code": 0
+}

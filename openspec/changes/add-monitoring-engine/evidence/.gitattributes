@@ -1,0 +1,5 @@
+# These are verbatim tool outputs: Go metadata has a trailing tab and ss formats
+# listener tables with trailing padding. Preserve original diagnostic bytes.
+**/build.txt -text -whitespace
+**/listeners.txt -text -whitespace
+*-run.txt -text -whitespace

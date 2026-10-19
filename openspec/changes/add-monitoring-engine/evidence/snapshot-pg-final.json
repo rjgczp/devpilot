@@ -1,0 +1,15 @@
+{
+  "command": [
+    "go",
+    "test",
+    "-tags=integration,executionsnapshot",
+    "./internal/monitoring",
+    "-run",
+    "^TestSystemSnapshot",
+    "-count=1",
+    "-v"
+  ],
+  "started_at": "2026-10-19T07:43:00.536846+00:00",
+  "duration_seconds": 8.041982665949035,
+  "exit_code": 0
+}

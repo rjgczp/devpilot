@@ -1,0 +1,15 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ],
+    [
+      "93.184.216.34",
+      80
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 1,
+  "target_attempts": 1
+}

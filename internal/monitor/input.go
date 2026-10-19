@@ -15,6 +15,20 @@ import (
 
 const MaxBodyBytes = 16384
 
+// ValidStoredConfiguration is a pure, offline check for trusted internal
+// readers. Database CHECKs deliberately do not implement the complete policy.
+// It neither normalizes corrupted stored values nor grants execution authority.
+func ValidStoredConfiguration(name, rawURL, method string, interval, timeout, status int64) bool {
+	canonical, ok := canonicalURL(rawURL)
+	return ok && canonical == rawURL && len(validate(Input{
+		Name: &name, URL: &rawURL, Method: &method,
+		IntervalSeconds: &interval, TimeoutSeconds: &timeout, ExpectedStatus: &status,
+	})) == 0
+}
+
+// CanonicalTargetName checks a DNS name without resolution or other I/O.
+func CanonicalTargetName(name string) bool { return validHost(name) }
+
 type Input struct {
 	Name, URL, Method                               *string
 	IntervalSeconds, TimeoutSeconds, ExpectedStatus *int64

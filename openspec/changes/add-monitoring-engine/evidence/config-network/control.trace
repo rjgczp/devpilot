@@ -1,0 +1,8 @@
+23    execve("/toolbin/integration.test", ["/toolbin/integration.test", "-test.run", "^TestMonitorNetworkProbePositiveControl$", "-test.v", "-test.timeout=60s"], 0xfffff8e20fc8 /* 14 vars */) = 0
+23    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 24
+23    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 25
+23    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 26
+23    clone(child_stack=0x40000aa000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 27
+25    clone(child_stack=0x40000a6000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 28
+23    connect(5<TCP:[2111534]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("192.0.2.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+27    exit_group(0)                     = ?

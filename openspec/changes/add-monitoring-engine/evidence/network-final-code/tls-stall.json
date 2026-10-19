@@ -1,0 +1,36 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ],
+    [
+      "93.184.216.38",
+      443
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 1,
+  "target_attempts": 1,
+  "case": "tls-stall",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/tls-stall.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "tls-stall"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 1.0450135419960134
+}

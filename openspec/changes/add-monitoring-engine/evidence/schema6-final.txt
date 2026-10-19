@@ -1,0 +1,7 @@
+2026/10/19 15:42:59 OK   00001_create_users.sql (5.79ms)
+2026/10/19 15:42:59 OK   00002_create_sessions.sql (6.19ms)
+2026/10/19 15:42:59 OK   00003_create_workspaces.sql (4.9ms)
+2026/10/19 15:42:59 OK   00004_create_workspace_invitations.sql (6.79ms)
+2026/10/19 15:42:59 OK   00005_create_projects.sql (3.4ms)
+2026/10/19 15:42:59 OK   00006_create_http_monitors.sql (5.13ms)
+2026/10/19 15:42:59 goose: successfully migrated database to version: 6

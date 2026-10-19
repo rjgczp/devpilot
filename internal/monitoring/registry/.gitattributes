@@ -1,0 +1,3 @@
+# Preserve original IANA bytes, including CRLF and spaces inside quoted fields.
+# Hash tests validate these upstream data snapshots; source code is unaffected.
+*.csv -text -whitespace

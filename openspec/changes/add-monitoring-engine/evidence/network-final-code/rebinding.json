@@ -1,0 +1,40 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ],
+    [
+      "93.184.216.34",
+      80
+    ],
+    [
+      "127.0.0.53",
+      53
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 2,
+  "target_attempts": 1,
+  "case": "rebinding",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/rebinding.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "rebinding"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 0.0388619169825688
+}

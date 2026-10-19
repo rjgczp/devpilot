@@ -1,0 +1,21 @@
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority/exit
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority/revoked
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority/disabled
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority/cleanup
+--- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority (0.06s)
+    --- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority/exit (0.02s)
+    --- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority/revoked (0.00s)
+    --- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority/disabled (0.00s)
+    --- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority/cleanup (0.00s)
+=== RUN   TestSystemSnapshotPGLiveIsolatedExecution
+    snapshot_pg_test.go:203: PG18 live proof: v7 HTTP in flight; pool released, zero Monitor locks; protected Owner v8 PATCH and revocation complete; v7 retains old 3s/200 after >new1s; v8 gets own result; child has no DB/Cookie credentials
+--- PASS: TestSystemSnapshotPGLiveIsolatedExecution (1.89s)
+=== RUN   TestSystemSnapshotPGScopePrivilegesAndRelease
+    snapshot_pg_test.go:337: PG18: actual LOGIN role, complete scope, denied writes/DDL/identity reads, released pool/locks, 2s deadline
+--- PASS: TestSystemSnapshotPGScopePrivilegesAndRelease (2.05s)
+=== RUN   TestSystemSnapshotPGStatementConsistency
+    snapshot_pg_test.go:380: PG18: independent writer transaction barriers prove complete old/v8 snapshots; supported Owner update reaches v9
+--- PASS: TestSystemSnapshotPGStatementConsistency (0.08s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/monitoring	6.425s

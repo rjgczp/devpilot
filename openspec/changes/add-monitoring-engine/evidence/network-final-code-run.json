@@ -1,0 +1,9 @@
+{
+  "command": [
+    "sh",
+    "tests/execution/run-docker.sh"
+  ],
+  "started_at": "2026-10-19T07:45:11.741639+00:00",
+  "duration_seconds": 26.4320577919716,
+  "exit_code": 0
+}

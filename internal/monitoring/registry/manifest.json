@@ -1,0 +1,22 @@
+{
+  "ipv4-special": {
+    "url": "https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv",
+    "retrieved_date": "2026-10-19",
+    "sha256": "cbc4b7653c8bc640ba1e8e5d4ebbf11e7c7a1d867e7f1593aad001d3f8632aac"
+  },
+  "ipv6-special": {
+    "url": "https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv",
+    "retrieved_date": "2026-10-19",
+    "sha256": "bf56772aef97fbf9b4a27c98b8511f2bb1ba96da4b9ccc12ab203a2496faba66"
+  },
+  "ipv4-space": {
+    "url": "https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.csv",
+    "retrieved_date": "2026-10-19",
+    "sha256": "3cc77afcbc7a26c1716813a9b08c168e078f82ada22f3855d2466ba085b6d051"
+  },
+  "ipv6-space": {
+    "url": "https://www.iana.org/assignments/ipv6-unicast-address-assignments/ipv6-unicast-address-assignments.csv",
+    "retrieved_date": "2026-10-19",
+    "sha256": "65d96c4fb7bfe5e314bb5832edb2f1957cfcfe764a7d983485a4e1704011ef18"
+  }
+}

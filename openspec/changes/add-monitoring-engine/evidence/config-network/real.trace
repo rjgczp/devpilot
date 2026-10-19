@@ -1,0 +1,233 @@
+37    execve("/toolbin/integration.test", ["/toolbin/integration.test", "-test.run", "^TestMonitorNoTargetNetwork$", "-test.v", "-test.timeout=60s"], 0xffffd7f7dad8 /* 14 vars */) = 0
+37    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 38
+37    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 39
+37    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 40
+37    clone(child_stack=0x40000aa000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 41
+39    clone(child_stack=0x40000a6000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 42
+37    connect(5<TCP:[2111541]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+42    waitid(P_PIDFD, 9<pid:37>, NULL, WEXITED, NULL) = -1 ECHILD (No child processes)
+42    pidfd_send_signal(9<pid:37>, 0, NULL, 0) = 0
+42    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK <unfinished ...>
+43    exit_group(0)                     = ?
+42    <... clone resumed>, parent_tid=[10<pid:43>]) = 43
+42    waitid(P_PIDFD, 10<pid:43>, NULL, WEXITED|__WCLONE, NULL) = 0
+42    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+44    execve("/toolbin/goose", ["goose", "-env=none", "-version"], 0x4000242000 /* 14 vars */ <unfinished ...>
+42    <... clone resumed>, parent_tid=[11<pid:44>]) = 44
+44    <... execve resumed>)             = 0
+42    waitid(P_PIDFD, 11<pid:44>,  <unfinished ...>
+44    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 45
+44    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 46
+45    tgkill(44, 44, SIGURG)            = 0
+44    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=44, si_uid=0} ---
+44    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+46    clone(child_stack=0x40000ae000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+44    <... clone resumed>)              = 47
+46    <... clone resumed>)              = 48
+48    clone(child_stack=0x40000aa000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 49
+44    exit_group(0)                     = ?
+42    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=44, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=0}, ru_stime={tv_sec=0, tv_usec=4272}, ...}) = 0
+42    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=44, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+42    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+38    tgkill(37, 42, SIGURG)            = 0
+50    execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "up"], 0x4000248090 /* 16 vars */ <unfinished ...>
+42    <... clone resumed>, parent_tid=[11<pid:50>]) = 50
+50    <... execve resumed>)             = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+42    waitid(P_PIDFD, 11<pid:50>,  <unfinished ...>
+50    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 51
+50    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 52
+50    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 53
+52    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 54
+50    connect(5<TCP:[2110614]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+53    tgkill(50, 50, SIGURG)            = 0
+50    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=50, si_uid=0} ---
+52    clone(child_stack=0x4000696000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 55
+52    tgkill(50, 50, SIGURG)            = 0
+50    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=50, si_uid=0} ---
+52    tgkill(50, 50, SIGURG)            = 0
+50    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=50, si_uid=0} ---
+52    exit_group(0)                     = ?
+42    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=50, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=0}, ru_stime={tv_sec=0, tv_usec=13481}, ...}) = 0
+39    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=50, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+39    connect(7<TCP:[2103890]>, {sa_family=AF_INET, sin_port=htons(18081), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+37    tgkill(37, 41, SIGURG)            = 0
+41    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+40    clone(child_stack=0x4004316000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 56
+41    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 56, SIGURG)            = 0
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    <... tgkill resumed>)             = 0
+41    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 56, SIGURG)            = 0
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG <unfinished ...>
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG <unfinished ...>
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+37    tgkill(37, 41, SIGURG)            = 0
+41    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+37    tgkill(37, 39, SIGURG)            = 0
+39    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 41, SIGURG)            = 0
+41    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG <unfinished ...>
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 37, SIGURG <unfinished ...>
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    <... tgkill resumed>)             = 0
+41    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    <... tgkill resumed>)             = 0
+41    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    <... tgkill resumed>)             = 0
+41    tgkill(37, 56, SIGURG)            = 0
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 56, SIGURG)            = 0
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    <... tgkill resumed>)             = 0
+41    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    <... tgkill resumed>)             = 0
+41    tgkill(37, 56, SIGURG)            = 0
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    <... tgkill resumed>)             = 0
+41    tgkill(37, 56, SIGURG)            = 0
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    tgkill(37, 56, SIGURG)            = 0
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+42    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+42    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+42    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+42    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+42    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+42    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 41, SIGURG <unfinished ...>
+41    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 41, SIGURG <unfinished ...>
+41    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 41, SIGURG)            = 0
+41    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 56, SIGURG <unfinished ...>
+56    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+40    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+57    execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "down-to", "0"], 0x40000f9680 /* 16 vars */ <unfinished ...>
+40    <... clone resumed>, parent_tid=[11<pid:57>]) = 57
+57    <... execve resumed>)             = 0
+40    waitid(P_PIDFD, 11<pid:57>,  <unfinished ...>
+57    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 58
+57    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 59
+57    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+59    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+57    <... clone resumed>)              = 60
+59    <... clone resumed>)              = 61
+57    connect(5<TCP:[2103893]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+57    tgkill(57, 60, SIGURG)            = 0
+60    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=57, si_uid=0} ---
+59    clone(child_stack=0x4000696000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 62
+57    tgkill(57, 62, SIGURG)            = 0
+62    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=57, si_uid=0} ---
+61    clone(child_stack=0x4000112000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 63
+61    tgkill(57, 63, SIGURG)            = 0
+63    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=57, si_uid=0} ---
+61    tgkill(57, 60, SIGURG)            = 0
+60    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=57, si_uid=0} ---
+59    tgkill(57, 60, SIGURG)            = 0
+60    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=57, si_uid=0} ---
+59    tgkill(57, 60, SIGURG)            = 0
+60    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=57, si_uid=0} ---
+59    tgkill(57, 63, SIGURG)            = 0
+63    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=57, si_uid=0} ---
+59    tgkill(57, 63, SIGURG)            = 0
+63    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=57, si_uid=0} ---
+57    exit_group(0)                     = ?
+41    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=57, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+40    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=57, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=3440}, ru_stime={tv_sec=0, tv_usec=9175}, ...}) = 0
+41    exit_group(0)                     = ?

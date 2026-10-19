@@ -1,0 +1,20 @@
+{
+  "head": "252c7d3c000c68de3e08d2fc8de4cece3a2d00e8",
+  "branch": "codex/add-monitoring-engine",
+  "go": "go version go1.24.3 darwin/arm64",
+  "approved_planning": {
+    "openspec/changes/add-monitoring-engine/proposal.md": "8abc88e0087123c9f014875f0c4f2611537168a80761608a2daebae5a8fcf692",
+    "openspec/changes/add-monitoring-engine/design.md": "f197fc2418409f7a9366165a6beb3fec5eeb4150a9c81459dfecb926cdafec69",
+    "openspec/changes/add-monitoring-engine/tasks.md": "9b588dec5bc9a6c1fca21e01d4c1246e286a6f048d26136fb692796decb9348e",
+    "openspec/changes/add-monitoring-engine/specs/http-monitor-execution/spec.md": "a3bfd8be4c11c6783f85b1eb144dfad0f639e8064aa842beb4f49bae30118c16",
+    "openspec/changes/add-monitoring-engine/specs/http-monitor-persistence/spec.md": "0c840e23a4385f90cae80ffb29a9310e94460757e503e7aa31624ff1f1102597"
+  },
+  "migrations": {
+    "migrations/00001_create_users.sql": "e09f6476b25ce0a60cbd6607486a9b4208f2c3413957c83e54110e0e661b5490",
+    "migrations/00002_create_sessions.sql": "27ce132375459ea1e061aac1e2c00de1010c9dc8f94c21489e7c24243f02c96a",
+    "migrations/00003_create_workspaces.sql": "327651e7727c512d80062792bab0ea874f1f63320b98ca6b0491dd8e6f94223d",
+    "migrations/00004_create_workspace_invitations.sql": "0374475bb78a985a9baf3de72055032bcc08e6f18512b850442a59940f20fdfb",
+    "migrations/00005_create_projects.sql": "4715106905a92991c7f1dcb2da08afb7fd93217716bfa83eb4a33bb8145ac519",
+    "migrations/00006_create_http_monitors.sql": "26ac26c66da96b0f16076342f0f11258bb6ea92be5f71a6b015c97a3075ee4e2"
+  }
+}

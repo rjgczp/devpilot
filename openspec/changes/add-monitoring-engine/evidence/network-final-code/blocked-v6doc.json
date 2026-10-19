@@ -1,0 +1,32 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 1,
+  "target_attempts": 0,
+  "case": "blocked-v6doc",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/blocked-v6doc.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "blocked-v6doc"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 0.03629229200305417
+}

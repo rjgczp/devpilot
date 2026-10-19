@@ -1,0 +1,44 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ],
+    [
+      "93.184.216.34",
+      80
+    ],
+    [
+      "127.0.0.53",
+      53
+    ],
+    [
+      "93.184.216.34",
+      80
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 2,
+  "target_attempts": 2,
+  "case": "repeat",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/repeat.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "repeat"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 0.04165916598867625
+}

@@ -1,0 +1,12 @@
+748   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "repeat"], 0xfffffe8820e8 /* 10 vars */) = 0
+748   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffffa35fa310 /* 11 vars */) = 0
+748   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 749
+748   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 750
+748   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 751
+748   clone(child_stack=0x4000110000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 752
+750   clone(child_stack=0x400010c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 753
+748   connect(5<TCP:[2120979]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+753   connect(5<TCP:[2117837]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+753   connect(5<TCP:[2117838]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+752   connect(5<TCP:[2114331]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+750   exit_group(0)                     = ?

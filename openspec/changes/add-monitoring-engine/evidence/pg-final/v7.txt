@@ -1,0 +1,4 @@
+=== RUN   TestExecutionProbe
+RESULT: {"workspace_id":"01a1531d-30b2-7aa6-99f5-1ebb1f4f49ba","project_id":"01a1531d-30b4-716d-9d07-512f8165584b","monitor_id":"01a1531d-30b4-7c17-accf-efafd43fcf67","configuration_version":"7","started_at":"2026-10-19T07:43:04.655173845Z","finished_at":"2026-10-19T07:43:05.896479638Z","duration":1241305834,"http_status":200,"success":true,"failure_code":null}
+--- PASS: TestExecutionProbe (1.25s)
+PASS
