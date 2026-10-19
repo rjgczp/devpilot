@@ -90,3 +90,8 @@ MONITOR_AUDIT_OUTPUT=/absolute/disposable/evidence tests/network/run-monitor-aud
 最后一轮本地串行验证脚本以set -e运行，整体exit0：Monitor逐场景集成、普通vet、integration vet、全量unit、全量unit-race、全量PG18 integration及integration-race全部PASS。Monitor集成日志含97个PASS场景（父测试与子测试分别计数）；全量PG18日志保留包级结果，不能把97解释为所有历史场景总数。普通PG18 integration约58秒，integration-race实际耗时见对应日志。格式检查和git diff --check无输出。
 
 除独立PR代码评审/其发现的后续修复外，本地实现验收已完成；托管CI结果将在PR创建后独立采集，不用本地日志代替。
+
+
+## Hosted CI initial audit finding
+
+PR #8 at code commit `d6914e8ac8998d8539c8b202225b3a50b3c92603`: hosted verify, full PG18 integration and integration-race passed, but [PR run39193625995](https://github.com/rjgczp/devpilot/actions/runs/39193625995) failed its network audit. The calibrated positive control was correctly rejected. The real flow recorded four approved TCP destinations plus six rejected `/var/run/nscd/socket` attempts. Inspection traced those to libc `os/user.Current()` invoked unconditionally by pgx default configuration (test binary and two Goose child processes), not a Monitor target lookup. The detector was not relaxed: CI now explicitly builds **both** audit test/Goose binaries with CGO_ENABLED=0, matching the locally calibrated wrapper, so default OS-user lookup does not use NSCD IPC. Go networking remains available and observable; normal and race regressions retain existing CGO behavior. Audit evidence is explicitly scoped to the pure-Go build. A new hosted run must pass before this issue is closed.

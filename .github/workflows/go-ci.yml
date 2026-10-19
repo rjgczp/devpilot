@@ -74,8 +74,8 @@ jobs:
       - name: Build Monitor network audit tools
         run: |
           mkdir -p "$RUNNER_TEMP/monitor-linux" "$RUNNER_TEMP/monitor-tools"
-          GOTOOLCHAIN=local go test -c -tags=integration,networkaudit -o "$RUNNER_TEMP/monitor-linux/integration.test" ./tests/integration
-          cp "$(go env GOPATH)/bin/goose" "$RUNNER_TEMP/monitor-tools/goose"
+          CGO_ENABLED=0 GOTOOLCHAIN=local go test -c -tags=integration,networkaudit -o "$RUNNER_TEMP/monitor-linux/integration.test" ./tests/integration
+          CGO_ENABLED=0 GOTOOLCHAIN=local GOBIN="$RUNNER_TEMP/monitor-tools" go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.26.0
           docker build -t devpilot-monitor-audit -f tests/network/Dockerfile .
       - name: Calibrate probe and audit real Monitor endpoints
         run: |

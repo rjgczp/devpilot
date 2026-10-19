@@ -1,0 +1,18 @@
+{
+  "head_sha": "d6914e8ac8998d8539c8b202225b3a50b3c92603",
+  "run_url": "https://github.com/rjgczp/devpilot/actions/runs/39193625995",
+  "verify": "success",
+  "pg18_integration": "success",
+  "pg18_integration_race": "success",
+  "network_audit": "failure",
+  "positive_control": {
+    "audit_exit": 1,
+    "unapproved_attempts": 1
+  },
+  "real": {
+    "audit_exit": 1,
+    "approved_tcp_attempts": 4,
+    "unapproved_nscd_unix_attempts": 6
+  },
+  "fix": "Build both audit tools CGO_ENABLED=0, matching local runner; keep detector fail closed."
+}
