@@ -1,0 +1,8 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/6 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 6/6 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 83872 (27956/sec), new interesting: 80 (total: 86)
+fuzz: elapsed: 6s, execs: 215453 (43848/sec), new interesting: 103 (total: 109)
+fuzz: elapsed: 9s, execs: 317424 (33990/sec), new interesting: 146 (total: 152)
+fuzz: elapsed: 10s, execs: 351715 (33498/sec), new interesting: 158 (total: 164)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/monitor	10.408s

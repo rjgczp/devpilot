@@ -10,6 +10,7 @@ on:
       - codex/add-workspace-members
       - codex/add-workspace-invitations
       - codex/add-project-management
+      - codex/add-http-monitor
   pull_request:
     branches:
       - main
@@ -69,3 +70,31 @@ jobs:
 
       - name: Verify PostgreSQL integration with race detector
         run: go test -race -tags=integration ./tests/integration -count=1 -timeout=120s
+
+      - name: Build Monitor network audit tools
+        run: |
+          mkdir -p "$RUNNER_TEMP/monitor-linux" "$RUNNER_TEMP/monitor-tools"
+          GOTOOLCHAIN=local go test -c -tags=integration,networkaudit -o "$RUNNER_TEMP/monitor-linux/integration.test" ./tests/integration
+          cp "$(go env GOPATH)/bin/goose" "$RUNNER_TEMP/monitor-tools/goose"
+          docker build -t devpilot-monitor-audit -f tests/network/Dockerfile .
+      - name: Calibrate probe and audit real Monitor endpoints
+        run: |
+          mkdir -p "$RUNNER_TEMP/monitor-network-evidence"
+          docker run --rm --cap-add NET_ADMIN --cap-add SYS_PTRACE \
+            --network "container:${{ job.services.postgres.id }}" \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE:ro" \
+            -v "$RUNNER_TEMP/monitor-linux:/testtools:ro" \
+            -v "$RUNNER_TEMP/monitor-tools:/toolbin:ro" \
+            -v "$RUNNER_TEMP/monitor-network-evidence:/evidence" \
+            -w "$GITHUB_WORKSPACE" \
+            -e PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+            -e MONITOR_PROBE_ISOLATED=1 -e MONITOR_TEST_BINARY=/testtools/integration.test \
+            -e MONITOR_AUDIT_OUTPUT=/evidence -e TEST_DATABASE_URL \
+            devpilot-monitor-audit tests/network/run-monitor-audit.sh
+      - name: Upload Monitor network audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitor-network-evidence
+          path: ${{ runner.temp }}/monitor-network-evidence/
+          if-no-files-found: error

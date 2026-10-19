@@ -6347,6 +6347,1349 @@
           }
         }
       }
+    },
+    "/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors": {
+      "get": {
+        "operationId": "listMonitors",
+        "summary": "Read saved HTTP Monitor configuration",
+        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler, activation or result. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version, bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": "Single canonical decimal, no leading zero or sign."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Single canonical lowercase UUID range lower bound only."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createMonitor",
+        "summary": "Write saved HTTP Monitor configuration",
+        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler, activation or result. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version, bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one non-null Origin matching configured AUTH_ORIGIN by scheme, host and effective port. Host/Forwarded/Referer do not replace it."
+          },
+          {
+            "name": "X-DevPilot-CSRF",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            },
+            "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048,
+                    "description": "Canonical offline HTTP(S) DNS URL; no userinfo/query/fragment/IP/nondefault port. ASCII strict IDNA A-label; escaped path preserved. Admission is not SSRF execution safety."
+                  },
+                  "method": {
+                    "type": "string",
+                    "const": "GET"
+                  },
+                  "interval_seconds": {
+                    "type": "integer",
+                    "enum": [
+                      60,
+                      300,
+                      900,
+                      1800,
+                      3600
+                    ],
+                    "default": 60
+                  },
+                  "timeout_seconds": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30,
+                    "default": 10,
+                    "description": "Strictly less than interval_seconds; configuration intent only."
+                  },
+                  "expected_status": {
+                    "type": "integer",
+                    "minimum": 200,
+                    "maximum": 599,
+                    "default": 200
+                  }
+                },
+                "required": [
+                  "name",
+                  "url"
+                ]
+              }
+            }
+          },
+          "description": "Single strict JSON object, <=16384 raw bytes; no null/duplicate/unknown keys, invalid UTF-8/surrogates, trailing JSON, decimal/exponent/string integers. POST defaults only; PATCH missing fields retain state."
+        },
+        "responses": {
+          "201": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong \"monitor:<id>:<version>\", fixed role-independent JSON representation and UTC RFC3339Nano times; no representation/compression variants."
+              },
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "/api/v1/workspaces/{workspace_id}/projects/{monitor_id}, only after confirmed Commit."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, POST"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_csrf_rejected"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_monitor_forbidden"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_request_too_large"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unsupported_media_type"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_validation_failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}": {
+      "get": {
+        "operationId": "getMonitor",
+        "summary": "Read saved HTTP Monitor configuration",
+        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler, activation or result. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version, bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "monitor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong \"monitor:<id>:<version>\", fixed role-independent JSON representation and UTC RFC3339Nano times; no representation/compression variants."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, PATCH"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateMonitor",
+        "summary": "Write saved HTTP Monitor configuration",
+        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler, activation or result. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version, bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "monitor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exactly one non-null Origin matching configured AUTH_ORIGIN by scheme, host and effective port. Host/Forwarded/Referer do not replace it."
+          },
+          {
+            "name": "X-DevPilot-CSRF",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            },
+            "description": "Exactly one header. Present Sec-Fetch-Site must be a single same-origin value; no CORS grants."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 96
+            },
+            "description": "Exactly one strong \"monitor:<canonical-uuid>:<positive-bigint>\" <=96 bytes. Missing428, stale412 after identity/scope/Owner gate; malformed400."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048,
+                    "description": "Canonical offline HTTP(S) DNS URL; no userinfo/query/fragment/IP/nondefault port. ASCII strict IDNA A-label; escaped path preserved. Admission is not SSRF execution safety."
+                  },
+                  "method": {
+                    "type": "string",
+                    "const": "GET"
+                  },
+                  "interval_seconds": {
+                    "type": "integer",
+                    "enum": [
+                      60,
+                      300,
+                      900,
+                      1800,
+                      3600
+                    ],
+                    "default": 60
+                  },
+                  "timeout_seconds": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30,
+                    "default": 10,
+                    "description": "Strictly less than interval_seconds; configuration intent only."
+                  },
+                  "expected_status": {
+                    "type": "integer",
+                    "minimum": 200,
+                    "maximum": 599,
+                    "default": 200
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          },
+          "description": "Single strict JSON object, <=16384 raw bytes; no null/duplicate/unknown keys, invalid UTF-8/surrogates, trailing JSON, decimal/exponent/string integers. POST defaults only; PATCH missing fields retain state."
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong \"monitor:<id>:<version>\", fixed role-independent JSON representation and UTC RFC3339Nano times; no representation/compression variants."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, PATCH"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_csrf_rejected"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_monitor_forbidden"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_request_too_large"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unsupported_media_type"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_validation_failed"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_precondition_failed"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_precondition_required"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -7894,6 +9237,639 @@
                 "const": "Unable to complete project operation."
               }
             }
+          }
+        }
+      },
+      "Monitor": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "workspace_id",
+          "name",
+          "version",
+          "created_at",
+          "updated_at",
+          "project_id",
+          "method",
+          "interval_seconds",
+          "timeout_seconds",
+          "expected_status",
+          "url"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Positive bigint decimal string, maximum 9223372036854775807."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "method": {
+            "type": "string",
+            "const": "GET"
+          },
+          "interval_seconds": {
+            "type": "integer",
+            "enum": [
+              60,
+              300,
+              900,
+              1800,
+              3600
+            ],
+            "default": 60
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 10,
+            "description": "Strictly less than interval_seconds; configuration intent only."
+          },
+          "expected_status": {
+            "type": "integer",
+            "minimum": 200,
+            "maximum": 599,
+            "default": 200
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "description": "Canonical offline HTTP(S) DNS URL; no userinfo/query/fragment/IP/nondefault port. ASCII strict IDNA A-label; escaped path preserved. Admission is not SSRF execution safety."
+          }
+        }
+      },
+      "MonitorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Monitor"
+          }
+        }
+      },
+      "MonitorPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/MonitorSummary"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "next_after"
+            ],
+            "properties": {
+              "next_after": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_invalid_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "invalid_request"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invalid monitor request."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_unauthenticated": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "unauthenticated"
+              },
+              "message": {
+                "type": "string",
+                "const": "Authentication required."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_csrf_rejected": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "csrf_rejected"
+              },
+              "message": {
+                "type": "string",
+                "const": "Request origin could not be verified."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_monitor_forbidden": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "monitor_forbidden"
+              },
+              "message": {
+                "type": "string",
+                "const": "Monitor operation is not permitted."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_monitor_not_found": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "monitor_not_found"
+              },
+              "message": {
+                "type": "string",
+                "const": "Monitor not found."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_method_not_allowed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "method_not_allowed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Method not allowed."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_precondition_failed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "precondition_failed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Monitor precondition failed."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_precondition_required": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "precondition_required"
+              },
+              "message": {
+                "type": "string",
+                "const": "Monitor precondition required."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_request_too_large": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "request_too_large"
+              },
+              "message": {
+                "type": "string",
+                "const": "Request body too large."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_unsupported_media_type": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "unsupported_media_type"
+              },
+              "message": {
+                "type": "string",
+                "const": "Unsupported media type."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_validation_failed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message",
+              "fields"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "validation_failed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invalid monitor fields."
+              },
+              "fields": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "enum": [
+                      "required",
+                      "invalid_length",
+                      "invalid_format"
+                    ]
+                  },
+                  "url": {
+                    "type": "string",
+                    "enum": [
+                      "required",
+                      "invalid_length",
+                      "invalid_format"
+                    ]
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "invalid_value"
+                    ]
+                  },
+                  "interval_seconds": {
+                    "type": "string",
+                    "enum": [
+                      "invalid_value"
+                    ]
+                  },
+                  "timeout_seconds": {
+                    "type": "string",
+                    "enum": [
+                      "invalid_value",
+                      "must_be_less_than_interval"
+                    ]
+                  },
+                  "expected_status": {
+                    "type": "string",
+                    "enum": [
+                      "invalid_value"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_database_timeout": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "database_timeout"
+              },
+              "message": {
+                "type": "string",
+                "const": "Monitor operation could not be confirmed."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_service_unavailable": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "service_unavailable"
+              },
+              "message": {
+                "type": "string",
+                "const": "Monitor operation could not be confirmed."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_internal_error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "internal_error"
+              },
+              "message": {
+                "type": "string",
+                "const": "Unable to complete monitor operation."
+              }
+            }
+          }
+        }
+      },
+      "MonitorSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "workspace_id",
+          "name",
+          "version",
+          "created_at",
+          "updated_at",
+          "project_id",
+          "method",
+          "interval_seconds",
+          "timeout_seconds",
+          "expected_status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Positive bigint decimal string, maximum 9223372036854775807."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "method": {
+            "type": "string",
+            "const": "GET"
+          },
+          "interval_seconds": {
+            "type": "integer",
+            "enum": [
+              60,
+              300,
+              900,
+              1800,
+              3600
+            ],
+            "default": 60
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 10,
+            "description": "Strictly less than interval_seconds; configuration intent only."
+          },
+          "expected_status": {
+            "type": "integer",
+            "minimum": 200,
+            "maximum": 599,
+            "default": 200
           }
         }
       }

@@ -1,0 +1,14 @@
+ok  	github.com/rjgczp/devpilot/cmd/api	6.490s
+ok  	github.com/rjgczp/devpilot/internal/app	1.583s
+ok  	github.com/rjgczp/devpilot/internal/auth	1.355s
+ok  	github.com/rjgczp/devpilot/internal/config	1.312s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	1.324s
+ok  	github.com/rjgczp/devpilot/internal/monitor	1.828s
+ok  	github.com/rjgczp/devpilot/internal/password	11.607s
+ok  	github.com/rjgczp/devpilot/internal/project	1.812s
+ok  	github.com/rjgczp/devpilot/internal/registration	1.488s
+ok  	github.com/rjgczp/devpilot/internal/session	1.456s
+ok  	github.com/rjgczp/devpilot/internal/testdb	1.424s
+ok  	github.com/rjgczp/devpilot/internal/user	1.376s
+ok  	github.com/rjgczp/devpilot/internal/workspace	1.803s

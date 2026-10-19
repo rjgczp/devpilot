@@ -14,6 +14,7 @@ import (
 	"github.com/rjgczp/devpilot/internal/auth"
 	"github.com/rjgczp/devpilot/internal/config"
 	"github.com/rjgczp/devpilot/internal/health"
+	"github.com/rjgczp/devpilot/internal/monitor"
 	"github.com/rjgczp/devpilot/internal/password"
 	"github.com/rjgczp/devpilot/internal/project"
 	"github.com/rjgczp/devpilot/internal/registration"
@@ -58,7 +59,7 @@ func run() int {
 	users := user.Store{Pool: pool}
 	sessions := session.Store{Pool: pool}
 	authentication := auth.New(users, sessions, passwords, session.NewTokens(), budget, cfg.Auth, logger)
-	handler := app.NewRoutes(healthRoutes, registration.New(users, passwords, logger, budget), authentication, workspace.New(workspace.Store{Pool: pool}, cfg.Auth, logger), project.New(project.Store{Pool: pool}, cfg.Auth, logger))
+	handler := app.NewRoutes(healthRoutes, registration.New(users, passwords, logger, budget), authentication, workspace.New(workspace.Store{Pool: pool}, cfg.Auth, logger), project.New(project.Store{Pool: pool}, cfg.Auth, logger), monitor.New(monitor.Store{Pool: pool}, cfg.Auth, logger))
 	cleanup := session.NewWorker(sessions, logger)
 	runner := app.Runner{
 		Server:          app.NewServer(cfg.HTTPAddr, handler),
