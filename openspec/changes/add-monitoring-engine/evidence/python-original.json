@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests/network",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "started_at": "2026-10-19T07:41:56.508639+00:00",
+  "duration_seconds": 0.7004258750239387,
+  "exit_code": 0
+}

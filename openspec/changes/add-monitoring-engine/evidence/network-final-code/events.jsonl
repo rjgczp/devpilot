@@ -1,0 +1,318 @@
+{"kind": "dns", "monotonic": 259514.138783336, "host": "ok.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.139417211, "host": "ok.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.140991711, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259514.141893752, "host": "ok.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259514.182405003, "host": "ipv6.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.182818919, "host": "ipv6.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.184172669, "ip": "2606:4700:4700::1111", "tls": false}
+{"kind": "http", "monotonic": 259514.184696461, "host": "ipv6.example.com", "ip": "2606:4700:4700::1111", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259514.223436711, "host": "cname.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.223962794, "host": "cname.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259514.224318878, "host": "canonical.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.225611169, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259514.225939711, "host": "cname.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259514.278606919, "host": "tls.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.279068211, "host": "tls.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.280468378, "ip": "93.184.216.34", "tls": true}
+{"kind": "sni", "monotonic": 259514.281966919, "host": "tls.example.com"}
+{"kind": "http", "monotonic": 259514.282957669, "host": "tls.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259514.328887878, "host": "cname-tls.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.329355128, "host": "cname-tls.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259514.329711586, "host": "canonical.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.331078169, "ip": "93.184.216.34", "tls": true}
+{"kind": "sni", "monotonic": 259514.332152961, "host": "cname-tls.example.com"}
+{"kind": "http", "monotonic": 259514.333005711, "host": "cname-tls.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259514.373389294, "host": "expired.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.373840669, "host": "expired.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.375220253, "ip": "93.184.216.34", "tls": true}
+{"kind": "sni", "monotonic": 259514.376056586, "host": "expired.example.com"}
+{"kind": "dns", "monotonic": 259514.419197919, "host": "untrusted.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.419755169, "host": "untrusted.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.421122836, "ip": "93.184.216.34", "tls": true}
+{"kind": "sni", "monotonic": 259514.422200211, "host": "untrusted.example.com"}
+{"kind": "dns", "monotonic": 259514.464543086, "host": "wrong.deep.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.465014753, "host": "wrong.deep.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.466324336, "ip": "93.184.216.34", "tls": true}
+{"kind": "sni", "monotonic": 259514.467012169, "host": "wrong.deep.example.com"}
+{"kind": "dns", "monotonic": 259514.515346169, "host": "tls-big.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.515982586, "host": "tls-big.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259514.517682169, "ip": "93.184.216.34", "tls": true}
+{"kind": "sni", "monotonic": 259514.518960586, "host": "tls-big.example.com"}
+{"kind": "dns", "monotonic": 259514.560377461, "host": "tls-stall.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259514.560652419, "host": "tls-stall.example.com", "qtype": 28}
+{"kind": "tls-stall", "monotonic": 259514.561742794}
+{"kind": "dns", "monotonic": 259515.620623795, "host": "tls-stall.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259515.62114192, "host": "tls-stall.example.com", "qtype": 28}
+{"kind": "tls-stall", "monotonic": 259515.622673962}
+{"kind": "dns", "monotonic": 259518.697433838, "host": "tcp-timeout.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259518.698011046, "host": "tcp-timeout.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259521.774363214, "host": "dns-timeout.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259523.851590049, "host": "dns-chain-slow.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259524.208488091, "host": "slowalias-step-1.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259524.566735466, "host": "slowalias-step-2.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259524.923406216, "host": "slowalias-step-3.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259525.277686424, "host": "slowalias-step-4.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259525.632605591, "host": "slowalias-step-5.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259525.920013633, "host": "redirect-301.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259525.920556216, "host": "redirect-301.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259525.922122591, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259525.922301716, "host": "redirect-301.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259525.966799758, "host": "redirect-302.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259525.96723605, "host": "redirect-302.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259525.968564258, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259525.96913405, "host": "redirect-302.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.009332675, "host": "redirect-307.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.009798716, "host": "redirect-307.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.011057216, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.0116423, "host": "redirect-307.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.0506693, "host": "redirect-308.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.05091355, "host": "redirect-308.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.051930466, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.052292717, "host": "redirect-308.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.092158092, "host": "status.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.0926818, "host": "status.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.093953425, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.094662717, "host": "status.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.134288092, "host": "infinite.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.134653633, "host": "infinite.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.135814633, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.136321633, "host": "infinite.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.174641425, "host": "chunked.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.17502305, "host": "chunked.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.176271092, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.176771425, "host": "chunked.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.21238305, "host": "gzip.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.212823883, "host": "gzip.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.213996383, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.21434155, "host": "gzip.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.25035205, "host": "hints.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.250725508, "host": "hints.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.251912633, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.252461425, "host": "hints.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.286258717, "host": "header-big.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.286714008, "host": "header-big.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.28786905, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.288416675, "host": "header-big.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.326477967, "host": "flood.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.326841633, "host": "flood.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.327997675, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.328344508, "host": "flood.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.364213883, "host": "flood-lf.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.364717383, "host": "flood-lf.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.365749842, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.3659123, "host": "flood-lf.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.403108425, "host": "hints-big.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.403558133, "host": "hints-big.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.40475805, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.405367425, "host": "hints-big.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.442461175, "host": "upgrade.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.442841383, "host": "upgrade.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.443993175, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.444561258, "host": "upgrade.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.482455133, "host": "malformed.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.482825425, "host": "malformed.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.483981883, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.484569383, "host": "malformed.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259526.5208238, "host": "slow.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259526.521204717, "host": "slow.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259526.522342967, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259526.52280905, "host": "slow.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259527.563294551, "host": "slow.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259527.563706759, "host": "slow.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259527.564934259, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259527.565466801, "host": "slow.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259532.639682928, "host": "hold.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259532.640177428, "host": "hold.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259532.641817345, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259532.642533595, "host": "hold.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259532.684850595, "host": "refuse.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259532.685239386, "host": "refuse.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259532.72472972, "host": "tcp-timeout.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259532.725182428, "host": "tcp-timeout.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259533.796915179, "host": "mixed.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259533.838644554, "host": "mixed6.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259533.839081179, "host": "mixed6.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259533.880439804, "host": "additional.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259533.918888345, "host": "reserved-alias.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259533.955858762, "host": "blocked-private.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259533.991217304, "host": "blocked-metadata.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.027393345, "host": "blocked-shared.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.062913012, "host": "blocked-loopback.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.100293554, "host": "blocked-mapped.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.100511387, "host": "blocked-mapped.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259534.136576512, "host": "blocked-nat64.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.136933095, "host": "blocked-nat64.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259534.172529262, "host": "blocked-6to4.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.172907012, "host": "blocked-6to4.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259534.208694262, "host": "blocked-teredo.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.209050595, "host": "blocked-teredo.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259534.245429845, "host": "blocked-isatap.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.245782887, "host": "blocked-isatap.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259534.280948679, "host": "blocked-doc.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.317307554, "host": "blocked-v6doc.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.31766472, "host": "blocked-v6doc.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259534.353296762, "host": "blocked-ula.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.353645262, "host": "blocked-ula.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259534.390179762, "host": "dns-nxdomain.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.427810929, "host": "dns-servfail.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.464304012, "host": "dns-empty.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.464653804, "host": "dns-empty.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259534.499631179, "host": "dns-truncated.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.535752637, "host": "dns-id.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.570793304, "host": "dns-question.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.606290262, "host": "dns-trailing.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259534.643108679, "host": "dns-timeout.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.713210054, "host": "inconsistent.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.713962429, "host": "inconsistent.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259535.714400804, "host": "b.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259535.758542388, "host": "aliases.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.758967929, "host": "alias-step-1.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.759358179, "host": "alias-step-2.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.759741804, "host": "alias-step-3.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.760057721, "host": "alias-step-4.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.760358179, "host": "alias-step-5.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.760691054, "host": "alias-step-6.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.761009388, "host": "alias-step-7.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.761292554, "host": "alias-step-8.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.800864513, "host": "addresses.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.801353513, "host": "addresses.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259535.838472888, "host": "records.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.838789929, "host": "records.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259535.875709388, "host": "oversize.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.912619221, "host": "total.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.913006096, "host": "total-step-1.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.913233763, "host": "total-step-2.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.913485096, "host": "total-step-3.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.91368368, "host": "total-step-4.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.951133721, "host": "dname.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.988880471, "host": "nat-app.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259535.989240638, "host": "nat-app.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.026323305, "host": "rebinding.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.026712888, "host": "rebinding.example.com", "qtype": 28}
+{"kind": "rebind", "monotonic": 259536.026893638, "host": "rebinding.example.com"}
+{"kind": "tcp", "monotonic": 259536.027994388, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.028386263, "host": "rebinding.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.02981318, "host": "rebinding.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.066161055, "host": "repeat.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.066618138, "host": "repeat.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.067725638, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.068084721, "host": "repeat.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.069446555, "host": "repeat.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.069632805, "host": "repeat.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.070700805, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.070950846, "host": "repeat.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.143162138, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.145152346, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.145923888, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.14670168, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.146828138, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.149063263, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.149809096, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.149922846, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.150837555, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.151062513, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.151182638, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.151294138, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.151399263, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "tcp", "monotonic": 259536.151882388, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.15209218, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.152215221, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.152327305, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.153029263, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "tcp", "monotonic": 259536.153225096, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.153365346, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.153477721, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.153576055, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.15367668, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.153768138, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.153878513, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "tcp", "monotonic": 259536.154422013, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.154656721, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.15495193, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.155271013, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.155381971, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.15549618, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.155612013, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.155745055, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.155853638, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.156242305, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.156462721, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.157545471, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "tcp", "monotonic": 259536.157830846, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.158148263, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.159018346, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.159798138, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.160145513, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.161224388, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.162018263, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.16229918, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.162495138, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.162736096, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "tcp", "monotonic": 259536.163153013, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.163598763, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "tcp", "monotonic": 259536.164113471, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.16437293, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.164861221, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.164978596, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.165116763, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.165219346, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.165335096, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.16552743, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.165626638, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.165716055, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.165827346, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.165920721, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.166182096, "host": "hold-load.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.166993305, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "http", "monotonic": 259536.167852346, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.168776388, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "http", "monotonic": 259536.16972943, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "http", "monotonic": 259536.170533138, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.171106596, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.171424096, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.171567638, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "http", "monotonic": 259536.172101888, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.172359346, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.173191888, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.174051638, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "tcp", "monotonic": 259536.174313013, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.17448268, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "http", "monotonic": 259536.174567263, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.174659263, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "http", "monotonic": 259536.174753471, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.174840388, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "dns", "monotonic": 259536.174930971, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "http", "monotonic": 259536.175017721, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "http", "monotonic": 259536.175102555, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "tcp", "monotonic": 259536.175195513, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.175278388, "ip": "93.184.216.34", "tls": false}
+{"kind": "dns", "monotonic": 259536.176106555, "host": "hold-load.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.177012096, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.177180721, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.177273805, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.177395388, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.177476221, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.177555263, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.177642596, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.17772743, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "tcp", "monotonic": 259536.177808971, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.177977305, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "http", "monotonic": 259536.178110971, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "http", "monotonic": 259536.178235305, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "tcp", "monotonic": 259536.178421305, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.179095055, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.179264305, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.17940268, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "tcp", "monotonic": 259536.179519471, "ip": "93.184.216.34", "tls": false}
+{"kind": "tcp", "monotonic": 259536.179638138, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.180279846, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "http", "monotonic": 259536.180421638, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "http", "monotonic": 259536.181906096, "host": "hold-load.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.238775096, "host": "addresses-boundary.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.239272388, "host": "addresses-boundary.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.240418471, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.240752555, "host": "addresses-boundary.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 259536.277521763, "host": "records-boundary.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 259536.277959013, "host": "records-boundary.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 259536.279266555, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 259536.279625221, "host": "records-boundary.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}

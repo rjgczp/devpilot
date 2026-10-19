@@ -1,0 +1,36 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 307B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/2] FROM docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+#4 resolve docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336 done
+#4 DONE 0.0s
+
+#5 [2/2] RUN apt-get update && apt-get install -y --no-install-recommends iproute2 iptables strace tcpdump python3 openssl util-linux && rm -rf /var/lib/apt/lists/*
+#5 CACHED
+
+#6 exporting to image
+#6 exporting layers done
+#6 exporting manifest sha256:136b8f44b70d520883f1535678bccdd9a9f18b1a5405d11b51427581912d33c1 done
+#6 exporting config sha256:67eb456754d90a41ea7c2892f5614085d13f59c5aa08d3d996fa6566dda9099f done
+#6 exporting attestation manifest sha256:5540064647b33cc78579f7806490e74ed11d78cf78b2aed57d53b3bdbe8e8fe2 done
+#6 exporting manifest list sha256:b6bb1e73a501bbc08edaf265d42dbb1a16ba88f1f16c845270d38efcbd2210e2 done
+#6 naming to docker.io/library/devpilot-execution-audit:latest done
+#6 unpacking to docker.io/library/devpilot-execution-audit:latest done
+#6 DONE 0.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/npn8p68uc6ta6bov2a54ge6jy
+Traceback (most recent call last):
+  File "/runner/run.py", line 92, in <module>
+    assert audit_exit==0,report
+           ^^^^^^^^^^^^^
+AssertionError: {'attempts': [('127.0.0.53', 53), ('93.184.216.34', 80)], 'violations': ['Unix socket attempt', 'Unix socket attempt', 'Unix socket attempt', 'Unix socket attempt'], 'dns_attempts': 1, 'target_attempts': 1, 'case': 'ok', 'command': ['strace', '-f', '-qq', '-yy', '-s', '256', '-e', 'trace=process,connect,sendto,sendmsg,sendmmsg', '-o', '/evidence/ok.trace', 'setpriv', '--reuid', '65534', '--regid', '65534', '--clear-groups', '--bounding-set=-all', '--inh-caps=-all', '--ambient-caps=-all', '--no-new-privs', 'env', '-i', 'PATH=/usr/bin:/bin', 'EXECUTION_ISOLATED=1', 'EXEC_CASE=ok', 'HTTP_PROXY=http://127.0.0.54:8080', 'HTTPS_PROXY=http://127.0.0.54:8080', 'ALL_PROXY=socks5://127.0.0.54:8080', 'http_proxy=http://127.0.0.54:8080', 'https_proxy=http://127.0.0.54:8080', 'all_proxy=socks5://127.0.0.54:8080', 'NO_PROXY=', 'no_proxy=', '/toolbin/execution.test', '-test.run', '^TestExecutionProbe$', '-test.v', '-test.timeout=45s'], 'child_exit': 0, 'audit_exit': 1, 'duration': 0.03624116600258276}

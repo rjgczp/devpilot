@@ -14,6 +14,7 @@ func TestHistoricalMigrationsAreImmutable(t *testing.T) {
 		"00003_create_workspaces.sql":            "327651e7727c512d80062792bab0ea874f1f63320b98ca6b0491dd8e6f94223d",
 		"00004_create_workspace_invitations.sql": "0374475bb78a985a9baf3de72055032bcc08e6f18512b850442a59940f20fdfb",
 		"00005_create_projects.sql":              "4715106905a92991c7f1dcb2da08afb7fd93217716bfa83eb4a33bb8145ac519",
+		"00006_create_http_monitors.sql":         "26ac26c66da96b0f16076342f0f11258bb6ea92be5f71a6b015c97a3075ee4e2",
 	} {
 		b, e := os.ReadFile("../../migrations/" + name)
 		if e != nil {

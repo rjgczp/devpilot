@@ -1,0 +1,246 @@
+{
+  "implementation_sha": "d2f42ec98da816c668369ef2a89acafd32d6ad8e",
+  "run": {
+    "id": 39218841168,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/rjgczp/devpilot/actions/runs/39218841168"
+  },
+  "jobs": [
+    {
+      "id": 117949081059,
+      "name": "execution-security",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install pinned Goose",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate internal DNS and address policy with bounded fuzz",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Independently verify real probe networking and egress isolation",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Apply existing schema6 only to the guarded disposable PG18",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build credential-free Linux probe for PG controller",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify PG18 role snapshot and live network version isolation",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify snapshot controller under Race Detector",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload separate execution evidence",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 117949081304,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check gofmt",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Test network classifier and audit build contract",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Test independent execution classifier",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run go vet",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run race tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 117949081493,
+      "name": "integration",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install pinned native Goose CLI",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify PostgreSQL 18 integration",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify PostgreSQL integration with race detector",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build Monitor network audit tools",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Calibrate probe and audit real Monitor endpoints",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload Monitor network audit evidence",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

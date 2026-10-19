@@ -1,0 +1,100 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 307B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/2] FROM docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+#4 resolve docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336 done
+#4 DONE 0.0s
+
+#5 [2/2] RUN apt-get update && apt-get install -y --no-install-recommends iproute2 iptables strace tcpdump python3 openssl util-linux && rm -rf /var/lib/apt/lists/*
+#5 CACHED
+
+#6 exporting to image
+#6 exporting layers done
+#6 exporting manifest sha256:136b8f44b70d520883f1535678bccdd9a9f18b1a5405d11b51427581912d33c1 done
+#6 exporting config sha256:67eb456754d90a41ea7c2892f5614085d13f59c5aa08d3d996fa6566dda9099f done
+#6 exporting attestation manifest sha256:e3c3ba9696dab64f7b18103f8d02526f30be330d8a78d026117a1e9bd52e1eaf done
+#6 exporting manifest list sha256:05eaad87c68c5f2638f99b9cb3481982c37b020fd3fb511e913e8110aa96ef8e done
+#6 naming to docker.io/library/devpilot-execution-audit:latest done
+#6 unpacking to docker.io/library/devpilot-execution-audit:latest done
+#6 DONE 0.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/u0xm4b5ibrzdztm7epy382yq6
+{"case": "ok", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.04427108299569227}
+{"case": "ipv6", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.05020083300769329}
+{"case": "cname", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03879291599150747}
+{"case": "tls", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.04427587499958463}
+{"case": "cname-tls", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.04403000001912005}
+{"case": "expired", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.04254579098778777}
+{"case": "untrusted", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.10224283399293199}
+{"case": "wrong-name", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.06101741598104127}
+{"case": "tls-big", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.0418095409986563}
+{"case": "tls-stall", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 1.0456051670189481}
+{"case": "redirect-301", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.06816658400930464}
+{"case": "redirect-302", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.042269083991413936}
+{"case": "redirect-307", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03962124997633509}
+{"case": "redirect-308", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03960512499907054}
+{"case": "status", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03990725000039674}
+{"case": "infinite", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03855587501311675}
+{"case": "chunked", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03697945800377056}
+{"case": "gzip", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.035561666009016335}
+{"case": "hints", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03882241697283462}
+{"case": "header-big", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.04005295899696648}
+{"case": "flood", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03910237501258962}
+{"case": "hints-big", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.03869954199763015}
+{"case": "upgrade", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.036892375006573275}
+{"case": "malformed", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.035327083023730665}
+{"case": "slow", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 1.0420550839917269}
+{"case": "t30", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 5.078778377006529}
+{"case": "cancel", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.056487750000087544}
+{"case": "refuse", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 0.05171850000624545}
+{"case": "tcp-timeout", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 1, "duration": 1.0461324180068914}
+{"case": "mixed", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.06444791599642485}
+{"case": "mixed6", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.05266474999370985}
+{"case": "additional", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.07586720801191404}
+{"case": "reserved-alias", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.07190933302626945}
+{"case": "blocked-private", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03747062498587184}
+{"case": "blocked-metadata", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03525004201219417}
+{"case": "blocked-shared", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.034881875006249174}
+{"case": "blocked-loopback", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03785695901024155}
+{"case": "blocked-mapped", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.036860083986539394}
+{"case": "blocked-nat64", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03572595800505951}
+{"case": "blocked-6to4", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03581595901050605}
+{"case": "blocked-teredo", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03689562500221655}
+{"case": "blocked-isatap", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03751399999600835}
+{"case": "blocked-doc", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03541899999254383}
+{"case": "blocked-v6doc", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.034645917010493577}
+{"case": "blocked-ula", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03646933301934041}
+{"case": "dns-nxdomain", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.033684249996440485}
+{"case": "dns-servfail", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03760104099637829}
+{"case": "dns-empty", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03576204099226743}
+{"case": "dns-truncated", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.0367044159793295}
+{"case": "dns-id", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03492770800949074}
+{"case": "dns-question", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.034711459011305124}
+{"case": "dns-trailing", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03642795901396312}
+{"case": "dns-timeout", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 1.0483176260022447}
+{"case": "inconsistent", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.06624441701569594}
+{"case": "aliases", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.046529707993613556}
+{"case": "addresses", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.040747999999439344}
+{"case": "records", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.0378485830151476}
+{"case": "oversize", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.03671920800115913}
+{"case": "total", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.04649883299134672}
+{"case": "dname", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.08103479098645039}
+{"case": "nat-app", "child_exit": 0, "audit_exit": 0, "dns_attempts": 1, "target_attempts": 0, "duration": 0.077665083023021}
+{"case": "rebinding", "child_exit": 0, "audit_exit": 0, "dns_attempts": 2, "target_attempts": 1, "duration": 0.08138962500379421}
+{"case": "repeat", "child_exit": 0, "audit_exit": 0, "dns_attempts": 2, "target_attempts": 2, "duration": 0.08397341700037941}
+{"case": "capacity", "child_exit": 0, "audit_exit": 0, "dns_attempts": 0, "target_attempts": 0, "duration": 0.020858624979155138}
+{"case": "concurrency", "child_exit": 0, "audit_exit": 0, "dns_attempts": 32, "target_attempts": 19, "duration": 0.10451266702148132}
+{"case": "bypass-v4", "child_exit": 0, "audit_exit": 1, "dns_attempts": 0, "target_attempts": 1, "duration": 0.020311166008468717}
+{"case": "bypass-v6", "child_exit": 0, "audit_exit": 1, "dns_attempts": 0, "target_attempts": 1, "duration": 1.0253624999895692}
+{"case": "bypass-nat", "child_exit": 0, "audit_exit": 1, "dns_attempts": 0, "target_attempts": 1, "duration": 1.0546495010203216}
+{"case": "bypass-public", "child_exit": 0, "audit_exit": 1, "dns_attempts": 0, "target_attempts": 1, "duration": 0.042623499990440905}

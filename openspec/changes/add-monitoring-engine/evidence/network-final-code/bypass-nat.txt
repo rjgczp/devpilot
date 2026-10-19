@@ -1,0 +1,4 @@
+=== RUN   TestExecutionProbe
+CONTROL: deliberately attempted forbidden destination; classifier must reject this run
+--- PASS: TestExecutionProbe (1.01s)
+PASS

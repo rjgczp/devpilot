@@ -11,6 +11,7 @@ on:
       - codex/add-workspace-invitations
       - codex/add-project-management
       - codex/add-http-monitor
+      - codex/add-monitoring-engine
   pull_request:
     branches:
       - main
@@ -36,6 +37,8 @@ jobs:
           fi
       - name: Test network classifier and audit build contract
         run: python3 -m unittest discover -s tests/network -p 'test_*.py' -v
+      - name: Test independent execution classifier
+        run: python3 -m unittest discover -s tests/execution -p 'test_*.py' -v
       - name: Run go vet
         run: go vet ./...
       - name: Run tests
@@ -101,4 +104,65 @@ jobs:
         with:
           name: monitor-network-evidence
           path: ${{ runner.temp }}/monitor-network-evidence/
+          if-no-files-found: error
+
+  execution-security:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+        env:
+          POSTGRES_USER: devpilot_test
+          POSTGRES_PASSWORD: registration_test_only
+          POSTGRES_DB: devpilot_registration_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U devpilot_test -d devpilot_registration_test"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://devpilot_test:registration_test_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: Install pinned Goose
+        run: go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.26.0
+      - name: Validate internal DNS and address policy with bounded fuzz
+        run: |
+          go test ./internal/monitoring -run '^$' -fuzz '^FuzzDNSWire$' -fuzztime=5s -parallel=2
+          go test ./internal/monitoring -run '^$' -fuzz '^FuzzAddressPolicy$' -fuzztime=5s -parallel=2
+      - name: Independently verify real probe networking and egress isolation
+        run: |
+          EXECUTION_EVIDENCE="$RUNNER_TEMP/execution-network" sh tests/execution/run-docker.sh
+      - name: Apply existing schema6 only to the guarded disposable PG18
+        env:
+          GOOSE_DRIVER: postgres
+          GOOSE_DBSTRING: ${{ env.TEST_DATABASE_URL }}
+        run: goose -env=none -dir migrations up
+      - name: Build credential-free Linux probe for PG controller
+        run: |
+          mkdir -p "$RUNNER_TEMP/execution-tools"
+          CGO_ENABLED=0 GOTOOLCHAIN=local go test -c -tags=executionnet -o "$RUNNER_TEMP/execution-tools/execution.test" ./internal/monitoring
+          go version -m "$RUNNER_TEMP/execution-tools/execution.test" > "$RUNNER_TEMP/execution-tools/build.txt"
+      - name: Verify PG18 role snapshot and live network version isolation
+        run: |
+          EXECUTION_TEST_TOOLS="$RUNNER_TEMP/execution-tools" EXECUTION_PG_EVIDENCE="$RUNNER_TEMP/execution-pg" \
+            go test -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v
+      - name: Verify snapshot controller under Race Detector
+        run: |
+          EXECUTION_TEST_TOOLS="$RUNNER_TEMP/execution-tools" EXECUTION_PG_EVIDENCE="$RUNNER_TEMP/execution-pg-race" \
+            go test -race -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v
+      - name: Upload separate execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: execution-security-evidence
+          path: |
+            ${{ runner.temp }}/execution-network/
+            ${{ runner.temp }}/execution-pg/
+            ${{ runner.temp }}/execution-pg-race/
+            ${{ runner.temp }}/execution-tools/build.txt
           if-no-files-found: error

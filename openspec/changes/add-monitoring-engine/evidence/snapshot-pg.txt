@@ -1,0 +1,8 @@
+=== RUN   TestSystemSnapshotPGScopePrivilegesAndRelease
+    snapshot_pg_test.go:168: PG18: actual LOGIN role, complete scope, denied writes/DDL/identity reads, released pool/locks, 2s deadline
+--- PASS: TestSystemSnapshotPGScopePrivilegesAndRelease (2.04s)
+=== RUN   TestSystemSnapshotPGStatementConsistency
+    snapshot_pg_test.go:211: PG18: independent writer transaction barriers prove complete old/v8 snapshots; supported Owner update reaches v9
+--- PASS: TestSystemSnapshotPGStatementConsistency (0.04s)
+PASS
+ok  	github.com/rjgczp/devpilot/internal/monitoring	2.684s

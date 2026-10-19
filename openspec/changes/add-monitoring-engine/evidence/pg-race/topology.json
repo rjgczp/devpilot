@@ -1,0 +1,402 @@
+{
+  "links": [
+    {
+      "ifindex": 1,
+      "ifname": "lo",
+      "flags": [
+        "LOOPBACK",
+        "UP",
+        "LOWER_UP"
+      ],
+      "mtu": 65536,
+      "qdisc": "noqueue",
+      "operstate": "UNKNOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "loopback",
+      "address": "00:00:00:00:00:00",
+      "broadcast": "00:00:00:00:00:00"
+    },
+    {
+      "ifindex": 2,
+      "link": null,
+      "ifname": "tunl0",
+      "flags": [
+        "NOARP"
+      ],
+      "mtu": 1480,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "ipip",
+      "address": "0.0.0.0",
+      "broadcast": "0.0.0.0"
+    },
+    {
+      "ifindex": 3,
+      "link": null,
+      "ifname": "gre0",
+      "flags": [
+        "NOARP"
+      ],
+      "mtu": 1476,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "gre",
+      "address": "0.0.0.0",
+      "broadcast": "0.0.0.0"
+    },
+    {
+      "ifindex": 4,
+      "link": null,
+      "ifname": "gretap0",
+      "flags": [
+        "BROADCAST",
+        "MULTICAST"
+      ],
+      "mtu": 1462,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "ether",
+      "address": "00:00:00:00:00:00",
+      "broadcast": "ff:ff:ff:ff:ff:ff"
+    },
+    {
+      "ifindex": 5,
+      "link": null,
+      "ifname": "erspan0",
+      "flags": [
+        "BROADCAST",
+        "MULTICAST"
+      ],
+      "mtu": 1450,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "ether",
+      "address": "00:00:00:00:00:00",
+      "broadcast": "ff:ff:ff:ff:ff:ff"
+    },
+    {
+      "ifindex": 6,
+      "link": null,
+      "ifname": "ip_vti0",
+      "flags": [
+        "NOARP"
+      ],
+      "mtu": 1480,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "ipip",
+      "address": "0.0.0.0",
+      "broadcast": "0.0.0.0"
+    },
+    {
+      "ifindex": 7,
+      "link": null,
+      "ifname": "ip6_vti0",
+      "flags": [
+        "NOARP"
+      ],
+      "mtu": 1428,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "tunnel6",
+      "address": "::",
+      "broadcast": "::",
+      "permaddr": "9a75:31b5:b57f::"
+    },
+    {
+      "ifindex": 8,
+      "link": null,
+      "ifname": "sit0",
+      "flags": [
+        "NOARP"
+      ],
+      "mtu": 1480,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "sit",
+      "address": "0.0.0.0",
+      "broadcast": "0.0.0.0"
+    },
+    {
+      "ifindex": 9,
+      "link": null,
+      "ifname": "ip6tnl0",
+      "flags": [
+        "NOARP"
+      ],
+      "mtu": 1452,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "tunnel6",
+      "address": "::",
+      "broadcast": "::",
+      "permaddr": "d650:e7b4:5a9e::"
+    },
+    {
+      "ifindex": 10,
+      "link": null,
+      "ifname": "ip6gre0",
+      "flags": [
+        "NOARP"
+      ],
+      "mtu": 1448,
+      "qdisc": "noop",
+      "operstate": "DOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "gre6",
+      "address": "::",
+      "broadcast": "::",
+      "permaddr": "62fd:e5cf:5eaf::"
+    }
+  ],
+  "ipv4": [
+    {
+      "type": "local",
+      "dst": "93.184.216.34",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "host",
+      "prefsrc": "93.184.216.34",
+      "flags": []
+    },
+    {
+      "type": "local",
+      "dst": "93.184.216.35",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "host",
+      "prefsrc": "93.184.216.35",
+      "flags": []
+    },
+    {
+      "type": "local",
+      "dst": "93.184.216.36",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "host",
+      "prefsrc": "93.184.216.36",
+      "flags": []
+    },
+    {
+      "type": "local",
+      "dst": "93.184.216.37",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "host",
+      "prefsrc": "93.184.216.37",
+      "flags": []
+    },
+    {
+      "type": "local",
+      "dst": "93.184.216.38",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "host",
+      "prefsrc": "93.184.216.38",
+      "flags": []
+    },
+    {
+      "type": "local",
+      "dst": "127.0.0.0/8",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "host",
+      "prefsrc": "127.0.0.1",
+      "flags": []
+    },
+    {
+      "type": "local",
+      "dst": "127.0.0.1",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "host",
+      "prefsrc": "127.0.0.1",
+      "flags": []
+    },
+    {
+      "type": "broadcast",
+      "dst": "127.255.255.255",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "link",
+      "prefsrc": "127.0.0.1",
+      "flags": []
+    },
+    {
+      "type": "local",
+      "dst": "169.254.169.254",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "scope": "host",
+      "prefsrc": "169.254.169.254",
+      "flags": []
+    },
+    {
+      "dst": "2001:4860:ffff::a9fe:a9fe",
+      "dev": "lo",
+      "protocol": "kernel",
+      "metric": 256,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "dst": "2606:4700:4700::1111",
+      "dev": "lo",
+      "protocol": "kernel",
+      "metric": 256,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "dst": "fd00::1",
+      "dev": "lo",
+      "protocol": "kernel",
+      "metric": 256,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "type": "local",
+      "dst": "::1",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "metric": 0,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "type": "local",
+      "dst": "2001:4860:ffff::a9fe:a9fe",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "metric": 0,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "type": "local",
+      "dst": "2606:4700:4700::1111",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "metric": 0,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "type": "local",
+      "dst": "fd00::1",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "metric": 0,
+      "flags": [],
+      "pref": "medium"
+    }
+  ],
+  "ipv6": [
+    {
+      "dst": "2001:4860:ffff::a9fe:a9fe",
+      "dev": "lo",
+      "protocol": "kernel",
+      "metric": 256,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "dst": "2606:4700:4700::1111",
+      "dev": "lo",
+      "protocol": "kernel",
+      "metric": 256,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "dst": "fd00::1",
+      "dev": "lo",
+      "protocol": "kernel",
+      "metric": 256,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "type": "local",
+      "dst": "::1",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "metric": 0,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "type": "local",
+      "dst": "2001:4860:ffff::a9fe:a9fe",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "metric": 0,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "type": "local",
+      "dst": "2606:4700:4700::1111",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "metric": 0,
+      "flags": [],
+      "pref": "medium"
+    },
+    {
+      "type": "local",
+      "dst": "fd00::1",
+      "dev": "lo",
+      "table": "local",
+      "protocol": "kernel",
+      "metric": 0,
+      "flags": [],
+      "pref": "medium"
+    }
+  ]
+}

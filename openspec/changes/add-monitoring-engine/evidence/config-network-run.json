@@ -1,0 +1,9 @@
+{
+  "command": [
+    "sh",
+    "tests/network/run-monitor-audit-docker.sh"
+  ],
+  "started_at": "2026-10-19T07:39:31.506686+00:00",
+  "duration_seconds": 5.458203417016193,
+  "exit_code": 0
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "go",
+    "test",
+    "./internal/monitoring",
+    "-run",
+    "^$",
+    "-fuzz",
+    "^FuzzAddressPolicy$",
+    "-fuzztime=5s",
+    "-parallel=2"
+  ],
+  "started_at": "2026-10-19T07:30:13.959604+00:00",
+  "duration_seconds": 6.495647999981884,
+  "exit_code": 0
+}

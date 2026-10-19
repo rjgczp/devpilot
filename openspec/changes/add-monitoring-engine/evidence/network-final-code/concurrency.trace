@@ -1,0 +1,148 @@
+770   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "concurrency"], 0xffffc7ffa378 /* 10 vars */) = 0
+770   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffffb144a310 /* 11 vars */) = 0
+770   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 771
+770   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 772
+770   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 773
+770   clone(child_stack=0x4000110000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 774
+772   clone(child_stack=0x400010c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 775
+770   connect(5<TCP:[2121007]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+775   connect(6<TCP:[2113456]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+770   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+774   connect(7<TCP:[2114332]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+775   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+774   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+772   connect(8<TCP:[2119826]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+773   clone(child_stack=0x4000396000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+770   connect(9<TCP:[2121023]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+772   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+771   clone(child_stack=0x4000392000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+770   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+775   connect(10<TCP:[2113457]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+773   <... clone resumed>)              = 780
+775   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+771   <... clone resumed>)              = 782
+770   connect(11<TCP:[2121028]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+772   connect(12<TCP:[2115208]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+773   connect(13<TCP:[2111482]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+770   connect(14<TCP:[2121033]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+775   connect(15<TCP:[2113458]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+770   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+773   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+775   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+774   clone(child_stack=0x4000404000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+782   connect(16<TCP:[2115209]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+774   <... clone resumed>)              = 789
+770   connect(17<TCP:[2121042]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+782   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+771   clone(child_stack=0x40003e8000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+770   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+775   connect(18<TCP:[2115912]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+771   <... clone resumed>)              = 792
+775   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+770   connect(19<TCP:[2121049]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(20<TCP:[2115210]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+770   connect(21<TCP:[2121056]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+792   connect(23<TCP:[2117839]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+782   connect(22<TCP:[2115211]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+770   connect(24<TCP:[2121059]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+792   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+770   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+782   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+770   connect(25<TCP:[2121068]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(26<TCP:[2115212]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+770   connect(27<TCP:[2121071]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+782   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+770   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+770   connect(28<TCP:[2121076]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(29<TCP:[2115913]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+770   connect(30<TCP:[2121079]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+770   connect(31<TCP:[2121084]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(32<TCP:[2115914]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+770   connect(33<TCP:[2121087]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+782   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+770   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+770   connect(34<TCP:[2121092]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(35<TCP:[2115213]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16 <unfinished ...>
+770   connect(36<TCP:[2121095]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+774   connect(9<TCP:[2114333]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+771   tgkill(770, 774, SIGURG)          = 0
+789   connect(10<TCP:[2119835]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+774   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+773   connect(14<TCP:[2121740]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+789   connect(15<TCP:[2115919]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(20<TCP:[2115214]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+792   connect(11<TCP:[2121741]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16 <unfinished ...>
+789   connect(24<TCP:[2113459]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16 <unfinished ...>
+792   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+789   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+792   connect(17<TCP:[2113460]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+792   connect(22<TCP:[2113462]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+792   connect(37<TCP:[2113463]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16 <unfinished ...>
+782   connect(18<TCP:[2115215]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16 <unfinished ...>
+792   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+782   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+789   connect(7<TCP:[2115920]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(13<TCP:[2113464]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+792   connect(12<TCP:[2121742]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+780   connect(21<TCP:[2115217]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+772   connect(32<TCP:[2115218]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(19<TCP:[2113465]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+770   connect(33<TCP:[2117840]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+780   connect(23<TCP:[2115921]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+773   connect(36<TCP:[2113467]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+782   connect(30<TCP:[2113469]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+780   connect(16<TCP:[2115922]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16 <unfinished ...>
+789   connect(28<TCP:[2115219]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+780   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+792   connect(35<TCP:[2119842]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16 <unfinished ...>
+775   connect(34<TCP:[2113470]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16 <unfinished ...>
+792   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+775   <... connect resumed>)            = -1 EINPROGRESS (Operation now in progress)
+789   connect(26<TCP:[2113473]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+770   tgkill(770, 775, SIGURG)          = 0
+775   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+770   tgkill(770, 789, SIGURG)          = 0
+789   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+771   tgkill(770, 770, SIGURG <unfinished ...>
+770   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+771   <... tgkill resumed>)             = 0
+780   tgkill(770, 770, SIGURG)          = 0
+770   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 789, SIGURG)          = 0
+789   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 775, SIGURG)          = 0
+775   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+782   tgkill(770, 775, SIGURG)          = 0
+775   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 770, SIGURG)          = 0
+770   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 773, SIGURG)          = 0
+773   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 789, SIGURG)          = 0
+789   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 775, SIGURG)          = 0
+775   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 770, SIGURG <unfinished ...>
+770   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   <... tgkill resumed>)             = 0
+780   tgkill(770, 773, SIGURG)          = 0
+773   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 772, SIGURG)          = 0
+772   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 782, SIGURG)          = 0
+782   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 770, SIGURG)          = 0
+770   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 775, SIGURG)          = 0
+775   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 792, SIGURG)          = 0
+792   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 782, SIGURG)          = 0
+782   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 772, SIGURG)          = 0
+772   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+780   tgkill(770, 789, SIGURG)          = 0
+789   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=770, si_uid=65534} ---
+770   exit_group(0)                     = ?

@@ -1,0 +1,10 @@
+/var/folders/2h/vj6hxp0j6gs97lfsshf1spgh0000gn/T/tmp.ntX0F5rmJA/execution.test: go1.24.3
+	path	github.com/rjgczp/devpilot/internal/monitoring.test
+	mod	github.com/rjgczp/devpilot	(devel)	
+	build	-buildmode=exe
+	build	-compiler=gc
+	build	-tags=executionnet
+	build	CGO_ENABLED=0
+	build	GOARCH=arm64
+	build	GOOS=linux
+	build	GOARM64=v8.0
