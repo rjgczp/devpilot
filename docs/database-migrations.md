@@ -107,3 +107,15 @@ BEFORE UPDATE trigger拒绝id/workspace_id/created_by_user_id/created_at实际�
 原生单步5→4 Down仅限经testdb守护确认可丢弃的PG18库：先DROP projects（包括trigger），再DROP其函数，保留所有用户/Session/Workspace/member代际和邀请历史。测试临时child表必须先清理，不使用CASCADE隐藏依赖；再Up不恢复已删除项目数据。真实v5失败测试在临时副本的全部DDL后、Down前注入失败，要求表/索引/函数及applied版本记录一起回滚。历史v4测试固定up-to4并保留4→3/失败路径；临时下一失败迁移改为6并复制真实1–5。普通integration和integration-race仍串行，不操作开发数据卷。
 
 Project写遵循User SHARE→Session SHARE→Workspace NO KEY UPDATE→Membership UPDATE→Project UPDATE；全部保护性等待后用新数据库语句检查active、撤销、严格expiry、Owner与wid/pid/version。门控后自然过期可提交。Commit丢回执可已落库，无自动重试/补偿；创建重试可能产生同名资源，条件修改需保留原tag。所有错误只表示当前可确认的结果，不能凭超时断言回滚。
+
+## HTTP Monitor configuration migration（版本 6）
+
+`00006_create_http_monitors.sql`只新增http_monitors、约束/三个索引（PK、租户三元组UNIQUE、creator引用索引）及不可变身份函数/trigger；Migration1–5保持字节不变，不回填旧表或创建默认Monitor。`FOREIGN KEY(workspace_id,project_id) REFERENCES projects(workspace_id,id) ON DELETE RESTRICT`防混合租户；creator User RESTRICT，无Membership FK。未来结果子表须以完整(workspace_id,project_id,id)引用；本轮无生产子表。普通SQL实际改变id/双父归属/creator/created_at被trigger拒绝，等值赋值允许。
+
+DB CHECK只约束name的ASCII子集、URL打印ASCII/http(s)基本形状及长度、GET、interval枚举、timeout1–30且小于interval、expected_status200–599、正version和updated_at>=created_at；完整URL/IDNA/Unicode名称策略由Monitor唯一业务Store校验，不宣称SQL正则实现SSRF防护。配置更新在完整三元组/version条件下递增版本，任意维护SQL不自动具备Cookie授权或版本协议。
+
+写锁为User SHARE→Session SHARE→Workspace NO KEY UPDATE→Membership UPDATE→Project UPDATE→Monitor UPDATE（PATCH）。全部保护等待后新语句重查active/撤销/Session严格到期/Owner/完整归属及版本，并在实际INSERT/UPDATE门控。FK隐式父键保护前已有父锁；不在子锁后请求父锁。共享Workspace写串行，独立Workspace无全局资源锁。最终门控后自然过期可提交；未知Commit不证明回滚、不自动补偿或重放。
+
+后续受控发布为备份/规模与锁评估、唯一发布步骤status/up/status到6，再部署及验收；API启动不DDL，readiness只Ping，schema5 Monitor请求安全500。应用回退保留schema6和数据、停新配置写并前向修复，不回退到邀请阶段已禁止的无条件成员DELETE二进制。无探测/调度/激活。本Change不执行公开部署。
+
+6→5原生Down只限经testdb验证的可销毁PG18隔离库，先清除临时child依赖，再DROP http_monitors及其函数，保留前七阶段数据，不CASCADE隐藏依赖；重新Up不恢复删除配置。共享/生产不自动down/down-to/redo/reset。验收包含0→6、存量5→6、up/up、真实6全部DDL后的故障回滚、6→5→6、完整三元组引用、FK双顺序、不可变/CHECK和历史快照。旧v5测试固定up-to5，通用下一失败版本移至7并复制真实1–6；schema suite仍串行，工具与测试库守护不变。

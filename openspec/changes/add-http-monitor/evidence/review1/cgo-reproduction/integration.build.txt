@@ -1,0 +1,14 @@
+/out/integration.test: go1.24.3
+	path	github.com/rjgczp/devpilot/tests/integration.test
+	mod	github.com/rjgczp/devpilot	(devel)
+	build	-buildmode=exe
+	build	-compiler=gc
+	build	-tags=integration,networkaudit
+	build	CGO_ENABLED=1
+	build	CGO_CFLAGS=
+	build	CGO_CPPFLAGS=
+	build	CGO_CXXFLAGS=
+	build	CGO_LDFLAGS=
+	build	GOARCH=arm64
+	build	GOOS=linux
+	build	GOARM64=v8.0

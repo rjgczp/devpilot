@@ -1,0 +1,43 @@
+[
+  {
+    "source": "/Users/sansea/go/pkg/mod/github.com/jackc/pgx/v5@v5.8.0/pgconn/defaults.go",
+    "chain": "pgx v5.8.0 defaultSettings -> user.Current",
+    "sha256": "b8857ff610ebaa13cedcfc3f3ef5085df85457d4c584bd6a4976939cdbeecc8c",
+    "relevant_lines": [
+      {
+        "line": 21,
+        "text": "user, err := user.Current()"
+      }
+    ]
+  },
+  {
+    "source": "/Users/sansea/go/pkg/mod/github.com/jackc/pgx/v5@v5.7.5/pgconn/defaults.go",
+    "chain": "Goose pgx v5.7.5 defaultSettings -> user.Current",
+    "sha256": "b8857ff610ebaa13cedcfc3f3ef5085df85457d4c584bd6a4976939cdbeecc8c",
+    "relevant_lines": [
+      {
+        "line": 21,
+        "text": "user, err := user.Current()"
+      }
+    ]
+  },
+  {
+    "source": "/Applications/ServBay/package/go/1.24/1.24.3/src/os/user/cgo_lookup_unix.go",
+    "chain": "Go1.24.3 current -> lookupUnixUid -> _C_getpwuid_r",
+    "sha256": "64073bd58c71101879c554e3fbba6edd910598f750121bf67e0054af46b03b99",
+    "relevant_lines": [
+      {
+        "line": 18,
+        "text": "func current() (*User, error) {"
+      },
+      {
+        "line": 19,
+        "text": "return lookupUnixUid(syscall.Getuid())"
+      },
+      {
+        "line": 57,
+        "text": "pwd, found, errno = _C_getpwuid_r(_C_uid_t(uid),"
+      }
+    ]
+  }
+]

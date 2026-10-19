@@ -1,0 +1,78 @@
+{
+  "trace_sha256": "25d6b00d5c7acb5aee48e529c38a27175507d1d79e9ee3ac6f0651ed6c7c2cc8",
+  "observation_limit": "Original trace records network syscalls/signals, not exec/clone. The syscall/TID/socket facts are observed; executable roles are inferred from source, SIGCHLD ordering and test log, and corroborated separately by process-enabled reproduction. PID numbers are not reused across runs.",
+  "calls": [
+    {
+      "original_trace_line": 1,
+      "strace_tid": 38,
+      "socket_inode": 29356,
+      "fd": 5,
+      "syscall": "connect",
+      "family": "AF_UNIX",
+      "socket_type": "UNIX-STREAM",
+      "destination": "/var/run/nscd/socket",
+      "result": "-1 ENOENT",
+      "role_attribution": "integration.test / pgx v5.8.0 setup"
+    },
+    {
+      "original_trace_line": 2,
+      "strace_tid": 38,
+      "socket_inode": 29357,
+      "fd": 5,
+      "syscall": "connect",
+      "family": "AF_UNIX",
+      "socket_type": "UNIX-STREAM",
+      "destination": "/var/run/nscd/socket",
+      "result": "-1 ENOENT",
+      "role_attribution": "integration.test / pgx v5.8.0 setup"
+    },
+    {
+      "original_trace_line": 6,
+      "strace_tid": 51,
+      "socket_inode": 30228,
+      "fd": 5,
+      "syscall": "connect",
+      "family": "AF_UNIX",
+      "socket_type": "UNIX-STREAM",
+      "destination": "/var/run/nscd/socket",
+      "result": "-1 ENOENT",
+      "role_attribution": "Goose v3.26.0 up / pgx v5.7.5"
+    },
+    {
+      "original_trace_line": 7,
+      "strace_tid": 51,
+      "socket_inode": 30229,
+      "fd": 5,
+      "syscall": "connect",
+      "family": "AF_UNIX",
+      "socket_type": "UNIX-STREAM",
+      "destination": "/var/run/nscd/socket",
+      "result": "-1 ENOENT",
+      "role_attribution": "Goose v3.26.0 up / pgx v5.7.5"
+    },
+    {
+      "original_trace_line": 59,
+      "strace_tid": 59,
+      "socket_inode": 29362,
+      "fd": 5,
+      "syscall": "connect",
+      "family": "AF_UNIX",
+      "socket_type": "UNIX-STREAM",
+      "destination": "/var/run/nscd/socket",
+      "result": "-1 ENOENT",
+      "role_attribution": "Goose v3.26.0 down-to 0 / pgx v5.7.5"
+    },
+    {
+      "original_trace_line": 60,
+      "strace_tid": 59,
+      "socket_inode": 29363,
+      "fd": 5,
+      "syscall": "connect",
+      "family": "AF_UNIX",
+      "socket_type": "UNIX-STREAM",
+      "destination": "/var/run/nscd/socket",
+      "result": "-1 ENOENT",
+      "role_attribution": "Goose v3.26.0 down-to 0 / pgx v5.7.5"
+    }
+  ]
+}

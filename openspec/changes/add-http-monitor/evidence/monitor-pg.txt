@@ -1,0 +1,242 @@
+=== RUN   TestMonitorConcurrentVersions
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorConcurrentVersions/false
+=== RUN   TestMonitorConcurrentVersions/true
+=== NAME  TestMonitorConcurrentVersions
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorConcurrentVersions (0.15s)
+    --- PASS: TestMonitorConcurrentVersions/false (0.04s)
+    --- PASS: TestMonitorConcurrentVersions/true (0.02s)
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-user
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-session
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-workspace
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-membership
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-project
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-post-gate
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-user
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-session
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-workspace
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-membership
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-project
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-monitor
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-post-gate
+=== NAME  TestMonitorExpiryAfterEveryProtectiveWait
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorExpiryAfterEveryProtectiveWait (2.37s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-user (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-session (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-workspace (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-membership (0.18s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-project (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-post-gate (0.18s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-user (0.18s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-session (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-workspace (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-membership (0.18s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-project (0.18s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-monitor (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-post-gate (0.18s)
+=== RUN   TestMonitorIdentityAndMembershipOrderings
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-disable-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-disable-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-role-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-role-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-exit-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-exit-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-remove-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-remove-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-accept-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-accept-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-disable-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-disable-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-role-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-role-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-exit-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-exit-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-remove-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-remove-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-accept-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-accept-monitorfirsttrue
+=== NAME  TestMonitorIdentityAndMembershipOrderings
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorIdentityAndMembershipOrderings (0.43s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirstfalse (0.03s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirsttrue (0.02s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-disable-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-disable-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-role-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-role-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-exit-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-exit-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-remove-monitorfirstfalse (0.02s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-remove-monitorfirsttrue (0.02s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-accept-monitorfirstfalse (0.02s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-accept-monitorfirsttrue (0.02s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-disable-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-disable-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-role-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-role-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-exit-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-exit-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-remove-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-remove-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-accept-monitorfirstfalse (0.02s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-accept-monitorfirsttrue (0.02s)
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-candidate
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-user
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-session
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-workspace
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-membership
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-project
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-gate
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-rollback
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-lost
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-candidate
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-user
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-session
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-workspace
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-membership
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-project
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-monitor
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-gate
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-rollback
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-lost
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/independent-tenants
+=== NAME  TestMonitorFaultAtomicityAndTenantIndependence
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorFaultAtomicityAndTenantIndependence (0.29s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-candidate (0.02s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-user (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-session (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-workspace (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-membership (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-project (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-gate (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-rollback (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-lost (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-candidate (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-user (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-session (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-workspace (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-membership (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-project (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-monitor (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-gate (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-rollback (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-lost (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/independent-tenants (0.02s)
+=== RUN   TestMonitorReadSnapshotAndLateCommit
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorReadSnapshotAndLateCommit (0.08s)
+=== RUN   TestMonitorSameTenantSerializationAndParentReferences
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorSameTenantSerializationAndParentReferences/false
+=== RUN   TestMonitorSameTenantSerializationAndParentReferences/true
+=== NAME  TestMonitorSameTenantSerializationAndParentReferences
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorSameTenantSerializationAndParentReferences (0.10s)
+    --- PASS: TestMonitorSameTenantSerializationAndParentReferences/false (0.00s)
+    --- PASS: TestMonitorSameTenantSerializationAndParentReferences/true (0.00s)
+=== RUN   TestMonitorDelayedOwnerRequestCannotUseRejoin
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorDelayedOwnerRequestCannotUseRejoin/false
+=== RUN   TestMonitorDelayedOwnerRequestCannotUseRejoin/true
+=== NAME  TestMonitorDelayedOwnerRequestCannotUseRejoin
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorDelayedOwnerRequestCannotUseRejoin (0.11s)
+    --- PASS: TestMonitorDelayedOwnerRequestCannotUseRejoin/false (0.03s)
+    --- PASS: TestMonitorDelayedOwnerRequestCannotUseRejoin/true (0.02s)
+=== RUN   TestMonitorProjectWriteOrderings
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorProjectWriteOrderings/updatefalse-projectfirstfalse
+=== RUN   TestMonitorProjectWriteOrderings/updatefalse-projectfirsttrue
+=== RUN   TestMonitorProjectWriteOrderings/updatetrue-projectfirstfalse
+=== RUN   TestMonitorProjectWriteOrderings/updatetrue-projectfirsttrue
+=== NAME  TestMonitorProjectWriteOrderings
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorProjectWriteOrderings (0.15s)
+    --- PASS: TestMonitorProjectWriteOrderings/updatefalse-projectfirstfalse (0.03s)
+    --- PASS: TestMonitorProjectWriteOrderings/updatefalse-projectfirsttrue (0.02s)
+    --- PASS: TestMonitorProjectWriteOrderings/updatetrue-projectfirstfalse (0.02s)
+    --- PASS: TestMonitorProjectWriteOrderings/updatetrue-projectfirsttrue (0.01s)
+=== RUN   TestMonitorCleanupCandidateOrdering
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorCleanupCandidateOrdering (0.08s)
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/lostcreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/rollbackcreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/timeoutcreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/deadlockcreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/schemacreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/lostupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/rollbackupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/timeoutupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/deadlockupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/schemaupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/actual-schema5
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/lock-timeout
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/cancel-after-lock
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/real-pool-timeout
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/actual-query-timeout
+=== NAME  TestMonitorHTTPFaultsCancellationAndRecovery
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorHTTPFaultsCancellationAndRecovery (0.31s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/lostcreate (0.02s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/rollbackcreate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/timeoutcreate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/deadlockcreate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/schemacreate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/lostupdate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/rollbackupdate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/timeoutupdate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/deadlockupdate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/schemaupdate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/actual-schema5 (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/lock-timeout (0.04s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/cancel-after-lock (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/real-pool-timeout (0.04s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/actual-query-timeout (0.03s)
+=== RUN   TestMonitorHTTPJourneyAndIsolation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorHTTPJourneyAndIsolation (0.56s)
+=== RUN   TestMonitorMigration
+    monitors_test.go:52: native Goose down-to 0 expected-success=true: verified
+    monitors_test.go:54: native Goose up expected-success=true: verified
+    monitors_test.go:55: native Goose up expected-success=true: verified
+    monitors_test.go:59: native Goose down expected-success=true: verified
+    monitors_test.go:80: native Goose up expected-success=false: verified
+    monitors_test.go:84: native Goose up expected-success=true: verified
+    monitors_test.go:85: native Goose up expected-success=true: verified
+    monitors_test.go:151: native Goose down expected-success=true: verified
+    monitors_test.go:155: native Goose up expected-success=true: verified
+    monitors_test.go:53: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorMigration (0.22s)
+=== RUN   TestMonitorStorePermissionsPaginationAndVersions
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorStorePermissionsPaginationAndVersions (0.11s)
+=== RUN   TestMonitorCreatorReferenceAndEmptyScope
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorCreatorReferenceAndEmptyScope (0.08s)
+=== RUN   TestMonitorMergedConfigurationRevalidated
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorMergedConfigurationRevalidated (0.09s)
+PASS
+ok  	github.com/rjgczp/devpilot/tests/integration	5.897s

@@ -1,0 +1,9 @@
+23    execve("/testtools/integration.test", ["/testtools/integration.test", "-test.run", "^TestMonitorNetworkProbePositiveControl$", "-test.v", "-test.timeout=60s"], 0x7ffd6e5e7ee8 /* 14 vars */) = 0
+23    clone(child_stack=0xc000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS, tls=0xc000064098) = 24
+23    clone(child_stack=0xc00007e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS, tls=0xc000064898) = 25
+23    clone(child_stack=0xc00007a000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS, tls=0xc000065098) = 26
+25    clone(child_stack=0xc000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS, tls=0xc000100098) = 27
+23    connect(5<TCP:[31808]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("192.0.2.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+24    tgkill(23, 23, SIGURG)            = 0
+23    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=23, si_uid=0} ---
+27    exit_group(0)                     = ?

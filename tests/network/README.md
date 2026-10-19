@@ -1,0 +1,28 @@
+# Zero target network acceptance
+
+From the repository root, with the repository Go toolchain and Linux Docker:
+
+```sh
+MONITOR_AUDIT_OUTPUT=/absolute/disposable/evidence tests/network/run-monitor-audit-docker.sh
+```
+
+The host wrapper builds the audit binary with `GOTOOLCHAIN=local`, explicit `GOOS=linux` and Docker's architecture, and the pinned Goose3.26.0. It creates its own disposable PG18 container without host ports, runs the audit in that container's network namespace, and removes only the container it created. No application database, developer data volume or host firewall is used. Container build/dependency download precedes the audited interval. NET_ADMIN changes only this disposable namespace; SYS_PTRACE enables syscall tracing. No host network or privileged container is needed.
+
+The lower-level `run-monitor-audit.sh` is used by CI after normal integration and integration-race. CI builds the dedicated `integration,networkaudit` test binary and uses its disposable PG18 service namespace. Both runners install IPv4/IPv6 egress rejection before executing tests and restore their named rules afterwards. `strace -yy` also identifies socket protocol, so UDP to an otherwise approved port is not exempt. Only TCP127.0.0.1:5432 (test DB) and TCP127.0.0.1:18081 (HTTP fixture), plus established replies, pass the firewall. The syscall classifier independently allows only those exact destination tuples; it never ignores a connect because it failed.
+
+1. `TestMonitorNetworkProbePositiveControl` attempts TCP192.0.2.1:80. The namespace firewall prevents egress. The child intentionally exits0 after the attempt fails; the classifier MUST record that attempt and exit1. The harness requires both that exact destination and exit1, so an unrelated failure cannot pass calibration.
+2. `TestMonitorNoTargetNetwork` runs the real HTTP journey: registration/login, Project creation, invitation-backed Member join, Monitor POST/list/detail/PATCH, If-Match failure/replay, cross-tenant substitution, membership exit and logout. Only DB/local HTTP connections are approved. The classifier MUST exit0 with zero unapproved attempts and nonzero approved attempts, showing the workload actually ran.
+
+These tests exist only under the dedicated `networkaudit` build tag. They fail if invoked without the isolated-runner environment. The ordinary integration suite does not pretend it ran the calibrated audit.
+
+Evidence files contain the commands, test output, child/audit exit codes, classifier summaries and complete syscall traces. CI uploads the evidence artifact even on failure. Trace format is checked fail-closed: IPv6, Unix sockets and unknown destination formats are rejected; explicit `sendto`/`sendmsg`/`sendmmsg` destinations are also audited. NULL destinations use sockets whose earlier connect was traced. Reproducibility depends on Linux strace/iptables/Python; the image pins the same PG18 base digest as CI.
+
+This proves configuration operations do not attempt target networking in the tested workload, supported by the production-source import/call guard. It does not prove a future prober is SSRF-safe. DNS rebinding/IP pinning/TLS/proxy/redirect/egress contracts for an actual probe engine require separate implementation and acceptance.
+
+
+Audit tools explicitly use `CGO_ENABLED=0`, on both the host wrapper and CI. This keeps pgx's unconditional `os/user.Current()` default lookup in pure Go rather than libc NSCD IPC (`pgconn/defaults.go`), before the actual DB configuration is applied. The first hosted run deliberately failed closed on six `/var/run/nscd/socket` attempts from CGO-enabled test/Goose setup; none was silently exempted. Both the test binary and Goose are built without CGO for this isolated audit, matching the already-tested local wrapper. Go's DNS/dial/HTTP networking capabilities remain functional and syscall-visible; the intentionally forbidden TCP control must still be detected. Ordinary and race regressions keep their existing CGO/toolchain behavior. This audit's evidence is for this explicitly documented pure-Go build, not an assertion that all platform libc initialization is socket-free.
+
+
+Review regression checks run with `python3 -m unittest discover -s tests/network -p 'test_*.py' -v`. The corpus retains all six original CI NSCD calls (run39193625995), rejects them even if the socket exists, and exercises unknown/abstract Unix sockets, IPv6, DNS, UDP on approved ports, other loopback addresses, and the failed TCP control. Real compiled Go fixtures verify that CGO in **either** tool position fails the preflight. Both normal runners inspect the two binaries with `go version -m` before execution, require `CGO_ENABLED=0` and `GOOS=linux`, and save build metadata plus SHA256 in `builds.json`. Missing/uninspectable settings fail closed. This prevents a workflow/wrapper build mismatch from silently returning.
+
+Traces additionally include Linux process creation/exec/exit, so destination TIDs can be associated with executable processes (including Goose up/down), without dumping environment contents. The classifier's destination policy is unchanged. Historical artifact details, per-call attribution, a deliberately failing CGO reproduction and parser-only libc lookup evidence are retained under `openspec/changes/add-http-monitor/evidence/review1/`; the diagnostic CGO run is a rejected counterexample, never zero-network acceptance. The original trace lacked exec/clone records; original PID roles are therefore source/order-based attribution corroborated by this separate reproduction, not retroactively observed exec events.

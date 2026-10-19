@@ -8,9 +8,11 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
+	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync/atomic"
@@ -22,6 +24,7 @@ import (
 	"github.com/rjgczp/devpilot/internal/auth"
 	"github.com/rjgczp/devpilot/internal/config"
 	"github.com/rjgczp/devpilot/internal/health"
+	"github.com/rjgczp/devpilot/internal/monitor"
 	"github.com/rjgczp/devpilot/internal/password"
 	"github.com/rjgczp/devpilot/internal/project"
 	"github.com/rjgczp/devpilot/internal/registration"
@@ -34,6 +37,15 @@ import (
 func authServer(t *testing.T, db *pgxpool.Pool, tls bool, logs *bytes.Buffer) (*httptest.Server, *http.Client) {
 	t.Helper()
 	server := httptest.NewUnstartedServer(http.NotFoundHandler())
+	if addr := os.Getenv("MONITOR_PROBE_HTTP_ADDR"); addr != "" {
+		server.Listener.Close()
+		listener, err := net.Listen("tcp4", addr)
+		if err != nil {
+			t.Fatal("audit HTTP listener")
+		}
+		server.Listener = listener
+	}
+
 	scheme, mode := "http", "development"
 	if tls {
 		scheme, mode = "https", "production"
@@ -48,7 +60,7 @@ func authServer(t *testing.T, db *pgxpool.Pool, tls bool, logs *bytes.Buffer) (*
 	passwords := password.New()
 	users := user.Store{Pool: db}
 	policy := config.AuthConfig{Mode: mode, Origin: origin, SessionTTL: 24 * time.Hour}
-	server.Config.Handler = app.NewRoutes(health.Handler{Checker: db, Timeout: time.Second, Draining: &draining, Logger: logger}.Routes(), registration.New(users, passwords, logger, budget), auth.New(users, session.Store{Pool: db}, passwords, session.NewTokens(), budget, policy, logger), workspace.New(workspace.Store{Pool: db}, policy, logger), project.New(project.Store{Pool: db}, policy, logger))
+	server.Config.Handler = app.NewRoutes(health.Handler{Checker: db, Timeout: time.Second, Draining: &draining, Logger: logger}.Routes(), registration.New(users, passwords, logger, budget), auth.New(users, session.Store{Pool: db}, passwords, session.NewTokens(), budget, policy, logger), workspace.New(workspace.Store{Pool: db}, policy, logger), project.New(project.Store{Pool: db}, policy, logger), monitor.New(monitor.Store{Pool: db}, policy, logger))
 	if tls {
 		server.StartTLS()
 	} else {

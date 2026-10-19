@@ -1,0 +1,9 @@
+23    execve("/toolbin/integration.test", ["/toolbin/integration.test", "-test.run", "^TestMonitorNetworkProbePositiveControl$", "-test.v", "-test.timeout=60s"], 0xfffff6614848 /* 14 vars */) = 0
+23    clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0xffff688ff250, parent_tid=0xffff688ff250, exit_signal=0, stack=0xffff680f0000, stack_size=0x80ea60, tls=0xffff688ff8a0}, 88) = -1 ENOSYS (Function not implemented)
+23    clone(child_stack=0xffff688fea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[24], tls=0xffff688ff8a0, child_tidptr=0xffff688ff250) = 24
+23    clone(child_stack=0xffff5fffea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[25], tls=0xffff5ffff8a0, child_tidptr=0xffff5ffff250) = 25
+23    clone(child_stack=0xffff680eea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[26], tls=0xffff680ef8a0, child_tidptr=0xffff680ef250) = 26
+23    clone(child_stack=0xffff6777ea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[27], tls=0xffff6777f8a0, child_tidptr=0xffff6777f250) = 27
+25    clone(child_stack=0xffff66f6ea60, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[28], tls=0xffff66f6f8a0, child_tidptr=0xffff66f6f250) = 28
+23    connect(5<TCP:[2000907]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("192.0.2.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+23    exit_group(0)                     = ?

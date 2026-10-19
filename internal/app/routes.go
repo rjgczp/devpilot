@@ -27,6 +27,11 @@ func NewRoutes(health, registration http.Handler, authentication ...http.Handler
 	// Bypass ServeMux path cleaning for the member namespace: reject ambiguous
 	// member paths in the handler instead of redirecting a mutation to an alias.
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Monitor namespace must bypass cleaning and precede the parent handler.
+		if len(authentication) > 3 && (strings.HasPrefix(r.URL.Path, "/api/v1/workspaces/") || strings.HasPrefix(path.Clean(r.URL.Path), "/api/v1/workspaces/")) && strings.Contains(r.URL.Path, "/projects") && strings.Contains(r.URL.Path, "/monitors") {
+			authentication[3].ServeHTTP(w, r)
+			return
+		}
 		// Project namespace is intercepted before ServeMux path normalization.
 		if len(authentication) > 2 && (strings.HasPrefix(r.URL.Path, "/api/v1/workspaces/") || strings.HasPrefix(path.Clean(r.URL.Path), "/api/v1/workspaces/")) && strings.Contains(r.URL.Path, "/projects") {
 			authentication[2].ServeHTTP(w, r)

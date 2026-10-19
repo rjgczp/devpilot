@@ -1,0 +1,33 @@
+{
+  "execution": "final set -e sequence; isolated PG18 test database",
+  "commands": [
+    {
+      "command": "go vet ./...",
+      "exit_code": 0
+    },
+    {
+      "command": "go vet -tags=integration ./...",
+      "exit_code": 0
+    },
+    {
+      "command": "go test ./... -count=1",
+      "exit_code": 0
+    },
+    {
+      "command": "go test -race ./... -count=1",
+      "exit_code": 0
+    },
+    {
+      "command": "go test -tags=integration ./tests/integration -run ^TestMonitor -count=1 -v",
+      "exit_code": 0
+    },
+    {
+      "command": "go test -tags=integration ./... -count=1 -timeout=120s",
+      "exit_code": 0
+    },
+    {
+      "command": "go test -race -tags=integration ./tests/integration -count=1 -timeout=120s",
+      "exit_code": 0
+    }
+  ]
+}

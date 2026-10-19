@@ -1,0 +1,5 @@
+=== RUN   TestMonitorNoTargetNetwork
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorNoTargetNetwork (0.75s)
+PASS

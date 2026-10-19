@@ -61,3 +61,16 @@ func TestProjectNamespaceDoesNotNormalizeMutations(t *testing.T) {
 		t.Fatal("project handler unreachable")
 	}
 }
+
+func TestMonitorNamespacePrecedesProjectAndCleaning(t *testing.T) {
+	miss := http.NotFoundHandler()
+	monitor := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(418) })
+	routes := NewRoutes(miss, miss, miss, miss, miss, monitor)
+	for _, p := range []string{"/api/v1/workspaces/w/projects/p/monitors", "/api/v1/workspaces/w/projects/p/monitors/m", "/api/v1/workspaces/w//projects/p/monitors/m", "/api/v1/workspaces/w/projects/p/%6donitors/m", "/api/v1/workspaces/w/projects/p/monitors/../../.."} {
+		w := httptest.NewRecorder()
+		routes.ServeHTTP(w, httptest.NewRequest("PATCH", p, nil))
+		if w.Code != 418 || w.Header().Get("Location") != "" {
+			t.Fatal("Monitor route intercepted or cleaned", p, w.Code)
+		}
+	}
+}

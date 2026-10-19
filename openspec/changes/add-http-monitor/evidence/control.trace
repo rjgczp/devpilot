@@ -1,0 +1,1 @@
+23    connect(5<TCP:[1964609]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("192.0.2.1")}, 16) = -1 EINPROGRESS (Operation now in progress)

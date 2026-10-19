@@ -1,0 +1,1 @@
+MONITOR_CGO_TOOLS=/private/tmp/devpilot-review1-forensic-tools MONITOR_CGO_EVIDENCE="$PWD/openspec/changes/add-http-monitor/evidence/review1/cgo-reproduction" sh openspec/changes/add-http-monitor/evidence/review1/reproduce-cgo.sh

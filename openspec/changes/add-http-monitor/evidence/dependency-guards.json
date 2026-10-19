@@ -1,0 +1,50 @@
+[
+  {
+    "case": "missing-url",
+    "command": "integration.test -test.run ^TestMonitorMigration$ -test.v",
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "matched_safe_reason": "TEST_DATABASE_URL must name",
+    "ddl_started": false
+  },
+  {
+    "case": "wrong-database",
+    "command": "integration.test -test.run ^TestMonitorMigration$ -test.v",
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "matched_safe_reason": "TEST_DATABASE_URL must name",
+    "ddl_started": false
+  },
+  {
+    "case": "application-database",
+    "command": "integration.test -test.run ^TestMonitorMigration$ -test.v",
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "matched_safe_reason": "test database must be separate",
+    "ddl_started": false
+  },
+  {
+    "case": "unreachable",
+    "command": "integration.test -test.run ^TestMonitorMigration$ -test.v",
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "matched_safe_reason": "isolated PostgreSQL 18 test database unavailable",
+    "ddl_started": false
+  },
+  {
+    "case": "missing-goose",
+    "command": "integration.test -test.run ^TestMonitorMigration$ -test.v",
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "matched_safe_reason": "integration requires pinned native Goose",
+    "ddl_started": false
+  },
+  {
+    "case": "wrong-goose-version",
+    "command": "integration.test -test.run ^TestMonitorMigration$ -test.v",
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "matched_safe_reason": "integration requires pinned native Goose",
+    "ddl_started": false
+  }
+]

@@ -1,0 +1,7 @@
+approved_attempts=4 blocked_attempts=6
+unapproved Unix socket destination
+unapproved Unix socket destination
+unapproved Unix socket destination
+unapproved Unix socket destination
+unapproved Unix socket destination
+unapproved Unix socket destination

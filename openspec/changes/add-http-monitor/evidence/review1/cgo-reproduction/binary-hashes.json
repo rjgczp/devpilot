@@ -1,0 +1,7 @@
+{
+  "integration.test": "aa81ca9cbfa1e93f77ee55d8c864dac02c0ec3e180d6e70fa40874bf5f45d346",
+  "goose": "10f4f28eee3565e2b6854107591c9c6ab31de5fbc42b23a357936ce53c53a1e7",
+  "pgx-cgo": "8db0fb509db300e9b1541af86fcfe0b3c1501c35e98a678518ec1ce430fbaf74",
+  "pgx-pure": "eb6f3930bfb8ad629e2e49799976f3b747be305ac683a6f675e8a5ba7afe8e2a",
+  "libgetpwuid-marker.so": "f5f6eb97124af792e50ecc653792b75b57a814776284b399756302582a1697c0"
+}

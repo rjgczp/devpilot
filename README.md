@@ -278,3 +278,19 @@ data固定为id/workspace_id/name/description/version/created_at/updated_at；ve
 所有Project可变字段的受支持写入必须通过 `internal/project.Store.Update`，保持授权和version递增；不得由其他业务模块直接UPDATE而破坏强ETag。稳定JSON表示无角色字段或压缩变体，改变投影/编码须重审validator。写事务顺序User→Session→Workspace→Membership→Project，所有保护等待后新语句重验Session时限及Owner；POST/PATCH确认Commit后才成功。请求5s，整个DB操作2s。未知Commit不代表回滚，不自动重试/补偿；POST手动重复可创建第二个同名项目，名称不能可靠恢复一次未知请求；PATCH持原tag重试可能412，需重新读取并决定。
 
 Migration5由显式受控发布步骤执行，项目固定Workspace归属由约束与不可变字段trigger保护。未来子资源必须用(workspace_id,project_id)复合FK，不能仅靠已知Project UUID授权。无删除/配额意味着误建与存储增长需后续产品评审，公开部署的既有限流与容量要求不因本功能而豁免。
+
+## HTTP Monitor 配置（Migration 6）
+
+Project 下新增 `POST/GET /api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors` 和 `GET/PATCH .../monitors/{monitor_id}`。当前 Owner 创建/修改，Owner/Member 读取；创建者退出不删除配置，也不保留访问权。完整 SQL 同时验证可信 Cookie Session、当前成员及所有父子归属。列表默认50、limit1–100，after为小写规范UUID，按id升序，游标不授予权限。
+
+POST必须提供name/url；可选method仅`GET`，interval_seconds允许60/300/900/1800/3600（默认60），timeout_seconds为1–30且小于间隔（默认10），expected_status为单个200–599（默认200）。名称沿用Project的1–100码点/400字节及Unicode规则。只接受严格JSON对象，最大16384原始字节；未知/重复字段、null、非法Unicode、尾随JSON、非规范整数token拒绝。PATCH至少一个字段，缺省保留现值；每次成功包括同值修改均递增version。完整协议与固定消息见 `docs/api/openapi.yaml`。
+
+URL只允许ASCII HTTP(S) DNS域名及对应默认端口；不接受IP（包括公网/IPv6/mapped/NAT64）、userinfo、query、fragment、非标准端口、自定义Header/Host/代理/重定向配置。原始Unicode域名拒绝，可用严格校验的punycode A-label；scheme/host小写，去掉单个尾随点和显式默认端口，空路径补`/`。保留escaped path字节语义及点段/双斜线，只把百分号hex改大写；URL原始及规范结果均最多2048字节。特殊域名/路径控制字符/不规范数字IP等拒绝。IDNA固定`x/net v0.49.0`（Go1.24.0基线），工具链仍Go1.24.3。
+
+POST201返回Location和强ETag `"monitor:<id>:<version>"`；详情和PATCH200返回ETag。PATCH必须带唯一强If-Match：语法错误400，实际身份/范围/Owner检查后缺少条件428、过期412。Monitor更新不改变Project版本。版本是正bigint十进制字符串。相同名称/URL允许重复，POST无幂等保证；未知Commit/响应丢失可能已提交，不自动重试、补偿或刷新旧tag。
+
+单项成功返回URL；列表省略URL，所有错误和应用日志不包含URL任何部分、输入body或凭据。path也可能包含令牌，此功能不是秘密保险箱。Cookie-only、同源CSRF、5秒请求/2秒整事务、no-store/nosniff及无Set-Cookie协议保持不变。
+
+**所有操作仅保存/读取配置，不解析目标DNS或连接目标，不代表监控正在运行。** 无enabled/paused/desired_state、自动激活、删除、归档、Worker、结果或通知。未来引擎须另行审核存量激活，并独立验收DNS/IP分类、重绑定/TOCTOU、绑定已验证IP拨号、原域名TLS证书/SNI、禁不受控代理/跳转和出口限制；本轮纯URL单测不能证明执行期SSRF安全。
+
+零目标网络验收的可复验Linux脚本在 `tests/network/run-monitor-audit.sh`：先运行隔离违规连接正向对照，要求审计返回失败，再运行真实配置端点，要求零未批准尝试。仅精确允许测试PG及本地HTTP地址；连接失败/超时仍算尝试，不能当作零网络。详见脚本注释与Change的verification记录。

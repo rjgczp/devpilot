@@ -77,8 +77,8 @@ func TestProjectMigration(t *testing.T) {
 	if queryInt(t, db, `SELECT count(*) FROM pg_class WHERE relname LIKE 'projects%'`) != 0 || queryInt(t, db, `SELECT count(*) FROM pg_proc WHERE proname='projects_immutable_identity'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=5 AND is_applied`) != 0 || projectHistory(t, db) != before {
 		t.Fatal("real v5 failure was not atomic")
 	}
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 5", true)
+	goose(t, dir, "up-to 5", true)
 	if projectHistory(t, db) != before || queryInt(t, db, `SELECT count(*) FROM projects`) != 0 {
 		t.Fatal("upgrade changed history")
 	}
@@ -89,7 +89,7 @@ func TestProjectMigration(t *testing.T) {
 	if p.ID[14] != '7' || p.Version != "1" || p.Description != "" || !p.CreatedAt.Equal(p.UpdatedAt) {
 		t.Fatal("defaults")
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 5", true)
 	for _, set := range []string{"id=uuidv7()", "workspace_id='" + f.z.ID + "'", "created_by_user_id='" + f.member.ID + "'", "created_at=created_at+interval '1s'", "name=''", "name=repeat('a',101)", "name=E'x\\n'", "description=repeat('a',2001)", "description=E'x\\r'", "version=0", "version=-1", "workspace_id=NULL", "description=NULL", "updated_at=created_at-interval '1s'"} {
 		if _, err = db.Exec(ctx, "UPDATE projects SET "+set+" WHERE id=$1", p.ID); err == nil {
 			t.Fatal("invalid project update accepted", set)
@@ -141,9 +141,9 @@ func TestProjectMigration(t *testing.T) {
 	if projectHistory(t, db) != downBefore || queryInt(t, db, `SELECT count(*) FROM pg_proc WHERE proname='projects_immutable_identity'`) != 0 {
 		t.Fatal("v5 down harmed history")
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 5", true)
 	goose(t, dir, "down-to 0", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 5", true)
 	if queryInt(t, db, `SELECT count(*) FROM pg_indexes WHERE tablename='projects'`) != 3 {
 		t.Fatal("fresh schema/indexes")
 	}
