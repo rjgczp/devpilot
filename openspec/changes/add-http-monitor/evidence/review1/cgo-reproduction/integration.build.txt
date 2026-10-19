@@ -1,6 +1,6 @@
 /out/integration.test: go1.24.3
 	path	github.com/rjgczp/devpilot/tests/integration.test
-	mod	github.com/rjgczp/devpilot	(devel)	
+	mod	github.com/rjgczp/devpilot	(devel)
 	build	-buildmode=exe
 	build	-compiler=gc
 	build	-tags=integration,networkaudit

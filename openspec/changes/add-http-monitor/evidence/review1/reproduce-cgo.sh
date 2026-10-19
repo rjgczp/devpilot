@@ -20,6 +20,8 @@ docker run --rm -v "$repo:/repo:ro" -v "$(go env GOMODCACHE):/go/pkg/mod" \
     go version -m /out/goose > /out/goose.build.txt
     '
 cp "$MONITOR_CGO_TOOLS/"*.txt "$MONITOR_CGO_EVIDENCE/"
+# Go emits an empty trailing metadata column; preserve fields, normalize layout.
+sed 's/[[:blank:]]*$//' "$MONITOR_CGO_TOOLS/integration.build.txt" > "$MONITOR_CGO_EVIDENCE/integration.build.txt"
 docker image inspect golang:1.24.3-bookworm --format '{{json .RepoDigests}}' > "$MONITOR_CGO_EVIDENCE/image.json"
 # A parser-only probe needs no DB/network. A diagnostic interposer observes
 # getpwuid_r and forwards it unchanged (normal acceptance never loads this shim).
