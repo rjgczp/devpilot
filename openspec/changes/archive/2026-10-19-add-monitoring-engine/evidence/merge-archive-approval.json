@@ -1,0 +1,44 @@
+{
+  "pr": "https://github.com/rjgczp/devpilot/pull/9",
+  "head_sha": "e412e5c1d803499d41777e73340640281ab2d27e",
+  "merge_commit_sha": "f14a63118f12a09f5fd3b8c17f4c83cd09fe02fa",
+  "merged_at": "2026-10-19T08:13:11Z",
+  "merged_by": "rjgczp",
+  "user_archive_authorization": "可合并归档",
+  "merge_ci": {
+    "id": 39221215464,
+    "url": "https://github.com/rjgczp/devpilot/actions/runs/39221215464",
+    "head_sha": "f14a63118f12a09f5fd3b8c17f4c83cd09fe02fa",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 117956699188,
+        "name": "integration",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T08:13:17Z",
+        "completed_at": "2026-10-19T08:16:36Z",
+        "html_url": "https://github.com/rjgczp/devpilot/actions/runs/39221215464/job/117956699188"
+      },
+      {
+        "id": 117956699555,
+        "name": "verify",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T08:13:17Z",
+        "completed_at": "2026-10-19T08:13:50Z",
+        "html_url": "https://github.com/rjgczp/devpilot/actions/runs/39221215464/job/117956699555"
+      },
+      {
+        "id": 117956699733,
+        "name": "execution-security",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T08:13:17Z",
+        "completed_at": "2026-10-19T08:15:25Z",
+        "html_url": "https://github.com/rjgczp/devpilot/actions/runs/39221215464/job/117956699733"
+      }
+    ]
+  }
+}

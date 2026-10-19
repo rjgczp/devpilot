@@ -78,3 +78,13 @@ live控制器以stdin pipe把自己的fixture快照交给独立无DB/Cookie的�
 - OpenSpec任务34/34已根据实际验证勾选；Change strict通过。批准proposal/design/delta、Migration1–6、API、生产入口与依赖仍保持原基线；仅tasks状态和实施验证文档更新。
 
 本段及Artifact作为后续文档交付提交记录上述**明确实施SHA**的结果；文档提交本身的最终PR head以`git rev-parse HEAD`/PR为准，交付前还须等待该最新head的Push与PR CI全部成功，不能把以上run冒充为后续head的运行。运行内核代码未因这次文档追加而改变。
+
+### 2026-10-19 合并与归档授权
+
+用户明确授权“可合并归档”，本节取代以上保持Open/禁止合并归档的交付等待状态，不改变禁止部署、激活和生产目标探测的边界。GitHub确认PR #9由rjgczp于2026-10-19T08:13:11Z合并，最终PR head为`e412e5c1d803499d41777e73340640281ab2d27e`，合并提交为`f14a63118f12a09f5fd3b8c17f4c83cd09fe02fa`。不据此虚构独立技术审查结果。
+
+- 最终PR head的Push run39219803659和PR run39219807044均completed/success；两次运行各自的verify、integration、execution-security全部成功，原交付回执保存于`evidence/hosted-final-delivery.json`。
+- 合并提交的[main run39221215464](https://github.com/rjgczp/devpilot/actions/runs/39221215464)也已completed/success，三个job均成功；合并、用户归档授权及逐job确认见`evidence/merge-archive-approval.json`。此证据属于合并提交，不冒充随后归档提交的CI。
+- OpenSpec四份规划工件和34/34任务均完成。主规格新增http-monitor-execution的15条要求/45个场景，原文复制Purpose；http-monitor-persistence仅更新对应SSRF执行边界要求并保留原场景，其他要求、标题、Purpose不变。逐delta比对确认全部同步后，归档至`openspec/changes/archive/2026-10-19-add-monitoring-engine/`。
+- 归档前Change strict通过；同步后全部15份主规格普通校验通过。本轮两份主规格无警告；全库strict仍有四份历史规格七项既存描述长度WARNING，未借归档改写历史要求。具体命令、退出码和结果见`evidence/archive-validation.json`。
+- 归档只移动Change及追加交付记录、同步主规格；原始证据与批准规划保持字节不变，`verification.md`仅追加本节。原318个Git跟踪文件的归档前SHA256与移动后保留校验见`evidence/archive-preservation.json`，不将Finder自动更新的三个忽略项`.DS_Store`计为交付工件。生产代码、Migration1–6、依赖、API及启动路径在合并后未改变；无Migration7、无数据库迁移、无部署或监控激活。

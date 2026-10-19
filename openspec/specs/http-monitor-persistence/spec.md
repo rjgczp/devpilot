@@ -128,8 +128,20 @@ Goose6 SHALL 只增加http_monitors及其约束/索引/不可变保护，Migrati
 - **THEN** 探针准确记录违规尝试并使该运行审计非零失败，真实端点运行零目标尝试且审计成功；仅精确排除批准的PG/本地HTTP通信，保存可复验脚本、命令、退出码和证据，不以超时/不可达/无响应代替零尝试证明
 
 ### Requirement: Future probing requires a separately verified SSRF execution boundary
-未来探测器 MUST 在每次解析/新连接时验证完整A/AAAA结果并绑定已验证IP，拒绝非公网/特殊用途/元数据/转换绕过，保留原域名TLS验证/SNI，禁止不受控代理和重定向，施加出口网络限制及资源预算。此为后续阶段必须验收的前置契约；本轮 SHALL 不实现DNS/连接或声称完成这些安全检查。
+探测器 MUST 在每个获准新连接前验证完整有界A/AAAA/CNAME观察并绑定已验证IP，拒绝非公网/特殊用途/元数据/转换绕过，保留原域名TLS验证/SNI，禁止代理/重定向跟随，并独立验收出口及资源边界。配置API SHALL 继续零目标网络。本阶段 SHALL 只允许受控内部单次测试，无生产执行入口/调度/激活/结果持久化；第八阶段历史不实现探测的契约与证据 SHALL 保留其历史含义。
 
 #### Scenario: Security - Rebinding TOCTOU and redirect escape
-- **WHEN** 未来域名答案变化、混合公网与私网、AAAA嵌入特殊IPv4或HTTP重定向到内部资源
-- **THEN** 执行期拒绝不安全答案/重定向、不得在已校验后让默认客户端重解析host；未来独立测试包含DNS变化、IP绑定、TLS、代理/redirect及出口阻断，当前静态URL测试不算这类证明
+- **WHEN** 域名答案变化、混合公网与私网、AAAA嵌入特殊IPv4或HTTP重定向到内部资源
+- **THEN** 执行期拒绝不安全答案且不跟随重定向，不在已校验后让默认客户端重解析host；独立真实测试验证DNS变化、IP绑定、TLS、代理/redirect及出口阻断，静态URL测试或第八阶段零网络审计不能替代这些证明
+
+#### Scenario: Success - Configuration remains dormant without new schema
+- **WHEN** 本阶段部署、历史/新Monitor存在、配置被保存或更新
+- **THEN** 无自动执行、触发API/Worker、启停/结果表或Migration7，Migration1–6字节与schema6保持；内部执行只用隔离fixture，未来生产激活仍需独立评审
+
+#### Scenario: Concurrency - Internal execution does not extend write transactions
+- **WHEN** 系统按完整三元组在同一语句快照读完整配置/version并在释放DB资源后执行，Owner同时更新配置或用户权限变化
+- **THEN** 原User→Session→Workspace→Membership→Project→Monitor保护与未知Commit语义不变，网络不持这些事务锁；旧结果明确属旧version而非新URL，未来子表仍需完整三元组和版本谱系
+
+#### Scenario: Security - Internal library is not production egress approval
+- **WHEN** 内部单次网络/PG测试通过但缺生产出口隔离/激活评审
+- **THEN** 不能公开运行探测服务或声称生产SSRF安全；单元、真实网络、PG18及独立出口证据分开报告，第八阶段配置API审计继续以原精确白名单验证零目标尝试
