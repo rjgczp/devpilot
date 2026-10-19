@@ -67,3 +67,14 @@ live控制器以stdin pipe把自己的fixture快照交给独立无DB/Cookie的�
 ## 托管交付状态
 
 本文件初稿时尚未创建PR，不能声称托管CI通过。创建后在此按实际实现SHA和GitHub run/PR状态追加，保持PR Open等待第二轮独立安全审查，不合并/归档/部署/激活。
+
+### 2026-10-19 实施提交与托管验收
+
+实现提交为 **`d2f42ec98da816c668369ef2a89acafd32d6ad8e`**。[PR #9](https://github.com/rjgczp/devpilot/pull/9)指向main，保持Open、未合并。普通Git凭据首次推送因缺workflow scope被GitHub拒绝；已连接GitHub App成功发布完整提交，随后fetch验证远端与本地SHA相同。没有删除工作流、修改凭据权限或绕过任何CI/审计要求。
+
+- [Push run39218841168](https://github.com/rjgczp/devpilot/actions/runs/39218841168)及[PR run39218941405](https://github.com/rjgczp/devpilot/actions/runs/39218941405)均completed/success且head_sha精确为上述实施SHA；三个job（verify、integration、execution-security）及其步骤全部成功。完整逐步骤状态见`hosted-implementation-push.json`和`hosted-implementation-pr.json`。
+- 实际下载Push的execution-security与原monitor-network两个Artifact，逐项核对：托管Linux/Go1.24.3/CGO0构建来源，76网络场景、72个正常audit0及4个预期audit1控制，PG normal/race的v7成功与v8 unexpected_status版本结果，原配置API real4批准/0违规及control child0/audit1。
+- 托管原始文件无损归档为`evidence/hosted-implementation-artifacts.tar.gz`，`hosted-artifact-manifest.json`列出所有文件SHA256；已从压缩包重读逐项验证。这里的托管证据是实际下载Artifact，不是从本地输出推断。
+- OpenSpec任务34/34已根据实际验证勾选；Change strict通过。批准proposal/design/delta、Migration1–6、API、生产入口与依赖仍保持原基线；仅tasks状态和实施验证文档更新。
+
+本段及Artifact作为后续文档交付提交记录上述**明确实施SHA**的结果；文档提交本身的最终PR head以`git rev-parse HEAD`/PR为准，交付前还须等待该最新head的Push与PR CI全部成功，不能把以上run冒充为后续head的运行。运行内核代码未因这次文档追加而改变。

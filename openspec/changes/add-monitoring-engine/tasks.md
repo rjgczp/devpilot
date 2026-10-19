@@ -55,9 +55,9 @@
 
 ## 8. CI与可交付安全证据
 
-- [ ] 8.1 CI保留verify及PG18 integration/race、第八阶段网络审计/CGO=0双工具来源检查/NSCD拒绝回归，另加独立probe-network和egress证据步骤；以job依赖/权限/故意缺依赖失败及最终SHA实际运行验证新旧策略分离，失败也上传证据，更新对应runner说明。
+- [x] 8.1 CI保留verify及PG18 integration/race、第八阶段网络审计/CGO=0双工具来源检查/NSCD拒绝回归，另加独立probe-network和egress证据步骤；以job依赖/权限/故意缺依赖失败及最终SHA实际运行验证新旧策略分离，失败也上传证据，更新对应runner说明。
 - [x] 8.2 执行全量gofmt/vet/unit/race、Python审计回归、受保护PG18 normal/integration-race和第八阶段原配置API网络审计；记录准确命令/exit与Migration1–6/API文档未改校验，失败修复后只重跑相关检查及受影响回归，不将归档旧结果计作新通过。
-- [ ] 8.3 执行独立Linux真实网络矩阵和绕过应用的出口证明，分别汇总静态单元/真实网络/PG18/出口四类状态及原始证据；缺环境标未通过，核对duration/FD/内存/计数、安全分类与零泄漏，托管CI证据绑定最终实现SHA。
+- [x] 8.3 执行独立Linux真实网络矩阵和绕过应用的出口证明，分别汇总静态单元/真实网络/PG18/出口四类状态及原始证据；缺环境标未通过，核对duration/FD/内存/计数、安全分类与零泄漏，托管CI证据绑定最终实现SHA。
 - [x] 8.4 更新内部执行/安全边界/资源预算/无激活入口说明及spec场景→测试→证据索引，声明结果仅头部观察、不代表公开服务已通过生产SSRF验收；交付时 `openspec validate add-monitoring-engine --strict --json`、`git diff --check` 通过，全库既有strict告警单列，不修改历史规格为消警。
 
 ## Workflow follow-up

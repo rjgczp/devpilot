@@ -45,7 +45,7 @@
   "internal/monitoring/execution_network_test.go": "0416dd596fa442ad75a388d3f4d8801a69b2af4709bd2c1b264a7d092b0a85db",
   "internal/monitoring/executor.go": "7b2c94fc731dde09f64628653db337adc0fbf844c7d9fba0587214d0fd0cde9a",
   "internal/monitoring/policy.go": "516d975441ebe32a2667fca23a942fd78d81ee21f0a0ccb02bd7e89d7c1c158b",
-  "internal/monitoring/registry/.gitattributes": "7f22965ea15bab793c5641bd7c84c80c126e002ce2e1d3eb0d8abb79bb906fed",
+  "internal/monitoring/registry/.gitattributes": "bfb12d78b5514242779ae3569b4b391ecbdd712a72918d21d3e9819b392f1bd6",
   "internal/monitoring/registry/ipv4-space.csv": "3cc77afcbc7a26c1716813a9b08c168e078f82ada22f3855d2466ba085b6d051",
   "internal/monitoring/registry/ipv4-special.csv": "cbc4b7653c8bc640ba1e8e5d4ebbf11e7c7a1d867e7f1593aad001d3f8632aac",
   "internal/monitoring/registry/ipv6-space.csv": "65d96c4fb7bfe5e314bb5832edb2f1957cfcfe764a7d983485a4e1704011ef18",
