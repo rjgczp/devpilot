@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前为 **Checkpoint1复验及Checkpoint2初步Claim/Start实现，仍在实施**。已创建Migration8、受限角色/函数、有限授权与status API、旧Activation固定弃用投影及隔离工具预检。已有受限Claim/Start数据库函数及fixture-only控制面Store，但还没有可执行Scheduler/Probe闭环，`cmd/schedulerfixture`目前失败关闭；不能将此检查点描述为方案A完成。
+当前仅推进 **Checkpoint1：Schema/Authorization**。本轮补充真实PG18缺口验收后，在旧角色配置PATCH跨迁移场景遇到权限失败，已停止受影响任务，Checkpoint1尚未完成。此前已有的Claim/Start初步代码保持原样，本轮不扩展、不推进Checkpoint2及以后；没有可执行Scheduler/Probe完整闭环，不能将基础设施或局部通过描述为方案A完成。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -72,3 +72,31 @@ Task2.2已依据该提交的真实迁移及历史保护测试通过勾选（4/47
 Claim最终control等待到期测试已加强为必须得到`P0001/candidate_invalid`，锁超时/事务超时不能冒充授权复验拒绝；该增强也待PG18重验，因此之前宽松断言仅作为初步结果，不完成tasks4.3。
 
 当前仍4/47已验收；未打开生产网络，未创建PR、未推送或Archive。真实Supervisor物理停止/target permit/结果与unknown/保留及三个真实周期尚未完成；必须继续以方案A完整验收，不能以此基础设施成果作为完成交付。
+
+### Explicitly authorized single bounded Supervisor retry
+
+用户随后仅授权`TestSchedulerSupervisorOwnsOneInputCapability`一次有界重试，并要求完成后停止审核。本次测试实际执行一次，tested implementation SHA `3774a75eb7d3e733b174530d71816ed319d9f084`，运行时源码工作区干净。用例exit0、Go耗时0.16s；所有执行/锁采样/日志证据见`evidence/supervisor-bounded-retry-3774a75/`。完整命令、源/二进制SHA256、退出码及时间保存在`pg-input-once.json`，原始证据清单见`checksums.json`。
+
+原PG18容器`db0774ff4cff96278db0eeab88ec0c2ed64f561a1c28d1671c200e4f31015103`、固定镜像、内部网络和原权限不变；Worker/Supervisor事务和语句2s、锁250ms以及Goose30s/40s保持。只新增收紧的单次测试90s/外层95s总封顶，未触发。只读观察器使用原fixture管理员，没有新增权限或修改服务端设置。测试自身的guarded Goose清理后只有版本0，无scheduler表/临时运行角色/活动事务。
+
+此前两次错误来自自动权限审核在进程创建前超时，不能称为PG18或Supervisor执行超时；审核服务延迟/不可用只是可能原因，未获得服务内部根因。当前一次通过不能排除并发缺陷。6次pg_locks/pg_blocking_pids采样未捕获短暂Supervisor会话，没有采到锁等待不构成无锁等待证明。`postgres-supervisor.log`保留真实Supervisor LOGIN后端的重放、秘密读取/DDL/直接DML等预期拒绝；这是数据库权限测试，没有Linux Supervisor进程、Probe或物理终止日志。
+
+仅关闭这项“未执行”的验收缺口；严格到期错误断言、其余并发/物理终止/完整周期等未因此验收。任务仍4/47、不推进Checkpoint、不创建PR、不合并或部署。生产执行硬关闭；完成后等待用户下一步审核。
+
+## Checkpoint1 remaining acceptance — permission review stop
+
+本轮遵循用户仅允许继续Checkpoint1、完成即停/安全失败暂停的范围，没有修改生产实现、Migration1–8或Controller/Worker/Probe代码。新增五份`tests/integration/scheduler_checkpoint1_*_test.go`只补原来缺少的真实PG18验收。未重跑已完成的2.2或全量验收，未重跑已通过的Supervisor单项；其首次工具审核超时的内部原因依然未知，保留为风险。
+
+- `pg-contracts` exit0：精确SQLSTATE验证复合FK、身份/谱系/状态/时间/epoch/fence、unknown物理未释放的双活限制及释放后正向对照；schema7缺少新函数时零授权写入；配置撤销Trigger失败整体回滚；真实HTTP+PG18的严格JSON/1024边界/Cookie/Origin/CSRF/媒体/强条件/401-404-403-428-412；Controller/PUBLIC拒绝秘密/DML/DDL/TEMP及owner role，固定search_path/PUBLIC EXECUTE/无动态SQL检查，真实Worker LOGIN绑定incarnation。
+- `pg-capacity-expiry` exit0（62.27s）：实际9999条Schedule加两次竞争Owner授权只有一个成功，总数/计数10000；满额仍可pause/PATCH；100 enabled/W拒绝第101个、释放后可授权；pause/PATCH保持逐值冷却，新version不能绕过；按实际DB时间经过完整60秒授权期限，logout与到期均不自动续期，当前Owner强条件显式续为24h并推进g。
+- `pg-migration-interleave` exit1：activation-first通过；patch-first在旧角色执行配置SQL时收到`permission denied for table http_monitors`，migration-first因fail-fast未执行。没有检测到deadlock或本次DB/工具超时；没有为该失败补权限、改超时、跳过或重试。原始SQL/后端PID3034/时间/pg_locks/pg_blocking_pids与失败日志全部保留。
+
+所有receipt记录当时implementation HEAD `3774a75eb7d3e733b174530d71816ed319d9f084`、dirty测试树、完整源码清单/二进制hash与命令，不能冒称那时测试文件已经提交。代码和证据现供独立审查，见`evidence/checkpoint1-remaining/manifest.json`。既有授权函数、Handler、Store与四组真实PG18并发/ACK故障测试相对已通过的`0c915c8`保持字节相同，等价性及hash记录于`authorization-equivalence.json`，所以不重复执行这些已证实检查；本轮补充了它们缺失的实际容量/冷却/真实到期HTTP边界。
+
+### 新权限失败：已观察与未证明
+
+新legacy夹具只授SELECT/UPDATE；既有配置写SQL同时包含INSERT和UPDATE两个CTE。缺少INSERT权限是主要假设，但没有迁移前相同角色/相同PATCH SQL的基线，不能断言是Migration8撤销了权限，更不能断言已经定位全部根因。PostgreSQL原始日志只保留permission denied文本，应用Store分类隐藏了原始SQLSTATE；后续若获准需增加原始驱动错误采集。
+
+独立审查应先确认legacy夹具是否应包含第八阶段配置创建本就需要的INSERT列，再在schema7做同SQL正向基线，随后测跨迁移两个顺序。不能授予新Schedule/Run DML、新grant函数或function-owner/管理员权限。详见`evidence/checkpoint1-remaining/failure-analysis.md`及其PG18官方依据。本轮没有实施任何权限更改。
+
+测试自身清理已完成：postflight记录guarded DB仍PG18、版本0，无scheduler表、无legacy测试角色、无活动事务；没有残留可运行授权。Checkpoint1剩余的迁移交错、旧角色能力盘点、完整兼容/零目标审计与无active Owner的Start前置条件仍未完整验收。任务不得因此全部勾选，Checkpoint2不能自动开始；等待独立审核。
