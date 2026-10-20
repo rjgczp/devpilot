@@ -91,6 +91,11 @@
     "targeted-regression.log": {
       "sha256": "6c2354d51394731edddc87c456a9210aa3510c5090da2e18d1c6d2fa1f23f0cb",
       "bytes": 137111
+    },
+    "code-source-binding.json": {
+      "sha256": "290b5542a11c36349ba23fd6f2b30239e4c6e45e318c4b855bd383858671644f",
+      "bytes": 923
     }
-  }
+  },
+  "source_commit": "cf3477d2801acc5d1bb53aded6d476a632899a35"
 }
