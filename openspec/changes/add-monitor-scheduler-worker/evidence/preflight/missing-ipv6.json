@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cap-add",
+    "NET_ADMIN",
+    "--sysctl",
+    "net.ipv6.conf.all.disable_ipv6=1",
+    "--memory=128m",
+    "--cpus=1",
+    "--pids-limit=128",
+    "--ulimit",
+    "nofile=256:256",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler:/runner:ro",
+    "devpilot-scheduler-fixture",
+    "-c",
+    "python3 /runner/preflight.py"
+  ],
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/runner/preflight.py\", line 96, in <module>\n    main()\n    ~~~~^^\n  File \"/runner/preflight.py\", line 26, in main\n    assert pathlib.Path('/proc/sys/net/ipv6/conf/all/disable_ipv6').read_text().strip() == '0'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}

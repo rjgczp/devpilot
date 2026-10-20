@@ -1,0 +1,24 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--sysctl",
+    "net.ipv6.conf.all.disable_ipv6=0",
+    "--memory=128m",
+    "--cpus=1",
+    "--pids-limit=128",
+    "--ulimit",
+    "nofile=256:256",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler:/runner:ro",
+    "devpilot-scheduler-fixture",
+    "-c",
+    "python3 /runner/preflight.py"
+  ],
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/runner/preflight.py\", line 96, in <module>\n    main()\n    ~~~~^^\n  File \"/runner/preflight.py\", line 27, in main\n    checked('ip', 'link', 'add', 'fixture', 'type', 'dummy')\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/runner/preflight.py\", line 14, in checked\n    return subprocess.run(args, input=input, text=True, capture_output=True, check=True).stdout.strip()\n           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/subprocess.py\", line 577, in run\n    raise CalledProcessError(retcode, process.args,\n                             output=stdout, stderr=stderr)\nsubprocess.CalledProcessError: Command '('ip', 'link', 'add', 'fixture', 'type', 'dummy')' returned non-zero exit status 2.\n"
+}

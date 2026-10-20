@@ -52,7 +52,7 @@ func openDB(t *testing.T) *pgxpool.Pool {
 	return db
 }
 
-func goose(t *testing.T, dir, command string, wantSuccess bool) {
+func goose(t *testing.T, dir, command string, wantSuccess bool) []byte {
 	t.Helper()
 	if err := testdb.ValidateURL(os.Getenv("TEST_DATABASE_URL"), os.Getenv("DATABASE_URL")); err != nil {
 		t.Fatal(err)
@@ -73,6 +73,7 @@ func goose(t *testing.T, dir, command string, wantSuccess bool) {
 		t.Fatalf("native Goose %s success=%v; restricted diagnostic bytes=%d", command, err == nil, len(output))
 	}
 	t.Logf("native Goose %s expected-success=%v: verified", command, wantSuccess)
+	return output
 }
 
 func migrate(t *testing.T) { goose(t, filepath.Join(root(), "migrations"), "up", true) }
@@ -192,11 +193,15 @@ func TestMigrationAndConstraints(t *testing.T) {
 	if err != nil || os.WriteFile(filepath.Join(dir, "00007_create_monitor_activation_states.sql"), activationSQL, 0600) != nil {
 		t.Fatal("copy activation migration")
 	}
-	if os.WriteFile(filepath.Join(dir, "00008_intentionally_bad.sql"), []byte("-- +goose Up\nCREATE TABLE must_rollback(id integer);\nSELECT 1/0;\n-- +goose Down\nDROP TABLE must_rollback;\n"), 0600) != nil {
+	schedulerSQL, err := os.ReadFile(filepath.Join(root(), "migrations/00008_create_monitor_scheduler.sql"))
+	if err != nil || os.WriteFile(filepath.Join(dir, "00008_create_monitor_scheduler.sql"), schedulerSQL, 0600) != nil {
+		t.Fatal("copy scheduler migration")
+	}
+	if os.WriteFile(filepath.Join(dir, "00009_intentionally_bad.sql"), []byte("-- +goose Up\nCREATE TABLE must_rollback(id integer);\nSELECT 1/0;\n-- +goose Down\nDROP TABLE must_rollback;\n"), 0600) != nil {
 		t.Fatal("write failure fixture")
 	}
 	goose(t, dir, "up", false)
-	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='must_rollback'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=8 AND is_applied`) != 0 {
+	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='must_rollback'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=9 AND is_applied`) != 0 {
 		t.Fatal("failed migration partially committed")
 	}
 }
