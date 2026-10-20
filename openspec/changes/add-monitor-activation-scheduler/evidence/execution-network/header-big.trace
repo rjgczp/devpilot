@@ -1,0 +1,10 @@
+301   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "header-big"], 0xffffe0c65078 /* 10 vars */) = 0
+301   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffff8055a310 /* 11 vars */) = 0
+301   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 302
+301   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 303
+301   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 304
+301   clone(child_stack=0x4000110000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 305
+303   clone(child_stack=0x400010c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 306
+301   connect(5<TCP:[2165934]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+306   connect(5<TCP:[2163939]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+305   exit_group(0)                     = ?

@@ -1,0 +1,14 @@
+248   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "status"], 0xffffe4da2648 /* 10 vars */) = 0
+248   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffffbd2da310 /* 11 vars */) = 0
+248   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 249
+248   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 250
+248   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 251
+248   clone(child_stack=0x400009a000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+250   clone(child_stack=0x400009e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+248   <... clone resumed>)              = 252
+250   <... clone resumed>)              = 253
+248   connect(5<TCP:[2165837]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+253   connect(5<TCP:[2161595]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+249   tgkill(248, 252, SIGURG)          = 0
+252   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=248, si_uid=65534} ---
+253   exit_group(0)                     = ?

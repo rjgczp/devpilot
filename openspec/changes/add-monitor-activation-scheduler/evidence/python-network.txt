@@ -1,0 +1,12 @@
+test_cgo_in_either_tool_position_fails (test_audit_build.AuditBuildContract.test_cgo_in_either_tool_position_fails) ... ok
+test_real_linux_pure_build_has_bound_hash (test_audit_build.AuditBuildContract.test_real_linux_pure_build_has_bound_hash) ... ok
+test_exact_tcp_fixtures_only (test_audit_trace.DestinationPolicy.test_exact_tcp_fixtures_only) ... ok
+test_failed_control_is_rejected_by_cli (test_audit_trace.DestinationPolicy.test_failed_control_is_rejected_by_cli) ... ok
+test_original_six_nscd_attempts_still_fail (test_audit_trace.DestinationPolicy.test_original_six_nscd_attempts_still_fail) ... ok
+test_process_provenance_does_not_exempt_destination (test_audit_trace.DestinationPolicy.test_process_provenance_does_not_exempt_destination) ... ok
+test_unix_ipv6_dns_and_unknown_remain_closed (test_audit_trace.DestinationPolicy.test_unix_ipv6_dns_and_unknown_remain_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.727s
+
+OK

@@ -1,0 +1,12 @@
+830   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "addresses-boundary"], 0xffffc5fe2d58 /* 10 vars */) = 0
+830   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffff861aa310 /* 11 vars */) = 0
+830   clone(child_stack=0x400002e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 831
+830   clone(child_stack=0x4000076000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 832
+830   clone(child_stack=0x4000072000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 833
+830   clone(child_stack=0x400009a000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+832   clone(child_stack=0x400009e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+830   <... clone resumed>)              = 834
+832   <... clone resumed>)              = 835
+830   connect(5<TCP:[2172024]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+834   connect(5<TCP:[2164277]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+835   exit_group(0)                     = ?

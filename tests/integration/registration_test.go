@@ -188,11 +188,15 @@ func TestMigrationAndConstraints(t *testing.T) {
 	if err != nil || os.WriteFile(filepath.Join(dir, "00006_create_http_monitors.sql"), monitorSQL, 0600) != nil {
 		t.Fatal("copy monitor migration")
 	}
-	if os.WriteFile(filepath.Join(dir, "00007_intentionally_bad.sql"), []byte("-- +goose Up\nCREATE TABLE must_rollback(id integer);\nSELECT 1/0;\n-- +goose Down\nDROP TABLE must_rollback;\n"), 0600) != nil {
+	activationSQL, err := os.ReadFile(filepath.Join(root(), "migrations/00007_create_monitor_activation_states.sql"))
+	if err != nil || os.WriteFile(filepath.Join(dir, "00007_create_monitor_activation_states.sql"), activationSQL, 0600) != nil {
+		t.Fatal("copy activation migration")
+	}
+	if os.WriteFile(filepath.Join(dir, "00008_intentionally_bad.sql"), []byte("-- +goose Up\nCREATE TABLE must_rollback(id integer);\nSELECT 1/0;\n-- +goose Down\nDROP TABLE must_rollback;\n"), 0600) != nil {
 		t.Fatal("write failure fixture")
 	}
 	goose(t, dir, "up", false)
-	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='must_rollback'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=7 AND is_applied`) != 0 {
+	if queryInt(t, db, `SELECT count(*) FROM information_schema.tables WHERE table_name='must_rollback'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=8 AND is_applied`) != 0 {
 		t.Fatal("failed migration partially committed")
 	}
 }

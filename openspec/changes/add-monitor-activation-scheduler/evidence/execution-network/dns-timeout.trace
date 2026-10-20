@@ -1,0 +1,16 @@
+639   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "dns-timeout"], 0xffffc76280a8 /* 10 vars */) = 0
+639   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffff9046a310 /* 11 vars */) = 0
+639   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 640
+639   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 641
+639   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 642
+641   clone(child_stack=0x400009e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 643
+639   connect(5<TCP:[2166520]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+640   tgkill(639, 641, SIGURG <unfinished ...>
+642   clone(child_stack=0x40000ae000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+640   <... tgkill resumed>)             = 0
+641   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=639, si_uid=65534} ---
+642   <... clone resumed>)              = 645
+640   tgkill(639, 639, SIGURG <unfinished ...>
+639   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=639, si_uid=65534} ---
+640   <... tgkill resumed>)             = 0
+639   exit_group(0)                     = ?

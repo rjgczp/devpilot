@@ -1,0 +1,34 @@
+{
+  "attempts": [
+    [
+      "fd00::1",
+      80
+    ]
+  ],
+  "violations": [
+    "unapproved attempt fd00::1:80"
+  ],
+  "dns_attempts": 0,
+  "target_attempts": 1,
+  "case": "bypass-v6",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/bypass-v6.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "bypass-v6"
+  ],
+  "child_exit": 0,
+  "audit_exit": 1,
+  "duration": 1.0313152089947835
+}

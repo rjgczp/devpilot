@@ -1,0 +1,1 @@
+ok  	github.com/rjgczp/devpilot/internal/registration	0.586s

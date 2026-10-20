@@ -66,7 +66,7 @@ future production routing/egress needs independent approval and evidence.
 ## PG18 linkage
 
 Run `integration,executionsnapshot` serially against the existing guarded
-disposable test database at schema6, with pinned Goose3.26.0 on PATH. It must not
+disposable test database at schema6 or schema7, with pinned Goose3.26.0 on PATH. It must not
 run concurrently with historical migration suites. Prepare a Linux test binary
 in an absolute tool directory and provide fresh evidence paths:
 
@@ -80,7 +80,7 @@ EXECUTION_TEST_TOOLS=/absolute/tools EXECUTION_PG_EVIDENCE=/absolute/fresh-pg-ev
 
 Use the Docker engine's architecture (amd64 on hosted Linux, arm64 on this
 development host), not a guessed value. TEST_DATABASE_URL is validated by
-`internal/testdb`; missing PG18/URL/schema6 is an error. Existing migrations are
+`internal/testdb`; missing PG18/URL/schema6-or7 is an error. Existing migrations are
 applied explicitly by the operator/test job, never by the snapshot reader.
 
 The controller is outside the network-none probe container. It reads the actual

@@ -1,0 +1,2 @@
+2026/10/19 17:15:31 OK   00007_create_monitor_activation_states.sql (17.05ms)
+2026/10/19 17:15:31 goose: successfully migrated database to version: 7

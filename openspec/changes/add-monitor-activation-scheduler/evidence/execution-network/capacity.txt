@@ -1,0 +1,4 @@
+=== RUN   TestExecutionProbe
+PREFLIGHT: resource_limited; no DNS/target attempt
+--- PASS: TestExecutionProbe (0.00s)
+PASS

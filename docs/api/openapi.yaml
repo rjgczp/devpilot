@@ -6352,7 +6352,7 @@
       "get": {
         "operationId": "listMonitors",
         "summary": "Read saved HTTP Monitor configuration",
-        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler, activation or result. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version, bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
+        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler or result. Separate activation subresource stores intent only. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version and atomically revokes activation intent with generation+1 (including name-only updates); bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
         "security": [
           {
             "SessionCookie": []
@@ -6588,7 +6588,7 @@
       "post": {
         "operationId": "createMonitor",
         "summary": "Write saved HTTP Monitor configuration",
-        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler, activation or result. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version, bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
+        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler or result. Separate activation subresource stores intent only. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version and atomically revokes activation intent with generation+1 (including name-only updates); bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
         "security": [
           {
             "SessionCookie": []
@@ -6997,7 +6997,7 @@
       "get": {
         "operationId": "getMonitor",
         "summary": "Read saved HTTP Monitor configuration",
-        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler, activation or result. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version, bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
+        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler or result. Separate activation subresource stores intent only. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version and atomically revokes activation intent with generation+1 (including name-only updates); bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
         "security": [
           {
             "SessionCookie": []
@@ -7228,7 +7228,7 @@
       "patch": {
         "operationId": "updateMonitor",
         "summary": "Write saved HTTP Monitor configuration",
-        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler, activation or result. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version, bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
+        "description": "Configuration only: no target DNS, connection, HTTP probe, scheduler or result. Separate activation subresource stores intent only. Owner writes, current Owner/Member reads. SQL binds live Cookie Session, current membership and complete Workspace/Project/Monitor ownership; invalid identity401, inaccessible/mixed scope404 monitor_not_found. Reads use one snapshot. Writes protect User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE (PATCH), then a NEW statement checks expiry/authority and gates actual DML. PATCH matches full tenant triple and version; strong If-Match required, no automatic merge/retry/refresh/compensation, confirmed Commit only. Unknown Commit can persist; POST repeat may duplicate name/URL. Same-value PATCH consumes a version and atomically revokes activation intent with generation+1 (including name-only updates); bigint overflow500. Monitor never changes Project ETag. Raw JSON <=16384 bytes; strict duplicate/unknown/null/Unicode/integer-token rules. Request5s/whole DB2s, bounded early drain. Same-origin CSRF for writes, Cookie-only identity, no Set-Cookie/CORS, no-store/nosniff. No delete/archive/status/independent roles/aggregate list/idempotency. Canonical unsupported methods405, cleaned/encoded path aliases404 without redirect. Only list accepts single limit1-100(default50)/after lowercase UUID; id ASC and limit+1, cursor not authority and pages are fresh snapshots. No conditional GET. Single success includes canonical URL and strong monitor tag, list omits URL and has no ETag. URL may contain path secrets, never logged or echoed in errors. URL syntax policy is offline; future prober MUST independently implement DNS/IP validation, bound dialing, TLS SNI/certificate names, controlled redirects/proxies and egress restrictions.",
         "security": [
           {
             "SessionCookie": []
@@ -7684,6 +7684,697 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MonitorError_precondition_required"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/activation": {
+      "get": {
+        "operationId": "getMonitorActivation",
+        "summary": "Read HTTP Monitor activation intent",
+        "description": "Activation Intent Foundation only: enabled is intent, never running. Owner writes; current Owner/Member reads. Cookie-only, exact Origin/CSRF/Sec-Fetch-Site for PUT; request 5s / whole DB transaction 2s. Complete tenant triple and live identity gate actual SQL after User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE -> Activation UPDATE. PUT requires a single strong If-Match monitor-activation:<monitor_id>:<configuration_version>:<activation_generation> (128 bytes max) and body confirmation of configuration_version. Strict JSON, 1024 raw bytes; reject unknown/duplicate/null/invalid Unicode, extra JSON, query, unsupported conditions/Content-Encoding; GET forbids body/conditional headers. Semantic priority 401 -> 404 -> 403 -> 428 -> 412 -> 409 -> 429; syntax/CSRF/path rejection retains prior gates. Each successful command including same value increments generation; any successful configuration PATCH atomically disables intent and advances generation, preserving cooling. Maximum100 enabled per Workspace; successful enabled enforces persisted60s cooling, pause/PATCH bypass these limits. No automatic retries; unknown Commit may persist, GET reconciliation required. Fixed execution_state=blocked, blocked_reason=scheduler_unavailable, next_due_at=null. No URL/actor/health/run/lease/results. No production scheduler, worker, probe or unlock switch. Old intent must be cleared and explicitly reconfirmed before a future approved Worker rollout. All responses no-store/nosniff without Set-Cookie/CORS.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "monitor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong quoted monitor-activation:<monitor_id>:<v>:<g>."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorActivationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, PUT"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "setMonitorActivation",
+        "summary": "Confirm or pause versioned HTTP Monitor intent",
+        "description": "Activation Intent Foundation only: enabled is intent, never running. Owner writes; current Owner/Member reads. Cookie-only, exact Origin/CSRF/Sec-Fetch-Site for PUT; request 5s / whole DB transaction 2s. Complete tenant triple and live identity gate actual SQL after User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE -> Activation UPDATE. PUT requires a single strong If-Match monitor-activation:<monitor_id>:<configuration_version>:<activation_generation> (128 bytes max) and body confirmation of configuration_version. Strict JSON, 1024 raw bytes; reject unknown/duplicate/null/invalid Unicode, extra JSON, query, unsupported conditions/Content-Encoding; GET forbids body/conditional headers. Semantic priority 401 -> 404 -> 403 -> 428 -> 412 -> 409 -> 429; syntax/CSRF/path rejection retains prior gates. Each successful command including same value increments generation; any successful configuration PATCH atomically disables intent and advances generation, preserving cooling. Maximum100 enabled per Workspace; successful enabled enforces persisted60s cooling, pause/PATCH bypass these limits. No automatic retries; unknown Commit may persist, GET reconciliation required. Fixed execution_state=blocked, blocked_reason=scheduler_unavailable, next_due_at=null. No URL/actor/health/run/lease/results. No production scheduler, worker, probe or unlock switch. Old intent must be cleared and explicitly reconfirmed before a future approved Worker rollout. All responses no-store/nosniff without Set-Cookie/CORS.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "monitor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "description": "Exactly one strong quoted monitor-activation:<monitor_id>:<v>:<g> tag; weak/wildcard/list/repeated/malformed rejected400."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "At most1024 raw bytes. Exactly two required strings; canonical positive bigint string. No Content-Encoding.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonitorActivationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong quoted monitor-activation:<monitor_id>:<v>:<g>."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorActivationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET, PUT"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_csrf_rejected"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_monitor_forbidden"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_request_too_large"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unsupported_media_type"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorActivationValidationError"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_precondition_failed"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_precondition_required"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_activation_limit_reached"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Ceiling of remaining database cooling seconds."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_activation_rate_limited"
                 }
               }
             }
@@ -9870,6 +10561,232 @@
             "minimum": 200,
             "maximum": 599,
             "default": 200
+          }
+        }
+      },
+      "MonitorError_activation_limit_reached": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "activation_limit_reached"
+              },
+              "message": {
+                "type": "string",
+                "const": "Workspace activation intent limit reached."
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_activation_rate_limited": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "activation_rate_limited"
+              },
+              "message": {
+                "type": "string",
+                "const": "Monitor activation intent is cooling down."
+              }
+            }
+          }
+        }
+      },
+      "MonitorActivation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "workspace_id",
+          "project_id",
+          "monitor_id",
+          "configuration_version",
+          "desired_state",
+          "activation_configuration_version",
+          "activation_generation",
+          "next_due_at",
+          "next_enable_allowed_at",
+          "last_transition_kind",
+          "created_at",
+          "updated_at",
+          "execution_state",
+          "blocked_reason"
+        ],
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monitor_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "configuration_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "desired_state": {
+            "type": "string",
+            "enum": [
+              "enabled",
+              "disabled"
+            ]
+          },
+          "activation_configuration_version": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[1-9][0-9]{0,18}$"
+          },
+          "activation_generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "next_due_at": {
+            "type": [
+              "null"
+            ]
+          },
+          "next_enable_allowed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "last_transition_kind": {
+            "type": "string",
+            "enum": [
+              "never_activated",
+              "owner_enabled",
+              "owner_paused",
+              "configuration_changed"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "execution_state": {
+            "type": "string",
+            "const": "blocked"
+          },
+          "blocked_reason": {
+            "type": "string",
+            "const": "scheduler_unavailable"
+          }
+        }
+      },
+      "MonitorActivationResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MonitorActivation"
+          }
+        }
+      },
+      "MonitorActivationInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "desired_state",
+          "configuration_version"
+        ],
+        "properties": {
+          "desired_state": {
+            "type": "string",
+            "enum": [
+              "enabled",
+              "disabled"
+            ]
+          },
+          "configuration_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          }
+        }
+      },
+      "MonitorActivationValidationError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message",
+              "fields"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "validation_failed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invalid monitor fields."
+              },
+              "fields": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "desired_state": {
+                    "type": "string",
+                    "const": "invalid_value"
+                  },
+                  "configuration_version": {
+                    "type": "string",
+                    "const": "invalid_value"
+                  }
+                }
+              }
+            }
           }
         }
       }

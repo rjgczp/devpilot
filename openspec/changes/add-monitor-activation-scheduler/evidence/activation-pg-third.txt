@@ -1,0 +1,158 @@
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-user
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-session
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-workspace
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-membership
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-project
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-monitor
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-activation
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-post-gate
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-user
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-session
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-workspace
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-membership
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-project
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-monitor
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-activation
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-post-gate
+=== NAME  TestActivationExpiryAfterEveryProtectiveWait
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationExpiryAfterEveryProtectiveWait (3.03s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-user (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-session (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-workspace (0.17s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-membership (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-project (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-monitor (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-activation (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-post-gate (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-user (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-session (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-workspace (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-membership (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-project (0.19s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-monitor (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-activation (0.18s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-post-gate (0.18s)
+=== RUN   TestActivationIdentityAndMembershipOrderings
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-disable-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-disable-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-role-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-role-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-exit-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-exit-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-remove-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-remove-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-accept-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-accept-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-disable-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-disable-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-role-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-role-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-exit-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-exit-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-remove-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-remove-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-accept-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-accept-monitorfirsttrue
+=== NAME  TestActivationIdentityAndMembershipOrderings
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationIdentityAndMembershipOrderings (0.45s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirstfalse (0.03s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirsttrue (0.02s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-disable-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-disable-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-role-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-role-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-exit-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-exit-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-remove-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-remove-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-accept-monitorfirstfalse (0.02s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-accept-monitorfirsttrue (0.02s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-disable-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-disable-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-role-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-role-monitorfirsttrue (0.02s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-exit-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-exit-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-remove-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-remove-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-accept-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-accept-monitorfirsttrue (0.01s)
+=== RUN   TestActivationDelayedOwnerRequestCannotUseRejoin
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestActivationDelayedOwnerRequestCannotUseRejoin/false
+=== RUN   TestActivationDelayedOwnerRequestCannotUseRejoin/true
+=== NAME  TestActivationDelayedOwnerRequestCannotUseRejoin
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationDelayedOwnerRequestCannotUseRejoin (0.14s)
+    --- PASS: TestActivationDelayedOwnerRequestCannotUseRejoin/false (0.03s)
+    --- PASS: TestActivationDelayedOwnerRequestCannotUseRejoin/true (0.02s)
+=== RUN   TestActivationCleanupCandidateOrdering
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationCleanupCandidateOrdering (0.09s)
+=== RUN   TestActivationTwoOwnerCASAndConfigOrderings
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestActivationTwoOwnerCASAndConfigOrderings/two-owners
+=== RUN   TestActivationTwoOwnerCASAndConfigOrderings/patch-first
+=== RUN   TestActivationTwoOwnerCASAndConfigOrderings/enable-first
+=== NAME  TestActivationTwoOwnerCASAndConfigOrderings
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationTwoOwnerCASAndConfigOrderings (0.14s)
+    --- PASS: TestActivationTwoOwnerCASAndConfigOrderings/two-owners (0.03s)
+    --- PASS: TestActivationTwoOwnerCASAndConfigOrderings/patch-first (0.02s)
+    --- PASS: TestActivationTwoOwnerCASAndConfigOrderings/enable-first (0.02s)
+=== RUN   TestActivationMigration
+    activation_test.go:55: native Goose down-to 0 expected-success=true: verified
+    activation_test.go:57: native Goose up-to 6 expected-success=true: verified
+    activation_test.go:78: native Goose up expected-success=false: verified
+    activation_test.go:82: native Goose up expected-success=true: verified
+    activation_test.go:83: native Goose up expected-success=true: verified
+    activation_test.go:135: native Goose down expected-success=true: verified
+    activation_test.go:139: native Goose up expected-success=true: verified
+    activation_test.go:140: native Goose down-to 0 expected-success=true: verified
+    activation_test.go:141: native Goose up expected-success=true: verified
+    activation_test.go:56: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationMigration (0.25s)
+=== RUN   TestActivationStatePermissionsAndInvalidation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationStatePermissionsAndInvalidation (0.14s)
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/missing
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/overflow
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/trigger
+=== NAME  TestActivationTriggerAtomicFailureAndBoundedAudit
+    activation_test.go:279: 64 commands -> one row, generation 65; no run/lease/results
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit (0.23s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/missing (0.03s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/overflow (0.02s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/trigger (0.02s)
+=== RUN   TestActivationQuotaAndCAS
+    registration_test.go:78: native Goose up expected-success=true: verified
+    activation_test.go:344: two Store instances serialized at Workspace: exactly100; 101st409; pause/PATCH allowed; cooling429
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationQuotaAndCAS (0.44s)
+=== RUN   TestActivationCommitFaults
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestActivationCommitFaults/rollback
+=== RUN   TestActivationCommitFaults/lost
+=== NAME  TestActivationCommitFaults
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationCommitFaults (0.10s)
+    --- PASS: TestActivationCommitFaults/rollback (0.02s)
+    --- PASS: TestActivationCommitFaults/lost (0.02s)
+PASS
+ok  	github.com/rjgczp/devpilot/tests/integration	5.703s

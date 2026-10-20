@@ -13,8 +13,10 @@ production worker account.
 
 Results are in-memory observations of a specific complete scope/version. They
 never update current health. UTC timestamps accompany a monotonic duration;
-preflight rejection is not a failed network probe. Production migrations remain
-1–6. No result table, activation state, new API or migration7 is introduced.
+preflight rejection is not a failed network probe. The execution kernel still owns no result table or production entry. Migration7
+now adds separate dormant activation intent through the configuration API; it does
+not authorize this kernel, schedule work or persist results. Migrations1–6 remain
+byte-identical. All activation responses remain blocked/scheduler_unavailable.
 
 ## Snapshot and address policy verification
 

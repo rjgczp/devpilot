@@ -1,0 +1,15 @@
+{
+  "command": [
+    "go",
+    "test",
+    "-tags=integration",
+    "./...",
+    "-count=1",
+    "-timeout=120s"
+  ],
+  "started_at": "2026-10-19T09:25:32.330578+00:00",
+  "seconds": 72.207,
+  "exit": 1,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

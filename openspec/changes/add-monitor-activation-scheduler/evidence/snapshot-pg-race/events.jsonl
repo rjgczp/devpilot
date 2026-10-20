@@ -1,0 +1,8 @@
+{"kind": "dns", "monotonic": 266242.727878525, "host": "hold-pg.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 266242.730860025, "host": "hold-pg.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 266242.735515609, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 266242.739476525, "host": "hold-pg.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}
+{"kind": "dns", "monotonic": 266244.133182818, "host": "pg-new.example.com", "qtype": 1}
+{"kind": "dns", "monotonic": 266244.134446276, "host": "pg-new.example.com", "qtype": 28}
+{"kind": "tcp", "monotonic": 266244.136812776, "ip": "93.184.216.34", "tls": false}
+{"kind": "http", "monotonic": 266244.137619943, "host": "pg-new.example.com", "ip": "93.184.216.34", "method": "GET", "credential": false, "encoding": true}

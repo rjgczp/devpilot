@@ -1,0 +1,15 @@
+{
+  "command": [
+    "go",
+    "test",
+    "./internal/registration",
+    "-run",
+    "^TestServerDeadlineAndUnknownCommit$",
+    "-count=20"
+  ],
+  "started_at": "2026-10-19T09:36:26.035627+00:00",
+  "seconds": 1.445,
+  "exit": 0,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

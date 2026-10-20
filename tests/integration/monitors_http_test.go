@@ -218,6 +218,38 @@ func TestMonitorHTTPJourneyAndIsolation(t *testing.T) {
 	}
 	item := path + "/" + p.Data.ID
 	tag := h.Get("ETag")
+
+	// Activation is a separate offline resource; configuration tag stays v1.
+	status, ah, ab := monitorHTTP(t, member, server.URL, "GET", item+"/activation", "")
+	var activation struct{ Data monitor.Activation }
+	if status != 200 || json.Unmarshal(ab, &activation) != nil || activation.Data.ActivationGeneration != "1" {
+		t.Fatal("activation default", status, string(ab))
+	}
+	command := `{"desired_state":"enabled","configuration_version":"1"}`
+	status, _, _ = monitorHTTP(t, member, server.URL, "PUT", item+"/activation", command, ah.Get("ETag"))
+	if status != 403 {
+		t.Fatal("Member activation write")
+	}
+	status, ah, ab = monitorHTTP(t, owner, server.URL, "PUT", item+"/activation", command, ah.Get("ETag"))
+	if status != 200 || json.Unmarshal(ab, &activation) != nil || activation.Data.DesiredState != "enabled" || activation.Data.ExecutionState != "blocked" || activation.Data.NextDueAt != nil {
+		t.Fatal("activation enable", status, string(ab))
+	}
+	status, _, _ = monitorHTTP(t, owner, server.URL, "PUT", item+"/activation", command, ah.Get("ETag"))
+	if status != 429 {
+		t.Fatal("activation cooling")
+	}
+	status, _, ab = monitorHTTP(t, owner, server.URL, "PUT", item+"/activation", `{"desired_state":"disabled","configuration_version":"1"}`, ah.Get("ETag"))
+	if status != 200 {
+		t.Fatal("activation pause", string(ab))
+	}
+	// Restart the actual API listener with the same database; cookies/session and
+	// durable intent survive, and no target operation is scheduled on startup.
+	server.Close()
+	server, _ = authServer(t, db, false, &logs)
+	status, _, ab = monitorHTTP(t, owner, server.URL, "GET", item+"/activation", "")
+	if status != 200 || json.Unmarshal(ab, &activation) != nil || activation.Data.DesiredState != "disabled" || activation.Data.ActivationGeneration != "3" {
+		t.Fatal("restart state", status, string(ab))
+	}
 	for _, route := range []string{path, item} {
 		status, _, _ = monitorHTTP(t, member, server.URL, "GET", route, "")
 		if status != 200 {
@@ -236,6 +268,10 @@ func TestMonitorHTTPJourneyAndIsolation(t *testing.T) {
 	status, h, body = monitorHTTP(t, owner, server.URL, "PATCH", item, `{"method":"GET"}`, tag)
 	if status != 200 || json.Unmarshal(body, &p) != nil || p.Data.Version != "2" || p.Data.Method != "GET" {
 		t.Fatal("patch", status, string(body))
+	}
+	status, _, ab = monitorHTTP(t, owner, server.URL, "GET", item+"/activation", "")
+	if status != 200 || json.Unmarshal(ab, &activation) != nil || activation.Data.LastTransitionKind != "configuration_changed" || activation.Data.ActivationGeneration != "4" || activation.Data.ConfigurationVersion != "2" {
+		t.Fatal("patch revocation")
 	}
 	status, _, _ = monitorHTTP(t, owner, server.URL, "PATCH", item, `{"name":"no"}`, tag)
 	if status != 412 {

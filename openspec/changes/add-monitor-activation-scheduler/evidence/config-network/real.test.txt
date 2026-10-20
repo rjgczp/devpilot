@@ -1,0 +1,23 @@
+=== RUN   TestMonitorNoTargetNetwork
+=== RUN   TestMonitorNoTargetNetwork/http-restart
+    registration_test.go:78: native Goose up expected-success=true: verified
+    monitors_http_test.go:235: activation enable 403 {"error":{"code":"csrf_rejected","message":"Request origin could not be verified."}}
+        
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/unknown-commit-reconciliation
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/unknown-commit-reconciliation/rollback
+=== RUN   TestMonitorNoTargetNetwork/unknown-commit-reconciliation/lost
+=== NAME  TestMonitorNoTargetNetwork/unknown-commit-reconciliation
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/full-workspace-intent-cap
+    registration_test.go:78: native Goose up expected-success=true: verified
+    activation_test.go:344: two Store instances serialized at Workspace: exactly100; 101st409; pause/PATCH allowed; cooling429
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- FAIL: TestMonitorNoTargetNetwork (1.23s)
+    --- FAIL: TestMonitorNoTargetNetwork/http-restart (0.81s)
+    --- PASS: TestMonitorNoTargetNetwork/unknown-commit-reconciliation (0.11s)
+        --- PASS: TestMonitorNoTargetNetwork/unknown-commit-reconciliation/rollback (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/unknown-commit-reconciliation/lost (0.01s)
+    --- PASS: TestMonitorNoTargetNetwork/full-workspace-intent-cap (0.31s)
+FAIL

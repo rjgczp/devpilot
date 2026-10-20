@@ -1,0 +1,418 @@
+37    execve("/toolbin/integration.test", ["/toolbin/integration.test", "-test.run", "^TestMonitorNoTargetNetwork$", "-test.v", "-test.timeout=60s"], 0xffffce2c5b68 /* 14 vars */) = 0
+37    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 38
+37    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 39
+37    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 40
+37    clone(child_stack=0x4000112000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+39    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+37    <... clone resumed>)              = 41
+39    <... clone resumed>)              = 42
+37    connect(5<TCP:[2174595]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+37    waitid(P_PIDFD, 9<pid:37>, NULL, WEXITED, NULL) = -1 ECHILD (No child processes)
+37    pidfd_send_signal(9<pid:37>, 0, NULL, 0) = 0
+37    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK <unfinished ...>
+43    exit_group(0)                     = ?
+37    <... clone resumed>, parent_tid=[10<pid:43>]) = 43
+37    waitid(P_PIDFD, 10<pid:43>, NULL, WEXITED|__WCLONE, NULL) = 0
+37    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+44    execve("/toolbin/goose", ["goose", "-env=none", "-version"], 0x40000b8000 /* 14 vars */ <unfinished ...>
+37    <... clone resumed>, parent_tid=[11<pid:44>]) = 44
+37    waitid(P_PIDFD, 11<pid:44>,  <unfinished ...>
+44    <... execve resumed>)             = 0
+44    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 45
+44    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 46
+45    tgkill(44, 44, SIGURG)            = 0
+44    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+46    clone(child_stack=0x40000ae000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+44    <... clone resumed>)              = 47
+46    <... clone resumed>)              = 48
+44    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=44, si_uid=0} ---
+48    clone(child_stack=0x40000aa000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 49
+44    exit_group(0)                     = ?
+37    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=44, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=1469}, ru_stime={tv_sec=0, tv_usec=4409}, ...}) = 0
+37    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=44, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+42    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+50    execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "up"], 0x40000c2090 /* 16 vars */ <unfinished ...>
+42    <... clone resumed>, parent_tid=[11<pid:50>]) = 50
+50    <... execve resumed>)             = 0
+42    waitid(P_PIDFD, 11<pid:50>,  <unfinished ...>
+50    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 51
+50    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 52
+50    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 53
+52    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 54
+50    connect(5<TCP:[2173921]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+52    tgkill(50, 50, SIGURG)            = 0
+50    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=50, si_uid=0} ---
+54    clone(child_stack=0x400023c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 55
+54    clone(child_stack=0x4000238000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 56
+54    tgkill(50, 53, SIGURG)            = 0
+53    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=50, si_uid=0} ---
+50    tgkill(50, 53, SIGURG)            = 0
+53    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=50, si_uid=0} ---
+50    tgkill(50, 54, SIGURG <unfinished ...>
+54    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=50, si_uid=0} ---
+50    <... tgkill resumed>)             = 0
+52    exit_group(0)                     = ?
+38    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=50, si_uid=0, si_status=0, si_utime=0, si_stime=1 /* 0.01 s */} ---
+42    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=50, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=1817}, ru_stime={tv_sec=0, tv_usec=21812}, ...}) = 0
+42    connect(7<TCP:[2173930]>, {sa_family=AF_INET, sin_port=htons(18081), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+40    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+37    clone(child_stack=0x4004396000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 57
+42    tgkill(37, 37, SIGURG <unfinished ...>
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+42    <... tgkill resumed>)             = 0
+42    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+40    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+40    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+40    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+40    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG <unfinished ...>
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 40, SIGURG <unfinished ...>
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+39    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 39, SIGURG)            = 0
+39    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 40, SIGURG <unfinished ...>
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 40, SIGURG <unfinished ...>
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 40, SIGURG <unfinished ...>
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+39    tgkill(37, 57, SIGURG <unfinished ...>
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+42    tgkill(37, 39, SIGURG <unfinished ...>
+39    tgkill(37, 57, SIGURG <unfinished ...>
+42    <... tgkill resumed>)             = 0
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+39    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 57, SIGURG <unfinished ...>
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+39    tgkill(37, 57, SIGURG)            = 0
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 42, SIGURG <unfinished ...>
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+39    tgkill(37, 42, SIGURG <unfinished ...>
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+39    tgkill(37, 42, SIGURG)            = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    tgkill(37, 40, SIGURG <unfinished ...>
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+39    tgkill(37, 40, SIGURG <unfinished ...>
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+39    tgkill(37, 40, SIGURG <unfinished ...>
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+39    <... tgkill resumed>)             = 0
+40    tgkill(37, 39, SIGURG)            = 0
+39    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+40    tgkill(37, 39, SIGURG)            = 0
+39    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+40    tgkill(37, 57, SIGURG)            = 0
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 57, SIGURG <unfinished ...>
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 57, SIGURG <unfinished ...>
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 57, SIGURG <unfinished ...>
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 57, SIGURG <unfinished ...>
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 57, SIGURG <unfinished ...>
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+57    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+42    tgkill(37, 57, SIGURG <unfinished ...>
+41    clone(child_stack=0x40001cc000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+42    <... tgkill resumed>)             = 0
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    <... clone resumed>)              = 58
+42    tgkill(37, 40, SIGURG)            = 0
+57    tgkill(37, 42, SIGURG <unfinished ...>
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+57    <... tgkill resumed>)             = 0
+42    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+57    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+57    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+57    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 40, SIGURG)            = 0
+40    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 58, SIGURG <unfinished ...>
+58    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 58, SIGURG)            = 0
+58    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    tgkill(37, 57, SIGURG <unfinished ...>
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+38    <... tgkill resumed>)             = 0
+38    tgkill(37, 57, SIGURG)            = 0
+57    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+37    connect(7<TCP:[2174626]>, {sa_family=AF_INET, sin_port=htons(18081), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+37    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+59    execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "down-to", "0"], 0x40002d8d80 /* 16 vars */ <unfinished ...>
+37    <... clone resumed>, parent_tid=[11<pid:59>]) = 59
+59    <... execve resumed>)             = 0
+37    waitid(P_PIDFD, 11<pid:59>,  <unfinished ...>
+59    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 60
+59    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 61
+59    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 62
+61    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 63
+59    connect(5<TCP:[2177446]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+61    clone(child_stack=0x40002a0000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 64
+61    tgkill(59, 64, SIGURG)            = 0
+64    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=59, si_uid=0} ---
+64    tgkill(59, 61, SIGURG)            = 0
+61    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=59, si_uid=0} ---
+64    tgkill(59, 61, SIGURG)            = 0
+61    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=59, si_uid=0} ---
+64    tgkill(59, 61, SIGURG)            = 0
+61    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=59, si_uid=0} ---
+64    tgkill(59, 59, SIGURG)            = 0
+59    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=59, si_uid=0} ---
+64    tgkill(59, 59, SIGURG)            = 0
+59    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=59, si_uid=0} ---
+63    exit_group(0)                     = ?
+37    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=59, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=5155}, ru_stime={tv_sec=0, tv_usec=10311}, ...}) = 0
+37    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=59, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+58    connect(5<TCP:[2180510]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+37    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+65    execve("/toolbin/goose", ["goose", "-env=none", "-version"], 0x4000010580 /* 14 vars */ <unfinished ...>
+37    <... clone resumed>, parent_tid=[11<pid:65>]) = 65
+65    <... execve resumed>)             = 0
+37    waitid(P_PIDFD, 11<pid:65>,  <unfinished ...>
+65    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 66
+65    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 67
+65    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+67    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+65    <... clone resumed>)              = 68
+67    <... clone resumed>)              = 69
+65    exit_group(0)                     = ?
+37    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=65, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=0}, ru_stime={tv_sec=0, tv_usec=4170}, ...}) = 0
+58    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=65, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+58    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+70    execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "up"], 0x40000edd40 /* 16 vars */ <unfinished ...>
+58    <... clone resumed>, parent_tid=[11<pid:70>]) = 70
+70    <... execve resumed>)             = 0
+58    waitid(P_PIDFD, 11<pid:70>,  <unfinished ...>
+70    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 71
+70    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 72
+70    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+72    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+70    <... clone resumed>)              = 73
+72    <... clone resumed>)              = 74
+70    connect(5<TCP:[2180513]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+72    clone(child_stack=0x40000ac000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 75
+72    tgkill(70, 73, SIGURG)            = 0
+73    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=70, si_uid=0} ---
+70    clone(child_stack=0x40000a8000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 76
+70    tgkill(70, 76, SIGURG)            = 0
+76    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=70, si_uid=0} ---
+70    tgkill(70, 76, SIGURG)            = 0
+76    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=70, si_uid=0} ---
+74    exit_group(0)                     = ?
+37    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=70, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+58    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=70, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=3880}, ru_stime={tv_sec=0, tv_usec=9700}, ...}) = 0
+58    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+77    execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "down-to", "0"], 0x40003783f0 /* 16 vars */ <unfinished ...>
+58    <... clone resumed>, parent_tid=[11<pid:77>]) = 77
+77    <... execve resumed>)             = 0
+58    waitid(P_PIDFD, 11<pid:77>,  <unfinished ...>
+77    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 78
+77    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 79
+77    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 80
+79    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 81
+77    connect(5<TCP:[2177447]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+79    tgkill(77, 81, SIGURG)            = 0
+81    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+80    clone(child_stack=0x4000616000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+79    clone(child_stack=0x4000612000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+80    <... clone resumed>)              = 82
+79    <... clone resumed>)              = 83
+79    tgkill(77, 81, SIGURG)            = 0
+81    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+79    tgkill(77, 81, SIGURG)            = 0
+81    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+79    tgkill(77, 82, SIGURG)            = 0
+82    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+79    tgkill(77, 83, SIGURG)            = 0
+83    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+79    tgkill(77, 81, SIGURG)            = 0
+81    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+80    tgkill(77, 82, SIGURG)            = 0
+82    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+80    tgkill(77, 82, SIGURG)            = 0
+82    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+80    tgkill(77, 83, SIGURG)            = 0
+83    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=77, si_uid=0} ---
+81    exit_group(0)                     = ?
+41    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=77, si_uid=0, si_status=0, si_utime=0, si_stime=1 /* 0.01 s */} ---
+58    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=77, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=1273}, ru_stime={tv_sec=0, tv_usec=14010}, ...}) = 0
+41    connect(5<TCP:[2173937]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+57    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+84    execve("/toolbin/goose", ["goose", "-env=none", "-version"], 0x40000b8b00 /* 14 vars */ <unfinished ...>
+57    <... clone resumed>, parent_tid=[11<pid:84>]) = 84
+84    <... execve resumed>)             = 0
+57    waitid(P_PIDFD, 11<pid:84>,  <unfinished ...>
+84    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 85
+84    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 86
+84    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 87
+86    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 88
+84    exit_group(0)                     = ?
+57    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=84, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=942}, ru_stime={tv_sec=0, tv_usec=2828}, ...}) = 0
+40    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=84, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+40    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+89    execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "up"], 0x40003b23f0 /* 16 vars */ <unfinished ...>
+40    <... clone resumed>, parent_tid=[11<pid:89>]) = 89
+89    <... execve resumed>)             = 0
+40    waitid(P_PIDFD, 11<pid:89>,  <unfinished ...>
+89    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 90
+89    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 91
+89    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 92
+91    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 93
+89    connect(5<TCP:[2178452]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+90    tgkill(89, 89, SIGURG)            = 0
+92    clone(child_stack=0x400021c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 94
+89    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=89, si_uid=0} ---
+91    tgkill(89, 94, SIGURG)            = 0
+94    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=89, si_uid=0} ---
+93    exit_group(0)                     = ?
+57    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=89, si_uid=0, si_status=0, si_utime=0, si_stime=1 /* 0.01 s */} ---
+40    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=89, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=1036}, ru_stime={tv_sec=0, tv_usec=12440}, ...}) = 0
+37    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+95    execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "down-to", "0"], 0x40003793b0 /* 16 vars */ <unfinished ...>
+37    <... clone resumed>, parent_tid=[11<pid:95>]) = 95
+95    <... execve resumed>)             = 0
+37    waitid(P_PIDFD, 11<pid:95>,  <unfinished ...>
+95    clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 96
+95    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 97
+95    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 98
+97    clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 99
+95    connect(5<TCP:[2177448]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+98    clone(child_stack=0x40002a2000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 100
+98    tgkill(95, 99, SIGURG)            = 0
+99    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=95, si_uid=0} ---
+98    tgkill(95, 100, SIGURG)           = 0
+100   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=95, si_uid=0} ---
+98    tgkill(95, 100, SIGURG)           = 0
+100   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=95, si_uid=0} ---
+98    tgkill(95, 95, SIGURG)            = 0
+95    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=95, si_uid=0} ---
+97    tgkill(95, 95, SIGURG)            = 0
+95    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=95, si_uid=0} ---
+99    clone(child_stack=0x4000112000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 101
+98    exit_group(0)                     = ?
+37    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=95, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=1576}, ru_stime={tv_sec=0, tv_usec=11036}, ...}) = 0
+37    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=95, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+38    tgkill(37, 37, SIGURG)            = 0
+37    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=37, si_uid=0} ---
+41    connect(5<TCP:[2176412]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+37    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+102   execve("/toolbin/goose", ["goose", "-env=none", "-version"], 0x400001b980 /* 14 vars */ <unfinished ...>
+37    <... clone resumed>, parent_tid=[11<pid:102>]) = 102
+102   <... execve resumed>)             = 0
+37    waitid(P_PIDFD, 11<pid:102>,  <unfinished ...>
+102   clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 103
+102   clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 104
+102   clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 105
+104   clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 106
+102   exit_group(0)                     = ?
+37    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=102, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=0}, ru_stime={tv_sec=0, tv_usec=3891}, ...}) = 0
+37    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=102, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+58    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+107   execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "up"], 0x40003b2b40 /* 16 vars */ <unfinished ...>
+58    <... clone resumed>, parent_tid=[11<pid:107>]) = 107
+107   <... execve resumed>)             = 0
+58    waitid(P_PIDFD, 11<pid:107>,  <unfinished ...>
+107   clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 108
+107   clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 109
+107   clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 110
+109   clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 111
+107   connect(5<TCP:[2177449]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+110   tgkill(107, 111, SIGURG)          = 0
+111   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=107, si_uid=0} ---
+109   clone(child_stack=0x4000696000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+110   tgkill(107, 107, SIGURG)          = 0
+109   <... clone resumed>)              = 112
+107   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=107, si_uid=0} ---
+111   clone(child_stack=0x4000692000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+107   tgkill(107, 109, SIGURG <unfinished ...>
+111   <... clone resumed>)              = 113
+107   <... tgkill resumed>)             = 0
+109   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=107, si_uid=0} ---
+107   tgkill(107, 113, SIGURG)          = 0
+113   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=107, si_uid=0} ---
+107   tgkill(107, 113, SIGURG)          = 0
+113   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=107, si_uid=0} ---
+110   exit_group(0)                     = ?
+37    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=107, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+58    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=107, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=4949}, ru_stime={tv_sec=0, tv_usec=8661}, ...}) = 0
+37    connect(6<TCP:[2174683]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+57    connect(7<TCP:[2178453]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+37    clone(child_stack=NULL, flags=CLONE_VM|CLONE_PIDFD|CLONE_VFORK|SIGCHLD <unfinished ...>
+114   execve("/toolbin/goose", ["goose", "-env=none", "-dir", "/Users/sansea/Documents/ChatGPT/devpilot/migrations", "-timeout", "30s", "down-to", "0"], 0x40006338c0 /* 16 vars */ <unfinished ...>
+37    <... clone resumed>, parent_tid=[13<pid:114>]) = 114
+114   <... execve resumed>)             = 0
+37    waitid(P_PIDFD, 13<pid:114>,  <unfinished ...>
+114   clone(child_stack=0x4000044000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 115
+114   clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 116
+114   clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 117
+116   clone(child_stack=0x4000116000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 118
+114   connect(5<TCP:[2173940]>, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
+117   clone(child_stack=0x4000218000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 119
+116   tgkill(114, 119, SIGURG)          = 0
+119   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=114, si_uid=0} ---
+116   tgkill(114, 118, SIGURG)          = 0
+118   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=114, si_uid=0} ---
+119   tgkill(114, 114, SIGURG)          = 0
+114   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=114, si_uid=0} ---
+118   exit_group(0)                     = ?
+37    <... waitid resumed>{si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=114, si_uid=0, si_status=0, si_utime=0, si_stime=0}, WEXITED, {ru_utime={tv_sec=0, tv_usec=1823}, ru_stime={tv_sec=0, tv_usec=10943}, ...}) = 0
+37    --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=114, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+57    exit_group(0)                     = ?

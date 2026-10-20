@@ -119,3 +119,29 @@ DB CHECK只约束name的ASCII子集、URL打印ASCII/http(s)基本形状及长�
 后续受控发布为备份/规模与锁评估、唯一发布步骤status/up/status到6，再部署及验收；API启动不DDL，readiness只Ping，schema5 Monitor请求安全500。应用回退保留schema6和数据、停新配置写并前向修复，不回退到邀请阶段已禁止的无条件成员DELETE二进制。无探测/调度/激活。本Change不执行公开部署。
 
 6→5原生Down只限经testdb验证的可销毁PG18隔离库，先清除临时child依赖，再DROP http_monitors及其函数，保留前七阶段数据，不CASCADE隐藏依赖；重新Up不恢复删除配置。共享/生产不自动down/down-to/redo/reset。验收包含0→6、存量5→6、up/up、真实6全部DDL后的故障回滚、6→5→6、完整三元组引用、FK双顺序、不可变/CHECK和历史快照。旧v5测试固定up-to5，通用下一失败版本移至7并复制真实1–6；schema suite仍串行，工具与测试库守护不变。
+
+## Migration7: activation intent foundation
+
+`00007_create_monitor_activation_states.sql` adds one composite-scope intent row
+per Monitor. It locks Monitor DML through transactional backfill and trigger
+installation. Old and new Monitors initialize disabled/generation1. A constrained
+nullable next_due_at is always null. No run, lease, schedule or result is created.
+Migrations1–6 are unchanged. Publish with serialized operator migrations before the
+new API; application startup/readiness do not migrate. A schema6 activation request
+fails safely500, with no implicit DDL.
+
+Configuration revisions (including same-value PATCH) trigger disabled intent,
+null authorization version and generation+1 in the configuration transaction.
+Missing state, bigint exhaustion or trigger failure rolls the entire change back.
+Old API binaries still invoke these database triggers. Ordinary SQL cannot remove
+state or reverse generation/cooling; this is invariant protection, not a substitute
+for Store authorization. API writes protect User/Session/Workspace/Membership/
+Project/Monitor then Activation, with a fresh final SQL authority/time gate.
+
+Rollback the API without dropping these protections. Shared deployments use
+forward fixes; native7→6 Down erases intent and is permitted only in guarded,
+disposable `devpilot_registration_test` databases. Historical schema tests pin their
+original up-to boundaries; the intentionally failing next migration is now8.
+No production migration, execution, egress approval or automatic activation is
+implied. A future Worker release needs a separate reviewed migration to invalidate
+old intents and require Owner reconfirmation.

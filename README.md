@@ -294,3 +294,39 @@ POST201返回Location和强ETag `"monitor:<id>:<version>"`；详情和PATCH200�
 **所有操作仅保存/读取配置，不解析目标DNS或连接目标，不代表监控正在运行。** 无enabled/paused/desired_state、自动激活、删除、归档、Worker、结果或通知。未来引擎须另行审核存量激活，并独立验收DNS/IP分类、重绑定/TOCTOU、绑定已验证IP拨号、原域名TLS证书/SNI、禁不受控代理/跳转和出口限制；本轮纯URL单测不能证明执行期SSRF安全。
 
 零目标网络验收的可复验Linux脚本在 `tests/network/run-monitor-audit.sh`：先运行隔离违规连接正向对照，要求审计返回失败，再运行真实配置端点，要求零未批准尝试。仅精确允许测试PG及本地HTTP地址；连接失败/超时仍算尝试，不能当作零网络。详见脚本注释与Change的verification记录。
+
+### HTTP Monitor activation intent
+
+`GET/PUT /api/v1/workspaces/{wid}/projects/{pid}/monitors/{mid}/activation`
+manage **activation intent only**. Current Owner/Member can read; only the current
+Workspace Owner can write. Cookie-only authentication and exact same-origin CSRF
+are required for writes. A successful `enabled` response does **not** mean the
+monitor is running: `execution_state` is always `blocked`, `blocked_reason` is
+`scheduler_unavailable`, and `next_due_at` is always null. There is no production
+probe, scheduler, monitor Worker, queue, run/result store or execution unlock flag.
+
+Read the activation resource first, then PUT exactly two strings, for example
+`{"desired_state":"enabled","configuration_version":"7"}`, with its strong
+`If-Match: "monitor-activation:<monitor_id>:7:<generation>"`. Pause uses
+`desired_state:"disabled"` and also confirms the current version/tag. The body is
+at most1024 raw bytes. Each successful command, including a same-value command,
+consumes one activation generation. Configuration ETags remain `monitor:<id>:<v>`.
+Every successful configuration PATCH, even a name or same-value PATCH, atomically
+revokes activation and advances its generation; callers must explicitly reconfirm.
+
+A Workspace can hold at most100 enabled intents (409 `activation_limit_reached`).
+Successful enable imposes persisted60-second cooling (429
+`activation_rate_limited`, `Retry-After` seconds). Pause and configuration PATCH
+remain available during cooling and at capacity. Cooling survives pause, config
+changes and restart. Invalid identity401, invisible/mixed scope404, Member write403,
+missing precondition428 and stale version/generation412 retain that priority after
+syntax and CSRF checks. See `docs/api/openapi.yaml` for the full transport contract.
+
+Only confirmed Commit returns success. An unknown outcome may already have
+persisted: GET to reconcile; there is no automatic retry or compensation. Intent
+belongs to the Workspace, not the author's Session. A former Owner immediately
+loses access according to current membership. Only the last transition's safe
+reason/actor/time is retained internally, not a complete audit history; actor and
+URL are absent from the activation response. Before any future approved Worker
+rollout, these intents must be cleared with generation advancement and the current
+Owner must confirm again. Production egress has not been approved by this feature.

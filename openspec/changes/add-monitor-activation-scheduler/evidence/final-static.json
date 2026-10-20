@@ -1,0 +1,10 @@
+{
+  "gofmt": "clean",
+  "diff_check": "pass",
+  "historical_migrations": "byte-identical",
+  "approved_planning": "byte-identical except task checkboxes",
+  "new_schema": "7 only",
+  "production_execution": "no new entry; API dependencies unchanged",
+  "main_specs": "unchanged",
+  "deployment": "not run; no egress approval"
+}

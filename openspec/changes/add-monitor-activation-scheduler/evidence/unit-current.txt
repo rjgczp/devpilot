@@ -1,0 +1,19 @@
+ok  	github.com/rjgczp/devpilot/cmd/api	5.365s
+ok  	github.com/rjgczp/devpilot/internal/app	0.828s
+--- FAIL: TestOpenAPIAuthenticationContract (0.01s)
+    contract_test.go:95: unexpected API or refresh route
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/auth	0.566s
+ok  	github.com/rjgczp/devpilot/internal/config	0.559s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	1.021s
+ok  	github.com/rjgczp/devpilot/internal/monitor	0.909s
+ok  	github.com/rjgczp/devpilot/internal/monitoring	0.802s
+ok  	github.com/rjgczp/devpilot/internal/password	1.886s
+ok  	github.com/rjgczp/devpilot/internal/project	1.308s
+ok  	github.com/rjgczp/devpilot/internal/registration	0.884s
+ok  	github.com/rjgczp/devpilot/internal/session	0.420s
+ok  	github.com/rjgczp/devpilot/internal/testdb	0.412s
+ok  	github.com/rjgczp/devpilot/internal/user	0.348s
+ok  	github.com/rjgczp/devpilot/internal/workspace	0.761s
+FAIL

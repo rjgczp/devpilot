@@ -1,0 +1,12 @@
+[
+  {
+    "binary": "/var/folders/2h/vj6hxp0j6gs97lfsshf1spgh0000gn/T/tmp.AJmFyF13f4/integration.test",
+    "sha256": "a105d356b4518b8fb9730b528481e8975248aeb063207bc6177ce39b788a0228",
+    "metadata": "/var/folders/2h/vj6hxp0j6gs97lfsshf1spgh0000gn/T/tmp.AJmFyF13f4/integration.test: go1.24.3\n\tpath\tgithub.com/rjgczp/devpilot/tests/integration.test\n\tmod\tgithub.com/rjgczp/devpilot\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-tags=integration,networkaudit\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+  },
+  {
+    "binary": "/var/folders/2h/vj6hxp0j6gs97lfsshf1spgh0000gn/T/tmp.AJmFyF13f4/goose",
+    "sha256": "b9d42a96017db430bec647240d706bc9ae57775c76fa65321a7d24e7e38bbe3a",
+    "metadata": "/var/folders/2h/vj6hxp0j6gs97lfsshf1spgh0000gn/T/tmp.AJmFyF13f4/goose: go1.24.3\n\tpath\tgithub.com/pressly/goose/v3/cmd/goose\n\tmod\tgithub.com/pressly/goose/v3\tv3.26.0\th1:KJakav68jdH0WDvoAcj8+n61WqOIaPGgH0bJWS6jpmM=\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.7.5\th1:JHGfMnQY+IEtGM63d+NGMjoRpysB2JBwDr5fsngwmJs=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgithub.com/joho/godotenv\tv1.5.1\th1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=\n\tdep\tgithub.com/mfridman/interpolate\tv0.0.2\th1:pnuTK7MQIxxFz1Gr+rjSIx9u7qVjf5VOoM/u6BbAxPY=\n\tdep\tgithub.com/mfridman/xflag\tv0.1.0\th1:TWZrZwG1QklFX5S4j1vxfF1sZbZeZSGofMwPMLAF29M=\n\tdep\tgithub.com/sethvargo/go-retry\tv0.3.0\th1:EEt31A35QhrcRZtrYFDTBg91cqZVnFL2navjDrah2SE=\n\tdep\tgo.uber.org/multierr\tv1.11.0\th1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=\n\tdep\tgolang.org/x/crypto\tv0.40.0\th1:r4x+VvoG5Fm+eJcxMaY8CQM7Lb0l1lsmjGBQ6s8BfKM=\n\tdep\tgolang.org/x/sync\tv0.16.0\th1:ycBJEhp9p4vXvUZNszeOq0kGTPghopOL8q0fq3vstxw=\n\tdep\tgolang.org/x/text\tv0.27.0\th1:4fGWRpyh641NLlecmyl4LOe6yDdfaYNrGb2zdfo4JV4=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-tags=no_clickhouse,no_libsql,no_mssql,no_mysql,no_sqlite3,no_vertica,no_ydb\n\tbuild\tDefaultGODEBUG=gotestjsonbuildtext=1,multipathtcp=0,randseednop=0,rsa1024min=0,tlsmlkem=0,x509rsacrt=0,x509usepolicies=0\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+  }
+]

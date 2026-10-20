@@ -1,0 +1,39 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 426B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+#2 DONE 0.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/2] FROM docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+#4 resolve docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336 done
+#4 DONE 0.0s
+
+#5 [2/2] RUN apt-get update && apt-get install -y --no-install-recommends strace iptables python3 && rm -rf /var/lib/apt/lists/*
+#5 CACHED
+
+#6 exporting to image
+#6 exporting layers done
+#6 exporting manifest sha256:80ca2aec1bf59a9b54b87f6e708216c536990e6485055a5f1ec8789cf3ffbe78 done
+#6 exporting config sha256:4d515118d4e8c6957374b645b4e8b036eecdccbd0891b96fffeea7c45b97b98d done
+#6 exporting attestation manifest sha256:5a25e431af7ae7779fc417ec2926f7ef0d5ac77a7147f309b57a1b11647a2322 0.0s done
+#6 exporting manifest list sha256:d17a7fd27afab90f7d9183c5fc06e68a9721150f37f4771a97c19853a49303c3
+#6 exporting manifest list sha256:d17a7fd27afab90f7d9183c5fc06e68a9721150f37f4771a97c19853a49303c3 done
+#6 naming to docker.io/library/devpilot-monitor-audit:latest done
+#6 unpacking to docker.io/library/devpilot-monitor-audit:latest done
+#6 DONE 0.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/l92rx9yl0itmc7uku1pghcv3n
+child_exit=0 audit_exit=1
+approved_attempts=0 blocked_attempts=1
+unapproved attempted destination 192.0.2.1:80
+positive control: probe rejected the intentionally violating run
+child_exit=0 audit_exit=0
+approved_attempts=13 blocked_attempts=0
+real Monitor endpoints: zero unapproved target attempts

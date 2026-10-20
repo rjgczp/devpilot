@@ -31,8 +31,8 @@ func workspaceRequest(t *testing.T, client *http.Client, base, method, path, bod
 	if err != nil {
 		t.Fatal("workspace HTTP fixture")
 	}
-	if method == "POST" || method == "DELETE" || method == "PATCH" {
-		if method == "POST" || method == "PATCH" {
+	if method == "POST" || method == "DELETE" || method == "PATCH" || method == "PUT" {
+		if method == "POST" || method == "PATCH" || method == "PUT" {
 			r.Header.Set("Content-Type", "application/json")
 		}
 		if proof {

@@ -51,8 +51,8 @@ func TestMonitorMigration(t *testing.T) {
 	dir := filepath.Join(root(), "migrations")
 	goose(t, dir, "down-to 0", true)
 	t.Cleanup(func() { goose(t, dir, "down-to 0", true) })
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 6", true)
+	goose(t, dir, "up-to 6", true)
 	if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 6 {
 		t.Fatal("fresh6")
 	}
@@ -81,8 +81,8 @@ func TestMonitorMigration(t *testing.T) {
 	if monitorHistory(t, db) != before || queryInt(t, db, `SELECT count(*) FROM pg_class WHERE relname LIKE 'http_monitors%'`) != 0 || queryInt(t, db, `SELECT count(*) FROM pg_proc WHERE proname='http_monitors_immutable_identity'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=6 AND is_applied`) != 0 {
 		t.Fatal("real6 partial rollback")
 	}
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 6", true)
+	goose(t, dir, "up-to 6", true)
 	if monitorHistory(t, db) != before || queryInt(t, db, `SELECT count(*) FROM http_monitors`) != 0 {
 		t.Fatal("upgrade changed history")
 	}
@@ -152,7 +152,7 @@ func TestMonitorMigration(t *testing.T) {
 	if monitorHistory(t, db) != before || queryInt(t, db, `SELECT count(*) FROM pg_proc WHERE proname='http_monitors_immutable_identity'`) != 0 {
 		t.Fatal("down damaged history")
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 6", true)
 	if queryInt(t, db, `SELECT count(*) FROM http_monitors`) != 0 {
 		t.Fatal("down up restored deleted data")
 	}
@@ -205,7 +205,7 @@ func TestMonitorStorePermissionsPaginationAndVersions(t *testing.T) {
 	}
 	_, e = s.Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitorInput("old"), tag)
 	monitorWant(t, e, monitor.ErrPreconditionFailed)
-	if _, e = db.Exec(ctx, `UPDATE http_monitors SET version=9223372036854775807 WHERE id=$1`, m.ID); e != nil {
+	if _, e = db.Exec(ctx, `ALTER TABLE http_monitors DISABLE TRIGGER monitor_configuration_revision_guard; UPDATE http_monitors SET version=9223372036854775807 WHERE id='`+m.ID+`'; ALTER TABLE http_monitors ENABLE TRIGGER monitor_configuration_revision_guard`); e != nil {
 		t.Fatal(e)
 	}
 	m.Version = "9223372036854775807"
@@ -284,9 +284,10 @@ func TestMonitorMergedConfigurationRevalidated(t *testing.T) {
 	s := monitor.Store{Pool: db}
 	// SQL CHECK is intentionally narrower than the application URL policy. A
 	// supported PATCH must not inherit an invalid config from maintenance SQL.
-	if _, e := db.Exec(ctx, `UPDATE http_monitors SET url='https://example.com/?private-token' WHERE id=$1`, m.ID); e != nil {
+	if _, e := db.Exec(ctx, `UPDATE http_monitors SET url='https://example.com/?private-token',version=version+1 WHERE id=$1`, m.ID); e != nil {
 		t.Fatal(e)
 	}
+	m.Version = "2" // Maintenance fixture consumed a revision; test current precondition.
 	n := "rename"
 	_, e := s.Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.Input{Name: &n}, monitor.ETag(m))
 	monitorWant(t, e, user.ErrInternal)
@@ -294,7 +295,7 @@ func TestMonitorMergedConfigurationRevalidated(t *testing.T) {
 	monitorWant(t, e, monitor.ErrPreconditionRequired)
 	_, e = s.Update(ctx, f.md, m.WorkspaceID, m.ProjectID, m.ID, monitor.Input{Name: &n}, monitor.ETag(m))
 	monitorWant(t, e, monitor.ErrForbidden)
-	if queryInt(t, db, `SELECT count(*) FROM http_monitors WHERE id=$1 AND version=1 AND name='monitor'`, m.ID) != 1 {
+	if queryInt(t, db, `SELECT count(*) FROM http_monitors WHERE id=$1 AND version=2 AND name='monitor'`, m.ID) != 1 {
 		t.Fatal("invalid merged config mutated")
 	}
 	// Supplying a valid replacement repairs the configuration under its old tag.

@@ -1,0 +1,21 @@
+{
+  "command": [
+    "env",
+    "CGO_ENABLED=0",
+    "GOTOOLCHAIN=local",
+    "GOOS=linux",
+    "GOARCH=arm64",
+    "go",
+    "test",
+    "-c",
+    "-tags=executionnet",
+    "-o",
+    "/private/tmp/devpilot-activation-tools/execution.test",
+    "./internal/monitoring"
+  ],
+  "started_at": "2026-10-19T09:33:28.985380+00:00",
+  "seconds": 0.81,
+  "exit": 0,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

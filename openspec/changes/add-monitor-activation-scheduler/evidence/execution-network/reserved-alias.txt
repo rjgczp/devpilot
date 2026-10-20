@@ -1,0 +1,4 @@
+=== RUN   TestExecutionProbe
+RESULT: {"workspace_id":"01900000-0000-7000-8000-000000000001","project_id":"01900000-0000-7000-8000-000000000002","monitor_id":"01900000-0000-7000-8000-00000000000b","configuration_version":"7","started_at":"2026-10-19T09:26:50.790203588Z","finished_at":"2026-10-19T09:26:50.791910546Z","duration":1706958,"http_status":null,"success":false,"failure_code":"blocked_target"}
+--- PASS: TestExecutionProbe (0.02s)
+PASS

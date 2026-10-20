@@ -1,0 +1,16 @@
+667   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "addresses"], 0xfffff4038a88 /* 10 vars */) = 0
+667   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffffafb8a310 /* 11 vars */) = 0
+667   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 668
+667   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 669
+667   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 670
+669   clone(child_stack=0x400009e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+667   clone(child_stack=0x400009a000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+669   <... clone resumed>)              = 671
+667   <... clone resumed>)              = 672
+668   tgkill(667, 667, SIGURG <unfinished ...>
+667   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=667, si_uid=65534} ---
+668   <... tgkill resumed>)             = 0
+668   tgkill(667, 672, SIGURG)          = 0
+672   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=667, si_uid=65534} ---
+667   connect(5<TCP:[2164905]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+669   exit_group(0)                     = ?

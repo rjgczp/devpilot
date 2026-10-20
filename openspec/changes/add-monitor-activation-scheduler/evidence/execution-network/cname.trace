@@ -1,0 +1,12 @@
+76    execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "cname"], 0xffffee9ab628 /* 10 vars */) = 0
+76    execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffff8dcba310 /* 11 vars */) = 0
+76    clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 77
+76    clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 78
+76    clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 79
+76    clone(child_stack=0x4000110000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 80
+78    clone(child_stack=0x400010c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 81
+77    tgkill(76, 76, SIGURG)            = 0
+76    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=76, si_uid=65534} ---
+76    connect(5<TCP:[2163455]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+78    connect(5<TCP:[2162507]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.34")}, 16) = -1 EINPROGRESS (Operation now in progress)
+81    exit_group(0)                     = ?

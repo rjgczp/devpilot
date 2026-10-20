@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/private/tmp/devpilot-tools/goose",
+    "-env=none",
+    "-dir",
+    "migrations",
+    "up"
+  ],
+  "started_at": "2026-10-19T09:15:31.249155+00:00",
+  "seconds": 0.057,
+  "exit": 0,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

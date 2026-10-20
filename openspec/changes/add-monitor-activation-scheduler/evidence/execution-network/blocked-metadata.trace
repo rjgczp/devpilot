@@ -1,0 +1,9 @@
+466   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "blocked-metadata"], 0xffffe31a8588 /* 10 vars */) = 0
+466   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffff7f44a310 /* 11 vars */) = 0
+466   clone(child_stack=0x400002e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 467
+466   clone(child_stack=0x4000076000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 468
+466   clone(child_stack=0x4000072000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 469
+466   clone(child_stack=0x4000110000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 470
+468   clone(child_stack=0x400010c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 471
+466   connect(5<TCP:[2166229]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+470   exit_group(0)                     = ?
