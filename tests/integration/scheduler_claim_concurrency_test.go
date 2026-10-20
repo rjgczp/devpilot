@@ -5,10 +5,12 @@ package integration
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"testing"
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rjgczp/devpilot/internal/monitor"
 )
@@ -199,7 +201,15 @@ func TestSchedulerClaimFinalClockAfterControlWait(t *testing.T) {
 	if err = blocker.Commit(ctx); err != nil {
 		t.Fatal(err)
 	}
-	awaitSchedulerClaim(t, ch, false)
+	select {
+	case result := <-ch:
+		var rejection *pgconn.PgError
+		if !errors.As(result.err, &rejection) || rejection.Code != "P0001" || rejection.Message != "candidate_invalid" {
+			t.Fatal("expected post-wait authorization rejection, not lock/transaction timeout", result.err)
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("claim did not finish after expiry barrier")
+	}
 	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE monitor_id=$1`, m.ID) != 0 || queryInt(t, db, `SELECT in_use FROM scheduler_budget_state WHERE kind='global' AND budget_key='global'`) != 0 {
 		t.Fatal("expired claim committed stale clock or partial capacity")
 	}

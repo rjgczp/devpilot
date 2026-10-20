@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-10-20T07:01:52.777683+00:00",
+  "operation": "PG18 TestSchedulerSupervisorOwnsOneInputCapability in dedicated guarded fixture",
+  "status": "not_executed",
+  "exit_code": null,
+  "attempts": 2,
+  "tool": "exec_command require_escalated",
+  "reason": "Automatic permission approval review did not finish before its deadline; initial attempt and one permitted retry both returned this rejection. No unsafe-action finding was supplied.",
+  "test_command": "integration.test -test.run ^TestSchedulerSupervisorOwns -test.v",
+  "container": "devpilot-scheduler-apply-pg18",
+  "pending": [
+    "real PostgreSQL validation of new prepare_run and consume_input functions",
+    "strict candidate_invalid assertion for post-control-wait authorization expiry"
+  ],
+  "not_evidence_of": "test failure, test pass or plan A completion"
+}

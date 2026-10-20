@@ -1,0 +1,40 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--user",
+    "65534:65534",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--read-only",
+    "--memory",
+    "128m",
+    "--cpus",
+    "1",
+    "--pids-limit",
+    "128",
+    "--ulimit",
+    "nofile=256:256",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "--entrypoint",
+    "/toolbin/scheduler-race.test",
+    "devpilot-scheduler-fixture",
+    "-test.v"
+  ],
+  "started_at": "2026-10-20T06:59:54.164527+00:00",
+  "elapsed_seconds": 1.2452666249591857,
+  "exit_code": 0,
+  "head": "2e7169543099a5f13663f4f5f7a7266053c4efa6",
+  "dirty": true,
+  "source_inventory_sha256": "1e96585e3fe90fc7657017c6da84aa74b14352f4eb125b5bba089935f3587e47",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/scheduler-race.test": "73899dd6a47766d8eea4ee7646d58cb233dd7ec191e4ccad8282278fadcd6e78"
+  },
+  "log_sha256": "1d1d063bca91d02526d06a2d000337331c723789fdb83aa153ea0e8c54729425"
+}

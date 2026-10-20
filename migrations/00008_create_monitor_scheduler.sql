@@ -769,6 +769,71 @@ ALTER FUNCTION scheduler_private.start_run(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bi
 REVOKE ALL ON FUNCTION scheduler_private.start_run(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION scheduler_private.start_run(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint) TO devpilot_scheduler_worker;
 
+-- Supervisor-only physical capability records. These functions authenticate the
+-- independent supervisor; they do not themselves inspect Linux. The trusted
+-- supervisor must verify the real namespace/process/rules before calling them.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.prepare_run(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_worker_incarnation uuid,p_namespace uuid,p_remaining_ms integer,p_manifest bytea)
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; gate_now timestamptz; deadline timestamptz; previous xid8; timeout_seconds integer;
+BEGIN
+ PERFORM scheduler_private.system_identity('supervisor',p_incarnation);
+ IF p_namespace IS NULL OR p_remaining_ms IS NULL OR p_remaining_ms<1 OR p_remaining_ms>35000 OR p_manifest IS NULL OR octet_length(p_manifest)<>32 THEN RAISE EXCEPTION 'invalid preparation' USING ERRCODE='22023'; END IF;
+ PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
+ SELECT * INTO r FROM public.monitor_runs x WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run FOR UPDATE;
+ IF NOT FOUND OR r.worker_incarnation IS DISTINCT FROM p_worker_incarnation OR r.attempt_state<>'leased' THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_budgets(p_wid,p_pid,p_mid);
+ SELECT * INTO q FROM public.scheduler_reservations x WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run FOR UPDATE;
+ IF NOT FOUND OR q.namespace_incarnation IS NOT NULL OR q.reservation_state<>'reserved' THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM 1 FROM public.scheduler_control c WHERE c.control_id='deployment' FOR SHARE;
+ SELECT c.last_transaction INTO previous FROM public.scheduler_control c WHERE c.kind='supervisor' AND c.login_name=session_user AND c.incarnation=p_incarnation FOR UPDATE;
+ IF NOT FOUND OR previous=pg_current_xact_id() THEN RAISE EXCEPTION 'one operation per transaction required' USING ERRCODE='25000'; END IF;
+ SELECT clock_timestamp() INTO gate_now;
+ PERFORM scheduler_private.system_identity('supervisor',p_incarnation);
+ SELECT m.timeout_seconds INTO timeout_seconds FROM public.http_monitors m WHERE m.workspace_id=p_wid AND m.project_id=p_pid AND m.id=p_mid;
+ deadline:=gate_now+p_remaining_ms*interval '1 millisecond';
+ IF r.lease_until<=gate_now OR deadline<gate_now+timeout_seconds*interval '1 second'
+ OR NOT EXISTS(SELECT 1 FROM public.scheduler_control c WHERE c.control_id='deployment' AND c.gate='fixture' AND NOT c.emergency_stop AND c.expires_at>gate_now) THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ UPDATE public.scheduler_reservations SET namespace_incarnation=p_namespace,supervisor_incarnation=p_incarnation,prepared_at=gate_now,permit_deadline=deadline,preparation_digest=p_manifest WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=gate_now WHERE kind='supervisor' AND login_name=session_user AND incarnation=p_incarnation;
+ RETURN jsonb_build_object('namespace_incarnation',p_namespace,'supervisor_incarnation',p_incarnation,'permit_deadline',deadline);
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.prepare_run(uuid,uuid,uuid,uuid,uuid,uuid,uuid,integer,bytea) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.prepare_run(uuid,uuid,uuid,uuid,uuid,uuid,uuid,integer,bytea) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.prepare_run(uuid,uuid,uuid,uuid,uuid,uuid,uuid,integer,bytea) TO devpilot_scheduler_supervisor;
+
+-- Consumption happens BEFORE pipe delivery. A commit ACK loss or partial pipe
+-- write never restores the single input. No execution snapshot is persisted.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.consume_input(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_namespace uuid,p_fence bigint)
+RETURNS void LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; gate_now timestamptz; previous xid8;
+BEGIN
+ PERFORM scheduler_private.system_identity('supervisor',p_incarnation);
+ PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
+ SELECT * INTO r FROM public.monitor_runs x WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_budgets(p_wid,p_pid,p_mid);
+ SELECT * INTO q FROM public.scheduler_reservations x WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM 1 FROM public.scheduler_control c WHERE c.control_id='deployment' FOR SHARE;
+ SELECT c.last_transaction INTO previous FROM public.scheduler_control c WHERE c.kind='supervisor' AND c.login_name=session_user AND c.incarnation=p_incarnation FOR UPDATE;
+ IF NOT FOUND OR previous=pg_current_xact_id() THEN RAISE EXCEPTION 'one operation per transaction required' USING ERRCODE='25000'; END IF;
+ SELECT clock_timestamp() INTO gate_now;
+ PERFORM scheduler_private.system_identity('supervisor',p_incarnation);
+ IF r.attempt_state<>'started' OR r.fencing_token IS DISTINCT FROM p_fence OR r.lease_until<=gate_now
+ OR q.reservation_state<>'reserved' OR q.supervisor_incarnation IS DISTINCT FROM p_incarnation OR q.namespace_incarnation IS DISTINCT FROM p_namespace
+ OR q.input_consumed_at IS NOT NULL OR q.permit_deadline<=gate_now
+ OR NOT EXISTS(SELECT 1 FROM public.scheduler_control c WHERE c.control_id='deployment' AND c.gate='fixture' AND NOT c.emergency_stop AND c.expires_at>gate_now) THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ UPDATE public.scheduler_reservations SET input_consumed_at=gate_now WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=gate_now WHERE kind='supervisor' AND login_name=session_user AND incarnation=p_incarnation;
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.consume_input(uuid,uuid,uuid,uuid,uuid,uuid,bigint) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.consume_input(uuid,uuid,uuid,uuid,uuid,uuid,bigint) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.consume_input(uuid,uuid,uuid,uuid,uuid,uuid,bigint) TO devpilot_scheduler_supervisor;
+
 -- +goose Down
 LOCK TABLE public.http_monitors IN SHARE ROW EXCLUSIVE MODE;
 LOCK TABLE public.monitor_activation_states IN ACCESS EXCLUSIVE MODE;

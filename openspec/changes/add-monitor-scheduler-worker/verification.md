@@ -60,3 +60,15 @@ Start初步测试`/private/tmp/devpilot-scheduler-start-initial/pg-start.{json,l
 同一提交PG18 integration-race exit1（102.37s）：新增暂停屏障测试把连接交给辅助goroutine执行SQL/延迟Rollback，却在主线程收到结果时并发Release，Race Detector准确发现PgConn数据竞争。修复为辅助goroutine完成Rollback及Release后才通知结果；Claim屏障辅助函数也统一此所有权协议。未修改产品锁序、250ms/2s预算或安全契约。失败完整日志及receipt保留`evidence/checkpoint2/pg-race.*`，修复后必须重跑。
 
 Task2.2已依据该提交的真实迁移及历史保护测试通过勾选（4/47）。其余尚未满足全部验收条件的任务继续保持未勾选；尚无真实执行/物理终止/周期或PR验收。
+
+### Race fix and single-input foundation
+
+提交`2e7169543099a5f13663f4f5f7a7266053c4efa6`干净工作区完整PG18 integration-race exit0（101.92s），源码清单hash`939a91d50d1253f90ee8dadd6f6e0af730c96a08b6b6e6f54f5f73195ed2e3f6`。见`evidence/checkpoint2/pg-race-fixed.{json,log}`；首次失败仍保留。不能把此通过用于后续尚未验证的新SQL。
+
+后续新增fixture-only Go Start Store：确认Commit前不返回快照；通用fmt/JSON隐藏URL；URL只在有界单次pipe信封内以base64字节字段传递，最大2048字节URL的最坏转义仍小于4KiB。32并发复制快照只有一次写入能力，部分/失败写入不可恢复；未知Start Commit返回零输入能力，未知Claim保留原cycle hint供以后对账。真实Linux无网络、UID65534/caps0/no_new_privs/只读根/128MiB/CPU1/PID128/FD256下normal及Race测试exit0，见`evidence/input-foundation/`；receipt正确标为dirty树，只验证该单元层，**不是完整无凭据Probe或网络终止验收**。后续空URL拒绝和严格错误断言需要在最终实现SHA重验。
+
+新增Supervisor-only数据库prepare_run/consume_input函数和真实LOGIN测试已写入，但其PG18测试初次与一次重试均被工具自动权限审核超时拒绝，**命令未执行、没有测试退出码**。事件记录`evidence/input-foundation/pg-input-not-executed.json`。没有安全拒绝理由；不是产品或设计决策待确认。受影响的PG18验收暂停，等待工具可执行/用户重试指示。没有尝试绕过该审核。
+
+Claim最终control等待到期测试已加强为必须得到`P0001/candidate_invalid`，锁超时/事务超时不能冒充授权复验拒绝；该增强也待PG18重验，因此之前宽松断言仅作为初步结果，不完成tasks4.3。
+
+当前仍4/47已验收；未打开生产网络，未创建PR、未推送或Archive。真实Supervisor物理停止/target permit/结果与unknown/保留及三个真实周期尚未完成；必须继续以方案A完整验收，不能以此基础设施成果作为完成交付。

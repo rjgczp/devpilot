@@ -92,7 +92,8 @@
         "evidence/checkpoint2/pg-full.json",
         "evidence/checkpoint2/pg-full.log"
       ],
-      "implementation_commit": "0c915c8a11c08b46d39a08222e07293e4a8fc555"
+      "implementation_commit": "0c915c8a11c08b46d39a08222e07293e4a8fc555",
+      "coverage_note": "Generation retirement and immutable historical guards; actual HTTP deployment cutover remains uncompleted task 10.5."
     }
   },
   "remaining": "All unchecked tasks in tasks.md; initial checkpoint receipts are preliminary, not final acceptance.",
