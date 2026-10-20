@@ -254,6 +254,10 @@ func TestActivationTriggerAtomicFailureAndBoundedAudit(t *testing.T) {
 				}
 			case "overflow":
 				activationSeed(t, db, m, "activation_generation=9223372036854775807")
+				// This deliberately unreachable fixture must be removed before
+				// schema8 Down retires all validators. Down must still reject
+				// a real exhausted generation; do not weaken that protection.
+				t.Cleanup(func() { activationSeed(t, db, m, "activation_generation=1") })
 			case "trigger":
 				if _, e = db.Exec(ctx, `CREATE FUNCTION activation_update_fixture_fail() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture'; END $$; CREATE TRIGGER activation_update_fixture_fail BEFORE UPDATE ON monitor_activation_states FOR EACH ROW EXECUTE FUNCTION activation_update_fixture_fail()`); e != nil {
 					t.Fatal(e)

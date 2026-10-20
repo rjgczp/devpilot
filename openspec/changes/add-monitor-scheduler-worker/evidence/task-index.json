@@ -1,0 +1,75 @@
+{
+  "completed": {
+    "1.1": {
+      "requirements": [
+        "Production execution stays hard closed without deployment evidence"
+      ],
+      "scenarios": [
+        "Security - Fixture runner is not a production worker image"
+      ],
+      "implementation": [
+        "openspec/changes/add-monitor-scheduler-worker/verification.md"
+      ],
+      "tests": [
+        "Formal user authorization recorded before implementation"
+      ],
+      "command": "Read formal Apply authorization; git baseline inspection",
+      "exit_code": 0,
+      "evidence": [
+        "evidence/baseline.json"
+      ],
+      "implementation_commit": "b2fdbbdd08b7400b550809794b915e727c1a6c3f"
+    },
+    "1.2": {
+      "requirements": [
+        "Acceptance separates planning database network and deployment evidence"
+      ],
+      "scenarios": [
+        "Exception - Missing infrastructure and planning-only status"
+      ],
+      "implementation": [
+        "openspec/changes/add-monitor-scheduler-worker/evidence/baseline.json"
+      ],
+      "tests": [
+        "Git/remote/PR10/archive/planning/Migration1-7 SHA256 baseline audit"
+      ],
+      "command": "git status --short; git rev-parse HEAD main origin/main; git ls-remote origin refs/heads/main; gh pr view 10; sha256 Migration1-7",
+      "exit_code": 0,
+      "evidence": [
+        "evidence/baseline.json",
+        "evidence/toolchain.json"
+      ],
+      "implementation_commit": "b2fdbbdd08b7400b550809794b915e727c1a6c3f"
+    },
+    "1.4": {
+      "requirements": [
+        "Acceptance separately verifies database network fault and production boundaries"
+      ],
+      "scenarios": [
+        "Security - Dedicated scheduler topology has independent witnesses",
+        "Exception - Planning or old successful artifacts are insufficient"
+      ],
+      "implementation": [
+        "tests/scheduler/Dockerfile",
+        "tests/scheduler/preflight.py",
+        "tests/scheduler/preflight-docker.py",
+        "tests/scheduler/README.md"
+      ],
+      "tests": [
+        "two concurrent distinct namespace tool preflights",
+        "missing tool / IPv6 / NET_ADMIN failures",
+        "guarded Linux PG18 / native Goose preflight"
+      ],
+      "command": "python3 tests/scheduler/preflight-docker.py --evidence openspec/changes/add-monitor-scheduler-worker/evidence/preflight; PG18 command captured in evidence/checkpoint1/pg-foundation.json",
+      "exit_code": 0,
+      "evidence": [
+        "evidence/preflight/manifest.json",
+        "evidence/checkpoint1/pg-foundation.json",
+        "evidence/toolchain.json"
+      ],
+      "implementation_commit": "b2fdbbdd08b7400b550809794b915e727c1a6c3f"
+    }
+  },
+  "remaining": "All unchecked tasks in tasks.md; initial checkpoint receipts are preliminary, not final acceptance.",
+  "final_implementation_sha": null
+}
