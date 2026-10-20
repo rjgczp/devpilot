@@ -35,7 +35,7 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 
 ## Acceptance status
 
-- 当前仅基线/授权和隔离工具预检完成；其余任务未获完整验收。
+- 当前7/47项已验收（1.1、1.2、1.4、2.1、2.2、3.1、3.2）；Checkpoint1仍未完成，受影响迁移/旧角色权限与完整API兼容验收暂停。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
 - 真实3周期、两Worker锁图、完整Supervisor物理终止、unknown/预算/容量/全部故障与原76项新SHA复验：未完成。
 - 全量normal/race、最终同SHA Push/PR CI与交付PR：未完成；尚未创建PR。
@@ -100,3 +100,11 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 独立审查应先确认legacy夹具是否应包含第八阶段配置创建本就需要的INSERT列，再在schema7做同SQL正向基线，随后测跨迁移两个顺序。不能授予新Schedule/Run DML、新grant函数或function-owner/管理员权限。详见`evidence/checkpoint1-remaining/failure-analysis.md`及其PG18官方依据。本轮没有实施任何权限更改。
 
 测试自身清理已完成：postflight记录guarded DB仍PG18、版本0，无scheduler表、无legacy测试角色、无活动事务；没有残留可运行授权。Checkpoint1剩余的迁移交错、旧角色能力盘点、完整兼容/零目标审计与无active Owner的Start前置条件仍未完整验收。任务不得因此全部勾选，Checkpoint2不能自动开始；等待独立审核。
+
+### 本轮完成项及审查包
+
+本轮新增勾选 **2.1、3.1、3.2**，累计 **7/47**；每项Requirement/Scenario/实现文件/测试/完整命令receipt/退出码/证据与SHA在`evidence/task-index.json`。新增测试及原始证据提交为`10b4fa83cf00e32b09b6221e3cfbf3de7af7b990`；被测生产实现保持`3774a75eb7d3e733b174530d71816ed319d9f084`不变。dirty运行记录没有改写为clean，也没有将后续文档提交说成已跑测试。
+
+本轮五份代码改动均为`tests/integration/scheduler_checkpoint1_*_test.go`，代码diff见`evidence/checkpoint1-remaining/review-code.diff`，文档和失败分析另存。2.4的Controller/PUBLIC等子项、2.5的schema7安全失败、3.4的真实到期等已有局部通过，但因该任务其余场景未验收，不额外勾选。2.3/2.4/2.5旧写者与权限关联部分等待独立审查；3.3/3.5完整客户端与零目标审计未做，3.4无active Owner的Start门控仍未补验。没有将局部完成称为Checkpoint1完成，更未进入Checkpoint2。
+
+原始证据`manifest.json`明确保留两组exit0和交错组exit1；所有文件SHA256索引与代码diff提供给审查者。没有推送、PR、合并、部署、Archive或生产Migration；生产执行继续硬关闭。

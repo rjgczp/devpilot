@@ -11,7 +11,7 @@
 
 ## 2. Migration8、授权隔离与权限
 
-- [ ] 2.1 实现受审Migration8的独立schedule/run/budget/reservation/control对象、完整复合FK、状态/时间/单调fence/epoch约束及未物理释放run的部分唯一限制；真实PG18负向SQL覆盖跨租户/身份变更/非法状态/双活run，核对字段无URL/DNS/凭据。
+- [x] 2.1 实现受审Migration8的独立schedule/run/budget/reservation/control对象、完整复合FK、状态/时间/单调fence/epoch约束及未物理释放run的部分唯一限制；真实PG18负向SQL覆盖跨租户/身份变更/非法状态/双活run，核对字段无URL/DNS/凭据。
 - [x] 2.2 实现旧enabled原子撤销与全部存量Activation含disabled的g恰好+1一次/upgrade_revoked/actor=NULL，使表示协议升级前强tag全部失效，enabled不额外+2；冷却及原next_due=NULL/DELETE/TRUNCATE/revision guard保留；多W/混合状态/冷却的7→8、0→8、up/up快照证明重复up不再推进。
 - [ ] 2.3 实现g变化向下清schedule授权/next_due、推进epoch及延迟登记上限；用旧版本Store/SQL与旧角色作为非接流量DB写者，双顺序证明旧写只能撤销不能授予，新授权/配置变更整体回滚；不将旧HTTP接口接入fixture运行流量。
 - [ ] 2.4 实现非LOGIN函数owner、固定search_path及最小EXECUTE运行角色；真实LOGIN测试拒绝用户秘密/DDL/直接DML/PUBLIC/TEMP/伪造incarnation，旧角色无新授予函数；文档要求排空旧superuser连接。
@@ -19,8 +19,8 @@
 
 ## 3. 有限期Owner授权与离线API
 
-- [ ] 3.1 实现execution-authorization严格JSON/期限/profile/强If-Match及固定错误契约；单元与HTTP测试覆盖<=1024字节、重复/未知键、Unicode、body版本、428/412和401/404/403优先级，OpenAPI记录准确DTO。
-- [ ] 3.2 实现同事务最终Owner/Session授权、g+1、100/W及60s冷却与schedule有限授权；PG18每级锁后过期、两Owner同tag、失权/重新入Member、未知Commit和冷却不可重置测试通过。
+- [x] 3.1 实现execution-authorization严格JSON/期限/profile/强If-Match及固定错误契约；单元与HTTP测试覆盖<=1024字节、重复/未知键、Unicode、body版本、428/412和401/404/403优先级，OpenAPI记录准确DTO。
+- [x] 3.2 实现同事务最终Owner/Session授权、g+1、100/W及60s冷却与schedule有限授权；PG18每级锁后过期、两Owner同tag、失权/重新入Member、未知Commit和冷却不可重置测试通过。
 - [ ] 3.3 保持Activation字段名/string类型、权限/Owner意图及强ETag格式，明确废弃旧执行字段为not_reported/execution_status_required及成功头intent-v2；OpenAPI/客户端迁移/契约测试验证此BREAKING常量变化，schema7 fixture保留历史旧值，配置DTO/ETag及Cookie/CSRF/5s/2s/零目标审计不变。
 - [ ] 3.4 实现严格授权过期/显式续期及无active Owner阻止新Start；用PG数据库时间/角色变更双顺序验证，Session/logout不被错误当作Workspace后台凭据或自动续期理由。
 - [ ] 3.5 交付弃用/客户端切换及HTTP升级回退协议；以合同测试验证两个旧字段仅是迁移提示、status不支持/404/503只显示不可用，后台状态变化不改变Activation body/ETag/updated_at/g，不能以动态运行摘要破坏强tag；文档列closed-enum客户端breaking和回退全体tag失效条件。

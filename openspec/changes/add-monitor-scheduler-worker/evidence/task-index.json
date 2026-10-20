@@ -94,8 +94,112 @@
       ],
       "implementation_commit": "0c915c8a11c08b46d39a08222e07293e4a8fc555",
       "coverage_note": "Generation retirement and immutable historical guards; actual HTTP deployment cutover remains uncompleted task 10.5."
+    },
+    "2.1": {
+      "implementation_commit": "3774a75eb7d3e733b174530d71816ed319d9f084",
+      "test_source_commit": "10b4fa83cf00e32b09b6221e3cfbf3de7af7b990",
+      "exit_code": 0,
+      "scope": "Checkpoint1 task acceptance only; not complete plan A or full Checkpoint1",
+      "source_note": "Receipts accurately retain the dirty test tree at execution; production implementation was unchanged. New test files now have this explicit source commit.",
+      "requirements": [
+        "Scheduler persistence separates owner changes from operational updates"
+      ],
+      "scenarios": [
+        "Security - Shape and scope violations fail in PostgreSQL"
+      ],
+      "implementation": [
+        "migrations/00008_create_monitor_scheduler.sql"
+      ],
+      "tests": [
+        "TestCheckpointOnePersistenceConstraints"
+      ],
+      "test_files": [
+        "tests/integration/scheduler_checkpoint1_test.go"
+      ],
+      "command_receipt": "evidence/checkpoint1-remaining/pg-contracts.json",
+      "evidence": [
+        "evidence/checkpoint1-remaining/pg-contracts.log"
+      ]
+    },
+    "3.1": {
+      "implementation_commit": "3774a75eb7d3e733b174530d71816ed319d9f084",
+      "test_source_commit": "10b4fa83cf00e32b09b6221e3cfbf3de7af7b990",
+      "exit_code": 0,
+      "scope": "Checkpoint1 task acceptance only; not complete plan A or full Checkpoint1",
+      "source_note": "Receipts accurately retain the dirty test tree at execution; production implementation was unchanged. New test files now have this explicit source commit.",
+      "requirements": [
+        "Execution authorization requires separate current Owner reconfirmation"
+      ],
+      "scenarios": [
+        "Exception - Conditional transport and uncertain commit",
+        "Success - Explicit finite authorization is separate from intent"
+      ],
+      "implementation": [
+        "internal/monitor/execution_authorization.go",
+        "internal/monitor/execution_authorization_handler.go",
+        "docs/api/openapi.yaml"
+      ],
+      "tests": [
+        "TestCheckpointOneAuthorizationRealHTTPStrictContract",
+        "TestCheckpointOneRealExpiryExplicitRenewal"
+      ],
+      "test_files": [
+        "tests/integration/scheduler_checkpoint1_http_test.go",
+        "tests/integration/scheduler_checkpoint1_test.go"
+      ],
+      "command_receipt": [
+        "evidence/checkpoint1-remaining/pg-contracts.json",
+        "evidence/checkpoint1-remaining/pg-capacity-expiry.json"
+      ],
+      "evidence": [
+        "evidence/checkpoint1-remaining/pg-contracts.log",
+        "evidence/checkpoint1-remaining/pg-capacity-expiry.log"
+      ],
+      "coverage_note": "Strict HTTP uses the real Store and PG18; maximum 24h authorization also passed explicit real-time renewal. Existing unchanged OpenAPI/parser tests remain supporting checks, not replacements for PG18."
+    },
+    "3.2": {
+      "implementation_commit": "3774a75eb7d3e733b174530d71816ed319d9f084",
+      "test_source_commit": "10b4fa83cf00e32b09b6221e3cfbf3de7af7b990",
+      "exit_code": 0,
+      "scope": "Checkpoint1 task acceptance only; not complete plan A or full Checkpoint1",
+      "source_note": "Receipts accurately retain the dirty test tree at execution; production implementation was unchanged. New test files now have this explicit source commit.",
+      "requirements": [
+        "Execution authorization requires separate current Owner reconfirmation"
+      ],
+      "scenarios": [
+        "Success - Explicit finite authorization is separate from intent",
+        "Exception - Conditional transport and uncertain commit"
+      ],
+      "implementation": [
+        "internal/monitor/execution_authorization_store.go",
+        "migrations/00008_create_monitor_scheduler.sql"
+      ],
+      "tests": [
+        "TestCheckpointOneRegistrationCapacityLastSlot",
+        "TestCheckpointOneEnabledQuotaAndCooling",
+        "TestCheckpointOneRealExpiryExplicitRenewal",
+        "TestExecutionAuthorizationFreshTimeAfterEverySPIWait",
+        "TestExecutionAuthorizationTwoOwnersSameTag",
+        "TestExecutionAuthorizationLossWhileWaiting",
+        "TestExecutionAuthorizationCommitAcknowledgementUnknown"
+      ],
+      "test_files": [
+        "tests/integration/scheduler_checkpoint1_capacity_test.go",
+        "tests/integration/scheduler_checkpoint1_test.go",
+        "tests/integration/scheduler_authorization_concurrency_test.go"
+      ],
+      "command_receipt": [
+        "evidence/checkpoint1-remaining/pg-capacity-expiry.json",
+        "evidence/checkpoint2/pg-full.json"
+      ],
+      "evidence": [
+        "evidence/checkpoint1-remaining/pg-capacity-expiry.log",
+        "evidence/checkpoint1-remaining/authorization-equivalence.json",
+        "evidence/checkpoint2/pg-full.log"
+      ],
+      "coverage_note": "Prior checks use actual PG transactions with controlled ACK-loss injection; authorization implementation and their source are byte-identical. They were not repeated. New gaps used 10000 real registrations, real quota/cooling and real 60s database time."
     }
   },
-  "remaining": "All unchecked tasks in tasks.md; initial checkpoint receipts are preliminary, not final acceptance.",
+  "remaining": "40 unchecked tasks; Checkpoint1 is not complete. Migration/legacy permissions and compatibility remain blocked pending independent review.",
   "final_implementation_sha": null
 }
