@@ -1,0 +1,26 @@
+{
+  "implementation_sha": "3473d528c4f5e37c365e6a9206ef66e8a478a651",
+  "implementation_tree": "3c8fc5c1841007544057065e6d185d17e1204a8f",
+  "source_manifest_verified": true,
+  "local_pass_labels": [
+    "integration-delivery",
+    "integration-race-delivery",
+    "race-final",
+    "unit-complete",
+    "vet",
+    "activation-doc-contract",
+    "activation-final-http",
+    "config-network-delivery",
+    "execution-network",
+    "snapshot-pg",
+    "snapshot-pg-race",
+    "python-network",
+    "python-execution",
+    "dns-fuzz",
+    "address-fuzz"
+  ],
+  "openspec_change": "pass",
+  "openspec_all": "four historical specs / seven length warnings",
+  "production_egress": "unverified; execution absent",
+  "pr": "https://github.com/rjgczp/devpilot/pull/10"
+}

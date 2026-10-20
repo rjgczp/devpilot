@@ -66,7 +66,14 @@ Linux审计通过两个独立runner运行。配置API审计仅允许原有精确
 
 ## 实施提交与托管CI
 
-此稿尚未发布提交/PR，不能声称托管通过。完成发布后在此追加精确实施SHA、Push/PR CI和Artifact回执；文档追加后的最新PR head也必须等其对应CI成功，不能把实施SHA的run冒充后续文档提交的run。
+2026-10-20（Asia/Shanghai）已通过已连接GitHub App发布实施提交 **`3473d528c4f5e37c365e6a9206ef66e8a478a651`**，源树`3c8fc5c1841007544057065e6d185d17e1204a8f`与本地暂存区逐字节一致；本地分支已核对并前移到同一SHA，没有reset/覆盖文件。[PR #10](https://github.com/rjgczp/devpilot/pull/10)指向main、保持Open且未合并。
+
+- [Push run39352867538](https://github.com/rjgczp/devpilot/actions/runs/39352867538)和[PR run39353091460](https://github.com/rjgczp/devpilot/actions/runs/39353091460)均completed/success，head_sha精确为上述实施SHA；两次的verify、integration、execution-security及所有要求步骤均success。完整逐步骤回执在`evidence/hosted-implementation-ci.json`。Activation专项、真实PG18 normal/race、配置零目标审计、76执行器网络场景和schema7 PG快照normal/race均实际运行，没有跳过安全步骤。
+- 实际下载Push的两个Artifact并按GitHub摘要核验：`monitor-network-evidence` ID12234551279（SHA256 `5d077b95e34a81c091c214e571e300ee25f026d2e73fc4a091d4b59fb8c023b3`）；`execution-security-evidence` ID12234341089（SHA256 `1475aef669cb5c8836cf0b3e91a0c0b76f975be329f87d06d584878aae939a83`）。原始ZIP分别保留于`evidence/hosted-implementation-config.zip`和`evidence/hosted-implementation-execution.zip`，无需依赖90天托管保留期；逐文件SHA见`hosted-artifact-manifest.json`。
+- 托管配置控制child0/audit1、准确1违规；real child0/audit0、16基础设施批准attempt/0目标违规。托管Linux/amd64/Go1.24.3/CGO0的76场景中72正常audit0、4故意绕过audit1且child均0；实际检查正常/race PG联动v7/v8输出及各自零违规audit。核验摘要在`hosted-artifact-check.json`。
+- 23/23 tasks依真实结果完成，Change strict通过；全库四份历史规格七项描述长度WARNING保持。Migrations1–6、批准proposal/design/delta及主规格保持不变。没有实际监控入口或生产出口结论。
+
+以上CI和Artifact属于**明确实施SHA**，不是旧main结果，也不冒充追加本回执后的文档提交。最终交付必须再检查最新PR head对应的Push/PR CI；其实际最新SHA、链接和结果在交付回复中报告。PR等待独立技术及安全代码审查，不合并/归档/部署。
 
 ## 完整场景映射附表
 

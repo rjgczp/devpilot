@@ -39,7 +39,7 @@
 
 ## 6. 集成回归与可审查交付
 
-- [ ] 6.1 在CI中加入A专项和届时实施分支触发，保持verify/integration/execution-security证据分开；跑gofmt/vet、unit/race、全量PG18 integration/race及前九阶段回归，准确记录SHA/工具链/镜像/命令/exit/控制证据，失败依赖不可skip。
+- [x] 6.1 在CI中加入A专项和届时实施分支触发，保持verify/integration/execution-security证据分开；跑gofmt/vet、unit/race、全量PG18 integration/race及前九阶段回归，准确记录SHA/工具链/镜像/命令/exit/控制证据，失败依赖不可skip。
 - [x] 6.2 执行本Change strict、全库strict及工件/主规格/代码一致性检查，分别记录新问题与四份历史七项长度WARNING，不修改无关规格消警；再次核对Migration1–6和没有生产入口/目标探测。
 - [x] 6.3 完成按Requirement→Test→Evidence映射的实施验收记录和最终diff审查，逐项标注文档、PG18、normal/race、受控网络、部署验证状态；真实部署未访问则记未验证，保持A范围，等待独立代码/安全评审。
 
