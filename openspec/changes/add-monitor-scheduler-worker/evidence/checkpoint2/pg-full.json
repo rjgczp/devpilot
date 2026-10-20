@@ -1,0 +1,31 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "container:devpilot-scheduler-apply-pg18",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/integration.test",
+    "devpilot-scheduler-fixture",
+    "-test.v"
+  ],
+  "started_at": "2026-10-20T06:43:54.299958+00:00",
+  "elapsed_seconds": 63.87673024996184,
+  "exit_code": 0,
+  "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555",
+  "dirty": false,
+  "source_inventory_sha256": "c032fd0c77b8fa88dc96b4a4c0d4ec37bb7f004dcd35a341f20c31f40fd2ff4f",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/integration.test": "94916d80e3e4a92549448f112e21ecb28abbf96d982ee430a61a50b031f1f851"
+  },
+  "log_sha256": "06797c0765bd1d2247c3929c3a06a3aa9828ff5425f8b97efbea2244c3f148f7"
+}

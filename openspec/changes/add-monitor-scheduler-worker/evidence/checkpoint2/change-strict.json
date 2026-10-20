@@ -1,0 +1,16 @@
+{
+  "command": [
+    "openspec",
+    "validate",
+    "add-monitor-scheduler-worker",
+    "--strict"
+  ],
+  "started_at": "2026-10-20T06:44:06.804138+00:00",
+  "elapsed_seconds": 0.3753840409917757,
+  "exit_code": 0,
+  "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555",
+  "dirty": false,
+  "source_inventory_sha256": "c032fd0c77b8fa88dc96b4a4c0d4ec37bb7f004dcd35a341f20c31f40fd2ff4f",
+  "binaries": {},
+  "log_sha256": "261d7318727283688fe61814d964d68b4d730cfe8b9f55ead352a3dc9dcfcc4b"
+}

@@ -125,21 +125,23 @@ func TestSchedulerPauseBeforeStartAndWhileWaiting(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer conn.Release()
 			sp := int(conn.Conn().PgConn().PID())
 			started := make(chan error, 1)
 			go func() {
-				tx, e := conn.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted})
-				if e != nil {
-					started <- e
-					return
-				}
-				defer tx.Rollback(ctx)
-				var raw []byte
-				e = tx.QueryRow(ctx, schedulerStartSQL, inc, h.w, h.p, h.m, h.u, h.b, h.r, "1").Scan(&raw)
-				if e == nil {
-					e = tx.Commit(ctx)
-				}
+				e := func() error {
+					tx, e := conn.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted})
+					if e != nil {
+						return e
+					}
+					defer tx.Rollback(ctx)
+					var raw []byte
+					e = tx.QueryRow(ctx, schedulerStartSQL, inc, h.w, h.p, h.m, h.u, h.b, h.r, "1").Scan(&raw)
+					if e == nil {
+						e = tx.Commit(ctx)
+					}
+					return e
+				}()
+				conn.Release()
 				started <- e
 			}()
 			waitActivationBlock(t, db, sp)

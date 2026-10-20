@@ -30,19 +30,21 @@ func startSchedulerClaim(t *testing.T, pool *pgxpool.Pool, inc string, h schedul
 	ch := make(chan schedulerClaimResult, 1)
 	go func() {
 		defer cancel()
-		defer conn.Release()
-		tx, err := conn.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted})
-		if err != nil {
-			ch <- schedulerClaimResult{err: err}
-			return
-		}
-		defer tx.Rollback(context.Background())
-		var raw []byte
-		err = tx.QueryRow(ctx, schedulerClaimSQL, h.args(inc)...).Scan(&raw)
-		if err == nil {
-			err = tx.Commit(ctx)
-		}
-		ch <- schedulerClaimResult{raw, err}
+		result := func() schedulerClaimResult {
+			tx, err := conn.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted})
+			if err != nil {
+				return schedulerClaimResult{err: err}
+			}
+			defer tx.Rollback(context.Background())
+			var raw []byte
+			err = tx.QueryRow(ctx, schedulerClaimSQL, h.args(inc)...).Scan(&raw)
+			if err == nil {
+				err = tx.Commit(ctx)
+			}
+			return schedulerClaimResult{raw, err}
+		}()
+		conn.Release()
+		ch <- result
 	}()
 	return pid, ch
 }

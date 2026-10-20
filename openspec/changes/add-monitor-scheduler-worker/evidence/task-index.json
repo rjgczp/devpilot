@@ -68,6 +68,31 @@
         "evidence/toolchain.json"
       ],
       "implementation_commit": "b2fdbbdd08b7400b550809794b915e727c1a6c3f"
+    },
+    "2.2": {
+      "requirements": [
+        "Migration eight revokes legacy intent atomically without weakening guards"
+      ],
+      "scenarios": [
+        "Success - Fresh and populated safe upgrade",
+        "Security - Representation cutover does not reuse a strong validator"
+      ],
+      "implementation": [
+        "migrations/00008_create_monitor_scheduler.sql"
+      ],
+      "tests": [
+        "TestSchedulerMigrationRetiresAllLegacyTags",
+        "TestSchedulerMigrationRollback",
+        "TestActivationMigration",
+        "TestMonitorMigration"
+      ],
+      "command_receipt": "evidence/checkpoint2/pg-full.json",
+      "exit_code": 0,
+      "evidence": [
+        "evidence/checkpoint2/pg-full.json",
+        "evidence/checkpoint2/pg-full.log"
+      ],
+      "implementation_commit": "0c915c8a11c08b46d39a08222e07293e4a8fc555"
     }
   },
   "remaining": "All unchecked tasks in tasks.md; initial checkpoint receipts are preliminary, not final acceptance.",

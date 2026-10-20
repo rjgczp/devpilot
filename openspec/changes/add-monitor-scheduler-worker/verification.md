@@ -52,3 +52,11 @@ Start初步测试`/private/tmp/devpilot-scheduler-start-initial/pg-start.{json,l
 本轮首次Claim测试分别因PL/pgSQL CASE表达式语法、测试text/name参数类型失败，修正后通过；原始失败receipt在`/private/tmp/devpilot-scheduler-claim-initial/`和`/private/tmp/devpilot-scheduler-claim-fixed/`，未隐去。先前9d6d182的全量Go Race为exit0，全量PG仅一条旧HTTP固定值断言失败；已修正且选定HTTP测试通过，等待当前提交全量复验。
 
 升级、客户端权威状态/不可用处理、全部tag退役、HTTP排空与独立物理停止回退顺序见`docs/monitor-scheduler-rollout.md`。门禁全流程尚需真实fixture集成验收，文档不作为验收替代。
+
+### Committed checkpoint 0c915c8
+
+`0c915c8a11c08b46d39a08222e07293e4a8fc555` clean tree、相同源码清单hash `c032fd0c77b8fa88dc96b4a4c0d4ec37bb7f004dcd35a341f20c31f40fd2ff4f`：全量PG18 integration exit0（63.88s）、全量Go Race exit0、vet exit0、本Change strict exit0。完整命令/二进制hash/退出码及日志保留`evidence/checkpoint2/`。全库strict exit1，只保留四份历史规格七项>500字符告警，没有修改它们。
+
+同一提交PG18 integration-race exit1（102.37s）：新增暂停屏障测试把连接交给辅助goroutine执行SQL/延迟Rollback，却在主线程收到结果时并发Release，Race Detector准确发现PgConn数据竞争。修复为辅助goroutine完成Rollback及Release后才通知结果；Claim屏障辅助函数也统一此所有权协议。未修改产品锁序、250ms/2s预算或安全契约。失败完整日志及receipt保留`evidence/checkpoint2/pg-race.*`，修复后必须重跑。
+
+Task2.2已依据该提交的真实迁移及历史保护测试通过勾选（4/47）。其余尚未满足全部验收条件的任务继续保持未勾选；尚无真实执行/物理终止/周期或PR验收。

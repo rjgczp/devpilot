@@ -12,7 +12,7 @@
 ## 2. Migration8、授权隔离与权限
 
 - [ ] 2.1 实现受审Migration8的独立schedule/run/budget/reservation/control对象、完整复合FK、状态/时间/单调fence/epoch约束及未物理释放run的部分唯一限制；真实PG18负向SQL覆盖跨租户/身份变更/非法状态/双活run，核对字段无URL/DNS/凭据。
-- [ ] 2.2 实现旧enabled原子撤销与全部存量Activation含disabled的g恰好+1一次/upgrade_revoked/actor=NULL，使表示协议升级前强tag全部失效，enabled不额外+2；冷却及原next_due=NULL/DELETE/TRUNCATE/revision guard保留；多W/混合状态/冷却的7→8、0→8、up/up快照证明重复up不再推进。
+- [x] 2.2 实现旧enabled原子撤销与全部存量Activation含disabled的g恰好+1一次/upgrade_revoked/actor=NULL，使表示协议升级前强tag全部失效，enabled不额外+2；冷却及原next_due=NULL/DELETE/TRUNCATE/revision guard保留；多W/混合状态/冷却的7→8、0→8、up/up快照证明重复up不再推进。
 - [ ] 2.3 实现g变化向下清schedule授权/next_due、推进epoch及延迟登记上限；用旧版本Store/SQL与旧角色作为非接流量DB写者，双顺序证明旧写只能撤销不能授予，新授权/配置变更整体回滚；不将旧HTTP接口接入fixture运行流量。
 - [ ] 2.4 实现非LOGIN函数owner、固定search_path及最小EXECUTE运行角色；真实LOGIN测试拒绝用户秘密/DDL/直接DML/PUBLIC/TEMP/伪造incarnation，旧角色无新授予函数；文档要求排空旧superuser连接。
 - [ ] 2.5 完成真实8中途故障、enabled及disabled任一g溢出/trigger失败的全事务回滚、无schema8安全失败及可销毁库8→7→8；验证无部分tag/许可切换，Down不恢复旧enabled/不缩冷却，历史next移9且旧schema边界固定，文档覆盖全部tag失效与回退协议。
