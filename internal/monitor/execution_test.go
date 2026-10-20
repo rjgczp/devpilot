@@ -76,7 +76,7 @@ func TestExecutionHTTPTransport(t *testing.T) {
 		{"grant-options", "execution-authorization", "OPTIONS", "", "", "", 405, 0},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			s := &executionStub{authorization: ExecutionAuthorization{WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", ActivationGeneration: "2", SchedulerEpoch: "1", IssuedAt: time.Unix(0, 0).UTC(), ExpiresAt: time.Unix(60, 0).UTC()}, status: ExecutionStatus{WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", ActivationGeneration: "1", AuthorizationState: "none", SchedulingState: "disabled", PauseSemantics: "start_commit"}}
+			s := &executionStub{authorization: ExecutionAuthorization{WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", ActivationGeneration: "2", SchedulerEpoch: "1", IssuedAt: time.Unix(0, 0).UTC(), ExpiresAt: time.Unix(60, 0).UTC()}, status: ExecutionStatus{DesiredState: "disabled", WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", ActivationGeneration: "1", AuthorizationState: "none", SchedulingState: "disabled", PauseSemantics: "start_commit"}}
 			h := testHandler(&repositoryStub{}, io.Discard)
 			h.store = s
 			r := request(tc.method, itemPath+"/"+tc.resource, tc.body)
@@ -139,7 +139,7 @@ func TestExecutionOpenAPIResponses(t *testing.T) {
 	if json.Unmarshal(raw, &doc) != nil {
 		t.Fatal("invalid document")
 	}
-	s := &executionStub{authorization: ExecutionAuthorization{WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", ActivationGeneration: "2", SchedulerEpoch: "1", IssuedAt: time.Unix(0, 0).UTC(), ExpiresAt: time.Unix(60, 0).UTC()}, status: ExecutionStatus{WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", ActivationGeneration: "1", AuthorizationState: "none", SchedulingState: "disabled", PauseSemantics: "start_commit"}}
+	s := &executionStub{authorization: ExecutionAuthorization{WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", ActivationGeneration: "2", SchedulerEpoch: "1", IssuedAt: time.Unix(0, 0).UTC(), ExpiresAt: time.Unix(60, 0).UTC()}, status: ExecutionStatus{DesiredState: "disabled", WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", ActivationGeneration: "1", AuthorizationState: "none", SchedulingState: "disabled", PauseSemantics: "start_commit"}}
 	for _, resource := range []string{"execution-authorization", "execution-status"} {
 		method, body := "GET", ""
 		if resource == "execution-authorization" {

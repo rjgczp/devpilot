@@ -5,6 +5,7 @@ package integration
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -99,6 +100,118 @@ func TestExecutionAuthorizationFreshTimeAfterEverySPIWait(t *testing.T) {
 			}
 			if queryInt(t, db, `SELECT count(*) FROM monitor_activation_states WHERE monitor_id=$1 AND activation_generation=1 AND desired_state='disabled'`, m.ID) != 1 || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND expires_at IS NOT NULL`, m.ID) != 0 {
 				t.Fatal("expired caller persisted authorization")
+			}
+		})
+	}
+}
+
+func TestExecutionAuthorizationTwoOwnersSameTag(t *testing.T) {
+	db := workspaceDB(t)
+	f, m := monitorFixture(t, db)
+	ctx, cancel := context.WithTimeout(context.Background(), 6*time.Second)
+	defer cancel()
+	if _, err := db.Exec(ctx, `UPDATE workspace_members SET role='owner' WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.member.ID); err != nil {
+		t.Fatal(err)
+	}
+	a := activationRead(t, db, f.od, m)
+	blocker, err := db.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer blocker.Rollback(context.Background())
+	if _, err = blocker.Exec(ctx, `SELECT id FROM workspaces WHERE id=$1 FOR NO KEY UPDATE`, f.w.ID); err != nil {
+		t.Fatal(err)
+	}
+	pid := make(chan int, 2)
+	s := monitor.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}
+	result := make(chan error, 2)
+	for _, digest := range []session.Digest{f.od, f.md} {
+		go func(d session.Digest) {
+			_, e := s.ExecutionAuthorize(ctx, d, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(a))
+			result <- e
+		}(digest)
+	}
+	for range 2 {
+		p := <-pid
+		waitActivationBlock(t, db, p)
+		var receipt []byte
+		if err = db.QueryRow(ctx, `SELECT jsonb_build_object('pid',$1::int,'blocking',pg_blocking_pids($1),'at',clock_timestamp(),'locks',(SELECT jsonb_agg(to_jsonb(l)) FROM pg_locks l WHERE l.pid=$1))`, p).Scan(&receipt); err != nil {
+			t.Fatal(err)
+		}
+		t.Log("two-owner barrier", string(receipt))
+	}
+	if err = blocker.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	ok, stale := 0, 0
+	for range 2 {
+		err = <-result
+		if err == nil {
+			ok++
+		} else if errors.Is(err, monitor.ErrPreconditionFailed) {
+			stale++
+		} else {
+			t.Fatal(err)
+		}
+	}
+	if ok != 1 || stale != 1 || activationRead(t, db, f.od, m).ActivationGeneration != "2" || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND authorized_activation_generation=2`, m.ID) != 1 {
+		t.Fatal("same tag granted twice", ok, stale)
+	}
+}
+
+func TestExecutionAuthorizationLossWhileWaiting(t *testing.T) {
+	db := workspaceDB(t)
+	for _, change := range []string{"disabled", "logout", "demoted", "removed", "rejoined-member"} {
+		t.Run(change, func(t *testing.T) {
+			f, m := monitorFixture(t, db)
+			ctx, cancel := context.WithTimeout(context.Background(), 6*time.Second)
+			defer cancel()
+			a := activationRead(t, db, f.od, m)
+			blocker, err := db.Begin(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer blocker.Rollback(context.Background())
+			want := monitor.ErrForbidden
+			switch change {
+			case "disabled":
+				_, err = blocker.Exec(ctx, `UPDATE users SET status='disabled' WHERE id=$1`, f.owner.ID)
+				want = session.ErrInvalid
+			case "logout":
+				_, err = blocker.Exec(ctx, `UPDATE sessions SET revoked_at=clock_timestamp() WHERE token_hash=$1`, f.od[:])
+				want = session.ErrInvalid
+			default:
+				_, err = blocker.Exec(ctx, `SELECT id FROM workspaces WHERE id=$1 FOR NO KEY UPDATE`, f.w.ID)
+				if err == nil {
+					if change == "demoted" {
+						_, err = blocker.Exec(ctx, `UPDATE workspace_members SET role='member' WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.owner.ID)
+					} else {
+						_, err = blocker.Exec(ctx, `DELETE FROM workspace_members WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.owner.ID)
+						if change == "removed" {
+							want = monitor.ErrNotFound
+						}
+						if err == nil && change == "rejoined-member" {
+							_, err = blocker.Exec(ctx, `INSERT INTO workspace_members(workspace_id,user_id,role) VALUES($1,$2,'member')`, f.w.ID, f.owner.ID)
+						}
+					}
+				}
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			pid := make(chan int, 1)
+			result := make(chan error, 1)
+			go func() {
+				_, e := (monitor.Store{Pool: workspaceObservedDB{Pool: db, pid: pid}}).ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(a))
+				result <- e
+			}()
+			waitActivationBlock(t, db, <-pid)
+			if err = blocker.Commit(ctx); err != nil {
+				t.Fatal(err)
+			}
+			monitorWant(t, <-result, want)
+			if queryInt(t, db, `SELECT count(*) FROM monitor_activation_states WHERE monitor_id=$1 AND activation_generation=1 AND desired_state='disabled'`, m.ID) != 1 || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1`, m.ID) != 0 {
+				t.Fatal("lost owner persisted grant")
 			}
 		})
 	}

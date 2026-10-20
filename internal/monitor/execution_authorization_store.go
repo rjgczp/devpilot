@@ -65,6 +65,8 @@ func (s Store) ExecutionAuthorize(ctx context.Context, d session.Digest, wid, pi
 	if json.Unmarshal(raw, &a) != nil || a.MonitorID == "" {
 		return a, user.ErrInternal
 	}
+	a.IssuedAt = a.IssuedAt.UTC()
+	a.ExpiresAt = a.ExpiresAt.UTC()
 	if err = tx.Commit(ctx); err != nil {
 		return ExecutionAuthorization{}, classify(ctx, err)
 	}

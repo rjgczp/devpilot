@@ -33,5 +33,6 @@ func (s Store) ExecutionStatus(ctx context.Context, d session.Digest, wid, pid, 
 	if json.Unmarshal(raw, &a) != nil || a.MonitorID == "" {
 		return a, user.ErrInternal
 	}
+	a.normalizeUTC()
 	return a, nil
 }

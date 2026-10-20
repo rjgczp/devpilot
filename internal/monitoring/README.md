@@ -16,7 +16,10 @@ never update current health. UTC timestamps accompany a monotonic duration;
 preflight rejection is not a failed network probe. The execution kernel still owns no result table or production entry. Migration7
 now adds separate dormant activation intent through the configuration API; it does
 not authorize this kernel, schedule work or persist results. Migrations1–6 remain
-byte-identical. All activation responses remain blocked/scheduler_unavailable.
+byte-identical. Schema8 Activation keeps the same field names/types and uses the deprecated
+fixed migration pair not_reported/execution_status_required with intent-v2.
+execution-status is the sole runtime authority. Schema7 historical fixtures
+retain their original blocked/scheduler_unavailable contract.
 
 ## Snapshot and address policy verification
 

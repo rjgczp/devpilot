@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前为 **Checkpoint1：Schema/Authorization，仍在实施**。已创建Migration8、受限角色/函数、有限授权与status API、旧Activation固定弃用投影及隔离工具预检。还没有可执行Scheduler/Probe闭环，`cmd/schedulerfixture`目前失败关闭；不能将此检查点描述为方案A完成。
+当前为 **Checkpoint1复验及Checkpoint2初步Claim/Start实现，仍在实施**。已创建Migration8、受限角色/函数、有限授权与status API、旧Activation固定弃用投影及隔离工具预检。已有受限Claim/Start数据库函数及fixture-only控制面Store，但还没有可执行Scheduler/Probe闭环，`cmd/schedulerfixture`目前失败关闭；不能将此检查点描述为方案A完成。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -40,3 +40,15 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 - 真实3周期、两Worker锁图、完整Supervisor物理终止、unknown/预算/容量/全部故障与原76项新SHA复验：未完成。
 - 全量normal/race、最终同SHA Push/PR CI与交付PR：未完成；尚未创建PR。
 - 生产网络/部署：未验证，保持硬关闭。
+
+## Continuation: database Claim/Start (preliminary)
+
+本轮补充真实PG18双Owner同tag竞争（仅一个成功、另一个412）、User禁用/Session注销/Owner降级/移除重入Member等待后拒绝、旧schema7真实LOGIN及同一连接池跨M8读写、新授权Schedule故障整体回滚。原始本地receipt分别位于`/private/tmp/devpilot-scheduler-checkpoint1-owners/`和`/private/tmp/devpilot-scheduler-checkpoint1-legacy/`，均exit0且显式dirty；不是最终SHA验收。补齐设计已要求的status.desired_state及UTC时间。
+
+Claim初步测试`/private/tmp/devpilot-scheduler-claim-locks/pg-locks.{json,log}`exit0：真实受限LOGIN、可信incarnation绑定、一次周期Run ID、租约/Fence/共享槽原子提交、W SKIP完整回滚释放User；W1持U1/W等待预算、U2真实PATCH等待W、W2选择U2 SKIP并回滚，保存pg_locks/pg_blocking_pids/DB时间；Owner hint禁用/降级/移除重入（含重新加入Owner但旧membership_id失效）；末级control等待跨有限授权到期拒绝且无部分Run/预算。尚未覆盖全部两Owner/两Worker组合、取消/deadlock/未知Commit或负载，相关tasks未勾选。
+
+Start初步测试`/private/tmp/devpilot-scheduler-start-initial/pg-start.{json,log}`exit0：无Supervisor准备记录拒绝、准备后原子Start/令牌消耗、第二次Start拒绝、后台变化不改Activation tag/time；Pause先提交和Start等待Pause的真实PG锁屏障均禁止Start。这里的Supervisor准备是明确标注的管理员数据库fixture，**不构成Linux物理证明**；真实Supervisor准备函数、Probe输入、网络及终止闭环尚未完成。
+
+本轮首次Claim测试分别因PL/pgSQL CASE表达式语法、测试text/name参数类型失败，修正后通过；原始失败receipt在`/private/tmp/devpilot-scheduler-claim-initial/`和`/private/tmp/devpilot-scheduler-claim-fixed/`，未隐去。先前9d6d182的全量Go Race为exit0，全量PG仅一条旧HTTP固定值断言失败；已修正且选定HTTP测试通过，等待当前提交全量复验。
+
+升级、客户端权威状态/不可用处理、全部tag退役、HTTP排空与独立物理停止回退顺序见`docs/monitor-scheduler-rollout.md`。门禁全流程尚需真实fixture集成验收，文档不作为验收替代。

@@ -11851,6 +11851,7 @@
           "configuration_version",
           "activation_generation",
           "scheduler_epoch",
+          "desired_state",
           "authorization_state",
           "scheduling_state",
           "effective_authorization",
@@ -11989,6 +11990,14 @@
                 ]
               }
             ]
+          },
+          "desired_state": {
+            "type": "string",
+            "enum": [
+              "disabled",
+              "enabled"
+            ],
+            "description": "Owner intent; actual execution is reported by the independent authorization, scheduling and attempt fields."
           }
         }
       },

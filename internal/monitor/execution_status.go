@@ -24,6 +24,7 @@ type Attempt struct {
 }
 
 type ExecutionStatus struct {
+	DesiredState               string     `json:"desired_state"`
 	WorkspaceID                string     `json:"workspace_id"`
 	ProjectID                  string     `json:"project_id"`
 	MonitorID                  string     `json:"monitor_id"`
@@ -41,4 +42,24 @@ type ExecutionStatus struct {
 	LatestAttempt              *Attempt   `json:"latest_attempt"`
 	LatestCompletedObservation *Attempt   `json:"latest_completed_observation"`
 	CurrentObservation         *Attempt   `json:"current_observation"`
+}
+
+func utcPointer(t *time.Time) *time.Time {
+	if t == nil {
+		return nil
+	}
+	value := t.UTC()
+	return &value
+}
+func (a *ExecutionStatus) normalizeUTC() {
+	a.ExpiresAt = utcPointer(a.ExpiresAt)
+	a.NextDue = utcPointer(a.NextDue)
+	for _, attempt := range []*Attempt{a.LatestAttempt, a.LatestCompletedObservation, a.CurrentObservation} {
+		if attempt != nil {
+			attempt.ScheduledAt = attempt.ScheduledAt.UTC()
+			attempt.ClaimedAt = attempt.ClaimedAt.UTC()
+			attempt.StartedAt = utcPointer(attempt.StartedAt)
+			attempt.FinishedAt = utcPointer(attempt.FinishedAt)
+		}
+	}
 }

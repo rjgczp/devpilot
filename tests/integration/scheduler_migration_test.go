@@ -73,8 +73,15 @@ func TestSchedulerMigrationRetiresAllLegacyTags(t *testing.T) {
 	if activationRead(t, db, f.od, enabled).ActivationGeneration != "3" {
 		t.Fatal("repeat up consumed generation")
 	}
+	var beforeDown, afterDown string
+	if err = db.QueryRow(ctx, `SELECT jsonb_agg(jsonb_build_array(monitor_id,activation_generation,next_enable_allowed_at) ORDER BY monitor_id)::text FROM monitor_activation_states`).Scan(&beforeDown); err != nil {
+		t.Fatal(err)
+	}
 	// No gate or runs exist; disposable down cannot revive intent or old tags.
 	goose(t, dir, "down", true)
+	if err = db.QueryRow(ctx, `SELECT jsonb_agg(jsonb_build_array(monitor_id,activation_generation-1,next_enable_allowed_at) ORDER BY monitor_id)::text FROM monitor_activation_states`).Scan(&afterDown); err != nil || beforeDown != afterDown {
+		t.Fatal("down changed cooling or failed to retire every tag", err)
+	}
 	a = activationRead(t, db, f.od, enabled)
 	if a.DesiredState != "disabled" || a.ActivationGeneration != "4" || a.NextEnableAllowedAt == nil {
 		t.Fatal("unsafe down")
@@ -91,7 +98,7 @@ func TestSchedulerMigrationRollback(t *testing.T) {
 	ctx := context.Background()
 	goose(t, dir, "down-to 0", true)
 	t.Cleanup(func() { goose(t, dir, "down-to 0", true) })
-	for _, mode := range []string{"disabled-overflow", "enabled-overflow", "trigger-failure", "late-ddl-failure"} {
+	for _, mode := range []string{"disabled-overflow", "enabled-overflow", "trigger-failure", "mid-ddl-failure", "late-ddl-failure"} {
 		t.Run(mode, func(t *testing.T) {
 			goose(t, dir, "up-to 7", true)
 			f, m := monitorFixture(t, db)
@@ -114,7 +121,7 @@ func TestSchedulerMigrationRollback(t *testing.T) {
 				t.Fatal(e)
 			}
 			use := dir
-			if mode == "late-ddl-failure" {
+			if strings.Contains(mode, "ddl-failure") {
 				use = t.TempDir()
 				files, e := filepath.Glob(filepath.Join(dir, "*.sql"))
 				if e != nil {
@@ -126,7 +133,11 @@ func TestSchedulerMigrationRollback(t *testing.T) {
 						t.Fatal(e)
 					}
 					if strings.HasPrefix(filepath.Base(p), "00008_") {
-						b = []byte(strings.Replace(string(b), "-- +goose Down", "CREATE TABLE scheduler_test_abort (n integer); SELECT 1/0;\n-- +goose Down", 1))
+						if mode == "mid-ddl-failure" {
+							b = []byte(strings.Replace(string(b), "CREATE TABLE public.monitor_runs (", "CREATE TABLE scheduler_test_abort (n integer); SELECT 1/0;\nCREATE TABLE public.monitor_runs (", 1))
+						} else {
+							b = []byte(strings.Replace(string(b), "-- +goose Down", "CREATE TABLE scheduler_test_abort (n integer); SELECT 1/0;\n-- +goose Down", 1))
+						}
 					}
 					if e = os.WriteFile(filepath.Join(use, filepath.Base(p)), b, 0600); e != nil {
 						t.Fatal(e)
@@ -138,7 +149,7 @@ func TestSchedulerMigrationRollback(t *testing.T) {
 			if mode == "trigger-failure" {
 				expected = "injected"
 			}
-			if mode == "late-ddl-failure" {
+			if strings.Contains(mode, "ddl-failure") {
 				expected = "division by zero"
 			}
 			if !strings.Contains(string(diagnostic), expected) {
