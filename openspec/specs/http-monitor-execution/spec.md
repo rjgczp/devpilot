@@ -7,19 +7,19 @@
 ## Requirements
 
 ### Requirement: Single execution is internal and never activates configuration
-系统 SHALL 仅通过受保护内部测试能力调用单次执行器，不增加生产HTTP/CLI/cron/启动/调度/Worker入口。历史与新建/修改Monitor SHALL 保持不执行；配置API、schema6及响应DTO SHALL 不增加启停/结果语义。interval SHALL 不被用来自动扫描或安排任务。
+系统 SHALL 仅通过受保护内部测试能力调用单次执行器，不增加生产HTTP/CLI/cron/启动/调度/Worker入口。历史与新建/修改Monitor SHALL 保持不执行；原配置DTO SHALL 不增加状态/结果；独立activation子资源与Migration7 SHALL 仅保存版本意图，不作为执行许可。interval SHALL 不被用来自动扫描或安排任务。
 
 #### Scenario: Success - Deployment preserves inactive history
-- **WHEN** schema6存在大量历史与新Monitor且API启动或重启
+- **WHEN** schema6或schema7存在大量历史与新Monitor且API启动或重启
 - **THEN** 无任何Monitor目标DNS/连接，仍只有既有Session清理Worker，保存配置不表示启动
 
 #### Scenario: Security - No public or hidden trigger
-- **WHEN** 请求手动运行/激活/暂停路径、传入环境开关或检查API依赖图
-- **THEN** 不存在执行入口，API不依赖执行器包，路由/API白名单和原配置零网络契约保持不变
+- **WHEN** 请求手动运行/未定义暂停路径、调用activation意图子资源、传入环境开关或检查API依赖图
+- **THEN** 不存在真实执行入口，API不依赖执行器包；activation仅管理意图，新旧配置/意图端点均零目标网络，执行开关不能解锁
 
 #### Scenario: Success - Controlled invocation without production targets
 - **WHEN** 内部测试在独立隔离环境显式选择自己的完整scope和fixture
-- **THEN** 可以验证一次真实执行与内存结果，不枚举或探测生产Monitor，不创建任何生产结果或启停状态
+- **THEN** 可以验证一次真实执行与内存结果，不枚举或探测生产Monitor，不创建任何生产结果或任务，已有意图不能授权此测试访问生产目标
 
 ### Requirement: System snapshots bind complete scope and configuration version
 系统读取 SHALL 由独立可信内部身份在同一数据库语句快照按完整Workspace/Project/Monitor归属读取全部执行字段与version，取回后离线校验并冻结。读取 SHALL 在2秒内关闭Rows/释放DB连接，网络I/O SHALL 不持有事务/业务行锁。裸Monitor ID或用户Cookie断言 SHALL 不授予系统执行能力。
@@ -221,7 +221,7 @@ admission SHALL 在单进程原子限制active总数32、Workspace4、Project2�
 
 #### Scenario: Concurrency - Required PG18 and regression evidence
 - **WHEN** 运行完整normal/race integration
-- **THEN** PG18屏障/锁观测证明scope快照/版本并发及网络期间无长事务，用户权限变更与原写锁协议回归通过，Migration1–6哈希/schema6保持；无Migration7
+- **THEN** PG18屏障/锁观测证明scope快照/版本并发及网络期间无长事务，用户权限变更与原写锁协议回归通过，Migration1–6哈希保持，历史schema6测试明确边界；schema7新增意图需单独迁移/并发验收且无生产执行
 
 #### Scenario: Security - Separate detector calibration and historical audit
 - **WHEN** 新执行器runner允许DNS/fixture网络并运行，第八阶段配置API审计也运行

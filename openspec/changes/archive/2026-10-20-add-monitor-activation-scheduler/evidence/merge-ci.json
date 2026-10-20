@@ -1,0 +1,519 @@
+{
+  "head_sha": "85402ab7877e67062e2d48b24e9ad9c31b721461",
+  "run_id": 39355689230,
+  "url": "https://github.com/rjgczp/devpilot/actions/runs/39355689230",
+  "jobs": [
+    {
+      "id": 118409807967,
+      "name": "execution-security",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 39355689230,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Install pinned Goose",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Validate internal DNS and address policy with bounded fuzz",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Independently verify real probe networking and egress isolation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Apply current schema7 only to the guarded disposable PG18",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Build credential-free Linux probe for PG controller",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Verify PG18 role snapshot and live network version isolation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Verify snapshot controller under Race Detector",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Upload separate execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 118409808201,
+      "name": "integration",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 39355689230,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Install pinned native Goose CLI",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Verify Activation Intent Foundation and Migration7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Verify PostgreSQL 18 integration",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Verify PostgreSQL integration with race detector",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Build Monitor network audit tools",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Calibrate probe and audit real Monitor endpoints",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Upload Monitor network audit evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        }
+      ]
+    },
+    {
+      "id": 118409808254,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 39355689230,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Check gofmt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Test network classifier and audit build contract",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Test independent execution classifier",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run go vet",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run race tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    }
+  ],
+  "run": {
+    "id": 39355689230,
+    "name": "Go CI",
+    "node_id": "WFR_kwLOVGw4T88AAAAJKcgpDg",
+    "head_branch": "main",
+    "head_sha": "85402ab7877e67062e2d48b24e9ad9c31b721461",
+    "path": ".github/workflows/go-ci.yml",
+    "display_title": "Merge pull request #10 from rjgczp/codex/add-monitor-activation-sched…",
+    "run_number": 73,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "workflow_id": 382925373,
+    "check_suite_id": 106647761500,
+    "check_suite_node_id": "CS_kwDOVGw4T88AAAAY1LOyXA",
+    "url": "https://api.github.com/repos/rjgczp/devpilot/actions/runs/39355689230",
+    "html_url": "https://github.com/rjgczp/devpilot/actions/runs/39355689230",
+    "pull_requests": [],
+    "created_at": "2026-10-20T01:50:57Z",
+    "updated_at": "2026-10-20T01:54:42Z",
+    "actor": {
+      "login": "rjgczp",
+      "id": 143703189,
+      "node_id": "U_kgDOCJC8lQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/143703189?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/rjgczp",
+      "html_url": "https://github.com/rjgczp",
+      "followers_url": "https://api.github.com/users/rjgczp/followers",
+      "following_url": "https://api.github.com/users/rjgczp/following{/other_user}",
+      "gists_url": "https://api.github.com/users/rjgczp/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/rjgczp/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/rjgczp/subscriptions",
+      "organizations_url": "https://api.github.com/users/rjgczp/orgs",
+      "repos_url": "https://api.github.com/users/rjgczp/repos",
+      "events_url": "https://api.github.com/users/rjgczp/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/rjgczp/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "run_attempt": 1,
+    "referenced_workflows": [],
+    "run_started_at": "2026-10-20T01:50:57Z",
+    "triggering_actor": {
+      "login": "rjgczp",
+      "id": 143703189,
+      "node_id": "U_kgDOCJC8lQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/143703189?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/rjgczp",
+      "html_url": "https://github.com/rjgczp",
+      "followers_url": "https://api.github.com/users/rjgczp/followers",
+      "following_url": "https://api.github.com/users/rjgczp/following{/other_user}",
+      "gists_url": "https://api.github.com/users/rjgczp/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/rjgczp/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/rjgczp/subscriptions",
+      "organizations_url": "https://api.github.com/users/rjgczp/orgs",
+      "repos_url": "https://api.github.com/users/rjgczp/repos",
+      "events_url": "https://api.github.com/users/rjgczp/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/rjgczp/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "jobs_url": "https://api.github.com/repos/rjgczp/devpilot/actions/runs/39355689230/jobs",
+    "logs_url": "https://api.github.com/repos/rjgczp/devpilot/actions/runs/39355689230/logs",
+    "check_suite_url": "https://api.github.com/repos/rjgczp/devpilot/check-suites/106647761500",
+    "artifacts_url": "https://api.github.com/repos/rjgczp/devpilot/actions/runs/39355689230/artifacts",
+    "cancel_url": "https://api.github.com/repos/rjgczp/devpilot/actions/runs/39355689230/cancel",
+    "rerun_url": "https://api.github.com/repos/rjgczp/devpilot/actions/runs/39355689230/rerun",
+    "previous_attempt_url": null,
+    "workflow_url": "https://api.github.com/repos/rjgczp/devpilot/actions/workflows/382925373",
+    "head_commit": {
+      "id": "85402ab7877e67062e2d48b24e9ad9c31b721461",
+      "tree_id": "2b4f0b07e96367a9f0e609eef2fe69bf93c78f40",
+      "message": "Merge pull request #10 from rjgczp/codex/add-monitor-activation-scheduler\n\nAdd HTTP Monitor Activation Intent Foundation",
+      "timestamp": "2026-10-20T01:50:54Z",
+      "author": {
+        "name": "SanSea",
+        "email": "143703189+rjgczp@users.noreply.github.com"
+      },
+      "committer": {
+        "name": "GitHub",
+        "email": "noreply@github.com"
+      }
+    },
+    "repository": {
+      "id": 1416378447,
+      "node_id": "R_kgDOVGw4Tw",
+      "name": "devpilot",
+      "full_name": "rjgczp/devpilot",
+      "private": false,
+      "owner": {
+        "login": "rjgczp",
+        "id": 143703189,
+        "node_id": "U_kgDOCJC8lQ",
+        "avatar_url": "https://avatars.githubusercontent.com/u/143703189?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/rjgczp",
+        "html_url": "https://github.com/rjgczp",
+        "followers_url": "https://api.github.com/users/rjgczp/followers",
+        "following_url": "https://api.github.com/users/rjgczp/following{/other_user}",
+        "gists_url": "https://api.github.com/users/rjgczp/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/rjgczp/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/rjgczp/subscriptions",
+        "organizations_url": "https://api.github.com/users/rjgczp/orgs",
+        "repos_url": "https://api.github.com/users/rjgczp/repos",
+        "events_url": "https://api.github.com/users/rjgczp/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/rjgczp/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/rjgczp/devpilot",
+      "description": "DevPilot AI 是一个基于 Go + Python 的多租户 SaaS 监控与 AI 故障诊断平台。",
+      "fork": false,
+      "url": "https://api.github.com/repos/rjgczp/devpilot",
+      "forks_url": "https://api.github.com/repos/rjgczp/devpilot/forks",
+      "keys_url": "https://api.github.com/repos/rjgczp/devpilot/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/rjgczp/devpilot/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/rjgczp/devpilot/teams",
+      "hooks_url": "https://api.github.com/repos/rjgczp/devpilot/hooks",
+      "issue_events_url": "https://api.github.com/repos/rjgczp/devpilot/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/rjgczp/devpilot/events",
+      "assignees_url": "https://api.github.com/repos/rjgczp/devpilot/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/rjgczp/devpilot/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/rjgczp/devpilot/tags",
+      "blobs_url": "https://api.github.com/repos/rjgczp/devpilot/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/rjgczp/devpilot/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/rjgczp/devpilot/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/rjgczp/devpilot/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/rjgczp/devpilot/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/rjgczp/devpilot/languages",
+      "stargazers_url": "https://api.github.com/repos/rjgczp/devpilot/stargazers",
+      "contributors_url": "https://api.github.com/repos/rjgczp/devpilot/contributors",
+      "subscribers_url": "https://api.github.com/repos/rjgczp/devpilot/subscribers",
+      "subscription_url": "https://api.github.com/repos/rjgczp/devpilot/subscription",
+      "commits_url": "https://api.github.com/repos/rjgczp/devpilot/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/rjgczp/devpilot/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/rjgczp/devpilot/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/rjgczp/devpilot/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/rjgczp/devpilot/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/rjgczp/devpilot/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/rjgczp/devpilot/merges",
+      "archive_url": "https://api.github.com/repos/rjgczp/devpilot/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/rjgczp/devpilot/downloads",
+      "issues_url": "https://api.github.com/repos/rjgczp/devpilot/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/rjgczp/devpilot/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/rjgczp/devpilot/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/rjgczp/devpilot/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/rjgczp/devpilot/labels{/name}",
+      "releases_url": "https://api.github.com/repos/rjgczp/devpilot/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/rjgczp/devpilot/deployments"
+    },
+    "head_repository": {
+      "id": 1416378447,
+      "node_id": "R_kgDOVGw4Tw",
+      "name": "devpilot",
+      "full_name": "rjgczp/devpilot",
+      "private": false,
+      "owner": {
+        "login": "rjgczp",
+        "id": 143703189,
+        "node_id": "U_kgDOCJC8lQ",
+        "avatar_url": "https://avatars.githubusercontent.com/u/143703189?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/rjgczp",
+        "html_url": "https://github.com/rjgczp",
+        "followers_url": "https://api.github.com/users/rjgczp/followers",
+        "following_url": "https://api.github.com/users/rjgczp/following{/other_user}",
+        "gists_url": "https://api.github.com/users/rjgczp/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/rjgczp/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/rjgczp/subscriptions",
+        "organizations_url": "https://api.github.com/users/rjgczp/orgs",
+        "repos_url": "https://api.github.com/users/rjgczp/repos",
+        "events_url": "https://api.github.com/users/rjgczp/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/rjgczp/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/rjgczp/devpilot",
+      "description": "DevPilot AI 是一个基于 Go + Python 的多租户 SaaS 监控与 AI 故障诊断平台。",
+      "fork": false,
+      "url": "https://api.github.com/repos/rjgczp/devpilot",
+      "forks_url": "https://api.github.com/repos/rjgczp/devpilot/forks",
+      "keys_url": "https://api.github.com/repos/rjgczp/devpilot/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/rjgczp/devpilot/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/rjgczp/devpilot/teams",
+      "hooks_url": "https://api.github.com/repos/rjgczp/devpilot/hooks",
+      "issue_events_url": "https://api.github.com/repos/rjgczp/devpilot/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/rjgczp/devpilot/events",
+      "assignees_url": "https://api.github.com/repos/rjgczp/devpilot/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/rjgczp/devpilot/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/rjgczp/devpilot/tags",
+      "blobs_url": "https://api.github.com/repos/rjgczp/devpilot/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/rjgczp/devpilot/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/rjgczp/devpilot/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/rjgczp/devpilot/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/rjgczp/devpilot/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/rjgczp/devpilot/languages",
+      "stargazers_url": "https://api.github.com/repos/rjgczp/devpilot/stargazers",
+      "contributors_url": "https://api.github.com/repos/rjgczp/devpilot/contributors",
+      "subscribers_url": "https://api.github.com/repos/rjgczp/devpilot/subscribers",
+      "subscription_url": "https://api.github.com/repos/rjgczp/devpilot/subscription",
+      "commits_url": "https://api.github.com/repos/rjgczp/devpilot/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/rjgczp/devpilot/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/rjgczp/devpilot/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/rjgczp/devpilot/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/rjgczp/devpilot/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/rjgczp/devpilot/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/rjgczp/devpilot/merges",
+      "archive_url": "https://api.github.com/repos/rjgczp/devpilot/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/rjgczp/devpilot/downloads",
+      "issues_url": "https://api.github.com/repos/rjgczp/devpilot/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/rjgczp/devpilot/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/rjgczp/devpilot/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/rjgczp/devpilot/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/rjgczp/devpilot/labels{/name}",
+      "releases_url": "https://api.github.com/repos/rjgczp/devpilot/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/rjgczp/devpilot/deployments"
+    }
+  }
+}
