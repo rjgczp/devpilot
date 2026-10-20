@@ -1,0 +1,97 @@
+{
+  "old_role_effective_and_direct_acl_changes": {
+    "tables": [],
+    "functions": []
+  },
+  "fixture_insert_columns": [
+    "workspace_id",
+    "project_id",
+    "name",
+    "url",
+    "method",
+    "interval_seconds",
+    "timeout_seconds",
+    "expected_status",
+    "created_by_user_id"
+  ],
+  "raw_acl_note": "Migration8 adds approved distinct scheduler owner principals; complete raw ACLs retained. No new legacy table-wide INSERT grant.",
+  "database_schema_acl_before": {
+    "database": {
+      "acl": [
+        "=c/devpilot_fixture",
+        "devpilot_fixture=CTc/devpilot_fixture"
+      ],
+      "temp": false,
+      "owner": "devpilot_fixture",
+      "create": false
+    },
+    "schemas": [
+      {
+        "acl": [
+          "pg_database_owner=UC/pg_database_owner",
+          "=U/pg_database_owner",
+          "checkpoint1_legacy=U/pg_database_owner"
+        ],
+        "owner": "pg_database_owner",
+        "usage": true,
+        "create": false,
+        "schema": "public"
+      }
+    ]
+  },
+  "database_schema_acl_after": {
+    "database": {
+      "acl": [
+        "=c/devpilot_fixture",
+        "devpilot_fixture=CTc/devpilot_fixture"
+      ],
+      "temp": false,
+      "owner": "devpilot_fixture",
+      "create": false
+    },
+    "schemas": [
+      {
+        "acl": [
+          "pg_database_owner=UC/pg_database_owner",
+          "=U/pg_database_owner",
+          "checkpoint1_legacy=U/pg_database_owner",
+          "devpilot_scheduler_owner=U/pg_database_owner",
+          "devpilot_scheduler_api_owner=U/pg_database_owner"
+        ],
+        "owner": "pg_database_owner",
+        "usage": true,
+        "create": false,
+        "schema": "public"
+      },
+      {
+        "acl": [
+          "devpilot_scheduler_owner=UC/devpilot_scheduler_owner",
+          "devpilot_scheduler_api_owner=U/devpilot_scheduler_owner",
+          "devpilot_scheduler_controller=U/devpilot_scheduler_owner",
+          "devpilot_scheduler_worker=U/devpilot_scheduler_owner",
+          "devpilot_scheduler_supervisor=U/devpilot_scheduler_owner",
+          "devpilot_scheduler_api=U/devpilot_scheduler_owner"
+        ],
+        "owner": "devpilot_scheduler_owner",
+        "usage": false,
+        "create": false,
+        "schema": "scheduler_private"
+      }
+    ]
+  },
+  "new_functions_legacy_execute": [],
+  "top_level_passes": [
+    "TestExecutionAuthorizationTwoOwnersSameTag",
+    "TestExecutionAuthorizationLossWhileWaiting",
+    "TestExecutionAuthorizationAtomicIntentAndRevocation",
+    "TestCheckpointOneAuthorizationRealHTTPStrictContract",
+    "TestCheckpointOneOldWritersStraddleMigration",
+    "TestLegacyPatchOriginalFixtureSchemaSevenDiagnosis",
+    "TestLegacyPatchColumnPrivilegesAcrossMigration",
+    "TestSchedulerLegacyDatabaseWriterAcrossMigration",
+    "TestExecutionAuthorizationScheduleFailureRollsBackIntent",
+    "TestSchedulerMigrationRetiresAllLegacyTags",
+    "TestSchedulerMigrationRollback"
+  ],
+  "failing_assertion_before_repair": "column-fix-baseline.log compares entire ACLs, erroneously treating approved grants to other principals as changed legacy permissions; no actual legacy privilege mismatch"
+}

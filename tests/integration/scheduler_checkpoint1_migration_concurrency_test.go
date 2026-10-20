@@ -78,6 +78,9 @@ func TestCheckpointOneOldWritersStraddleMigration(t *testing.T) {
 					t.Error(err)
 				}
 			})
+			if _, err := db.Exec(ctx, legacyPatchInsertColumns); err != nil {
+				t.Fatal(err)
+			}
 			cfg := db.Config()
 			cfg.ConnConfig.User = "checkpoint1_legacy"
 			cfg.ConnConfig.Password = "disposable_fixture_only"

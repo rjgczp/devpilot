@@ -108,3 +108,15 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 本轮五份代码改动均为`tests/integration/scheduler_checkpoint1_*_test.go`，代码diff见`evidence/checkpoint1-remaining/review-code.diff`，文档和失败分析另存。2.4的Controller/PUBLIC等子项、2.5的schema7安全失败、3.4的真实到期等已有局部通过，但因该任务其余场景未验收，不额外勾选。2.3/2.4/2.5旧写者与权限关联部分等待独立审查；3.3/3.5完整客户端与零目标审计未做，3.4无active Owner的Start门控仍未补验。没有将局部完成称为Checkpoint1完成，更未进入Checkpoint2。
 
 原始证据`manifest.json`明确保留两组exit0和交错组exit1；所有文件SHA256索引与代码diff提供给审查者。没有推送、PR、合并、部署、Archive或生产Migration；生产执行继续硬关闭。
+
+## Independent legacy PATCH permission investigation
+
+用户仅授权定位`patch-first`权限异常及必要最小修复。本轮**不新增完成任务，保持7/47，Checkpoint1未完成**。仅修改跨迁移测试fixture三行并新增真实PG18诊断测试；Migration1–8、生产API及Worker代码未改。
+
+已先在独立0→7重建下用原失败fixture执行未修改的真实配置Store SQL，捕获原始`42501 / permission denied for table http_monitors / aclcheck_error`，`session_user=current_user=checkpoint1_legacy`，无PL/pgSQL错误上下文。配置PATCH语句含INSERT和UPDATE两个CTE；原fixture只有SELECT/UPDATE，故在Migration8前即失败。随后只给fixture补原INSERT目标列表九列的INSERT，Schema7 PATCH实际提交；同一LOGIN/backend跨8后PATCH仍成功，旧角色直接及有效表/列/函数权限未变，且实际撤销了另行创建的Schedule授权。旧角色没有新增Schedule/Run、执行授权或系统函数权限，负向SQL和全private函数EXECUTE盘点均通过。无需修改Migration8。
+
+实际11个顶层PG18针对性回归exit0（1.66s）：含patch-first在内的三个迁移交错、Schema7原错误负向控制、同LOGIN的7/8 PATCH正向控制、旧Activation写者、Owner竞争及失权、真实HTTP Owner/Member/ETag、授权原子撤销及迁移正常/溢出/故障/回退。命令、驱动错误、原始SQL（不含参数）、完整ACL/所有者/trigger/definer快照、pg_locks/pg_blocking_pids及时间线、服务端错误日志全部保存在`evidence/legacy-patch-permission-investigation/`。初次新ACL诊断断言错误地把给其他已批准principal的授权也计为旧角色变化，exit1原样保留；修正比较范围后没有新增权限。Go默认host cache被sandbox拒绝的静态检查exit1也保留，改用既有可写GOCACHE后vet/Change strict/diff检查exit0，未提高任何权限或超时。
+
+结论仅针对已证明无效的测试fixture。仓库不存在生产历史LOGIN/GRANT清单，不能据此宣称生产旧角色权限已盘点或提供猜测性生产GRANT。Schema7业务对象从0重建，但复用受保护测试DB已有的database/schema PUBLIC限制，完整快照明确记录，不冒称原始新集群。历史配置Store和Migration1–7与已评审main基线逐字节一致；生产实现与运行HEAD保持不变。被测HEAD为`80ba9671ded3e0d0b022e5cf4cda8cfc14dbeabe`加明确记录的dirty测试树，receipt包含精确源码清单/二进制hash；提交绑定另见`code-source-binding.json`，不将后续提交伪称为运行时HEAD。
+
+独立分析与证据索引：`evidence/legacy-patch-permission-investigation/analysis.md`、`permission-comparison.json`、`review-code.diff`、`manifest.json`。测试清理后PG18.6/version0，无Schedule、临时旧角色、其他活动事务或锁等待。首次Supervisor工具权限审核超时的原因仍未获确定性证明；本次通过不排除其他并发缺陷。未重新运行完整验收、未推进Checkpoint2、未推送/创建PR/合并/部署或打开生产执行。完成本次限定调查后停止，等待独立审核。
