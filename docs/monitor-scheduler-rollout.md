@@ -109,3 +109,30 @@ Run capacity reserves future terminal space before admission so loss of an ACK
 or an unknown network outcome cannot leave an unauditable execution. It does
 not refund Start rate tokens. Lease expiry cannot release physical slots.
 These database rules do not by themselves prove Linux isolation or termination.
+
+## Checkpoint1 evidence scope and historical-role limitation
+
+There is no real historical deployment LOGIN/ACL inventory in this repository.
+The legacy test role proves the original Schema7 SQL dependencies only. Its
+column-specific Monitor INSERT fix is not a production GRANT recommendation.
+Do not invent, enlarge or deploy production privileges from that test profile.
+Actual deployment identity review and draining privileged connections remain
+mandatory before any future rollout; no production rollout is authorized here.
+
+Checkpoint1's executable consumer contract is
+`checkpointClientObservation` in the integration projection tests. It exercises
+real HTTP responses, missing/404/503/invalid status and v/g mismatch refresh;
+it is a reference protocol, not evidence that an external client was deployed.
+There is no frontend in this change. Cross-interface running/unknown/completed
+rows in these tests are administrative database projection fixtures, not network
+deliveries or completed Result/Supervisor implementations.
+
+`tests/scheduler/retire-projection-fixture.sql` is a guarded-PG18-only executable
+maintenance-protocol reference. It requires closed admission, drained HTTP
+inventory, revoked grants and no unconfirmed physical-resource record before
+retiring every intent tag atomically while keeping Schema8 and cooldowns.
+It grants no runtime role a capability, rejects non-test databases, and is not a
+production rollback command or a way to manufacture physical-stop proof.
+Actual Supervisor witnesses and complete deployed instance/client inventory
+remain later acceptance; Goose Down tests are separately disposable lifecycle
+tests. A generation overflow must abort tag retirement rather than reuse tags.

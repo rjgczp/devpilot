@@ -36,3 +36,18 @@ an upstream route merely to make host-side clients connect.
 
 Full `run-docker.sh`, independent Supervisor and periodic/fault acceptance are
 still being implemented; preflight success must not be reported as plan A done.
+
+Checkpoint1 build boundary: the existing network Probe is exclusively the
+`TestExecutionProbe` entry in `internal/monitoring/execution_network_test.go`,
+selected only in an explicit Linux `executionnet` test build. Its snapshot wire
+bridge is also a `_test.go` file. Neither enters ordinary library GoFiles or API
+artifacts. The Linux `schedulerfixture` command currently refuses startup; a
+periodic controller, per-run scheduler Probe bridge and Supervisor are not yet
+delivered. `TestReleaseArtifactAndProbeTestBoundary` inspects a real ordinary
+Linux API binary, including with execution-looking environment flags. These
+boundaries do not constitute the later per-process credential/permit acceptance.
+
+The API zero-target audit retains the two exact TCP destinations and includes
+finite authorization plus authoritative status HTTP/PG scenarios. No scheduler
+target is added to that whitelist. CGO provenance and NSCD counterexamples stay
+in the original classifier/build-gate tests.

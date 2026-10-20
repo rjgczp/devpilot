@@ -172,6 +172,14 @@ func TestSchedulerMigrationRollback(t *testing.T) {
 }
 
 func TestSchemaSevenFixtureMatchesReviewedHistoricalWriter(t *testing.T) {
+	handler, err := os.ReadFile(filepath.Join(root(), "internal/monitor/activation_handler.go"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	historicalHandler := strings.Replace(string(handler), "\tw.Header().Set(\"DevPilot-Activation-Projection\", \"intent-v2\")\n", "", 1)
+	if fmt.Sprintf("%x", sha256.Sum256([]byte(historicalHandler))) != "7b0ed0c6848f079a05556a53ee92dd29950f133402f8397fa1020b7d1674aab6" {
+		t.Fatal("historical HTTP fixture assumption changed")
+	}
 	raw, err := os.ReadFile(filepath.Join(root(), "internal/monitor/schema7_fixture_integration.go"))
 	if err != nil {
 		t.Fatal(err)

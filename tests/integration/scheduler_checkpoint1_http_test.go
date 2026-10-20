@@ -28,7 +28,14 @@ func checkpointHTTPServer(t *testing.T, db *pgxpool.Pool) (*httptest.Server, *ht
 		t.Fatal(err)
 	}
 	h := monitor.New(monitor.Store{Pool: db}, config.AuthConfig{Mode: "production", Origin: origin}, slog.New(slog.NewJSONHandler(logs, nil)))
+	s, client := checkpointHTTPHandlerServer(t, h)
+	return s, client, logs
+}
+
+func checkpointHTTPHandlerServer(t *testing.T, h http.Handler) (*httptest.Server, *http.Client) {
+	t.Helper()
 	s := httptest.NewUnstartedServer(h)
+	var err error
 	if address := os.Getenv("MONITOR_PROBE_HTTP_ADDR"); address != "" {
 		s.Listener.Close()
 		s.Listener, err = net.Listen("tcp4", address)
@@ -40,7 +47,7 @@ func checkpointHTTPServer(t *testing.T, db *pgxpool.Pool) (*httptest.Server, *ht
 	t.Cleanup(s.Close)
 	transport := &http.Transport{Proxy: nil}
 	t.Cleanup(transport.CloseIdleConnections)
-	return s, &http.Client{Transport: transport}, logs
+	return s, &http.Client{Transport: transport}
 }
 func checkpointHTTP(t *testing.T, c *http.Client, server, method, path, body, token, tag string, modify func(http.Header)) (int, http.Header, []byte) {
 	t.Helper()

@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前仅推进 **Checkpoint1：Schema/Authorization**。本轮补充真实PG18缺口验收后，在旧角色配置PATCH跨迁移场景遇到权限失败，已停止受影响任务，Checkpoint1尚未完成。此前已有的Claim/Start初步代码保持原样，本轮不扩展、不推进Checkpoint2及以后；没有可执行Scheduler/Probe完整闭环，不能将基础设施或局部通过描述为方案A完成。
+当前仅推进 **Checkpoint1：Schema/Authorization**。旧角色PATCH夹具故障已经独立PG18定位修复并获第一轮源码审查认可；用户授权补齐Checkpoint1剩余验收，尚未据此新增完成任务。此前已有的Claim/Start初步代码保持原样，本轮不扩展、不推进Checkpoint2及以后；没有可执行Scheduler/Probe完整闭环，不能将基础设施或局部通过描述为方案A完成。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -35,7 +35,7 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 
 ## Acceptance status
 
-- 当前7/47项已验收（1.1、1.2、1.4、2.1、2.2、3.1、3.2）；Checkpoint1仍未完成，受影响迁移/旧角色权限与完整API兼容验收暂停。
+- 冻结验收前仍7/47项已验收（1.1、1.2、1.4、2.1、2.2、3.1、3.2）；Checkpoint1完整补验正在进行，未按代码存在提前勾选。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
 - 真实3周期、两Worker锁图、完整Supervisor物理终止、unknown/预算/容量/全部故障与原76项新SHA复验：未完成。
 - 全量normal/race、最终同SHA Push/PR CI与交付PR：未完成；尚未创建PR。
@@ -107,7 +107,7 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 
 本轮五份代码改动均为`tests/integration/scheduler_checkpoint1_*_test.go`，代码diff见`evidence/checkpoint1-remaining/review-code.diff`，文档和失败分析另存。2.4的Controller/PUBLIC等子项、2.5的schema7安全失败、3.4的真实到期等已有局部通过，但因该任务其余场景未验收，不额外勾选。2.3/2.4/2.5旧写者与权限关联部分等待独立审查；3.3/3.5完整客户端与零目标审计未做，3.4无active Owner的Start门控仍未补验。没有将局部完成称为Checkpoint1完成，更未进入Checkpoint2。
 
-原始证据`manifest.json`明确保留两组exit0和交错组exit1；所有文件SHA256索引与代码diff提供给审查者。没有推送、PR、合并、部署、Archive或生产Migration；生产执行继续硬关闭。
+原始证据`manifest.json`明确保留两组exit0和交错组exit1；所有文件SHA256索引与代码diff提供给审查者。当时尚未推送，也未创建PR、合并、部署、Archive或生产Migration；生产执行继续硬关闭。
 
 ## Independent legacy PATCH permission investigation
 
@@ -120,3 +120,15 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 结论仅针对已证明无效的测试fixture。仓库不存在生产历史LOGIN/GRANT清单，不能据此宣称生产旧角色权限已盘点或提供猜测性生产GRANT。Schema7业务对象从0重建，但复用受保护测试DB已有的database/schema PUBLIC限制，完整快照明确记录，不冒称原始新集群。历史配置Store和Migration1–7与已评审main基线逐字节一致；生产实现与运行HEAD保持不变。被测HEAD为`80ba9671ded3e0d0b022e5cf4cda8cfc14dbeabe`加明确记录的dirty测试树，receipt包含精确源码清单/二进制hash；提交绑定另见`code-source-binding.json`，不将后续提交伪称为运行时HEAD。
 
 独立分析与证据索引：`evidence/legacy-patch-permission-investigation/analysis.md`、`permission-comparison.json`、`review-code.diff`、`manifest.json`。测试清理后PG18.6/version0，无Schedule、临时旧角色、其他活动事务或锁等待。首次Supervisor工具权限审核超时的原因仍未获确定性证明；本次通过不排除其他并发缺陷。未重新运行完整验收、未推进Checkpoint2、未推送/创建PR/合并/部署或打开生产执行。完成本次限定调查后停止，等待独立审核。
+
+## Checkpoint1 final acceptance — source freeze preparation
+
+用户第一轮独立源码审查检查远端`codex/add-monitor-scheduler-worker`的`bd729b232e6eb206e44ca0f7cb63e31d95f55d30`，认可旧角色最小fixture修复且未发现须立即撤销的明确高危问题；正式允许仅完成Checkpoint1剩余1.3/2.3–2.5/3.3–3.5，完成后推送再停。该分支已经推送，上文各历史阶段的“未推送”只描述当时状态；本节之后的验收结果为最新状态。没有PR/合并/部署许可。
+
+本轮仅补测试、Linux Probe测试构建限制、审计覆盖、协议参考与文档，不扩展Claim/Start/Worker实现。新增真实PG18旧写者/新授权双顺序、Owner失权/Start双顺序、最后等待跨授权到期、Session失效不借作后台身份、Down安全拒绝及完整HTTP投影/切换/保留Schema8回退协议测试。原配置/Activation审计新增授权/status场景，精确目的白名单和CGO/NSCD守护不变。保持Schema8的SQL仅为guarded-testdb维护协议参考，不是生产工具或Supervisor物理回执。
+
+历史部署LOGIN/ACL无真实清单的限制不变；测试角色不能推导生产GRANT，生产部署身份仍须另行盘点与审查。现存Probe只在Linux executionnet测试构建，schedulerfixture命令仍拒绝启动；没有周期Runner/物理Supervisor/Result闭环。客户端测试是可执行协议参考，不声称外部客户端已经部署。真实运行/unknown/completed的HTTP投影使用明确标注的管理夹具，不冒称网络交付。
+
+开发阶段失败保留：首次会话过期夹具将expires_at设在created_at之前，原23514约束正确拒绝；后续HTTP清单夹具缺login/incarnation也被原23514正确拒绝；再后一个HTTP迁移测试同一t.Name重复建立账号被唯一约束拒绝。均只修正测试夹具，无约束/权限/超时调整。最初编译错误为历史Store只提供Activation接口，通过仅integration构建的组合适配器解决；历史Handler去除新协议头后与已评审baseline SHA256一致，冻结Store源hash仍校验。
+
+冻结提交后将重新执行unit/race/vet、完整真实PG18 normal/race及独立API零目标审计。真实60秒到期单独串行分区，原完整集成120秒进程预算保持，每个编译测试恰好覆盖一次，清单由脚本断言，非跳过。任务暂保持7/47，只有最终对应验收通过才更新。

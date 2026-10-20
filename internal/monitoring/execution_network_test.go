@@ -1,4 +1,4 @@
-//go:build executionnet
+//go:build executionnet && linux
 
 package monitoring
 
