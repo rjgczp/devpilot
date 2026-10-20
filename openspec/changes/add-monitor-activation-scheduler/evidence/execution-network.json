@@ -1,0 +1,13 @@
+{
+  "command": [
+    "env",
+    "EXECUTION_EVIDENCE=/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-activation-scheduler/evidence/execution-network",
+    "sh",
+    "tests/execution/run-docker.sh"
+  ],
+  "started_at": "2026-10-19T09:26:22.355793+00:00",
+  "seconds": 33.572,
+  "exit": 0,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

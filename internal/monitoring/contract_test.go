@@ -99,12 +99,12 @@ func TestDormantProductionDependencyAndSchemaBoundary(t *testing.T) {
 		t.Fatal("review worker startup")
 	}
 	files, _ := filepath.Glob("../../migrations/*.sql")
-	if len(files) != 6 {
+	if len(files) != 7 {
 		t.Fatal("unreviewed migration")
 	}
 	// Hashes also work in shallow CI checkouts and exported source archives.
 	for p, want := range map[string]string{
-		"docs/api/openapi.yaml":  "a1b38b520b31fd9a69c1950c620f6c726a08c8098eccac1ff3203777c93aca0c",
+		"docs/api/openapi.yaml":  "30ae8a53d8ee2a0b4f4520d1b5e3b639a9498dcd30263b38af47ba98e4a787e7",
 		"internal/app/routes.go": "96d4192f3ab0e92ed1b49b4b8cee07393d329cf83d8538b6139ee3844a97fc38",
 	} {
 		b, err := os.ReadFile(filepath.Join("../..", p))

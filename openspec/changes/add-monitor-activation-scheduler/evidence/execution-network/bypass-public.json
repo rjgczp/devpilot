@@ -1,0 +1,34 @@
+{
+  "attempts": [
+    [
+      "93.184.216.36",
+      80
+    ]
+  ],
+  "violations": [
+    "unapproved attempt 93.184.216.36:80"
+  ],
+  "dns_attempts": 0,
+  "target_attempts": 1,
+  "case": "bypass-public",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/bypass-public.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "bypass-public"
+  ],
+  "child_exit": 0,
+  "audit_exit": 1,
+  "duration": 0.04634016699856147
+}

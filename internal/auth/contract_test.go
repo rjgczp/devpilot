@@ -76,11 +76,12 @@ func TestOpenAPIAuthenticationContract(t *testing.T) {
 		t.Fatal("registration contract changed")
 	}
 	allowed := map[string][]string{
-		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors":              {"get", "post"},
-		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}": {"get", "patch"},
-		"/api/v1/workspaces/{workspace_id}/projects":                                    {"get", "post"},
-		"/api/v1/workspaces/{workspace_id}/projects/{project_id}":                       {"get", "patch"},
-		"/api/v1/workspaces/{workspace_id}/invitations":                                 {"get", "post"},
+		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/activation": {"get", "put"},
+		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors":                         {"get", "post"},
+		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}":            {"get", "patch"},
+		"/api/v1/workspaces/{workspace_id}/projects":                                               {"get", "post"},
+		"/api/v1/workspaces/{workspace_id}/projects/{project_id}":                                  {"get", "patch"},
+		"/api/v1/workspaces/{workspace_id}/invitations":                                            {"get", "post"},
 		"/api/v1/invitations":                         {"get"},
 		"/api/v1/invitations/{invitation_id}":         {"delete"},
 		"/api/v1/invitations/{invitation_id}/accept":  {"post"},

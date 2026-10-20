@@ -1,0 +1,27 @@
+ok  	github.com/rjgczp/devpilot/cmd/api	5.144s
+ok  	github.com/rjgczp/devpilot/internal/app	0.882s
+ok  	github.com/rjgczp/devpilot/internal/auth	1.119s
+ok  	github.com/rjgczp/devpilot/internal/config	0.614s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	1.124s
+ok  	github.com/rjgczp/devpilot/internal/monitor	1.466s
+ok  	github.com/rjgczp/devpilot/internal/monitoring	0.762s
+ok  	github.com/rjgczp/devpilot/internal/password	2.412s
+ok  	github.com/rjgczp/devpilot/internal/project	0.936s
+ok  	github.com/rjgczp/devpilot/internal/registration	1.002s
+ok  	github.com/rjgczp/devpilot/internal/session	0.393s
+ok  	github.com/rjgczp/devpilot/internal/testdb	0.450s
+ok  	github.com/rjgczp/devpilot/internal/user	0.352s
+ok  	github.com/rjgczp/devpilot/internal/workspace	0.821s
+--- FAIL: TestMonitorHTTPJourneyAndIsolation (0.76s)
+    registration_test.go:78: native Goose up expected-success=true: verified
+    monitors_http_test.go:235: activation enable 403 {"error":{"code":"csrf_rejected","message":"Request origin could not be verified."}}
+        
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- FAIL: TestMonitorMergedConfigurationRevalidated (0.22s)
+    registration_test.go:78: native Goose up expected-success=true: verified
+    monitors_test.go:299: invalid merged config mutated
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	69.830s
+FAIL

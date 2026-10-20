@@ -1,0 +1,21 @@
+{
+  "command": [
+    "env",
+    "EXECUTION_TEST_TOOLS=/private/tmp/devpilot-activation-tools",
+    "EXECUTION_PG_EVIDENCE=/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-activation-scheduler/evidence/snapshot-pg-race",
+    "go",
+    "test",
+    "-race",
+    "-tags=integration,executionsnapshot",
+    "./internal/monitoring",
+    "-run",
+    "^TestSystemSnapshot",
+    "-count=1",
+    "-v"
+  ],
+  "started_at": "2026-10-19T09:37:18.248497+00:00",
+  "seconds": 9.154,
+  "exit": 0,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

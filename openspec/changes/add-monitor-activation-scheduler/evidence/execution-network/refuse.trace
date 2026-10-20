@@ -1,0 +1,13 @@
+399   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "refuse"], 0xffffda8a7358 /* 10 vars */) = 0
+399   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffff9dc0a310 /* 11 vars */) = 0
+399   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 400
+399   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 401
+399   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 402
+399   clone(child_stack=0x4000110000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 403
+401   clone(child_stack=0x400010c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 404
+399   connect(5<TCP:[2166111]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+401   connect(5<TCP:[2162557]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.35")}, 16) = -1 EINPROGRESS (Operation now in progress)
+400   tgkill(399, 401, SIGURG <unfinished ...>
+401   exit_group(0 <unfinished ...>
+400   <... tgkill resumed>)             = 0
+401   <... exit_group resumed>)         = ?

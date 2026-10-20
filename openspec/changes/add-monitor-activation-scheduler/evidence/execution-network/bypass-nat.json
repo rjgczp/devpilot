@@ -1,0 +1,34 @@
+{
+  "attempts": [
+    [
+      "2001:4860:ffff::a9fe:a9fe",
+      80
+    ]
+  ],
+  "violations": [
+    "unapproved attempt 2001:4860:ffff::a9fe:a9fe:80"
+  ],
+  "dns_attempts": 0,
+  "target_attempts": 1,
+  "case": "bypass-nat",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/bypass-nat.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "bypass-nat"
+  ],
+  "child_exit": 0,
+  "audit_exit": 1,
+  "duration": 1.0492260010214522
+}

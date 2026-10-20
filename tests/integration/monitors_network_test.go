@@ -33,5 +33,8 @@ func TestMonitorNoTargetNetwork(t *testing.T) {
 	if os.Getenv("MONITOR_PROBE_HTTP_ADDR") != "127.0.0.1:18081" {
 		t.Fatal("exact approved HTTP address required")
 	}
-	TestMonitorHTTPJourneyAndIsolation(t)
+	t.Run("http-restart", TestMonitorHTTPJourneyAndIsolation)
+	t.Run("unknown-commit-reconciliation", TestActivationCommitFaults)
+	t.Run("http-unknown-commit", TestActivationHTTPUnknownCommitAndFaults)
+	t.Run("full-workspace-intent-cap", TestActivationQuotaAndCAS)
 }

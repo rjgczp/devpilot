@@ -1,0 +1,10 @@
+428   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "mixed6"], 0xfffffefbaed8 /* 10 vars */) = 0
+428   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffff81bda310 /* 11 vars */) = 0
+428   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 429
+428   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 430
+428   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 431
+430   clone(child_stack=0x400009e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 432
+428   connect(5<TCP:[2166164]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+429   tgkill(428, 432, SIGURG)          = 0
+432   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=428, si_uid=65534} ---
+432   exit_group(0)                     = ?

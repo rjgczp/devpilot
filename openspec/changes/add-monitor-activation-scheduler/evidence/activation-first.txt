@@ -1,0 +1,28 @@
+=== RUN   TestActivationMigration
+    activation_test.go:53: native Goose down-to 0 expected-success=true: verified
+    activation_test.go:55: native Goose up-to 6 expected-success=true: verified
+    activation_test.go:76: native Goose up expected-success=false: verified
+    activation_test.go:80: native Goose up expected-success=true: verified
+    activation_test.go:81: native Goose up expected-success=true: verified
+    activation_test.go:93: accepted activation_generation=2
+    activation_test.go:54: native Goose down-to 0 expected-success=true: verified
+--- FAIL: TestActivationMigration (0.31s)
+=== RUN   TestActivationStatePermissionsAndInvalidation
+    registration_test.go:78: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationStatePermissionsAndInvalidation (0.18s)
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit
+    registration_test.go:78: native Goose up expected-success=true: verified
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/missing
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/overflow
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/trigger
+=== NAME  TestActivationTriggerAtomicFailureAndBoundedAudit
+    activation_test.go:274: 64 commands -> one row, generation 65; no run/lease/results
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit (0.30s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/missing (0.03s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/overflow (0.02s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/trigger (0.03s)
+FAIL
+FAIL	github.com/rjgczp/devpilot/tests/integration	1.450s
+FAIL

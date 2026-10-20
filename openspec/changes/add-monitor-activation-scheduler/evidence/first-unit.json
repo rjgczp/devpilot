@@ -1,0 +1,13 @@
+{
+  "command": [
+    "go",
+    "test",
+    "./internal/monitor",
+    "-count=1"
+  ],
+  "started_at": "2026-10-19T09:14:28.743674+00:00",
+  "seconds": 9.177,
+  "exit": 1,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

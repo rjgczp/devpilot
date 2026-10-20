@@ -1,0 +1,13 @@
+194   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "dns-chain-slow"], 0xffffdf7a75e8 /* 10 vars */) = 0
+194   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffffa923a310 /* 11 vars */) = 0
+194   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 195
+194   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 196
+194   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 197
+196   clone(child_stack=0x400009e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+194   clone(child_stack=0x400009a000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 199
+196   <... clone resumed>)              = 198
+194   connect(5<TCP:[2163698]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+195   tgkill(194, 199, SIGURG <unfinished ...>
+199   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=194, si_uid=65534} ---
+195   <... tgkill resumed>)             = 0
+194   exit_group(0)                     = ?

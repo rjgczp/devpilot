@@ -1,0 +1,20 @@
+ok  	github.com/rjgczp/devpilot/cmd/api	8.109s
+ok  	github.com/rjgczp/devpilot/internal/app	1.181s
+ok  	github.com/rjgczp/devpilot/internal/auth	0.923s
+ok  	github.com/rjgczp/devpilot/internal/config	0.912s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	0.932s
+ok  	github.com/rjgczp/devpilot/internal/monitor	2.160s
+ok  	github.com/rjgczp/devpilot/internal/monitoring	2.608s
+ok  	github.com/rjgczp/devpilot/internal/password	4.229s
+ok  	github.com/rjgczp/devpilot/internal/project	2.826s
+--- FAIL: TestServerDeadlineAndUnknownCommit (0.01s)
+    handler_test.go:335: expired request inserted
+    handler_test.go:338: status=201 want 503 body={"data":{"id":"","email":"","status":"","created_at":"0001-01-01T00:00:00Z"}}
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/registration	2.703s
+ok  	github.com/rjgczp/devpilot/internal/session	1.795s
+ok  	github.com/rjgczp/devpilot/internal/testdb	1.777s
+ok  	github.com/rjgczp/devpilot/internal/user	1.749s
+ok  	github.com/rjgczp/devpilot/internal/workspace	1.980s
+FAIL

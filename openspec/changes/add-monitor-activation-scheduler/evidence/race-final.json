@@ -1,0 +1,14 @@
+{
+  "command": [
+    "go",
+    "test",
+    "-race",
+    "./...",
+    "-count=1"
+  ],
+  "started_at": "2026-10-19T09:38:58.588159+00:00",
+  "seconds": 13.041,
+  "exit": 0,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

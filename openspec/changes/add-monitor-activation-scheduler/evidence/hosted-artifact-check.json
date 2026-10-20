@@ -1,0 +1,15 @@
+{
+  "implementation_sha": "3473d528c4f5e37c365e6a9206ef66e8a478a651",
+  "run_id": 39352867538,
+  "execution_cases": 76,
+  "expected_audit_failures": [
+    "bypass-v4",
+    "bypass-v6",
+    "bypass-nat",
+    "bypass-public"
+  ],
+  "all_child_exit_zero": true,
+  "pg_normal_race_version_lineage": "verified v7/v8 audit and outputs",
+  "production_egress": "not verified; fixtures only",
+  "artifact_manifest": "hosted-artifact-manifest.json"
+}

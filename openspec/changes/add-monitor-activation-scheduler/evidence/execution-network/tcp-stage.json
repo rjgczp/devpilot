@@ -1,0 +1,36 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ],
+    [
+      "93.184.216.37",
+      80
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 1,
+  "target_attempts": 1,
+  "case": "tcp-stage",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/tcp-stage.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "tcp-stage"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 3.057190292980522
+}

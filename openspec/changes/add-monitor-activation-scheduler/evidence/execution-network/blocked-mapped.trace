@@ -1,0 +1,10 @@
+495   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "blocked-mapped"], 0xffffeaa56e98 /* 10 vars */) = 0
+495   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffffb41ea310 /* 11 vars */) = 0
+495   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 496
+495   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 497
+495   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 498
+497   clone(child_stack=0x400009e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 499
+495   connect(5<TCP:[2166274]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+496   tgkill(495, 497, SIGURG)          = 0
+497   --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=495, si_uid=65534} ---
+499   exit_group(0)                     = ?

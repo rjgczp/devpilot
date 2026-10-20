@@ -33,8 +33,8 @@ func snapshotDB(t *testing.T) *pgxpool.Pool {
 	}
 	t.Cleanup(db.Close)
 	var version int
-	if db.QueryRow(context.Background(), `SELECT max(version_id) FROM goose_db_version WHERE is_applied`).Scan(&version) != nil || version != 6 {
-		t.Fatal("isolated schema6 required; run pinned Goose explicitly")
+	if db.QueryRow(context.Background(), `SELECT max(version_id) FROM goose_db_version WHERE is_applied`).Scan(&version) != nil || (version != 6 && version != 7) {
+		t.Fatal("isolated schema6 or schema7 required; run pinned Goose explicitly")
 	}
 	return db
 }
@@ -92,11 +92,8 @@ func TestSystemSnapshotPGLiveIsolatedExecution(t *testing.T) {
 	}
 	db := snapshotDB(t)
 	role := snapshotRole(t, db)
-	f := snapshotFixture(t, db)
+	f := snapshotFixtureConfig(t, db, "http://hold-pg.example.com/private-sentinel", 3)
 	ctx := context.Background()
-	if _, err := db.Exec(ctx, `UPDATE http_monitors SET url='http://hold-pg.example.com/private-sentinel',timeout_seconds=3 WHERE id=$1`, f.scope.MonitorID); err != nil {
-		t.Fatal("controlled target fixture")
-	}
 	old, err := (SnapshotReader{Pool: role}).Read(ctx, f.scope)
 	if err != nil {
 		t.Fatal(err)
@@ -210,6 +207,9 @@ type pgFixture struct {
 }
 
 func snapshotFixture(t *testing.T, db *pgxpool.Pool) pgFixture {
+	return snapshotFixtureConfig(t, db, "http://probe-a.example.com/secret-sentinel", 1)
+}
+func snapshotFixtureConfig(t *testing.T, db *pgxpool.Pool, target string, timeout int) pgFixture {
 	t.Helper()
 	ctx := context.Background()
 	var f pgFixture
@@ -234,7 +234,7 @@ func snapshotFixture(t *testing.T, db *pgxpool.Pool) pgFixture {
 	if db.QueryRow(ctx, `INSERT INTO projects(workspace_id,name,created_by_user_id) VALUES($1,'fixture',$2) RETURNING id::text`, f.scope.WorkspaceID, f.uid).Scan(&f.scope.ProjectID) != nil {
 		t.Fatal("project fixture")
 	}
-	if db.QueryRow(ctx, `INSERT INTO http_monitors(workspace_id,project_id,name,url,timeout_seconds,version,created_by_user_id) VALUES($1,$2,'fixture','http://probe-a.example.com/secret-sentinel',1,7,$3) RETURNING id::text`, f.scope.WorkspaceID, f.scope.ProjectID, f.uid).Scan(&f.scope.MonitorID) != nil {
+	if db.QueryRow(ctx, `INSERT INTO http_monitors(workspace_id,project_id,name,url,timeout_seconds,version,created_by_user_id) VALUES($1,$2,'fixture',$4,$5,7,$3) RETURNING id::text`, f.scope.WorkspaceID, f.scope.ProjectID, f.uid, target, timeout).Scan(&f.scope.MonitorID) != nil {
 		t.Fatal("monitor fixture")
 	}
 	return f
@@ -310,7 +310,7 @@ func TestSystemSnapshotPGScopePrivilegesAndRelease(t *testing.T) {
 			t.Fatal("unapproved fixture privilege", q)
 		}
 	}
-	if _, err = db.Exec(ctx, `UPDATE http_monitors SET url='http://127.0.0.1/secret-sentinel' WHERE id=$1`, a.scope.MonitorID); err != nil {
+	if _, err = db.Exec(ctx, `UPDATE http_monitors SET url='http://127.0.0.1/secret-sentinel',version=version+1 WHERE id=$1`, a.scope.MonitorID); err != nil {
 		t.Fatal("DB subset fixture")
 	}
 	if _, err = reader.Read(ctx, a.scope); !errors.Is(err, ErrInvalidConfiguration) {

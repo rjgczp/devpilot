@@ -1,0 +1,12 @@
+{
+  "command": [
+    "go",
+    "vet",
+    "./..."
+  ],
+  "started_at": "2026-10-19T09:30:13.415939+00:00",
+  "seconds": 1.019,
+  "exit": 0,
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "dirty": true
+}

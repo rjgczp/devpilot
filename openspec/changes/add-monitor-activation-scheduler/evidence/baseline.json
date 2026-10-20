@@ -1,0 +1,37 @@
+{
+  "head": "2cfdcd6c0c094e938fc0570b67697346c3da7aee",
+  "branch": "codex/add-monitor-activation-scheduler",
+  "authorization": "2026-10-19 user explicitly approved A Apply, tests, commit and open PR; no merge/archive/deploy/production execution",
+  "approved_artifacts": {
+    "openspec/changes/add-monitor-activation-scheduler/.openspec.yaml": "b552ab6519df8f66b705724100f565c5cd842bc9389aeaa177da9cec3d02a685",
+    "openspec/changes/add-monitor-activation-scheduler/tasks.md": "a33c7b6927e52b9bbb23dade58771ea029ca863d2d6fc6d37f8a9f87d70b9064",
+    "openspec/changes/add-monitor-activation-scheduler/design.md": "c22fdabfb5cb7ed346471af52df78a9a88bf39a8fa19f173ba2fe4507f0363f6",
+    "openspec/changes/add-monitor-activation-scheduler/proposal.md": "d87d9d121174eda95a69fb9f9cdc57e39d2ae8fb9dabfb6ebed2a5c875b0fc20",
+    "openspec/changes/add-monitor-activation-scheduler/specs/http-monitor-management/spec.md": "dea12985e4a0b0cbecb4f59cd6cc04e10466b3b73039a216514978a854f32d1c",
+    "openspec/changes/add-monitor-activation-scheduler/specs/http-monitor-execution/spec.md": "6818d16e28b8b42907d0fbef7ce07fe70f7e5bbb72b44697e5514140f96e7282",
+    "openspec/changes/add-monitor-activation-scheduler/specs/monitor-activation/spec.md": "223c53c7f5512c0c831f9e053f7d53d8ef64f3b8fdbd21d5e548f8470d15d845",
+    "openspec/changes/add-monitor-activation-scheduler/specs/http-monitor-persistence/spec.md": "5fcacc3e6596201557a4e52554b63190ce3c239d16ea315bc538cd0422d72ed6",
+    "openspec/changes/add-monitor-activation-scheduler/specs/monitor-scheduling/spec.md": "fee2d9a9cc0b6f73aad6f02f63af810b79059247f2c25d5b8c09ce586ef35420"
+  },
+  "migrations": {
+    "migrations/00004_create_workspace_invitations.sql": "0374475bb78a985a9baf3de72055032bcc08e6f18512b850442a59940f20fdfb",
+    "migrations/00005_create_projects.sql": "4715106905a92991c7f1dcb2da08afb7fd93217716bfa83eb4a33bb8145ac519",
+    "migrations/00001_create_users.sql": "e09f6476b25ce0a60cbd6607486a9b4208f2c3413957c83e54110e0e661b5490",
+    "migrations/00002_create_sessions.sql": "27ce132375459ea1e061aac1e2c00de1010c9dc8f94c21489e7c24243f02c96a",
+    "migrations/00003_create_workspaces.sql": "327651e7727c512d80062792bab0ea874f1f63320b98ca6b0491dd8e6f94223d",
+    "migrations/00006_create_http_monitors.sql": "26ac26c66da96b0f16076342f0f11258bb6ea92be5f71a6b015c97a3075ee4e2"
+  },
+  "initial_status": "only approved untracked change; main/origin/main equal head",
+  "archives": [
+    "2026-10-13-bootstrap-go-backend",
+    "2026-10-14-add-user-registration",
+    "2026-10-15-add-user-login",
+    "2026-10-15-add-workspace-foundation",
+    "2026-10-15-add-workspace-members",
+    "2026-10-16-add-project-management",
+    "2026-10-16-add-workspace-invitations",
+    "2026-10-19-add-http-monitor",
+    "2026-10-19-add-monitoring-engine"
+  ],
+  "pr9": "GitHub confirmed merged; f14a63118f12a09f5fd3b8c17f4c83cd09fe02fa"
+}

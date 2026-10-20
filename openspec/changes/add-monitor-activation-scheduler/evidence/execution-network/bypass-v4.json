@@ -1,0 +1,34 @@
+{
+  "attempts": [
+    [
+      "169.254.169.254",
+      80
+    ]
+  ],
+  "violations": [
+    "unapproved attempt 169.254.169.254:80"
+  ],
+  "dns_attempts": 0,
+  "target_attempts": 1,
+  "case": "bypass-v4",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/bypass-v4.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "bypass-v4"
+  ],
+  "child_exit": 0,
+  "audit_exit": 1,
+  "duration": 0.02016600000206381
+}

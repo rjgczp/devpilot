@@ -72,6 +72,10 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	_ = http.NewResponseController(w).SetReadDeadline(deadline)
 	// Keep the transport's implicit body drain bounded on ALL early exits too.
 	parts := strings.Split(strings.TrimPrefix(r.URL.Path, collection), "/")
+	if len(parts) == 6 && parts[5] == "activation" {
+		h.serveActivation(w, r, ctx, parts)
+		return
+	}
 	if !strings.HasPrefix(r.URL.Path, collection) || r.URL.RawPath != "" || path.Clean(r.URL.Path) != r.URL.Path || (len(parts) != 4 && len(parts) != 5) || parts[0] == "" || parts[1] != "projects" || parts[2] == "" || parts[3] != "monitors" || len(parts) == 5 && parts[4] == "" {
 		h.fail(w, r, 404, "monitor_not_found", nil)
 		return
@@ -210,6 +214,9 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	h.write(w, r, status, result)
 }
 func readBody(ctx context.Context, w http.ResponseWriter, r *http.Request) ([]byte, error) {
+	return readBodyLimit(ctx, w, r, MaxBodyBytes)
+}
+func readBodyLimit(ctx context.Context, w http.ResponseWriter, r *http.Request, limit int64) ([]byte, error) {
 	c := http.NewResponseController(w)
 	deadline, _ := ctx.Deadline()
 	supported := c.SetReadDeadline(deadline) == nil
@@ -222,11 +229,11 @@ func readBody(ctx context.Context, w http.ResponseWriter, r *http.Request) ([]by
 		}
 		close(done)
 	})
-	b, err := io.ReadAll(io.LimitReader(r.Body, MaxBodyBytes+1))
+	b, err := io.ReadAll(io.LimitReader(r.Body, limit+1))
 	if !stop() {
 		<-done
 	}
-	if len(b) > MaxBodyBytes || err != nil || ctx.Err() != nil {
+	if int64(len(b)) > limit || err != nil || ctx.Err() != nil {
 		w.Header().Set("Connection", "close")
 		if supported {
 			_ = c.SetReadDeadline(time.Now())
@@ -238,7 +245,9 @@ func readBody(ctx context.Context, w http.ResponseWriter, r *http.Request) ([]by
 }
 
 var messages = map[string]string{
-	"invalid_request": "Invalid monitor request.", "unauthenticated": "Authentication required.", "csrf_rejected": "Request origin could not be verified.",
+	"activation_limit_reached": "Workspace activation intent limit reached.",
+	"activation_rate_limited":  "Monitor activation intent is cooling down.",
+	"invalid_request":          "Invalid monitor request.", "unauthenticated": "Authentication required.", "csrf_rejected": "Request origin could not be verified.",
 	"monitor_forbidden": "Monitor operation is not permitted.", "monitor_not_found": "Monitor not found.", "method_not_allowed": "Method not allowed.",
 	"precondition_failed": "Monitor precondition failed.", "precondition_required": "Monitor precondition required.", "request_too_large": "Request body too large.",
 	"unsupported_media_type": "Unsupported media type.", "validation_failed": "Invalid monitor fields.", "database_timeout": "Monitor operation could not be confirmed.",

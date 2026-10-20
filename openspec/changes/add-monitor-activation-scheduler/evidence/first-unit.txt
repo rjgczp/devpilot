@@ -1,0 +1,21 @@
+go: downloading github.com/jackc/pgx/v5 v5.8.0
+go: downloading golang.org/x/net v0.49.0
+go: downloading github.com/jackc/puddle/v2 v2.2.2
+go: downloading github.com/jackc/pgpassfile v1.0.0
+go: downloading github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761
+# github.com/jackc/puddle/v2/internal/genstack
+open /private/tmp/devpilot-go-mod/github.com/jackc/puddle/v2@v2.2.2/internal/genstack/gen_stack.go: no such file or directory
+# github.com/jackc/pgx/v5/internal/iobufpool
+open /private/tmp/devpilot-go-mod/github.com/jackc/pgx/v5@v5.8.0/internal/iobufpool/iobufpool.go: no such file or directory
+# github.com/jackc/pgx/v5/internal/pgio
+open /private/tmp/devpilot-go-mod/github.com/jackc/pgx/v5@v5.8.0/internal/pgio/doc.go: no such file or directory
+# github.com/jackc/pgx/v5/pgconn/ctxwatch
+open /private/tmp/devpilot-go-mod/github.com/jackc/pgx/v5@v5.8.0/pgconn/ctxwatch/context_watcher.go: no such file or directory
+# github.com/jackc/pgpassfile
+open /private/tmp/devpilot-go-mod/github.com/jackc/pgpassfile@v1.0.0/pgpass.go: no such file or directory
+# github.com/jackc/pgx/v5/internal/sanitize
+open /private/tmp/devpilot-go-mod/github.com/jackc/pgx/v5@v5.8.0/internal/sanitize/sanitize.go: no such file or directory
+# github.com/jackc/pgservicefile
+open /private/tmp/devpilot-go-mod/github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761/pgservicefile.go: no such file or directory
+FAIL	github.com/rjgczp/devpilot/internal/monitor [build failed]
+FAIL

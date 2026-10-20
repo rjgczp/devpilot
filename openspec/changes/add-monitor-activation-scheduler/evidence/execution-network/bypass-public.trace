@@ -1,0 +1,9 @@
+879   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "bypass-public"], 0xffffe3b28668 /* 10 vars */) = 0
+879   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffffa89ba310 /* 11 vars */) = 0
+879   clone(child_stack=0x400002c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 880
+879   clone(child_stack=0x4000074000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 881
+879   clone(child_stack=0x4000070000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 882
+879   clone(child_stack=0x4000110000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 883
+881   clone(child_stack=0x400010c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 884
+879   connect(5<TCP:[2172094]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("93.184.216.36")}, 16) = -1 EINPROGRESS (Operation now in progress)
+881   exit_group(0)                     = ?

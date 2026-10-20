@@ -1,0 +1,32 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 1,
+  "target_attempts": 0,
+  "case": "blocked-private",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/blocked-private.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "blocked-private"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 0.039583624980878085
+}

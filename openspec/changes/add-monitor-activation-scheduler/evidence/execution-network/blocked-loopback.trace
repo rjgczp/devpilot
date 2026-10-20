@@ -1,0 +1,8 @@
+486   execve("/usr/bin/python3", ["python3", "-I", "-S", "/runner/drop_probe.py", "blocked-loopback"], 0xfffff4cddf78 /* 10 vars */) = 0
+486   execve("/toolbin/execution.test", ["/toolbin/execution.test", "-test.run", "^TestExecutionProbe$", "-test.v", "-test.timeout=45s"], 0xffffa8afa310 /* 11 vars */) = 0
+486   clone(child_stack=0x400002e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 487
+486   clone(child_stack=0x4000076000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 488
+486   clone(child_stack=0x4000072000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 489
+488   clone(child_stack=0x400009e000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 490
+486   connect(5<TCP:[2166259]>, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = -1 EINPROGRESS (Operation now in progress)
+490   exit_group(0)                     = ?

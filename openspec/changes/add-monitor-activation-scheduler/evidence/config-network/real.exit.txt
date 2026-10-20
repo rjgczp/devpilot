@@ -1,0 +1,1 @@
+child_exit=1 audit_exit=0

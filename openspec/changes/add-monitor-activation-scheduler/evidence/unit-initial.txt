@@ -1,0 +1,5 @@
+--- FAIL: TestMonitorOpenAPIResponsesAndProjection (0.01s)
+    contract_test.go:95: undocumented fixed message activation_limit_reached
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/monitor	1.161s
+FAIL
