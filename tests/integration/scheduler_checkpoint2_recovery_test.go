@@ -10,6 +10,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/rjgczp/devpilot/internal/monitor"
 	"github.com/rjgczp/devpilot/internal/scheduler"
 )
 
@@ -75,14 +76,14 @@ func TestCheckpointTwoUnstartedRealLeaseExpiry(t *testing.T) {
 	}
 	var all []held
 	var deadline time.Time
-	for _, kind := range []string{"never-prepared", "prepared", "started"} {
+	for _, kind := range []string{"never-prepared", "revoked", "prepared", "started"} {
 		t.Run("claim-"+kind, func(t *testing.T) {
-			f, _, h := schedulerClaimFixtureSeconds(t, db, 3600)
+			f, m, h := schedulerClaimFixtureSeconds(t, db, 3600)
 			lease, err := store.Claim(ctx, checkpointTwoHint(h))
 			if err != nil {
 				t.Fatal(err)
 			}
-			if kind != "never-prepared" {
+			if kind == "prepared" || kind == "started" {
 				schedulerPreparedDatabaseFixture(t, db, h)
 			}
 			if kind == "started" {
@@ -96,13 +97,18 @@ func TestCheckpointTwoUnstartedRealLeaseExpiry(t *testing.T) {
 			if _, err = store.ExpireUnstarted(ctx, lease); !errors.Is(err, scheduler.ErrCandidate) {
 				t.Fatal("early or started expiry accepted", err)
 			}
+			if kind == "revoked" {
+				if _, err = (monitor.Store{Pool: db}).Update(ctx, f.od, h.w, h.p, h.m, monitorInput("revoke before lease expiry"), monitor.ETag(m)); err != nil {
+					t.Fatal(err)
+				}
+			}
 			all = append(all, held{h, lease, kind, f.owner.ID})
 			if lease.LeaseUntil.After(deadline) {
 				deadline = lease.LeaseUntil
 			}
 		})
 	}
-	if len(all) != 3 {
+	if len(all) != 4 {
 		t.Fatal("missing test cases")
 	}
 	// Actual database lease time, not a shortened timeout or a backdated row.
@@ -143,7 +149,7 @@ func TestCheckpointTwoUnstartedRealLeaseExpiry(t *testing.T) {
 					t.Fatal("started expiry released physical authority", err)
 				}
 			} else {
-				if err != nil || outcome.Released != (item.kind == "never-prepared") {
+				if err != nil || outcome.Released != (item.kind == "never-prepared" || item.kind == "revoked") {
 					t.Fatal("wrong expiry proof", outcome, err)
 				}
 				if _, err = store.ExpireUnstarted(ctx, item.lease); !errors.Is(err, scheduler.ErrCandidate) {
@@ -160,6 +166,8 @@ func TestCheckpointTwoUnstartedRealLeaseExpiry(t *testing.T) {
 				if queryInt(t, db, `SELECT count(*) FROM scheduler_reservations WHERE run_id=$1 AND release_basis='never_prepared' AND termination_receipt IS NULL AND reservation_state='released'`, item.h.r) != 1 {
 					t.Fatal("fabricated supervisor receipt")
 				}
+			} else if item.kind == "revoked" {
+				checkpointTwoAssertPatched(t, db, item.h)
 			} else if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE run_id=$1 AND physical_release_confirmed_at IS NULL`, item.h.r) != 1 {
 				t.Fatal("prepared authority returned capacity")
 			}

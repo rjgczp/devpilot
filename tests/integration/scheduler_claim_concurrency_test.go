@@ -136,6 +136,8 @@ func TestSchedulerClaimTwoOwnersWorkersAndUserPatch(t *testing.T) {
 		t.Fatal("PATCH cannot progress", err)
 	}
 	schedulerLockReceipt(t, db, "claim then PATCH commits", pid1, pp, pid2)
+	checkpointTwoAssertPatched(t, db, h)
+	checkpointTwoFinal(t, db, h)
 	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE monitor_id=$1 AND fencing_token=1`, m.ID) != 1 || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND last_fencing_token=1 AND authorized_activation_generation IS NULL`, m.ID) != 1 {
 		t.Fatal("claim/PATCH ordering lost lineage")
 	}

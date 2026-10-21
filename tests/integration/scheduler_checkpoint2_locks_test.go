@@ -48,6 +48,12 @@ func checkpointTwoOutcome(t *testing.T, result schedulerClaimResult, code string
 }
 func checkpointTwoFinal(t *testing.T, db *pgxpool.Pool, h schedulerClaimHint) {
 	t.Helper()
+	// Configuration is read separately from URL-bearing monitor data.
+	var version string
+	if err := db.QueryRow(context.Background(), `SELECT version::text FROM http_monitors WHERE workspace_id=$1 AND project_id=$2 AND id=$3`, h.w, h.p, h.m).Scan(&version); err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("final configuration_version=%s scope=%s/%s/%s", version, h.w, h.p, h.m)
 	var raw []byte
 	err := db.QueryRow(context.Background(), `SELECT jsonb_build_object('event','final_state','at',clock_timestamp(),'schedule',to_jsonb(s),'activation',to_jsonb(a),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r WHERE r.workspace_id=s.workspace_id AND r.project_id=s.project_id AND r.monitor_id=s.monitor_id)) FROM monitor_schedules s JOIN monitor_activation_states a USING(workspace_id,project_id,monitor_id) WHERE s.workspace_id=$1 AND s.project_id=$2 AND s.monitor_id=$3`, h.w, h.p, h.m).Scan(&raw)
 	if err != nil || !json.Valid(raw) {
@@ -264,7 +270,15 @@ func TestCheckpointTwoPatchBeforeWorkers(t *testing.T) {
 	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE monitor_id=$1`, h.m) != 0 || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND authorized_activation_generation IS NULL AND last_fencing_token=0`, h.m) != 1 {
 		t.Fatal("PATCH-first stale claim")
 	}
+	checkpointTwoAssertPatched(t, db, h)
 	checkpointTwoFinal(t, db, h)
+}
+
+func checkpointTwoAssertPatched(t *testing.T, db *pgxpool.Pool, h schedulerClaimHint) {
+	t.Helper()
+	if queryInt(t, db, `SELECT count(*) FROM http_monitors m JOIN monitor_activation_states a ON a.workspace_id=m.workspace_id AND a.project_id=m.project_id AND a.monitor_id=m.id JOIN monitor_schedules s ON s.workspace_id=m.workspace_id AND s.project_id=m.project_id AND s.monitor_id=m.id WHERE m.workspace_id=$1 AND m.project_id=$2 AND m.id=$3 AND m.version=2 AND a.activation_generation=3 AND s.scheduler_epoch=2 AND s.authorized_configuration_version IS NULL AND s.next_due_at IS NULL`, h.w, h.p, h.m) != 1 {
+		t.Fatal("PATCH final v/g/epoch or authorization mismatch")
+	}
 }
 
 func TestCheckpointTwoDifferentWorkspaceCandidates(t *testing.T) {
