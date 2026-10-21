@@ -13,8 +13,7 @@ import (
 )
 
 func TestExecutionAuthorizationAtomicIntentAndRevocation(t *testing.T) {
-	db := openDB(t)
-	migrate(t)
+	db := workspaceDB(t)
 	f, m := monitorFixture(t, db)
 	ctx := context.Background()
 	s := monitor.Store{Pool: db}

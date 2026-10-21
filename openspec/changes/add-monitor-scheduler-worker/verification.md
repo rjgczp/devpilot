@@ -132,3 +132,5 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 开发阶段失败保留：首次会话过期夹具将expires_at设在created_at之前，原23514约束正确拒绝；后续HTTP清单夹具缺login/incarnation也被原23514正确拒绝；再后一个HTTP迁移测试同一t.Name重复建立账号被唯一约束拒绝。均只修正测试夹具，无约束/权限/超时调整。最初编译错误为历史Store只提供Activation接口，通过仅integration构建的组合适配器解决；历史Handler去除新协议头后与已评审baseline SHA256一致，冻结Store源hash仍校验。
 
 冻结提交后将重新执行unit/race/vet、完整真实PG18 normal/race及独立API零目标审计。真实60秒到期单独串行分区，原完整集成120秒进程预算保持，每个编译测试恰好覆盖一次，清单由脚本断言，非跳过。任务暂保持7/47，只有最终对应验收通过才更新。
+
+冻结`851137d65d746687e4b0cb0e151e36c2f0fb96da`的首次完整PG18 normal分区exit1（56.98s）：`TestExecutionAuthorizationAtomicIntentAndRevocation`使用openDB+migrate但没有清理，紧邻容量测试初始计数断言失败。独立组合测试真实重现该授权测试结束后migration8/Schedule表仍在/1条Schedule（`isolation-root-cause` exit1）；未观察到预算越界或数据库权限不一致。最小修复仅将其改用既有workspaceDB清理协议，并保留组合隔离回归。原容量10000上限、9999真实行+两竞争最后槽断言及全部数据库保护不变。该提交的unit/race/vet/Change strict通过不作为后续新SHA通过，须重新冻结完整验收。
