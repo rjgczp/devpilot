@@ -1,0 +1,22 @@
+//go:build integration
+
+package integration
+
+import (
+	"context"
+	"path/filepath"
+	"testing"
+)
+
+// Explicit failure recovery in the pre-existing protected disposable database.
+// openDB performs testdb's name/version/production separation guard first.
+// No actual Probe exists in any Checkpoint2 database-only fixture.
+func TestCheckpointTwoDisposableFailureCleanup(t *testing.T) {
+	db := openDB(t)
+	if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) == 8 {
+		if _, err := db.Exec(context.Background(), `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'; UPDATE monitor_runs SET attempt_state=CASE WHEN attempt_state='leased' THEN 'canceled' WHEN attempt_state='started' THEN 'unknown' ELSE attempt_state END,finished_at=COALESCE(finished_at,GREATEST(clock_timestamp(),claimed_at,started_at)),stop_reason=CASE WHEN attempt_state IN ('leased','started') THEN 'worker_lost' ELSE stop_reason END,physical_release_confirmed_at=COALESCE(physical_release_confirmed_at,GREATEST(clock_timestamp(),claimed_at,started_at))`); err != nil {
+			t.Fatal(err)
+		}
+	}
+	goose(t, filepath.Join(root(), "migrations"), "down-to 0", true)
+}

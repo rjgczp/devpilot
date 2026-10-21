@@ -1,0 +1,80 @@
+[
+  {
+    "task": "4.1",
+    "id": "15",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 30,
+    "tested_sha": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+    "progress": {
+      "total": 47,
+      "complete": 15,
+      "remaining": 32
+    },
+    "exit_code": 0
+  },
+  {
+    "task": "4.2",
+    "id": "16",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 31,
+    "tested_sha": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+    "progress": {
+      "total": 47,
+      "complete": 16,
+      "remaining": 31
+    },
+    "exit_code": 0
+  },
+  {
+    "task": "4.3",
+    "id": "17",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 32,
+    "tested_sha": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+    "progress": {
+      "total": 47,
+      "complete": 17,
+      "remaining": 30
+    },
+    "exit_code": 0
+  },
+  {
+    "task": "4.4",
+    "id": "18",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 33,
+    "tested_sha": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+    "progress": {
+      "total": 47,
+      "complete": 18,
+      "remaining": 29
+    },
+    "exit_code": 0
+  },
+  {
+    "task": "4.5",
+    "id": "19",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 34,
+    "tested_sha": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+    "progress": {
+      "total": 47,
+      "complete": 19,
+      "remaining": 28
+    },
+    "exit_code": 0
+  },
+  {
+    "task": "4.6",
+    "id": "20",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 35,
+    "tested_sha": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+    "progress": {
+      "total": 47,
+      "complete": 20,
+      "remaining": 27
+    },
+    "exit_code": 0
+  }
+]

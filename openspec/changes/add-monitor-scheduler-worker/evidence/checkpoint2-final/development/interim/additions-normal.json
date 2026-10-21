@@ -1,0 +1,38 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "container:devpilot-scheduler-apply-pg18",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/cp2.test",
+    "devpilot-scheduler-fixture",
+    "-test.run",
+    "^TestCheckpointTwo(DifferentMonitorSameWorkspace|UnlockedHintsAreNotAuthority|NarrowRecoveryCapabilities|FenceOverflowAndClockRegression)$",
+    "-test.failfast",
+    "-test.timeout=30s",
+    "-test.v"
+  ],
+  "started_at": "2026-10-21T02:06:38.199576+00:00",
+  "elapsed_seconds": 0.9290341670275666,
+  "exit_code": 0,
+  "head": "8ebba60bc4d70f2407d052b26796a4fd20c16a56",
+  "dirty": true,
+  "source_inventory_sha256": "0996862b5c8604a8aa61abcb374d2022169d6d20d10f058aecffe47423767aa7",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp2.test": "f78cd1729a627d18ad9bed0640f843a1f8c96cbb2ae06c277aaa46249207a0a1"
+  },
+  "log_sha256": "13788237e16999f6e9b202d48d10ec2e23dd0abe28652fae33fcab268eb2c264",
+  "source_inventory_ref": "../../source-inventories/0996862b5c8604a8aa61abcb374d2022169d6d20d10f058aecffe47423767aa7.json",
+  "original_receipt_ref": "../../raw-receipts/development/interim/additions-normal.json.gz",
+  "original_receipt_sha256": "151cadd4836b1070d9c477374eb4bf063036b17833880933cc9a8ec18033e9a1"
+}

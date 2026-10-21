@@ -1,0 +1,38 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "container:devpilot-scheduler-apply-pg18",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/cp2.test",
+    "devpilot-scheduler-fixture",
+    "-test.run",
+    "^Test(CheckpointTwo|SchedulerClaim)",
+    "-test.failfast",
+    "-test.timeout=90s",
+    "-test.v"
+  ],
+  "started_at": "2026-10-21T01:57:19.926056+00:00",
+  "elapsed_seconds": 47.79162316600559,
+  "exit_code": 1,
+  "head": "8ebba60bc4d70f2407d052b26796a4fd20c16a56",
+  "dirty": true,
+  "source_inventory_sha256": "ec736bd69249d6d08b8bb4d9f50238f259540a954112f5c8106290a590093900",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp2.test": "9d2b9a03a5dc451f6d8badd76c6c865e636752e7aa4649cfc547e9b79af965dc"
+  },
+  "log_sha256": "49027b8c67892bb86ba27572de41a4e99e1edcd4b6993b072b4c8611b5aa2d0c",
+  "source_inventory_ref": "../../source-inventories/ec736bd69249d6d08b8bb4d9f50238f259540a954112f5c8106290a590093900.json",
+  "original_receipt_ref": "../../raw-receipts/development/interim/checkpoint2-normal.json.gz",
+  "original_receipt_sha256": "b141791a2bbb3f8cb7f0e3c3c4233e04772d85869cebc815c86f196b76ab8b4a"
+}

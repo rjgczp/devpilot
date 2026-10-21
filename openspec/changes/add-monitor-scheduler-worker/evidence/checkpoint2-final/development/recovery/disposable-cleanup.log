@@ -1,0 +1,4 @@
+=== RUN   TestCheckpointTwoDisposableFailureCleanup
+    scheduler_checkpoint2_cleanup_test.go:21: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointTwoDisposableFailureCleanup (0.05s)
+PASS

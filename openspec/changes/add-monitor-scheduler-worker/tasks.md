@@ -27,12 +27,12 @@
 
 ## 4. 调度状态与父序领取
 
-- [ ] 4.1 实现正交状态机、数据库时间、单调epoch/fence及固定stop/blocked分类；单元/race覆盖全部转移/溢出/时钟后跳与异常，文档给状态表，不将unknown编码为HTTP失败。
-- [ ] 4.2 实现D6无锁候选→候选Owner User SHARE→W NO KEY UPDATE SKIP LOCKED，不得先W后User；每候选独立RC事务、W跳过/候选失效全回滚释放User再重选；PG18两Worker竞争证明最多一有效fence，限制64候选W/8个W内候选/32次尝试/每W一领取。
-- [ ] 4.3 实现Membership→P→M→Activation→Schedule→Run→Budgets→Reservation完整父序及D6逐语句协议；受限VOLATILE函数在全部等待后新SQL/SPI快照重查active/Owner/membership_id/scope/v/g/epoch，并一次clock_timestamp取gate_now门控DML，不能误用外层调用开始时间；PG函数内部真实阻塞跨期限/超时全回滚测试通过，不用锁前CTE或持W补User，用户API协议不变。
-- [ ] 4.4 实现Claim ACK未知对账、未Start lease过期终止及未来周期重排；真实提交后丢确认与回滚两对照，证明不创建同周期替代run、不补发旧周期。
-- [ ] 4.5 用真实PG18两Owner U1/U2、两Worker独立连接/屏障验证同或不同候选同时Claim，hint后Owner禁用/退出/降级/移除重入的双顺序；pg_locks/pg_blocking_pids及事务时间线证明失效U1全回滚后新事务才能选U2、W skip立即释放User、无Run/Activation先W，不能用sleep-only/无死锁代替。
-- [ ] 4.6 用PG18独立用户PATCH连接制造Worker1持U1/W、U2用户PATCH持U2/Session等W、Worker2候选U2争用；锁观测证明W2 SKIP后释放User且W1不持W补U2，PATCH可继续，最终fence/授权/配置符合提交顺序；保存锁图及两个顺序证据。
+- [x] 4.1 实现正交状态机、数据库时间、单调epoch/fence及固定stop/blocked分类；单元/race覆盖全部转移/溢出/时钟后跳与异常，文档给状态表，不将unknown编码为HTTP失败。
+- [x] 4.2 实现D6无锁候选→候选Owner User SHARE→W NO KEY UPDATE SKIP LOCKED，不得先W后User；每候选独立RC事务、W跳过/候选失效全回滚释放User再重选；PG18两Worker竞争证明最多一有效fence，限制64候选W/8个W内候选/32次尝试/每W一领取。
+- [x] 4.3 实现Membership→P→M→Activation→Schedule→Run→Budgets→Reservation完整父序及D6逐语句协议；受限VOLATILE函数在全部等待后新SQL/SPI快照重查active/Owner/membership_id/scope/v/g/epoch，并一次clock_timestamp取gate_now门控DML，不能误用外层调用开始时间；PG函数内部真实阻塞跨期限/超时全回滚测试通过，不用锁前CTE或持W补User，用户API协议不变。
+- [x] 4.4 实现Claim ACK未知对账、未Start lease过期终止及未来周期重排；真实提交后丢确认与回滚两对照，证明不创建同周期替代run、不补发旧周期。
+- [x] 4.5 用真实PG18两Owner U1/U2、两Worker独立连接/屏障验证同或不同候选同时Claim，hint后Owner禁用/退出/降级/移除重入的双顺序；pg_locks/pg_blocking_pids及事务时间线证明失效U1全回滚后新事务才能选U2、W skip立即释放User、无Run/Activation先W，不能用sleep-only/无死锁代替。
+- [x] 4.6 用PG18独立用户PATCH连接制造Worker1持U1/W、U2用户PATCH持U2/Session等W、Worker2候选U2争用；锁观测证明W2 SKIP后释放User且W1不持W补U2，PATCH可继续，最终fence/授权/配置符合提交顺序；保存锁图及两个顺序证据。
 
 ## 5. 集群槽、令牌与同目标预算
 
