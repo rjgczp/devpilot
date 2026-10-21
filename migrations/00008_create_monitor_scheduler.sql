@@ -116,6 +116,7 @@ CREATE TABLE public.scheduler_reservations (
  reservation_state text NOT NULL CHECK(reservation_state IN ('reserved','quarantined','released')),
  release_basis text NOT NULL DEFAULT 'supervisor' CHECK(release_basis IN ('supervisor','never_prepared')),
  namespace_incarnation uuid,supervisor_incarnation uuid,permit_deadline timestamptz,
+ target_keys jsonb NOT NULL DEFAULT '[]' CHECK(jsonb_typeof(target_keys)='array' AND jsonb_array_length(target_keys)<=2),
  origin_key text CHECK(origin_key ~ '^[0-9a-f]{64}$'),ip_key text CHECK(ip_key ~ '^[0-9a-f]{64}$'),
  termination_receipt bytea CHECK(octet_length(termination_receipt)=32),released_at timestamptz,
  PRIMARY KEY(workspace_id,project_id,monitor_id,run_id),UNIQUE(reservation_id),
@@ -126,7 +127,7 @@ CREATE TABLE public.scheduler_reservations (
  OR (reservation_state<>'released' AND released_at IS NULL AND termination_receipt IS NULL))
 );
 CREATE TABLE public.scheduler_control (
- control_id text PRIMARY KEY,kind text NOT NULL CHECK(kind IN ('deployment','worker','http','supervisor')),
+ control_id text PRIMARY KEY,kind text NOT NULL CHECK(kind IN ('deployment','worker','http','supervisor','controller')),
  login_name name,incarnation uuid,
  gate text NOT NULL DEFAULT 'closed' CHECK(gate IN ('closed','fixture')),emergency_stop boolean NOT NULL DEFAULT true,
  expires_at timestamptz,verified_at timestamptz,manifest_digest bytea CHECK(octet_length(manifest_digest)=32),
@@ -283,7 +284,7 @@ BEGIN
   RETURN NEW;
  END IF;
  IF OLD.kind='global' OR OLD.in_use<>0 OR OLD.keep_until>clock_timestamp() OR OLD.not_before>clock_timestamp()
- OR EXISTS(SELECT 1 FROM public.scheduler_reservations r WHERE (OLD.kind='origin' AND r.origin_key=OLD.budget_key) OR (OLD.kind='ip' AND r.ip_key=OLD.budget_key))
+ OR EXISTS(SELECT 1 FROM public.scheduler_reservations r WHERE (OLD.kind='origin' AND (r.origin_key=OLD.budget_key OR r.target_keys @> jsonb_build_array(jsonb_build_object('origin_key',OLD.budget_key)))) OR (OLD.kind='ip' AND (r.ip_key=OLD.budget_key OR r.target_keys @> jsonb_build_array(jsonb_build_object('ip_key',OLD.budget_key)))))
  OR EXISTS(SELECT 1 FROM public.monitor_runs r WHERE (OLD.kind='workspace' AND r.workspace_id::text=OLD.budget_key)
   OR (OLD.kind='project' AND r.workspace_id::text||'/'||r.project_id::text=OLD.budget_key)
   OR (OLD.kind='monitor' AND r.workspace_id::text||'/'||r.project_id::text||'/'||r.monitor_id::text=OLD.budget_key)) THEN
@@ -603,6 +604,7 @@ BEGIN
  WHERE u.id=p_uid AND u.status='active' AND b.role='owner' AND b.membership_id=p_membership
  AND m.version=p_v AND a.desired_state='enabled' AND a.activation_generation=p_g AND a.activation_configuration_version=p_v
  AND x.authorized_configuration_version=p_v AND x.authorized_activation_generation=p_g AND x.scheduler_epoch=p_epoch AND x.consent_protocol=1
+ AND (x.last_started_at IS NULL OR x.last_started_at+m.interval_seconds*interval '1 second'<=gate_now)
  AND x.expires_at>gate_now AND (x.next_due_at IS NULL OR x.next_due_at<=gate_now) AND (x.next_start_not_before IS NULL OR x.next_start_not_before<=gate_now)
  AND c.control_id='deployment' AND c.gate='fixture' AND NOT c.emergency_stop AND c.expires_at>gate_now
  AND c.disk_used_bytes<c.disk_budget_bytes*0.8
@@ -646,6 +648,7 @@ BEGIN
   WHERE s.authorized_configuration_version IS NOT NULL AND s.expires_at>clock_timestamp()
   AND (s.next_due_at IS NULL OR s.next_due_at<=clock_timestamp())
   AND (s.next_start_not_before IS NULL OR s.next_start_not_before<=clock_timestamp())
+  AND NOT EXISTS(SELECT 1 FROM public.http_monitors m WHERE m.workspace_id=s.workspace_id AND m.project_id=s.project_id AND m.id=s.monitor_id AND s.last_started_at+m.interval_seconds*interval '1 second'>clock_timestamp())
   AND EXISTS(SELECT 1 FROM public.workspace_members b JOIN public.users u ON u.id=b.user_id WHERE b.workspace_id=s.workspace_id AND b.role='owner' AND u.status='active')
   AND NOT EXISTS(SELECT 1 FROM public.monitor_runs r WHERE r.workspace_id=s.workspace_id AND r.project_id=s.project_id AND r.monitor_id=s.monitor_id AND (r.attempt_state IN ('leased','started') OR r.physical_release_confirmed_at IS NULL))
   GROUP BY s.workspace_id ORDER BY CASE WHEN p_after IS NULL OR s.workspace_id>p_after THEN 0 ELSE 1 END,s.workspace_id LIMIT 64
@@ -655,6 +658,7 @@ BEGIN
    SELECT s.workspace_id,s.project_id,s.monitor_id,s.authorized_configuration_version v,s.authorized_activation_generation g,s.scheduler_epoch,s.next_run_id,s.next_due_at
    FROM public.monitor_schedules s WHERE s.workspace_id=w.workspace_id AND s.authorized_configuration_version IS NOT NULL AND s.expires_at>clock_timestamp()
    AND (s.next_due_at IS NULL OR s.next_due_at<=clock_timestamp()) AND (s.next_start_not_before IS NULL OR s.next_start_not_before<=clock_timestamp())
+  AND NOT EXISTS(SELECT 1 FROM public.http_monitors m WHERE m.workspace_id=s.workspace_id AND m.project_id=s.project_id AND m.id=s.monitor_id AND s.last_started_at+m.interval_seconds*interval '1 second'>clock_timestamp())
    AND NOT EXISTS(SELECT 1 FROM public.monitor_runs r WHERE r.workspace_id=s.workspace_id AND r.project_id=s.project_id AND r.monitor_id=s.monitor_id AND (r.attempt_state IN ('leased','started') OR r.physical_release_confirmed_at IS NULL))
    ORDER BY s.next_due_at NULLS FIRST,s.project_id,s.monitor_id LIMIT 8
   ) x CROSS JOIN LATERAL (
@@ -771,6 +775,8 @@ BEGIN
  AND s.authorized_configuration_version=m.version AND s.authorized_activation_generation=a.activation_generation AND s.scheduler_epoch=r.scheduler_epoch AND s.consent_protocol=1
  AND s.last_fencing_token=p_fence AND s.expires_at>gate_now
  AND (s.next_start_not_before IS NULL OR s.next_start_not_before<=gate_now)
+ AND (s.last_started_at IS NULL OR s.last_started_at+m.interval_seconds*interval '1 second'<=gate_now)
+ AND NOT EXISTS(SELECT 1 FROM public.scheduler_budget_state mb WHERE mb.kind='monitor' AND mb.budget_key=p_wid::text||'/'||p_pid::text||'/'||p_mid::text AND mb.not_before>gate_now)
  AND r.lease_until>=gate_now+(m.timeout_seconds+5)*interval '1 second'
  AND q.reservation_state='reserved' AND q.namespace_incarnation IS NOT NULL AND q.input_consumed_at IS NULL
  AND q.permit_deadline>=gate_now+m.timeout_seconds*interval '1 second' AND q.permit_deadline<=gate_now+interval '35 seconds'
@@ -961,6 +967,186 @@ END $$;
 ALTER FUNCTION scheduler_private.expire_unstarted(uuid,uuid,uuid,uuid,uuid,bigint) OWNER TO devpilot_scheduler_owner;
 REVOKE ALL ON FUNCTION scheduler_private.expire_unstarted(uuid,uuid,uuid,uuid,uuid,bigint) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION scheduler_private.expire_unstarted(uuid,uuid,uuid,uuid,uuid,bigint) TO devpilot_scheduler_worker;
+
+-- Target catalog is an offline fixture attestation, never a network allow rule.
+-- Only HMAC digests and immutable scoped configuration identities are stored.
+ALTER TABLE public.scheduler_control ADD COLUMN target_key_generation bigint NOT NULL DEFAULT 0 CHECK(target_key_generation>=0);
+ALTER TABLE public.scheduler_control ADD COLUMN target_keys_rotated_at timestamptz;
+ALTER TABLE public.scheduler_control ADD COLUMN target_catalog jsonb NOT NULL DEFAULT '[]' CHECK(jsonb_typeof(target_catalog)='array' AND jsonb_array_length(target_catalog)<=1000 AND octet_length(target_catalog::text)<=524288);
+ALTER TABLE public.scheduler_control ADD CONSTRAINT scheduler_target_catalog_scope CHECK(kind='deployment' OR (target_key_generation=0 AND target_keys_rotated_at IS NULL AND target_catalog='[]'));
+ALTER TABLE public.scheduler_reservations ADD CONSTRAINT scheduler_retained_target_keys_shape CHECK((target_permit_id IS NULL)=(target_keys='[]'));
+-- A future physical release must release every retained digest, not just the
+-- current key. No release capability is introduced in this checkpoint.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.target_reservation_guard() RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog,scheduler_private AS $$
+BEGIN
+ IF (OLD.target_keys<>'[]' AND NEW.target_keys IS DISTINCT FROM OLD.target_keys)
+ OR (NEW.target_permit_id IS NULL)<>(NEW.target_keys='[]') THEN
+  RAISE EXCEPTION 'immutable target reservation required' USING ERRCODE='23514';
+ END IF;
+ RETURN NEW;
+END $$;
+-- +goose StatementEnd
+REVOKE ALL ON FUNCTION scheduler_private.target_reservation_guard() FROM PUBLIC;
+CREATE TRIGGER scheduler_target_reservation_guard BEFORE UPDATE ON public.scheduler_reservations FOR EACH ROW EXECUTE FUNCTION scheduler_private.target_reservation_guard();
+
+-- Private arithmetic helper. Numeric elapsed seconds avoids truncating the
+-- 1/60 refill rate; exactly sixty seconds restores exactly one origin token.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.consume_target_token(p_kind text,p_key text,p_now timestamptz) RETURNS void
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private AS $$
+DECLARE b public.scheduler_budget_state%ROWTYPE; available bigint; period integer;
+BEGIN
+ IF p_kind NOT IN ('origin','ip') THEN RAISE EXCEPTION 'invalid target kind' USING ERRCODE='22023'; END IF;
+ SELECT * INTO STRICT b FROM public.scheduler_budget_state x WHERE x.kind=p_kind AND x.budget_key=p_key;
+ IF p_now<b.last_refill_at THEN RAISE EXCEPTION 'clock_untrusted' USING ERRCODE='P0001'; END IF;
+ period:=CASE p_kind WHEN 'origin' THEN 60 ELSE 1 END;
+ available:=floor(LEAST(1000000::numeric,b.tokens::numeric+extract(epoch FROM p_now-b.last_refill_at)*1000000/period))::bigint;
+ IF available<1000000 OR b.not_before>p_now THEN RAISE EXCEPTION 'resource_limited' USING ERRCODE='P0001'; END IF;
+ UPDATE public.scheduler_budget_state SET tokens=available-1000000,last_refill_at=p_now,
+ not_before=GREATEST(not_before,p_now+period*interval '1 second'),keep_until=GREATEST(keep_until,p_now+interval '1 hour') WHERE kind=p_kind AND budget_key=p_key;
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.consume_target_token(text,text,timestamptz) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.consume_target_token(text,text,timestamptz) FROM PUBLIC;
+
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.rotate_target_budget_keys(p_incarnation uuid,p_next_generation bigint,p_catalog jsonb) RETURNS jsonb
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE d public.scheduler_control%ROWTYPE; item jsonb; key_doc jsonb; old_item jsonb; old_key jsonb; key_row record; n timestamptz; previous xid8; generations integer;
+BEGIN
+ PERFORM scheduler_private.system_identity('controller',p_incarnation);
+ IF p_catalog IS NULL OR jsonb_typeof(p_catalog)<>'array' OR jsonb_array_length(p_catalog) NOT BETWEEN 1 AND 1000 OR octet_length(p_catalog::text)>524288 THEN
+  RAISE EXCEPTION 'invalid fixture catalog' USING ERRCODE='22023'; END IF;
+ -- Global precedes targets and control. No scoped parent is acquired here.
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='global' AND budget_key='global' FOR UPDATE;
+ SELECT * INTO STRICT d FROM public.scheduler_control WHERE control_id='deployment';
+ IF p_next_generation IS DISTINCT FROM d.target_key_generation+1 THEN RAISE EXCEPTION 'invalid key generation' USING ERRCODE='22023'; END IF;
+ generations:=CASE WHEN d.target_key_generation=0 THEN 1 ELSE 2 END;
+ FOR item IN SELECT value FROM jsonb_array_elements(p_catalog) LOOP
+  IF jsonb_typeof(item)<>'object' OR (SELECT count(*) FROM jsonb_object_keys(item))<>5
+  OR NOT(item ?& ARRAY['workspace_id','project_id','monitor_id','configuration_version','keys'])
+  OR jsonb_typeof(item->'workspace_id')<>'string' OR jsonb_typeof(item->'project_id')<>'string' OR jsonb_typeof(item->'monitor_id')<>'string'
+  OR jsonb_typeof(item->'configuration_version')<>'string' OR (item->>'configuration_version')!~'^[1-9][0-9]{0,18}$'
+  OR (item->>'configuration_version')::numeric>9223372036854775807 OR jsonb_typeof(item->'keys')<>'array' OR jsonb_array_length(item->'keys')<>generations
+  THEN RAISE EXCEPTION 'invalid fixture catalog' USING ERRCODE='22023'; END IF;
+  -- UUID casts reject malformed identities; comparison is always full scope.
+  PERFORM (item->>'workspace_id')::uuid,(item->>'project_id')::uuid,(item->>'monitor_id')::uuid;
+  FOR key_doc IN SELECT value FROM jsonb_array_elements(item->'keys') LOOP
+   IF jsonb_typeof(key_doc)<>'object' OR (SELECT count(*) FROM jsonb_object_keys(key_doc))<>3 OR NOT(key_doc ?& ARRAY['generation','origin_key','ip_key'])
+   OR jsonb_typeof(key_doc->'generation')<>'string' OR (key_doc->>'generation')!~'^[1-9][0-9]{0,18}$'
+   OR (key_doc->>'generation')::numeric NOT IN (p_next_generation,d.target_key_generation)
+   OR jsonb_typeof(key_doc->'origin_key')<>'string' OR (key_doc->>'origin_key')!~'^[0-9a-f]{64}$'
+   OR jsonb_typeof(key_doc->'ip_key')<>'string' OR (key_doc->>'ip_key')!~'^[0-9a-f]{64}$' THEN RAISE EXCEPTION 'invalid fixture catalog' USING ERRCODE='22023'; END IF;
+  END LOOP;
+  IF (SELECT count(DISTINCT value->>'generation') FROM jsonb_array_elements(item->'keys'))<>generations THEN RAISE EXCEPTION 'invalid fixture generations' USING ERRCODE='22023'; END IF;
+  -- A current mapping must survive the next rotation under the same scope/v.
+  -- A newly registered scope/version carries both control-plane digests too.
+  IF d.target_key_generation>0 AND EXISTS(SELECT 1 FROM jsonb_array_elements(d.target_catalog) oi WHERE oi-'keys'=item-'keys')
+  AND NOT EXISTS(SELECT 1 FROM jsonb_array_elements(d.target_catalog) oi
+   WHERE oi-'keys'=item-'keys' AND EXISTS(SELECT 1 FROM jsonb_array_elements(oi->'keys') ok WHERE (ok->>'generation')::bigint=d.target_key_generation AND (item->'keys') @> jsonb_build_array(ok))) THEN
+   RAISE EXCEPTION 'retained fixture mapping required' USING ERRCODE='22023'; END IF;
+ END LOOP;
+ FOR old_item IN SELECT value FROM jsonb_array_elements(d.target_catalog) LOOP
+  SELECT value INTO old_key FROM jsonb_array_elements(old_item->'keys') WHERE (value->>'generation')::bigint=d.target_key_generation;
+  IF NOT EXISTS(SELECT 1 FROM jsonb_array_elements(p_catalog) ni WHERE ni-'keys'=old_item-'keys' AND (ni->'keys') @> jsonb_build_array(old_key)) THEN
+   RAISE EXCEPTION 'retained fixture mapping required' USING ERRCODE='22023'; END IF;
+ END LOOP;
+ FOR key_row IN SELECT kind,budget_key FROM (
+  SELECT 'origin'::text kind,k->>'origin_key' budget_key FROM jsonb_array_elements(p_catalog) i CROSS JOIN LATERAL jsonb_array_elements(i->'keys') k
+  UNION SELECT 'ip',k->>'ip_key' FROM jsonb_array_elements(p_catalog) i CROSS JOIN LATERAL jsonb_array_elements(i->'keys') k
+ ) keys ORDER BY CASE kind WHEN 'origin' THEN 0 ELSE 1 END,budget_key LOOP
+  INSERT INTO public.scheduler_budget_state(kind,budget_key,tokens,keep_until) VALUES(key_row.kind,key_row.budget_key,1000000,clock_timestamp()+interval '1 hour') ON CONFLICT DO NOTHING;
+  PERFORM 1 FROM public.scheduler_budget_state b WHERE b.kind=key_row.kind AND b.budget_key=key_row.budget_key FOR UPDATE;
+ END LOOP;
+ PERFORM 1 FROM public.scheduler_control WHERE control_id='deployment' FOR UPDATE;
+ SELECT last_transaction INTO previous FROM public.scheduler_control WHERE kind='controller' AND login_name=session_user AND incarnation=p_incarnation FOR UPDATE;
+ IF NOT FOUND OR previous=pg_current_xact_id() THEN RAISE EXCEPTION 'one operation per transaction required' USING ERRCODE='25000'; END IF;
+ SELECT clock_timestamp() INTO n;
+ PERFORM scheduler_private.system_identity('controller',p_incarnation);
+ IF EXISTS(SELECT 1 FROM public.scheduler_budget_state WHERE kind='global' AND (in_use<>0 OR active_count<>0 OR last_refill_at>n))
+ OR EXISTS(SELECT 1 FROM public.scheduler_budget_state WHERE kind IN ('origin','ip') AND in_use<>0)
+ OR n<d.target_keys_rotated_at
+ OR EXISTS(SELECT 1 FROM public.scheduler_control WHERE kind='controller' AND login_name=session_user AND incarnation=p_incarnation AND last_gate_at>n)
+ OR (d.target_key_generation>1 AND n<d.target_keys_rotated_at+interval '1 hour')
+ OR n>transaction_timestamp()+interval '2 seconds' THEN RAISE EXCEPTION 'target rotation unavailable' USING ERRCODE='P0001'; END IF;
+ UPDATE public.scheduler_budget_state SET keep_until=GREATEST(keep_until,n+interval '1 hour') WHERE kind IN ('origin','ip') AND budget_key IN (
+ SELECT k->>'origin_key' FROM jsonb_array_elements(p_catalog) i CROSS JOIN LATERAL jsonb_array_elements(i->'keys') k
+ UNION SELECT k->>'ip_key' FROM jsonb_array_elements(p_catalog) i CROSS JOIN LATERAL jsonb_array_elements(i->'keys') k);
+ UPDATE public.scheduler_control SET target_key_generation=p_next_generation,target_keys_rotated_at=n,target_catalog=p_catalog WHERE control_id='deployment';
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=n WHERE kind='controller' AND login_name=session_user AND incarnation=p_incarnation;
+ RETURN jsonb_build_object('generation',p_next_generation::text,'retained_until',n+interval '1 hour');
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.rotate_target_budget_keys(uuid,bigint,jsonb) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.rotate_target_budget_keys(uuid,bigint,jsonb) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.rotate_target_budget_keys(uuid,bigint,jsonb) TO devpilot_scheduler_controller;
+
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.reserve_target(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_uid uuid,p_membership uuid,p_run uuid,p_fence bigint,p_key_generation bigint,p_origin_key text,p_ip_key text) RETURNS jsonb
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; d public.scheduler_control%ROWTYPE; keys jsonb; key_row record; n timestamptz; observed timestamptz; permit uuid;
+BEGIN
+ PERFORM scheduler_private.system_identity('worker',p_incarnation);
+ IF p_uid IS NULL OR p_membership IS NULL OR p_key_generation IS NULL OR p_origin_key IS NULL OR p_ip_key IS NULL THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,p_uid,p_membership,false);
+ SELECT * INTO r FROM public.monitor_runs WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ IF NOT FOUND OR r.attempt_state<>'started' OR r.lease_owner<>session_user OR r.worker_incarnation<>p_incarnation OR r.fencing_token<>p_fence THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_budgets(p_wid,p_pid,p_mid);
+ -- Rotation also holds global, so this catalog cannot change during target locks.
+ SELECT * INTO STRICT d FROM public.scheduler_control WHERE control_id='deployment';
+ SELECT i->'keys' INTO keys FROM jsonb_array_elements(d.target_catalog) i WHERE i->>'workspace_id'=p_wid::text AND i->>'project_id'=p_pid::text AND i->>'monitor_id'=p_mid::text
+ AND i->>'configuration_version'=r.configuration_version::text AND EXISTS(SELECT 1 FROM jsonb_array_elements(i->'keys') k WHERE k->>'generation'=p_key_generation::text AND k->>'origin_key'=p_origin_key AND k->>'ip_key'=p_ip_key) LIMIT 1;
+ IF keys IS NULL OR d.target_key_generation<>p_key_generation THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ FOR key_row IN SELECT kind,budget_key FROM (
+  SELECT 'origin'::text kind,k->>'origin_key' budget_key FROM jsonb_array_elements(keys) k
+  UNION SELECT 'ip',k->>'ip_key' FROM jsonb_array_elements(keys) k
+ ) target_keys ORDER BY CASE kind WHEN 'origin' THEN 0 ELSE 1 END,budget_key LOOP
+  PERFORM 1 FROM public.scheduler_budget_state b WHERE b.kind=key_row.kind AND b.budget_key=key_row.budget_key FOR UPDATE;
+  IF NOT FOUND THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ END LOOP;
+ SELECT * INTO q FROM public.scheduler_reservations WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ IF NOT FOUND OR q.target_permit_id IS NOT NULL THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_control(p_incarnation);
+ PERFORM 1 FROM public.scheduler_control c WHERE c.kind='supervisor' AND c.incarnation=q.supervisor_incarnation FOR SHARE;
+ SELECT clock_timestamp() INTO observed;
+ SELECT GREATEST(observed,r.started_at,c.last_gate_at) INTO n FROM public.scheduler_control c WHERE c.kind='worker' AND c.login_name=session_user AND c.incarnation=p_incarnation;
+ IF n>observed+interval '2 seconds' THEN RAISE EXCEPTION 'clock_untrusted' USING ERRCODE='P0001'; END IF;
+ -- Fresh SPI snapshot after all waits; the one saved clock gates every DML.
+ PERFORM 1 FROM public.users u JOIN public.workspace_members b ON b.user_id=u.id AND b.workspace_id=p_wid
+ JOIN public.http_monitors m ON m.workspace_id=b.workspace_id AND m.project_id=p_pid AND m.id=p_mid
+ JOIN public.monitor_activation_states a ON a.workspace_id=m.workspace_id AND a.project_id=m.project_id AND a.monitor_id=m.id
+ JOIN public.monitor_schedules s ON s.workspace_id=m.workspace_id AND s.project_id=m.project_id AND s.monitor_id=m.id
+ CROSS JOIN public.scheduler_control c
+ WHERE u.id=p_uid AND u.status='active' AND b.membership_id=p_membership AND b.role='owner'
+ AND m.version=r.configuration_version AND a.desired_state='enabled' AND a.activation_configuration_version=m.version AND a.activation_generation=r.activation_generation
+ AND s.scheduler_epoch=r.scheduler_epoch AND s.authorized_configuration_version=m.version AND s.authorized_activation_generation=a.activation_generation AND s.last_fencing_token=p_fence AND s.expires_at>n
+ AND r.lease_until>=n+(m.timeout_seconds+5)*interval '1 second'
+ AND q.reservation_state='reserved' AND q.input_consumed_at IS NOT NULL AND q.input_consumed_at>=r.started_at AND q.permit_deadline>=n+m.timeout_seconds*interval '1 second'
+ AND q.permit_deadline<=r.started_at+interval '35 seconds'
+ AND EXISTS(SELECT 1 FROM public.scheduler_control z WHERE z.kind='supervisor' AND z.incarnation=q.supervisor_incarnation AND z.verified_at IS NOT NULL AND NOT z.emergency_stop AND z.expires_at>n)
+ AND c.control_id='deployment' AND c.gate='fixture' AND NOT c.emergency_stop AND c.expires_at>n AND c.disk_used_bytes<c.disk_budget_bytes*0.8
+ AND NOT EXISTS(SELECT 1 FROM public.scheduler_control h WHERE h.kind='http' AND h.routable AND (h.projection_protocol IS DISTINCT FROM 'intent-v2' OR NOT h.status_ready OR h.expires_at<=n OR h.expires_at IS NULL));
+ IF NOT FOUND OR n>transaction_timestamp()+interval '2 seconds' THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.system_identity('worker',p_incarnation);
+ FOR key_row IN SELECT kind,budget_key FROM (
+  SELECT 'origin'::text kind,k->>'origin_key' budget_key FROM jsonb_array_elements(keys) k
+  UNION SELECT 'ip',k->>'ip_key' FROM jsonb_array_elements(keys) k
+ ) target_keys ORDER BY CASE kind WHEN 'origin' THEN 0 ELSE 1 END,budget_key LOOP
+  UPDATE public.scheduler_budget_state SET in_use=in_use+1,keep_until=GREATEST(keep_until,n+interval '1 hour')
+  WHERE kind=key_row.kind AND budget_key=key_row.budget_key AND in_use<CASE key_row.kind WHEN 'origin' THEN 1 ELSE 2 END;
+  IF NOT FOUND THEN RAISE EXCEPTION 'resource_limited' USING ERRCODE='P0001'; END IF;
+  PERFORM scheduler_private.consume_target_token(key_row.kind,key_row.budget_key,n);
+ END LOOP;
+ permit:=uuidv7();
+ UPDATE public.scheduler_reservations SET origin_key=p_origin_key,ip_key=p_ip_key,target_keys=keys,target_permit_id=permit,target_permit_committed_at=n WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=n WHERE kind='worker' AND login_name=session_user AND incarnation=p_incarnation;
+ RETURN jsonb_build_object('permit_id',permit,'permit_deadline',q.permit_deadline,'committed_at',n);
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text) TO devpilot_scheduler_worker;
 
 -- +goose Down
 LOCK TABLE public.http_monitors IN SHARE ROW EXCLUSIVE MODE;

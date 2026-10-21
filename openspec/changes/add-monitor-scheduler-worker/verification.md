@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **Checkpoint2（仅4.1–4.6）已完成，累计20/47，停止等待独立复审**。用户第二轮源码审查通过远端`8ebba60bc4d70f2407d052b26796a4fd20c16a56`、认可Checkpoint1的14项后授权本轮。当前只交付父序Claim、状态/Lease/Fence、未知Claim提交对账与未Start租约回收的数据库协议及真实PG18证据。没有进入Checkpoint3，没有可执行Scheduler/Probe完整网络闭环；不将局部数据库验收描述为方案A完成。当前分批授权明确不创建PR。下文Continuation等为历史时间记录，以本节与末尾Checkpoint2验收为当前状态。
+当前 **Checkpoint3仅第5组预算实施/验收中，累计20/47**。用户独立审查通过Checkpoint2远端`655d9ee9429bc3032eec0ae95246a6f3994afc5c`后，授权5.1–5.3及5.4数据库协议；又明确批准仅Worker `reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text)`与Controller `rotate_target_budget_keys(uuid,bigint,jsonb)`两项窄EXECUTE。不得进入第6组、创建PR、合并、Archive或部署。5.1–5.3须待冻结SHA的真实PG18 normal/race验收后才能勾选；5.4等待独立Supervisor物理证明，保持未勾选。生产执行硬关闭。旧Checkpoint段落是历史记录，不代表本轮SHA已通过。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -35,9 +35,9 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 
 ## Acceptance status
 
-- 当前20/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6。其余27项保持未勾选，不推进Checkpoint3。
+- 当前20/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6。其余27项保持未勾选；当前仅推进第5组，不推进第6组。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
-- 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/目标预算/容量/完整故障及原76项新SHA复验仍未完成。
+- 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/完整容量与故障及原76项新SHA复验仍未完成；第5组预算本轮单独验收。
 - 冻结SHA的全量Go unit/race与完整PG18 normal/integration-race已通过；本轮无Push/PR CI验收结论、未创建PR。正式CI/实现PR仍属于后续完整Change交付。
 - 生产网络/部署：未验证，保持硬关闭。
 

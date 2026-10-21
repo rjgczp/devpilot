@@ -69,6 +69,9 @@ func rollback(tx pgx.Tx) {
 func databaseError(err error) error {
 	var p *pgconn.PgError
 	if errors.As(err, &p) {
+		if (p.Code == "P0001" || p.Code == "23514") && p.Message == "retention_capacity" {
+			return ErrCapacity
+		}
 		if p.Code == "P0001" {
 			if p.Message == "retention_capacity" {
 				return ErrCapacity
