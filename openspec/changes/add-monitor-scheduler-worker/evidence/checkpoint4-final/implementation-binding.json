@@ -1,0 +1,16 @@
+{
+  "tested_sha": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
+  "last_reviewed_sha": "e56c69a5832e88dfaac469071f9ada51a758dadc",
+  "clean_at_all_final_runs": true,
+  "source_inventory_sha256": "215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528",
+  "post_test_source_differences": [
+    "openspec/changes/add-monitor-scheduler-worker/tasks.md"
+  ],
+  "post_test_diff_reason": "Only two accepted task checkboxes; evidence and verification excluded from source inventory. No implementation/test/protocol/auth-doc changes after tested SHA.",
+  "migration1_8_unchanged": true,
+  "sql_acl_role_secret_privilege_changes": false,
+  "new_execute_grants_this_batch": [],
+  "physical_release_proof": false,
+  "target_network_executed": false,
+  "whole_change_complete": false
+}

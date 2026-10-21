@@ -1,0 +1,20 @@
+ok  	github.com/rjgczp/devpilot/cmd/api	8.816s
+?   	github.com/rjgczp/devpilot/cmd/probeinputfixture	[no test files]
+?   	github.com/rjgczp/devpilot/cmd/schedulerfixture	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/app	1.280s
+ok  	github.com/rjgczp/devpilot/internal/auth	1.068s
+ok  	github.com/rjgczp/devpilot/internal/config	1.013s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	1.034s
+ok  	github.com/rjgczp/devpilot/internal/monitor	1.541s
+ok  	github.com/rjgczp/devpilot/internal/monitoring	5.936s
+ok  	github.com/rjgczp/devpilot/internal/monitoring/handoff	1.011s
+?   	github.com/rjgczp/devpilot/internal/monitoring/probesandbox	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/password	12.822s
+ok  	github.com/rjgczp/devpilot/internal/project	1.506s
+ok  	github.com/rjgczp/devpilot/internal/registration	1.092s
+ok  	github.com/rjgczp/devpilot/internal/scheduler	1.022s
+ok  	github.com/rjgczp/devpilot/internal/session	1.019s
+ok  	github.com/rjgczp/devpilot/internal/testdb	1.009s
+ok  	github.com/rjgczp/devpilot/internal/user	1.006s
+ok  	github.com/rjgczp/devpilot/internal/workspace	1.584s

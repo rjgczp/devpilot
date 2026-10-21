@@ -1,0 +1,255 @@
+{
+  "Id": "fecf5a3f8bf0793e668a02cafeb085c64cd9afb27f0181c789bcb56cb9c20b22",
+  "Created": "2026-10-21T07:47:46.389251052Z",
+  "Path": "/testbin/process.test",
+  "Args": [
+    "-test.v",
+    "-test.failfast",
+    "-test.timeout=30s"
+  ],
+  "State": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-10-21T07:47:46.589691344Z",
+    "FinishedAt": "2026-10-21T07:47:48.186013803Z"
+  },
+  "Image": "sha256:29d97266c1d341b7424e2f5085440b74654ae0b61ecdba206bc12d6264844e21",
+  "ResolvConfPath": "/var/lib/docker/containers/fecf5a3f8bf0793e668a02cafeb085c64cd9afb27f0181c789bcb56cb9c20b22/resolv.conf",
+  "HostnamePath": "/var/lib/docker/containers/fecf5a3f8bf0793e668a02cafeb085c64cd9afb27f0181c789bcb56cb9c20b22/hostname",
+  "HostsPath": "/var/lib/docker/containers/fecf5a3f8bf0793e668a02cafeb085c64cd9afb27f0181c789bcb56cb9c20b22/hosts",
+  "LogPath": "/var/lib/docker/containers/fecf5a3f8bf0793e668a02cafeb085c64cd9afb27f0181c789bcb56cb9c20b22/fecf5a3f8bf0793e668a02cafeb085c64cd9afb27f0181c789bcb56cb9c20b22-json.log",
+  "Name": "/devpilot-input-33c504e92663",
+  "RestartCount": 0,
+  "Driver": "overlayfs",
+  "Platform": "linux",
+  "MountLabel": "",
+  "ProcessLabel": "",
+  "AppArmorProfile": "",
+  "ExecIDs": null,
+  "HostConfig": {
+    "Binds": [
+      "/private/tmp/devpilot-scheduler-tools/cp4-process-race.test:/testbin/process.test:ro",
+      "/private/tmp/devpilot-scheduler-tools/cp4-probe:/testbin/cp4-probe:ro"
+    ],
+    "ContainerIDFile": "",
+    "LogConfig": {
+      "Type": "json-file",
+      "Config": {}
+    },
+    "NetworkMode": "none",
+    "PortBindings": {},
+    "RestartPolicy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "AutoRemove": false,
+    "VolumeDriver": "",
+    "VolumesFrom": null,
+    "ConsoleSize": [
+      0,
+      0
+    ],
+    "CapAdd": [
+      "CAP_SETGID",
+      "CAP_SETPCAP",
+      "CAP_SETUID"
+    ],
+    "CapDrop": [
+      "ALL"
+    ],
+    "CgroupnsMode": "private",
+    "Dns": null,
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": null,
+    "GroupAdd": null,
+    "IpcMode": "private",
+    "Cgroup": "",
+    "Links": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "Privileged": false,
+    "PublishAllPorts": false,
+    "ReadonlyRootfs": true,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "UTSMode": "",
+    "UsernsMode": "",
+    "ShmSize": 67108864,
+    "Runtime": "runc",
+    "Isolation": "",
+    "CpuShares": 0,
+    "Memory": 134217728,
+    "NanoCpus": 1000000000,
+    "CgroupParent": "",
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "BlkioDeviceReadBps": [],
+    "BlkioDeviceWriteBps": [],
+    "BlkioDeviceReadIOps": [],
+    "BlkioDeviceWriteIOps": [],
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "Devices": [],
+    "DeviceCgroupRules": null,
+    "DeviceRequests": null,
+    "MemoryReservation": 0,
+    "MemorySwap": 134217728,
+    "MemorySwappiness": null,
+    "OomKillDisable": null,
+    "PidsLimit": 128,
+    "Ulimits": [
+      {
+        "Name": "core",
+        "Hard": 0,
+        "Soft": 0
+      },
+      {
+        "Name": "nofile",
+        "Hard": 256,
+        "Soft": 256
+      }
+    ],
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "IOMaximumIOps": 0,
+    "IOMaximumBandwidth": 0,
+    "MaskedPaths": [
+      "/proc/acpi",
+      "/proc/asound",
+      "/proc/interrupts",
+      "/proc/kcore",
+      "/proc/keys",
+      "/proc/latency_stats",
+      "/proc/sched_debug",
+      "/proc/scsi",
+      "/proc/timer_list",
+      "/proc/timer_stats",
+      "/sys/devices/virtual/powercap",
+      "/sys/firmware"
+    ],
+    "ReadonlyPaths": [
+      "/proc/bus",
+      "/proc/fs",
+      "/proc/irq",
+      "/proc/sys",
+      "/proc/sysrq-trigger"
+    ]
+  },
+  "Storage": {
+    "RootFS": {
+      "Snapshot": {
+        "Name": "overlayfs"
+      }
+    }
+  },
+  "Mounts": [
+    {
+      "Type": "bind",
+      "Source": "/private/tmp/devpilot-scheduler-tools/cp4-process-race.test",
+      "Destination": "/testbin/process.test",
+      "Mode": "ro",
+      "RW": false,
+      "Propagation": "rprivate"
+    },
+    {
+      "Type": "bind",
+      "Source": "/private/tmp/devpilot-scheduler-tools/cp4-probe",
+      "Destination": "/testbin/cp4-probe",
+      "Mode": "ro",
+      "RW": false,
+      "Propagation": "rprivate"
+    }
+  ],
+  "Config": {
+    "Hostname": "fecf5a3f8bf0",
+    "Domainname": "",
+    "User": "",
+    "AttachStdin": false,
+    "AttachStdout": true,
+    "AttachStderr": true,
+    "Tty": false,
+    "OpenStdin": false,
+    "StdinOnce": false,
+    "Env": [
+      "DB_PASSWORD=DB_PASSWORD_SENTINEL",
+      "COOKIE=COOKIE_SENTINEL",
+      "AWS_SECRET_ACCESS_KEY=CLOUD_SECRET_SENTINEL",
+      "PATH=/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "GOLANG_VERSION=1.24.3",
+      "GOTOOLCHAIN=local",
+      "GOPATH=/go"
+    ],
+    "Cmd": [
+      "-test.v",
+      "-test.failfast",
+      "-test.timeout=30s"
+    ],
+    "Image": "golang:1.24.3-bookworm",
+    "Volumes": null,
+    "WorkingDir": "/go",
+    "Entrypoint": [
+      "/testbin/process.test"
+    ],
+    "Labels": {
+      "devpilot.disposable.input": "devpilot-input-33c504e92663"
+    },
+    "StopTimeout": 1
+  },
+  "NetworkSettings": {
+    "SandboxID": "",
+    "SandboxKey": "",
+    "Ports": {},
+    "Networks": {
+      "none": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "DriverOpts": null,
+        "GwPriority": 0,
+        "NetworkID": "219f5a5749f265612644df75276812d37caee1ae7a2c289ec23f985dbd48d736",
+        "EndpointID": "",
+        "Gateway": "",
+        "IPAddress": "",
+        "MacAddress": "",
+        "IPPrefixLen": 0,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "DNSNames": null
+      }
+    }
+  },
+  "ImageManifestDescriptor": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "digest": "sha256:f3e4a9c4e401ce4c5fb47156e0ac513848cb62c3913d6ce7ad683b268d9cd55f",
+    "size": 2324,
+    "annotations": {
+      "com.docker.official-images.bashbrew.arch": "arm64v8",
+      "org.opencontainers.image.base.digest": "sha256:8d0e5b1e129ecfbdc5de2ae5364f33a94a4b0d7f78f84d03ab044a4daaf55683",
+      "org.opencontainers.image.base.name": "buildpack-deps:bookworm-scm",
+      "org.opencontainers.image.created": "2025-05-22T12:31:50Z",
+      "org.opencontainers.image.revision": "6f5593131e9bccda9a4e83f858427d4d0d16b58d",
+      "org.opencontainers.image.source": "https://github.com/docker-library/golang.git#6f5593131e9bccda9a4e83f858427d4d0d16b58d:1.24/bookworm",
+      "org.opencontainers.image.url": "https://hub.docker.com/_/golang",
+      "org.opencontainers.image.version": "1.24.3-bookworm"
+    },
+    "platform": {
+      "architecture": "arm64",
+      "os": "linux",
+      "variant": "v8"
+    }
+  }
+}

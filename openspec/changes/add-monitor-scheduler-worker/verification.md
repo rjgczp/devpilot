@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **本轮仅6.1–6.2实施/验收中，既有23/47已验收**。实际起始HEAD/已审远端为`e56c69a5832e88dfaac469071f9ada51a758dadc`，工作区起始干净。Checkpoint3的5.1–5.3已获独立技术评审通过；产品负责人本次补充授权才是两项目标预算EXECUTE的当前权威溯源，不能以Checkpoint2授权代替。5.4保持未完成，6.3–6.5及第7/8组不得提前实施。生产网络硬关闭，无目标DNS/TCP/TLS/HTTP，本轮仅PG控制面和无凭据匿名pipe/进程边界。待冻结SHA的真实normal/race验收通过才勾选6.1–6.2；不创建PR/合并/Archive/部署。下文旧Checkpoint段落为历史，以本节与末尾本轮验收记录为当前状态。
+当前 **6.1–6.2已验收，累计25/47，冻结并停止等待独立复审**。起始已审HEAD/远端为`e56c69a5832e88dfaac469071f9ada51a758dadc`、工作区干净；本轮冻结实现及全部最终测试SHA为`7b761cad01706ff1abfba51bf0e13f2d091fd44a`。后续交付提交仅tasks/verification/evidence，代码、测试和授权文档字节不变。产品负责人本次Checkpoint3补充授权是两项目标预算EXECUTE的当前权威溯源，不能以Checkpoint2授权代替。5.4、6.3–6.5及第7–10组未完成，未提前实施。生产网络硬关闭，本轮只验证PG控制面及无目标网络的匿名pipe/进程边界；未创建PR/合并/Archive/部署。推送现有独立分支后立即停止。历史段落不代替本轮新SHA证据，以本节与末尾本轮验收为准。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -35,7 +35,7 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 
 ## Acceptance status
 
-- 当前23/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3。其余24项保持未勾选，包含5.4与第6–10组。
+- 当前25/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3及第6组6.1–6.2。其余22项保持未勾选，包含5.4、6.3–6.5及第7–10组。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
 - 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/完整容量与故障及原76项新SHA复验仍未完成；第5组预算本轮单独验收。
 - 冻结SHA的全量Go unit/race与完整PG18 normal/integration-race已通过；本轮无Push/PR CI验收结论、未创建PR。正式CI/实现PR仍属于后续完整Change交付。
@@ -221,3 +221,32 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 实际起始HEAD与远端均为`e56c69a5832e88dfaac469071f9ada51a758dadc`，工作区干净。产品负责人本次明确批准Checkpoint3两项能力：Worker独占EXECUTE `scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text)`，Controller独占EXECUTE `scheduler_private.rotate_target_budget_keys(uuid,bigint,jsonb)`。本次补充授权是当前权威溯源；Checkpoint2代码基线及其reconcile_claim/expire_unstarted授权不能代替本次授权，历史短回复只作历史上下文。当前仅修正文档，不扩SQL权限、角色属性、表列或秘密权限。
 
 本轮仅实施6.1–6.2：Start Commit及匿名pipe/无凭据进程边界。生产执行硬关闭，子进程不得解析DNS/拨号/HTTP。6.3–6.5、5.4物理回收及第7/8组未获本轮实施授权。5.4保持未完成，无数据库状态可代替独立Supervisor物理终止证明。当前仍23/47，待本轮真实PG18/Linux冻结SHA验收后再勾选。
+
+
+## Tasks6.1–6.2 — frozen Start and input-only process acceptance
+
+产品负责人本次在审查`e56c69a5832e88dfaac469071f9ada51a758dadc`后正式补充批准：`reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text)`仅Worker EXECUTE，`rotate_target_budget_keys(uuid,bigint,jsonb)`仅Controller EXECUTE；权威溯源见`docs/monitor-scheduler-checkpoint3-capabilities.md`及`evidence/checkpoint4-final/authorization-supplement.json`。Checkpoint2历史授权不能冒充本次批准。本轮没有新增/修改SQL、EXECUTE、角色属性、表列或秘密读取权限；Migration1–8均与已审HEAD字节相同。
+
+实际冻结实现/测试SHA：`7b761cad01706ff1abfba51bf0e13f2d091fd44a`。所有最终命令HEAD干净，源码清单SHA256=`215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528`。后续仅两个任务勾选的源码清单差异，verification/evidence排除于清单，代码/测试/协议/授权文档不变。实际命令、退出码、原始日志、二进制hash及逐Requirement/Scenario映射见`evidence/checkpoint4-final/README.md`、`requirement-test-evidence.json`、`implementation-binding.json`和manifest。
+
+| 实际验收 | 结果 |
+| --- | --- |
+| 新增7项真实PG18 Start/Input协议及14项相关预算回归 | normal/race各21，全部exit0，无skip |
+| 既有PG18 integration/integration-race | 各147，串行145+真实60s授权+真实45s Lease，全部exit0 |
+| Linux真实匿名pipe/子进程 | normal/race各2项顶层测试，12类畸形/跨谱系负例，另含真实进程重启重用已消费pipe拒绝，全部exit0 |
+| 旧内核无网络PG快照合同 | normal/race各3，身份/Scope权限/连接释放/语句一致性通过；未选择live网络用例 |
+| 全量Go unit/race，Linux fixture unit/race，vet/gofmt/diff-check | 全部exit0；原内核离线安全策略及发布产物边界保留 |
+| Migration1–8源hash及字节对比 | 与已审HEAD完全相同，无数据库权限变更 |
+| Change strict | exit0 |
+| 全库strict | exit1，仅原4份历史规格7项长度警告；输出hash仍为`fef4737504c8a9567664c2e4925fa8db19971473867e035eb2f8dff3ca9bd3d1` |
+| 原测试库最终状态 | PG18.6/schema0，无临时角色、其它活跃事务或锁等待 |
+
+6.1：复用已审Start父序与受限VOLATILE函数，11级真实锁屏障保存pg_locks/pg_blocking_pids、DB时钟和最终状态；两个Owner/Worker与用户Pause/PATCH双提交顺序、Claim/Pause双顺序通过。最后control等待跨授权期限、Owner失活、Supervisor过期、紧停后新语句门控拒绝；原45s Lease实际等待30s后剩余不足timeout10+5拒绝，没有缩短Lease或延长测试超时。真实Commit成功、真实提交后丢ACK与回滚丢ACK均验证，未知Start无快照/信封，读回started不能重新Start。Start成功后Pause/PATCH不替换旧v/g/URL快照；符合已批准在途语义，未发送请求。
+
+6.2：发送端只在Start确认后可取得私有能力；独立Supervisor既有consume_input确认提交且释放连接之后，才写4096字节固定帧与1024字节受信绑定回执到匿名pipe。任何失败均消耗发送能力，未知输入ACK不返回fd、不重连；接收端验证真实匿名FIFO、精确长度/EOF、规范严格JSON、完整谱系/摘要/期限且只消费一次。摘要只是受信fd绑定，不是用户鉴权或Probe HMAC秘密；恶意受信Controller同时伪造两管道不属于接收端证明。PG pool/pg_stat_activity实测信封接收/离线桥期间无业务事务或占用连接；本轮未进行实际网络卡点实验。
+
+真实Linux子进程UID/GID65534、无附加组，包含bounding在内全部caps0、NNP、全部线程TSYNC seccomp；实际禁止socket（含io_uring绕过）、exec及管理/namespace操作。只有LANG/TZ环境，父进程DB/Cookie/云sentinel未进入；只有受控pipe及runtime内部fd，无源码/配置/凭据卷/管理Socket。容器只读根、128MiB/CPU1/PID128/FD256为实际cgroup/rlimit，观察真实EMFILE；资源限制覆盖整个fixture进程组，比单子进程更紧。父进程读取存活子进程/proc独立确认；URL/秘密不出现在argv/env/普通输出或Run持久化。私有桥只构造原监控Snapshot并复用离线验证，不调用或导出DNS/HTTP执行器。未来完整桥依赖6.3及独立许可。
+
+开发期一个PG用例失败23514：紧停fixture使用了非法gate=fixture/stop=true组合，只修fixture为gate关闭与stop原子变化，原始失败与成功日志保留，未改安全约束/ACL/超时。最终SHA没有非预期安全超时、权限不一致或协议死锁；历史故障注入预期55P03/57014/40P01仍保留。测试通过不证明所有并发交错皆无缺陷。此前Supervisor工具审核首次超时原因仍无确定性证明；生产历史角色ACL清单仍缺失，不推断生产GRANT。
+
+5.4仍未完成；数据库准备/输入消费、子进程退出及可销毁fixture清理都不是独立Supervisor物理终止证明。新PG用例保留未释放账本并确认Down拒绝后销毁各自测试库，没有伪造终止回执/physical_release时间。PG发放与独立sandbox是同一协议/SHA的分层真实证明，尚非Supervisor全流程。6.3网络钩子、6.4 namespace/veth/防火墙、6.5独立物理停止，以及第7/8组均未实现。原76项/执行网络、live snapshot及API目标strace本轮因明确禁止目标网络而未执行/未声称通过，源码及白名单不变。unknown数据库状态协调属于第7组，本轮未知确认只返回无能力并保留资源，不冒称恢复系统完成。生产执行硬关闭，不创建PR/合并/Archive/部署，不自动进入6.3；推送后等待独立复审。
