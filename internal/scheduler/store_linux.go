@@ -12,6 +12,8 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
+const transactionBudget = 2 * time.Second
+
 var (
 	ErrUnavailable   = errors.New("scheduler unavailable")
 	ErrCandidate     = errors.New("candidate unavailable")
@@ -110,7 +112,7 @@ func (s Store) Claim(ctx context.Context, h Hint) (Lease, error) {
 		return Lease{}, databaseError(err)
 	}
 	var lease Lease
-	if json.Unmarshal(raw, &lease) != nil || lease.RunID != h.RunID {
+	if json.Unmarshal(raw, &lease) != nil || !lease.matches(h) {
 		return Lease{}, ErrUnavailable
 	}
 	if err = tx.Commit(ctx); err != nil {
@@ -155,4 +157,8 @@ func (s Store) Tick(ctx context.Context, after string) ([]Lease, string, error) 
 		}
 	}
 	return leases, cursor, nil
+}
+
+func (l Lease) matches(h Hint) bool {
+	return l.WorkspaceID == h.WorkspaceID && l.ProjectID == h.ProjectID && l.MonitorID == h.MonitorID && l.RunID == h.RunID && l.ConfigurationVersion == h.ConfigurationVersion && l.ActivationGeneration == h.ActivationGeneration && l.SchedulerEpoch == h.SchedulerEpoch && l.FencingToken != "" && !l.ClaimedAt.IsZero() && l.LeaseUntil.After(l.ClaimedAt)
 }

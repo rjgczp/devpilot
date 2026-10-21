@@ -114,13 +114,15 @@ INSERT INTO public.scheduler_budget_state(kind,budget_key,tokens,keep_until,key_
 CREATE TABLE public.scheduler_reservations (
  workspace_id uuid NOT NULL,project_id uuid NOT NULL,monitor_id uuid NOT NULL,run_id uuid NOT NULL,reservation_id uuid NOT NULL DEFAULT uuidv7(),
  reservation_state text NOT NULL CHECK(reservation_state IN ('reserved','quarantined','released')),
+ release_basis text NOT NULL DEFAULT 'supervisor' CHECK(release_basis IN ('supervisor','never_prepared')),
  namespace_incarnation uuid,supervisor_incarnation uuid,permit_deadline timestamptz,
  origin_key text CHECK(origin_key ~ '^[0-9a-f]{64}$'),ip_key text CHECK(ip_key ~ '^[0-9a-f]{64}$'),
  termination_receipt bytea CHECK(octet_length(termination_receipt)=32),released_at timestamptz,
  PRIMARY KEY(workspace_id,project_id,monitor_id,run_id),UNIQUE(reservation_id),
  FOREIGN KEY(workspace_id,project_id,monitor_id,run_id) REFERENCES public.monitor_runs ON DELETE RESTRICT,
  CHECK((namespace_incarnation IS NULL)=(supervisor_incarnation IS NULL)),
- CHECK((reservation_state='released' AND released_at IS NOT NULL AND termination_receipt IS NOT NULL)
+ CHECK((reservation_state='released' AND released_at IS NOT NULL AND
+ ((release_basis='supervisor' AND termination_receipt IS NOT NULL) OR (release_basis='never_prepared' AND termination_receipt IS NULL AND namespace_incarnation IS NULL)))
  OR (reservation_state<>'released' AND released_at IS NULL AND termination_receipt IS NULL))
 );
 CREATE TABLE public.scheduler_control (
@@ -189,7 +191,11 @@ BEGIN
  END IF;
  IF NEW.physical_release_confirmed_at IS NOT NULL AND OLD.physical_release_confirmed_at IS NULL
  AND NOT pg_has_role(session_user,'devpilot_scheduler_supervisor','MEMBER')
- AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_roles r WHERE r.rolname=session_user AND r.rolsuper) THEN
+ AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_roles r WHERE r.rolname=session_user AND r.rolsuper)
+ AND NOT(current_user='devpilot_scheduler_owner' AND OLD.attempt_state='leased' AND OLD.started_at IS NULL AND NEW.attempt_state='expired'
+ AND EXISTS(SELECT 1 FROM public.scheduler_reservations q WHERE q.workspace_id=OLD.workspace_id AND q.project_id=OLD.project_id AND q.monitor_id=OLD.monitor_id AND q.run_id=OLD.run_id
+ AND q.reservation_state='released' AND q.release_basis='never_prepared' AND q.termination_receipt IS NULL AND q.namespace_incarnation IS NULL
+ AND q.prepared_at IS NULL AND q.input_consumed_at IS NULL AND q.target_permit_id IS NULL AND q.permit_installed_at IS NULL)) THEN
   RAISE EXCEPTION 'independent supervisor proof required' USING ERRCODE='42501';
  END IF;
  IF ROW(NEW.workspace_id,NEW.project_id,NEW.monitor_id,NEW.run_id,NEW.configuration_version,NEW.activation_generation,NEW.scheduler_epoch,NEW.fencing_token,NEW.scheduled_at,NEW.creator_transaction,NEW.lease_owner,NEW.worker_incarnation)
@@ -199,6 +205,12 @@ BEGIN
  OR NEW.lease_until<OLD.lease_until
  OR (OLD.physical_release_confirmed_at IS NOT NULL AND NEW.physical_release_confirmed_at IS DISTINCT FROM OLD.physical_release_confirmed_at) THEN
   RAISE EXCEPTION 'run lineage or time is immutable' USING ERRCODE='23514';
+ END IF;
+ IF (OLD.attempt_state='leased' AND NEW.attempt_state NOT IN ('leased','started','canceled','expired'))
+ OR (OLD.attempt_state='started' AND NEW.attempt_state NOT IN ('started','completed','canceled','unknown'))
+ OR (OLD.attempt_state='leased' AND NEW.attempt_state IN ('canceled','expired') AND NEW.started_at IS NOT NULL)
+ OR (OLD.attempt_state='started' AND NEW.attempt_state='canceled' AND NEW.physical_release_confirmed_at IS NULL) THEN
+  RAISE EXCEPTION 'invalid attempt transition' USING ERRCODE='23514';
  END IF;
  IF (OLD.attempt_state IN ('completed','canceled','expired','unknown') AND
  ROW(NEW.attempt_state,NEW.result_commit_id,NEW.duration_ms,NEW.http_status,NEW.success,NEW.failure_code,NEW.stop_reason)
@@ -558,7 +570,7 @@ REVOKE ALL ON FUNCTION scheduler_private.lock_control(uuid) FROM PUBLIC;
 -- +goose StatementBegin
 CREATE FUNCTION scheduler_private.claim(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_uid uuid,p_membership uuid,p_v bigint,p_g bigint,p_epoch bigint,p_run uuid)
 RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
-DECLARE s public.monitor_schedules%ROWTYPE; provisional timestamptz; gate_now timestamptz; new_fence bigint;
+DECLARE s public.monitor_schedules%ROWTYPE; provisional timestamptz; gate_now timestamptz; observed_now timestamptz; previous_gate timestamptz; new_fence bigint;
 BEGIN
  PERFORM scheduler_private.system_identity('worker',p_incarnation);
  IF p_uid IS NULL OR p_membership IS NULL OR p_run IS NULL THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
@@ -576,7 +588,12 @@ BEGIN
  INSERT INTO public.scheduler_reservations(workspace_id,project_id,monitor_id,run_id,reservation_state) VALUES(p_wid,p_pid,p_mid,p_run,'reserved');
  PERFORM scheduler_private.lock_control(p_incarnation);
  -- Separate SPI command and fresh snapshot after every lock, including control.
- SELECT clock_timestamp() INTO gate_now;
+ SELECT clock_timestamp(),c.last_gate_at INTO observed_now,previous_gate FROM public.scheduler_control c
+ WHERE c.kind='worker' AND c.login_name=session_user AND c.incarnation=p_incarnation;
+ gate_now:=GREATEST(observed_now,s.updated_at,previous_gate);
+ -- A backwards step exceeding the existing2s transaction budget cannot be
+ -- absorbed into this operation; refuse rather than moving durable time back.
+ IF gate_now>observed_now+interval '2 seconds' THEN RAISE EXCEPTION 'clock_untrusted' USING ERRCODE='P0001'; END IF;
  PERFORM 1 FROM public.users u JOIN public.workspace_members b ON b.user_id=u.id AND b.workspace_id=p_wid
  JOIN public.projects p ON p.workspace_id=b.workspace_id AND p.id=p_pid
  JOIN public.http_monitors m ON m.workspace_id=p.workspace_id AND m.project_id=p.id AND m.id=p_mid
@@ -685,7 +702,16 @@ BEGIN
  OR (OLD.reservation_state='released' AND NEW IS DISTINCT FROM OLD) THEN
   RAISE EXCEPTION 'reservation lineage or consumed capability is immutable' USING ERRCODE='23514';
  END IF;
- IF NOT supervisor AND (ROW(NEW.namespace_incarnation,NEW.supervisor_incarnation,NEW.prepared_at,NEW.preparation_digest,NEW.permit_deadline,NEW.input_consumed_at,NEW.permit_installed_at,NEW.released_at,NEW.termination_receipt)
+ IF NEW.release_basis='never_prepared' AND (current_user<>'devpilot_scheduler_owner' OR OLD.reservation_state<>'reserved'
+ OR NEW.reservation_state<>'released' OR NEW.termination_receipt IS NOT NULL
+ OR NEW.namespace_incarnation IS NOT NULL OR NEW.supervisor_incarnation IS NOT NULL OR NEW.prepared_at IS NOT NULL OR NEW.preparation_digest IS NOT NULL
+ OR NEW.permit_deadline IS NOT NULL OR NEW.input_consumed_at IS NOT NULL OR NEW.target_permit_id IS NOT NULL OR NEW.target_permit_committed_at IS NOT NULL
+ OR NEW.permit_installed_at IS NOT NULL OR NEW.origin_key IS NOT NULL OR NEW.ip_key IS NOT NULL
+ OR NOT EXISTS(SELECT 1 FROM public.monitor_runs r WHERE r.workspace_id=OLD.workspace_id AND r.project_id=OLD.project_id AND r.monitor_id=OLD.monitor_id AND r.run_id=OLD.run_id
+ AND r.attempt_state='leased' AND r.started_at IS NULL AND r.lease_until<=clock_timestamp())) THEN
+  RAISE EXCEPTION 'never-prepared proof required' USING ERRCODE='42501';
+ END IF;
+ IF NOT supervisor AND NEW.release_basis<>'never_prepared' AND (ROW(NEW.namespace_incarnation,NEW.supervisor_incarnation,NEW.prepared_at,NEW.preparation_digest,NEW.permit_deadline,NEW.input_consumed_at,NEW.permit_installed_at,NEW.released_at,NEW.termination_receipt)
  IS DISTINCT FROM ROW(OLD.namespace_incarnation,OLD.supervisor_incarnation,OLD.prepared_at,OLD.preparation_digest,OLD.permit_deadline,OLD.input_consumed_at,OLD.permit_installed_at,OLD.released_at,OLD.termination_receipt)
  OR NEW.reservation_state='released') THEN
   RAISE EXCEPTION 'independent supervisor required' USING ERRCODE='42501';
@@ -714,7 +740,7 @@ REVOKE ALL ON FUNCTION scheduler_private.consume_token(text,text,bigint,bigint,t
 -- +goose StatementBegin
 CREATE FUNCTION scheduler_private.start_run(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_uid uuid,p_membership uuid,p_run uuid,p_fence bigint)
 RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
-DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; gate_now timestamptz; configuration public.http_monitors%ROWTYPE;
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; gate_now timestamptz; observed_now timestamptz; configuration public.http_monitors%ROWTYPE;
 BEGIN
  PERFORM scheduler_private.system_identity('worker',p_incarnation);
  IF p_uid IS NULL OR p_membership IS NULL THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
@@ -728,7 +754,12 @@ BEGIN
  PERFORM scheduler_private.lock_control(p_incarnation);
  -- The registered supervisor is also protected last, never before a parent.
  PERFORM 1 FROM public.scheduler_control c WHERE c.kind='supervisor' AND c.incarnation=q.supervisor_incarnation FOR SHARE;
- SELECT clock_timestamp() INTO gate_now;
+ SELECT clock_timestamp() INTO observed_now;
+ SELECT GREATEST(observed_now,r.claimed_at,s.updated_at,c.last_gate_at) INTO gate_now
+ FROM public.monitor_schedules s CROSS JOIN public.scheduler_control c
+ WHERE s.workspace_id=p_wid AND s.project_id=p_pid AND s.monitor_id=p_mid
+ AND c.kind='worker' AND c.login_name=session_user AND c.incarnation=p_incarnation;
+ IF gate_now>observed_now+interval '2 seconds' THEN RAISE EXCEPTION 'clock_untrusted' USING ERRCODE='P0001'; END IF;
  SELECT m.* INTO configuration FROM public.users u JOIN public.workspace_members b ON b.user_id=u.id AND b.workspace_id=p_wid
  JOIN public.projects p ON p.workspace_id=b.workspace_id AND p.id=p_pid
  JOIN public.http_monitors m ON m.workspace_id=p.workspace_id AND m.project_id=p.id AND m.id=p_mid
@@ -833,6 +864,103 @@ END $$;
 ALTER FUNCTION scheduler_private.consume_input(uuid,uuid,uuid,uuid,uuid,uuid,bigint) OWNER TO devpilot_scheduler_owner;
 REVOKE ALL ON FUNCTION scheduler_private.consume_input(uuid,uuid,uuid,uuid,uuid,uuid,bigint) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION scheduler_private.consume_input(uuid,uuid,uuid,uuid,uuid,uuid,bigint) TO devpilot_scheduler_supervisor;
+
+-- Claim reconciliation is read-only. Absence, expiry, another incarnation or a
+-- non-leased state never grants a replacement cycle or an execution capability.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.reconcile_claim(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid)
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE result jsonb;
+BEGIN
+ PERFORM scheduler_private.system_identity('worker',p_incarnation);
+ SELECT jsonb_build_object('workspace_id',r.workspace_id,'project_id',r.project_id,'monitor_id',r.monitor_id,'run_id',r.run_id,
+ 'configuration_version',r.configuration_version::text,'activation_generation',r.activation_generation::text,'scheduler_epoch',r.scheduler_epoch::text,
+ 'fencing_token',r.fencing_token::text,'claimed_at',r.claimed_at,'lease_until',r.lease_until)
+ INTO result FROM public.monitor_runs r JOIN public.monitor_schedules s USING(workspace_id,project_id,monitor_id)
+ JOIN public.http_monitors m ON m.workspace_id=r.workspace_id AND m.project_id=r.project_id AND m.id=r.monitor_id
+ JOIN public.monitor_activation_states a ON a.workspace_id=r.workspace_id AND a.project_id=r.project_id AND a.monitor_id=r.monitor_id
+ CROSS JOIN public.scheduler_control c CROSS JOIN LATERAL (SELECT clock_timestamp() now) t
+ WHERE r.workspace_id=p_wid AND r.project_id=p_pid AND r.monitor_id=p_mid AND r.run_id=p_run
+ AND r.lease_owner=session_user AND r.worker_incarnation=p_incarnation AND r.attempt_state='leased' AND r.started_at IS NULL AND r.lease_until>t.now
+ AND r.configuration_version=m.version AND a.desired_state='enabled' AND a.activation_generation=r.activation_generation AND a.activation_configuration_version=r.configuration_version
+ AND s.authorized_configuration_version=r.configuration_version AND s.authorized_activation_generation=r.activation_generation AND s.scheduler_epoch=r.scheduler_epoch AND s.last_fencing_token=r.fencing_token AND s.expires_at>t.now
+ AND EXISTS(SELECT 1 FROM public.workspace_members b JOIN public.users u ON u.id=b.user_id WHERE b.workspace_id=p_wid AND b.role='owner' AND u.status='active')
+ AND c.control_id='deployment' AND c.gate='fixture' AND NOT c.emergency_stop AND c.expires_at>t.now
+ AND c.disk_used_bytes<c.disk_budget_bytes*0.8
+ AND NOT EXISTS(SELECT 1 FROM public.scheduler_control h WHERE h.kind='http' AND h.routable AND
+ (h.projection_protocol IS DISTINCT FROM 'intent-v2' OR NOT h.status_ready OR h.expires_at<=t.now OR h.expires_at IS NULL));
+ RETURN result;
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.reconcile_claim(uuid,uuid,uuid,uuid,uuid) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.reconcile_claim(uuid,uuid,uuid,uuid,uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.reconcile_claim(uuid,uuid,uuid,uuid,uuid) TO devpilot_scheduler_worker;
+
+-- A recovery operation takes no User/Session/Membership locks. It cannot Start,
+-- renew authorization, or release a prepared namespace on a worker's assertion.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.expire_unstarted(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_fence bigint)
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; s public.monitor_schedules%ROWTYPE;
+ gate_now timestamptz; future_due timestamptz; interval_seconds integer; unprepared boolean;
+BEGIN
+ PERFORM scheduler_private.system_identity('worker',p_incarnation);
+ PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
+ SELECT * INTO r FROM public.monitor_runs x WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run FOR UPDATE;
+ IF NOT FOUND OR r.fencing_token IS DISTINCT FROM p_fence THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_budgets(p_wid,p_pid,p_mid);
+ SELECT * INTO STRICT q FROM public.scheduler_reservations x WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run FOR UPDATE;
+ PERFORM scheduler_private.lock_control(p_incarnation);
+ SELECT GREATEST(clock_timestamp(),r.claimed_at) INTO gate_now;
+ PERFORM scheduler_private.system_identity('worker',p_incarnation);
+ IF r.attempt_state<>'leased' OR r.started_at IS NOT NULL OR r.lease_until>gate_now THEN
+  RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001';
+ END IF;
+ unprepared:=q.namespace_incarnation IS NULL AND q.supervisor_incarnation IS NULL AND q.prepared_at IS NULL AND q.preparation_digest IS NULL
+ AND q.permit_deadline IS NULL AND q.input_consumed_at IS NULL AND q.target_permit_id IS NULL AND q.target_permit_committed_at IS NULL
+ AND q.permit_installed_at IS NULL AND q.origin_key IS NULL AND q.ip_key IS NULL AND q.reservation_state='reserved';
+ IF unprepared THEN
+  -- The database proves that no Supervisor preparation/input/target authority
+  -- ever existed. This is explicitly NOT a fabricated termination receipt.
+  UPDATE public.scheduler_reservations SET reservation_state='released',release_basis='never_prepared',released_at=gate_now
+  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ ELSE
+  UPDATE public.scheduler_reservations SET reservation_state='quarantined'
+  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ END IF;
+ UPDATE public.monitor_runs SET attempt_state='expired',finished_at=gate_now,stop_reason='lease_expired',
+ physical_release_confirmed_at=CASE WHEN unprepared THEN gate_now ELSE NULL END
+ WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ IF unprepared THEN
+  UPDATE public.scheduler_budget_state SET in_use=in_use-1,active_count=active_count-1 WHERE kind='global' AND budget_key='global' AND in_use>0 AND active_count>0;
+  IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+  UPDATE public.scheduler_budget_state SET in_use=in_use-1 WHERE kind='workspace' AND budget_key=p_wid::text AND in_use>0;
+  IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+  UPDATE public.scheduler_budget_state SET in_use=in_use-1 WHERE kind='project' AND budget_key=p_wid::text||'/'||p_pid::text AND in_use>0;
+  IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+  UPDATE public.scheduler_budget_state SET in_use=in_use-1 WHERE kind='monitor' AND budget_key=p_wid::text||'/'||p_pid::text||'/'||p_mid::text AND in_use>0;
+  IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+  SELECT * INTO s FROM public.monitor_schedules x WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid;
+  SELECT m.interval_seconds INTO interval_seconds FROM public.http_monitors m WHERE m.workspace_id=p_wid AND m.project_id=p_pid AND m.id=p_mid;
+  -- Fold an arbitrary backlog into one FUTURE cycle; never replay old due.
+  future_due:=GREATEST(gate_now+interval_seconds*interval '1 second',s.last_started_at+interval_seconds*interval '1 second',s.next_start_not_before);
+  UPDATE public.monitor_schedules SET next_run_id=uuidv7(),next_due_at=future_due,
+   blocked_reason=NULL,updated_at=GREATEST(updated_at,gate_now)
+  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND next_run_id=p_run
+  AND authorized_configuration_version=r.configuration_version AND authorized_activation_generation=r.activation_generation AND scheduler_epoch=r.scheduler_epoch;
+ ELSE
+  UPDATE public.monitor_schedules SET blocked_reason='quarantined',updated_at=GREATEST(updated_at,gate_now)
+  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND scheduler_epoch=r.scheduler_epoch;
+ END IF;
+ SELECT x.next_due_at INTO future_due FROM public.monitor_schedules x WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid;
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=GREATEST(last_gate_at,gate_now)
+ WHERE kind='worker' AND login_name=session_user AND incarnation=p_incarnation;
+ RETURN jsonb_build_object('run_id',p_run,'attempt_state','expired','released',unprepared,'next_due_at',CASE WHEN unprepared THEN future_due ELSE NULL END);
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.expire_unstarted(uuid,uuid,uuid,uuid,uuid,bigint) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.expire_unstarted(uuid,uuid,uuid,uuid,uuid,bigint) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.expire_unstarted(uuid,uuid,uuid,uuid,uuid,bigint) TO devpilot_scheduler_worker;
 
 -- +goose Down
 LOCK TABLE public.http_monitors IN SHARE ROW EXCLUSIVE MODE;

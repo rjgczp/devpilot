@@ -16,8 +16,9 @@ import (
 )
 
 type schedulerClaimResult struct {
-	raw []byte
-	err error
+	raw           []byte
+	err           error
+	ackObservedAt time.Time
 }
 
 func startSchedulerClaim(t *testing.T, pool *pgxpool.Pool, inc string, h schedulerClaimHint) (int, <-chan schedulerClaimResult) {
@@ -43,7 +44,13 @@ func startSchedulerClaim(t *testing.T, pool *pgxpool.Pool, inc string, h schedul
 			if err == nil {
 				err = tx.Commit(ctx)
 			}
-			return schedulerClaimResult{raw, err}
+			var acknowledged time.Time
+			// Database time observed after the commit acknowledgement. This is
+			// an upper bound, not an exact server commit timestamp.
+			if err == nil {
+				_ = conn.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&acknowledged)
+			}
+			return schedulerClaimResult{raw: raw, err: err, ackObservedAt: acknowledged}
 		}()
 		conn.Release()
 		ch <- result
@@ -66,6 +73,14 @@ func awaitSchedulerClaim(t *testing.T, ch <-chan schedulerClaimResult, wantSucce
 	t.Helper()
 	select {
 	case r := <-ch:
+		code := "00000"
+		var p *pgconn.PgError
+		if errors.As(r.err, &p) {
+			code = p.Code
+		} else if r.err != nil {
+			code = "non_pg_error"
+		}
+		t.Logf("claim SQLSTATE=%s ACK observed DB=%s error=%v", code, r.ackObservedAt.Format(time.RFC3339Nano), r.err)
 		if (r.err == nil) != wantSuccess {
 			t.Fatal("claim outcome", r.err)
 		}

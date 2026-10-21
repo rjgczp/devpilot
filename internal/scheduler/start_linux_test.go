@@ -19,7 +19,7 @@ import (
 )
 
 func startTestWire() startWire {
-	return startWire{Lease: Lease{WorkspaceID: "01900000-0000-7000-8000-000000000001", ProjectID: "01900000-0000-7000-8000-000000000002", MonitorID: "01900000-0000-7000-8000-000000000003", RunID: "01900000-0000-7000-8000-000000000004", ConfigurationVersion: "9223372036854775807", ActivationGeneration: "9223372036854775807", SchedulerEpoch: "9223372036854775807", FencingToken: "9223372036854775807"}, StartedAt: time.Now().UTC(), PermitDeadline: time.Now().Add(35 * time.Second).UTC(), URL: "https://example.com/private-sentinel", TimeoutSeconds: 30, ExpectedStatus: 200, IntervalSeconds: 60, NamespaceIncarnation: "01900000-0000-7000-8000-000000000005", SupervisorIncarnation: "01900000-0000-7000-8000-000000000006"}
+	return startWire{Lease: Lease{WorkspaceID: "01900000-0000-7000-8000-000000000001", ProjectID: "01900000-0000-7000-8000-000000000002", MonitorID: "01900000-0000-7000-8000-000000000003", RunID: "01900000-0000-7000-8000-000000000004", ConfigurationVersion: "9223372036854775807", ActivationGeneration: "9223372036854775807", SchedulerEpoch: "9223372036854775807", FencingToken: "9223372036854775807", ClaimedAt: time.Now().UTC(), LeaseUntil: time.Now().Add(45 * time.Second).UTC()}, StartedAt: time.Now().UTC(), PermitDeadline: time.Now().Add(35 * time.Second).UTC(), URL: "https://example.com/private-sentinel", TimeoutSeconds: 30, ExpectedStatus: 200, IntervalSeconds: 60, NamespaceIncarnation: "01900000-0000-7000-8000-000000000005", SupervisorIncarnation: "01900000-0000-7000-8000-000000000006"}
 }
 func TestExecutionInputIsBoundedSingleUseAndRedacted(t *testing.T) {
 	v := startTestWire()
@@ -136,7 +136,7 @@ func TestUnknownClaimRetainsOriginalCycleIdentity(t *testing.T) {
 	raw, _ := json.Marshal(v.Lease)
 	tx := &schedulerFakeTx{raw: raw, commitErr: io.ErrUnexpectedEOF}
 	s := Store{DB: schedulerFakeDB{tx}}
-	h := Hint{WorkspaceID: v.WorkspaceID, ProjectID: v.ProjectID, MonitorID: v.MonitorID, RunID: v.RunID}
+	h := Hint{WorkspaceID: v.WorkspaceID, ProjectID: v.ProjectID, MonitorID: v.MonitorID, RunID: v.RunID, ConfigurationVersion: v.ConfigurationVersion, ActivationGeneration: v.ActivationGeneration, SchedulerEpoch: v.SchedulerEpoch}
 	got, err := s.Claim(context.Background(), h)
 	var unknown ClaimUnknown
 	if !errors.As(err, &unknown) || unknown.Hint != h || got.RunID != "" || tx.commits != 1 {

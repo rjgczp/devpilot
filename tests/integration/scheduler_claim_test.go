@@ -25,10 +25,15 @@ const schedulerClaimSQL = `SELECT scheduler_private.claim($1::uuid,$2::uuid,$3::
 
 func schedulerClaimFixture(t *testing.T, db *pgxpool.Pool) (memberFixture, monitor.Public, schedulerClaimHint) {
 	t.Helper()
+	return schedulerClaimFixtureSeconds(t, db, 60)
+}
+
+func schedulerClaimFixtureSeconds(t *testing.T, db *pgxpool.Pool, seconds int) (memberFixture, monitor.Public, schedulerClaimHint) {
+	t.Helper()
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	a := activationRead(t, db, f.od, m)
-	if _, err := (monitor.Store{Pool: db}).ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(a)); err != nil {
+	if _, err := (monitor.Store{Pool: db}).ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: seconds}, monitor.ActivationETag(a)); err != nil {
 		t.Fatal(err)
 	}
 	var h schedulerClaimHint
@@ -46,7 +51,7 @@ func schedulerDatabaseOnlyGate(t *testing.T, db *pgxpool.Pool) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() {
-		if _, err := db.Exec(context.Background(), `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'; UPDATE monitor_runs SET attempt_state=CASE WHEN started_at IS NULL THEN 'canceled' ELSE 'unknown' END,finished_at=clock_timestamp(),stop_reason='worker_lost',physical_release_confirmed_at=clock_timestamp() WHERE physical_release_confirmed_at IS NULL`); err != nil {
+		if _, err := db.Exec(context.Background(), `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'; UPDATE monitor_runs SET attempt_state=CASE WHEN attempt_state='leased' THEN 'canceled' WHEN attempt_state='started' THEN 'unknown' ELSE attempt_state END,finished_at=COALESCE(finished_at,GREATEST(clock_timestamp(),claimed_at,started_at)),stop_reason=CASE WHEN attempt_state IN ('leased','started') THEN 'worker_lost' ELSE stop_reason END,physical_release_confirmed_at=GREATEST(clock_timestamp(),claimed_at,started_at) WHERE physical_release_confirmed_at IS NULL`); err != nil {
 			t.Error(err)
 		}
 	})
