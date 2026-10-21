@@ -5,9 +5,11 @@ package scheduler
 import (
 	"bytes"
 	"context"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
 	"io"
 	"strings"
 	"sync"
@@ -42,7 +44,7 @@ func TestExecutionInputIsBoundedSingleUseAndRedacted(t *testing.T) {
 		wg.Add(1)
 		go func(copy StartSnapshot) {
 			defer wg.Done()
-			err := copy.WriteInput(&output)
+			err := copy.writeInput(&output)
 			if err == nil {
 				accepted.Add(1)
 			} else if !errors.Is(err, ErrInputConsumed) {
@@ -54,12 +56,13 @@ func TestExecutionInputIsBoundedSingleUseAndRedacted(t *testing.T) {
 	if accepted.Load() != 1 || output.Len() > 4096 {
 		t.Fatal("input replay or unbounded envelope", accepted.Load(), output.Len())
 	}
-	var e executionEnvelope
-	if json.Unmarshal(output.Bytes(), &e) != nil || string(e.Target) != v.URL || e.RunID != v.RunID || e.FencingToken != v.FencingToken {
+	payloadSize := int(binary.BigEndian.Uint32(output.Bytes()[8:12]))
+	var e handoff.Envelope
+	if output.Len() != handoff.FrameSize || json.Unmarshal(output.Bytes()[12:12+payloadSize], &e) != nil || string(e.Target) != v.URL || e.RunID != v.RunID || e.FencingToken != v.FencingToken {
 		t.Fatal("envelope lost frozen lineage")
 	}
 	var empty StartSnapshot
-	if !errors.Is(empty.WriteInput(io.Discard), ErrInputConsumed) {
+	if !errors.Is(empty.writeInput(io.Discard), ErrInputConsumed) {
 		t.Fatal("empty snapshot granted input")
 	}
 }
@@ -69,7 +72,7 @@ type failedInput struct{}
 func (failedInput) Write([]byte) (int, error) { return 0, io.ErrClosedPipe }
 func TestFailedExecutionInputCannotBeRetried(t *testing.T) {
 	s := StartSnapshot{input: &startInput{wire: startTestWire()}}
-	if !errors.Is(s.WriteInput(failedInput{}), ErrUnavailable) || !errors.Is(s.WriteInput(io.Discard), ErrInputConsumed) {
+	if !errors.Is(s.writeInput(failedInput{}), ErrUnavailable) || !errors.Is(s.writeInput(io.Discard), ErrInputConsumed) {
 		t.Fatal("failed write restored capability")
 	}
 }
@@ -127,7 +130,7 @@ func TestUnknownStartCommitReturnsNoExecutionCapability(t *testing.T) {
 		t.Fatal("unknown commit was retried or accepted", err)
 	}
 	var b bytes.Buffer
-	if !errors.Is(snapshot.WriteInput(&b), ErrInputConsumed) || b.Len() != 0 {
+	if !errors.Is(snapshot.writeInput(&b), ErrInputConsumed) || b.Len() != 0 {
 		t.Fatal("unconfirmed Start exposed envelope")
 	}
 }

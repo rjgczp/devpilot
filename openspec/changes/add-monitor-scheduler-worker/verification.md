@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **Checkpoint3仅第5组5.1–5.3已验收，累计23/47；冻结并停止等待独立复审**。用户审查通过远端`655d9ee9429bc3032eec0ae95246a6f3994afc5c`后授权本轮，另明确批准仅两项窄EXECUTE。实际冻结实现及全部最终测试SHA为`e05959ec7aa0e4e80981bcd59ea0d6ee4c823815`；后续交付提交只修改tasks/verification/evidence，代码与测试字节不变。5.4没有独立Supervisor物理终止证明，保持未勾选；未进入第6组。生产执行硬关闭，不创建PR、合并、Archive或部署。本轮材料通过独立分支`codex/add-monitor-scheduler-worker`交付，完成推送后仅等待审核。历史段落不代替本轮证据，当前状态以本节及末尾Checkpoint3为准。
+当前 **本轮仅6.1–6.2实施/验收中，既有23/47已验收**。实际起始HEAD/已审远端为`e56c69a5832e88dfaac469071f9ada51a758dadc`，工作区起始干净。Checkpoint3的5.1–5.3已获独立技术评审通过；产品负责人本次补充授权才是两项目标预算EXECUTE的当前权威溯源，不能以Checkpoint2授权代替。5.4保持未完成，6.3–6.5及第7/8组不得提前实施。生产网络硬关闭，无目标DNS/TCP/TLS/HTTP，本轮仅PG控制面和无凭据匿名pipe/进程边界。待冻结SHA的真实normal/race验收通过才勾选6.1–6.2；不创建PR/合并/Archive/部署。下文旧Checkpoint段落为历史，以本节与末尾本轮验收记录为当前状态。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -214,3 +214,10 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 历史Supervisor工具权限审核首次超时的内部原因仍无确定性证明，风险继续保留。历史生产部署角色ACL仍无真实清单，不推断或新增生产GRANT。轮换的一小时保持以实际DB期限/不可删除/提前拒绝证明，没有声称一小时wall-clock soak；目录输入上限1000项/512KiB/两代，超时失败关闭，不放宽2秒预算。1000W/24h压力、完整retention/磁盘预算和原76项网络/新SHA API strace审计尚属后续范围。
 
 **5.4仍未完成**：当前只记录各保留摘要代次，保护未来回收正确记账；没有Supervisor物理回执验证/释放函数，未实测僵尸Probe、进程kill、已建立流切断或旧namespace不可恢复。当前只有数据库目标预算，DNS后目标钩子、独立许可安装、真实网络故障/周期闭环均未执行，不把其等同方案A完成。生产网络执行硬关闭，无公网监控许可；本轮不创建PR/合并/Archive/部署/推进第6组，推送分支后停止等待独立复审。
+
+
+## Current product-owner authorization supplement and tasks6.1–6.2 scope
+
+实际起始HEAD与远端均为`e56c69a5832e88dfaac469071f9ada51a758dadc`，工作区干净。产品负责人本次明确批准Checkpoint3两项能力：Worker独占EXECUTE `scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text)`，Controller独占EXECUTE `scheduler_private.rotate_target_budget_keys(uuid,bigint,jsonb)`。本次补充授权是当前权威溯源；Checkpoint2代码基线及其reconcile_claim/expire_unstarted授权不能代替本次授权，历史短回复只作历史上下文。当前仅修正文档，不扩SQL权限、角色属性、表列或秘密权限。
+
+本轮仅实施6.1–6.2：Start Commit及匿名pipe/无凭据进程边界。生产执行硬关闭，子进程不得解析DNS/拨号/HTTP。6.3–6.5、5.4物理回收及第7/8组未获本轮实施授权。5.4保持未完成，无数据库状态可代替独立Supervisor物理终止证明。当前仍23/47，待本轮真实PG18/Linux冻结SHA验收后再勾选。

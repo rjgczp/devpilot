@@ -3,7 +3,6 @@
 package scheduler
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -14,6 +13,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/rjgczp/devpilot/internal/monitor"
+	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
 )
 
 var ErrInputConsumed = errors.New("execution input already consumed")
@@ -42,45 +43,34 @@ func (StartSnapshot) Format(f fmt.State, _ rune) {
 	_, _ = io.WriteString(f, "<scheduler start snapshot>")
 }
 
-// The URL uses JSON's base64 byte encoding in the private pipe protocol. This
-// bounds worst-case JSON escaping of any valid 2048-byte configuration URL.
-// Generic JSON marshalling of StartSnapshot itself still yields an empty object.
-type executionEnvelope struct {
-	WorkspaceID           string    `json:"workspace_id"`
-	ProjectID             string    `json:"project_id"`
-	MonitorID             string    `json:"monitor_id"`
-	RunID                 string    `json:"run_id"`
-	ConfigurationVersion  string    `json:"configuration_version"`
-	ActivationGeneration  string    `json:"activation_generation"`
-	SchedulerEpoch        string    `json:"scheduler_epoch"`
-	FencingToken          string    `json:"fencing_token"`
-	StartedAt             time.Time `json:"started_at"`
-	PermitDeadline        time.Time `json:"permit_deadline"`
-	NamespaceIncarnation  string    `json:"namespace_incarnation"`
-	SupervisorIncarnation string    `json:"supervisor_incarnation"`
-	Target                []byte    `json:"target"`
-	TimeoutSeconds        int       `json:"timeout_seconds"`
-	ExpectedStatus        int       `json:"expected_status"`
-	IntervalSeconds       int       `json:"interval_seconds"`
-}
-
-func (s StartSnapshot) WriteInput(w io.Writer) error {
+// takeFrame consumes the process-local sending capability before any IPC or DB
+// input-consumption call. Every failure burns it; no reconnect restores it.
+func (s StartSnapshot) takeFrame() ([]byte, handoff.Receipt, error) {
 	if s.input == nil || !s.input.consumed.CompareAndSwap(false, true) {
-		return ErrInputConsumed
+		return nil, handoff.Receipt{}, ErrInputConsumed
 	}
 	v := s.input.wire
-	e := executionEnvelope{WorkspaceID: v.WorkspaceID, ProjectID: v.ProjectID, MonitorID: v.MonitorID, RunID: v.RunID, ConfigurationVersion: v.ConfigurationVersion, ActivationGeneration: v.ActivationGeneration, SchedulerEpoch: v.SchedulerEpoch, FencingToken: v.FencingToken, StartedAt: v.StartedAt, PermitDeadline: v.PermitDeadline, NamespaceIncarnation: v.NamespaceIncarnation, SupervisorIncarnation: v.SupervisorIncarnation, Target: []byte(v.URL), TimeoutSeconds: v.TimeoutSeconds, ExpectedStatus: v.ExpectedStatus, IntervalSeconds: v.IntervalSeconds}
-	var b bytes.Buffer
-	encoder := json.NewEncoder(&b)
-	encoder.SetEscapeHTML(false)
-	if encoder.Encode(e) != nil || b.Len() > 4096 {
-		return ErrUnavailable
+	e := handoff.Envelope{Lineage: handoff.Lineage{WorkspaceID: v.WorkspaceID, ProjectID: v.ProjectID, MonitorID: v.MonitorID, RunID: v.RunID, ConfigurationVersion: v.ConfigurationVersion, ActivationGeneration: v.ActivationGeneration, SchedulerEpoch: v.SchedulerEpoch, FencingToken: v.FencingToken, NamespaceIncarnation: v.NamespaceIncarnation, SupervisorIncarnation: v.SupervisorIncarnation}, StartedAt: v.StartedAt, PermitDeadline: v.PermitDeadline, Target: []byte(v.URL), TimeoutSeconds: v.TimeoutSeconds, ExpectedStatus: v.ExpectedStatus, IntervalSeconds: v.IntervalSeconds}
+	frame, receipt, err := handoff.Encode(e)
+	if err != nil {
+		return nil, handoff.Receipt{}, ErrUnavailable
 	}
-	if _, err := io.Copy(w, &b); err != nil {
+	return frame, receipt, nil
+}
+
+// writeInput is a private codec test surface, not a launch or dispatch API.
+func (s StartSnapshot) writeInput(w io.Writer) error {
+	frame, _, err := s.takeFrame()
+	if err != nil {
+		return err
+	}
+	n, err := w.Write(frame)
+	if err != nil || n != len(frame) {
 		return ErrUnavailable
 	}
 	return nil
 }
+
 func (s Store) Start(ctx context.Context, h Hint, lease Lease) (StartSnapshot, error) {
 	if lease.RunID != h.RunID || lease.WorkspaceID != h.WorkspaceID || lease.ProjectID != h.ProjectID || lease.MonitorID != h.MonitorID {
 		return StartSnapshot{}, ErrCandidate
@@ -103,6 +93,10 @@ func (s Store) Start(ctx context.Context, h Hint, lease Lease) (StartSnapshot, e
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return StartSnapshot{}, ErrCommitUnknown
+	}
+	// Commit has released the pool connection before offline validation/IPC.
+	if !monitor.ValidStoredConfiguration("monitor", v.URL, "GET", int64(v.IntervalSeconds), int64(v.TimeoutSeconds), int64(v.ExpectedStatus)) {
+		return StartSnapshot{}, ErrUnavailable
 	}
 	return StartSnapshot{input: &startInput{wire: v}}, nil
 }

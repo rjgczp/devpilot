@@ -3,7 +3,11 @@
 Scope: OpenSpec tasks5.1–5.3. Task5.4 remains incomplete, with physical release
 acceptance dependent on the independent Supervisor in group6. No production
 execution, target networking, PR, deployment or archive is authorized here.
-Baseline:655d9ee9429bc3032eec0ae95246a6f3994afc5c (Checkpoint2 reviewed).
+Implementation baseline:655d9ee9429bc3032eec0ae95246a6f3994afc5c.
+Authorization/review baseline for this supplement:
+**e56c69a5832e88dfaac469071f9ada51a758dadc**, independently reviewed
+Checkpoint3 on branch `codex/add-monitor-scheduler-worker`.
+The Checkpoint2 baseline is code history, not the source of these grants.
 
 ## Two runtime EXECUTE additions — explicitly approved
 
@@ -67,9 +71,22 @@ non-LOGIN private owner, with fixed trusted search_path, fully qualified objects
 no dynamic SQL, no PUBLIC execute and existing2s/250ms budgets. Other runtime
 roles receive no execute. Existing API/ordinary build boundaries remain.
 
-The user explicitly approved only these two narrow EXECUTE additions on
-2026-10-21 (Asia/Shanghai): “批准仅这两项窄 EXECUTE”. Implementation is present; frozen-SHA acceptance is tracked separately in
-verification.md. This approval is not test evidence.
+## Authorization provenance — current product-owner supplement
+
+The current human request, “Checkpoint 3 已通过独立技术评审，并获产品负责人正式补充授权”,
+explicitly approves exactly:
+
+- `scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text)`: EXECUTE only for `devpilot_scheduler_worker`.
+- `scheduler_private.rotate_target_budget_keys(uuid,bigint,jsonb)`: EXECUTE only for `devpilot_scheduler_controller`.
+
+This supplement follows review of **e56c69a5832e88dfaac469071f9ada51a758dadc**.
+It is the authoritative product-owner authorization recorded in this document.
+The earlier short confirmation “批准仅这两项窄 EXECUTE” is historical conversation
+context; no Checkpoint2 authorization is substituted for this supplement.
+Checkpoint2's reconcile_claim/expire_unstarted grants are separate capabilities.
+This documentation correction changes no SQL, grant, role attribute, table/column
+ACL or secret privilege. It grants no physical-release capability. Acceptance
+is independently recorded in verification.md; authorization is not test evidence.
 
 ## Task5.4 boundary
 
