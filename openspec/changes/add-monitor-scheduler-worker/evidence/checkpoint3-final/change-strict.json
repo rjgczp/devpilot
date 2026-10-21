@@ -1,0 +1,20 @@
+{
+  "command": [
+    "openspec",
+    "validate",
+    "add-monitor-scheduler-worker",
+    "--strict"
+  ],
+  "started_at": "2026-10-21T06:42:41.831219+00:00",
+  "elapsed_seconds": 0.3657606660271995,
+  "exit_code": 0,
+  "head": "e05959ec7aa0e4e80981bcd59ea0d6ee4c823815",
+  "dirty": false,
+  "source_inventory_sha256": "615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96",
+  "binaries": {},
+  "log_sha256": "261d7318727283688fe61814d964d68b4d730cfe8b9f55ead352a3dc9dcfcc4b",
+  "source_inventory_ref": "source-inventories/615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96.json",
+  "original_receipt_ref": "raw-receipts/change-strict.json.gz",
+  "original_receipt_sha256": "d2c18d1b3467e753be6881ad1d2b439bff7a2d5ada15bcbd1c03b7dcf5565001",
+  "log_ref": "change-strict.log"
+}

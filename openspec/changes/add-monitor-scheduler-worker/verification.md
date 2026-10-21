@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **Checkpoint3仅第5组预算实施/验收中，累计20/47**。用户独立审查通过Checkpoint2远端`655d9ee9429bc3032eec0ae95246a6f3994afc5c`后，授权5.1–5.3及5.4数据库协议；又明确批准仅Worker `reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text)`与Controller `rotate_target_budget_keys(uuid,bigint,jsonb)`两项窄EXECUTE。不得进入第6组、创建PR、合并、Archive或部署。5.1–5.3须待冻结SHA的真实PG18 normal/race验收后才能勾选；5.4等待独立Supervisor物理证明，保持未勾选。生产执行硬关闭。旧Checkpoint段落是历史记录，不代表本轮SHA已通过。
+当前 **Checkpoint3仅第5组5.1–5.3已验收，累计23/47；冻结并停止等待独立复审**。用户审查通过远端`655d9ee9429bc3032eec0ae95246a6f3994afc5c`后授权本轮，另明确批准仅两项窄EXECUTE。实际冻结实现及全部最终测试SHA为`e05959ec7aa0e4e80981bcd59ea0d6ee4c823815`；后续交付提交只修改tasks/verification/evidence，代码与测试字节不变。5.4没有独立Supervisor物理终止证明，保持未勾选；未进入第6组。生产执行硬关闭，不创建PR、合并、Archive或部署。本轮材料通过独立分支`codex/add-monitor-scheduler-worker`交付，完成推送后仅等待审核。历史段落不代替本轮证据，当前状态以本节及末尾Checkpoint3为准。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -35,7 +35,7 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 
 ## Acceptance status
 
-- 当前20/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6。其余27项保持未勾选；当前仅推进第5组，不推进第6组。
+- 当前23/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3。其余24项保持未勾选，包含5.4与第6–10组。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
 - 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/完整容量与故障及原76项新SHA复验仍未完成；第5组预算本轮单独验收。
 - 冻结SHA的全量Go unit/race与完整PG18 normal/integration-race已通过；本轮无Push/PR CI验收结论、未创建PR。正式CI/实现PR仍属于后续完整Change交付。
@@ -173,3 +173,44 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 证据入口`evidence/checkpoint2-final/README.md`，包含Requirement→Scenario→源码→Test→精确命令/退出码→证据→SHA映射、完整原始回执/PG日志/锁事件与校验清单。按对应验收逐项勾选4.1–4.6，CLI确认15→20；`task-completion-record.json`记录六次完成。后续交付提交仅改tasks/evidence/verification，`implementation-binding.json`确认与冻结SHA全部实现及测试字节相同。
 
 普通发布与API仍无执行入口，Linux发布构建边界在当前SHA验证。此前CP1的API零目标strace与第九阶段76项网络结果只保留为历史证据，本轮不声称它们在当前SHA重新运行；真实Probe、Supervisor、target-permit、周期/heartbeat、Result/unknown网络故障、目标预算、保留/磁盘及完整CI仍是未验收的后续任务。当前workflow push列表不含该开发分支，且没有创建PR，因此没有新的GitHub CI结论。交付分支仍为`codex/add-monitor-scheduler-worker`，普通推送后以远端HEAD核对及最终答复为准。测试PG已回到version0、无调度表/临时角色/其它事务/锁等待；生产执行始终硬关闭。完成Checkpoint2后停止，等待独立审核，不创建PR/合并/Archive/部署或推进Checkpoint3。
+
+
+## Checkpoint3 — group5 budget acceptance and review delivery
+
+### Authorization and exact implementation
+
+用户仅批准5.1–5.3可独立验收部分，5.4允许数据库协议但物理回收依赖第6组；用户另明确答复“批准仅这两项窄EXECUTE”。新增：
+
+- Worker `scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text)`。
+- Controller `scheduler_private.rotate_target_budget_keys(uuid,bigint,jsonb)`。
+
+完整签名/用途/ACL见`docs/monitor-scheduler-checkpoint3-capabilities.md`；仅上述精确EXECUTE，runtime角色属性、既有表/列ACL及秘密读取权限均未扩大。Controller增加可信incarnation注册kind，不能由此打开部署gate。函数由原非LOGIN owner持有，VOLATILE/SECURITY DEFINER、固定search_path、无动态SQL及PUBLIC EXECUTE，2秒RC事务/250ms锁预算保持。
+
+实现变更：Migration8补充目标摘要目录、保留代次账本及原子预订/轮换函数；Start复验last_started+当前interval及持久Monitor预算not_before；固定retention_capacity安全映射；fixture-only Go HMAC目录/有限事务适配；独立PG测试harness与预算文档。Migration1–7实际逐字节和SHA256复核不变。普通API/发布构建没有新执行入口，原执行安全内核与出站审计白名单未变。
+
+### Frozen-SHA actual verification
+
+所有最终命令在干净冻结SHA `e05959ec7aa0e4e80981bcd59ea0d6ee4c823815`执行，源码清单SHA256为`615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96`。二进制、命令、退出码、原始日志及源文件清单见`evidence/checkpoint3-final/`；`implementation-binding.json`解释后续仅三个任务勾选的字节差异，`requirement-test-evidence.json`提供逐项映射。
+
+| Actual test group | Result |
+| --- | --- |
+| 第5组真实独立PG18预算normal/race | 各14项，全部exit0，无skip；每项独立数据库保留未释放账本后销毁 |
+| 既有全量PG18 integration/integration-race | 各147项，串行145+真实60秒授权+真实45秒Lease，全部exit0，无skip |
+| 全量Go unit/race、Linux fixture unit/race | 全部exit0，count=1；Linux工具容器network none |
+| gofmt、默认/fixture go vet、git diff --check | 全部exit0 |
+| Migration1–7哈希 | 七项全部与已审基线相同 |
+| Change strict | exit0 |
+| 全库strict | exit1，仅原4份历史规格7项描述长度警告；完整输出SHA256仍为`fef4737504c8a9567664c2e4925fa8db19971473867e035eb2f8dff3ca9bd3d1` |
+| 原受保护PG18最终状态 | schema0，无Scheduler角色、其它活跃事务及锁等待 |
+
+已实现且实测：32/4/2/1全局及父级最后槽、两Owner/Worker/Workspace skip交错；9个并发Start的8次burst；W1/s burst2、P真实2秒补充；Monitor当前interval/配置v/g/新Worker连接不缩短冷却；失败回滚与已Start不退token；真实10000个budget key容量边界；跨W origin1/IP2竞争、IP真实1秒及origin真实60秒冷却；HMAC脱敏/原生地址/不可变并发目录；轮换双代共同参与、原token/not_before不清零、keep_until至少1小时及禁止提前再轮换；活跃槽不排空就拒绝轮换；目标预订真实Commit丢ACK不返回许可/不重复；最后Supervisor锁等待后复验；Owner/Member status不暴露摘要或其它租户预算。
+
+新group5测试不写管理员physical_release时间或Supervisor终止回执。prepare/consume调用真实受限LOGIN函数但仅为数据库协议测试，没有实际namespace/进程/网络规则；每项保存未释放账本、证明Goose Down拒绝，再销毁独立标记的可销毁PG18实例。原历史测试沿用已审数据库fixture清理，其结果不作为物理释放证明。pg_locks/pg_blocking_pids/DB时间线/SQLSTATE/最终状态和各PG日志均保留；ACK观察仍只是提交完成的上界，不伪称精确服务端Commit时刻。
+
+### Failures retained, limits and stop boundary
+
+开发阶段五次非零结果及原日志保留于`evidence/checkpoint3-final/development/`，不可冒充冻结SHA通过：迁移相对目录错误（SQL前）；fixture参数未显式timestamptz导致42P08；既有URL规则拒绝.test测试名（SQL前，未放宽规则）；新增Controller注册kind缺失导致23514（补该注册类型，无ACL扩大）；PL/pgSQL变量/别名k歧义42702（重命名变量）。最终验收没有非预期安全超时、权限校验不一致或协议死锁。历史套件故意注入的55P03/57014/40P01仍为预期失败对照；这些通过不能证明所有并发交错均不存在问题，仍需独立审查。
+
+历史Supervisor工具权限审核首次超时的内部原因仍无确定性证明，风险继续保留。历史生产部署角色ACL仍无真实清单，不推断或新增生产GRANT。轮换的一小时保持以实际DB期限/不可删除/提前拒绝证明，没有声称一小时wall-clock soak；目录输入上限1000项/512KiB/两代，超时失败关闭，不放宽2秒预算。1000W/24h压力、完整retention/磁盘预算和原76项网络/新SHA API strace审计尚属后续范围。
+
+**5.4仍未完成**：当前只记录各保留摘要代次，保护未来回收正确记账；没有Supervisor物理回执验证/释放函数，未实测僵尸Probe、进程kill、已建立流切断或旧namespace不可恢复。当前只有数据库目标预算，DNS后目标钩子、独立许可安装、真实网络故障/周期闭环均未执行，不把其等同方案A完成。生产网络执行硬关闭，无公网监控许可；本轮不创建PR/合并/Archive/部署/推进第6组，推送分支后停止等待独立复审。

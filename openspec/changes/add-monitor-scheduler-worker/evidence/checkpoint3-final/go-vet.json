@@ -1,0 +1,21 @@
+{
+  "command": [
+    "env",
+    "GOCACHE=/private/tmp/devpilot-scheduler-go-cache",
+    "go",
+    "vet",
+    "./..."
+  ],
+  "started_at": "2026-10-21T06:42:41.459654+00:00",
+  "elapsed_seconds": 0.2259631659835577,
+  "exit_code": 0,
+  "head": "e05959ec7aa0e4e80981bcd59ea0d6ee4c823815",
+  "dirty": false,
+  "source_inventory_sha256": "615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96",
+  "binaries": {},
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_inventory_ref": "source-inventories/615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96.json",
+  "original_receipt_ref": "raw-receipts/go-vet.json.gz",
+  "original_receipt_sha256": "b1ab34ef56625d853cfa51032a6490097935f23e83c249aa8330f7ba05f8f25d",
+  "log_ref": "go-vet.log"
+}

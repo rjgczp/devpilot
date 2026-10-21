@@ -1,0 +1,17 @@
+ok  	github.com/rjgczp/devpilot/cmd/api	6.738s
+?   	github.com/rjgczp/devpilot/cmd/schedulerfixture	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/app	1.276s
+ok  	github.com/rjgczp/devpilot/internal/auth	1.062s
+ok  	github.com/rjgczp/devpilot/internal/config	1.011s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	1.032s
+ok  	github.com/rjgczp/devpilot/internal/monitor	1.510s
+ok  	github.com/rjgczp/devpilot/internal/monitoring	3.467s
+ok  	github.com/rjgczp/devpilot/internal/password	12.185s
+ok  	github.com/rjgczp/devpilot/internal/project	1.419s
+ok  	github.com/rjgczp/devpilot/internal/registration	1.070s
+ok  	github.com/rjgczp/devpilot/internal/scheduler	1.030s
+ok  	github.com/rjgczp/devpilot/internal/session	1.013s
+ok  	github.com/rjgczp/devpilot/internal/testdb	1.008s
+ok  	github.com/rjgczp/devpilot/internal/user	1.005s
+ok  	github.com/rjgczp/devpilot/internal/workspace	1.552s

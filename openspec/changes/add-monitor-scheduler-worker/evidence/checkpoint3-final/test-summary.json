@@ -1,0 +1,226 @@
+{
+  "tested_sha": "e05959ec7aa0e4e80981bcd59ea0d6ee4c823815",
+  "budget_normal": 14,
+  "budget_race": 14,
+  "historical_integration_normal": 147,
+  "historical_integration_race": 147,
+  "skipped_tests": 0,
+  "tasks_completed": [
+    "5.1",
+    "5.2",
+    "5.3"
+  ],
+  "change_completed": 23,
+  "change_total": 47,
+  "not_completed": [
+    "5.4",
+    "groups6–10"
+  ],
+  "validation": {
+    "all-strict": {
+      "exit_code": 1,
+      "elapsed_seconds": 0.31264579197159037
+    },
+    "budget-normal-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.3826151250395924
+    },
+    "budget-normal-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.2560375420143828
+    },
+    "budget-normal-10": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.2441269580158405
+    },
+    "budget-normal-11": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.26092883304227144
+    },
+    "budget-normal-12": {
+      "exit_code": 0,
+      "elapsed_seconds": 60.3340697499807
+    },
+    "budget-normal-13": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.2729732499574311
+    },
+    "budget-normal-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.257173249963671
+    },
+    "budget-normal-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.3026714579900727
+    },
+    "budget-normal-4": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.3960873750038445
+    },
+    "budget-normal-5": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.293083790980745
+    },
+    "budget-normal-6": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.24610887502785772
+    },
+    "budget-normal-7": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.27025566704105586
+    },
+    "budget-normal-8": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.338737374986522
+    },
+    "budget-normal-9": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.2781515830429271
+    },
+    "budget-race-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.5218802919844165
+    },
+    "budget-race-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.4973665419965982
+    },
+    "budget-race-10": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.2921997919911519
+    },
+    "budget-race-11": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.307810458005406
+    },
+    "budget-race-12": {
+      "exit_code": 0,
+      "elapsed_seconds": 61.31694216595497
+    },
+    "budget-race-13": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.3439922080142424
+    },
+    "budget-race-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 3.3700249579851516
+    },
+    "budget-race-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.591404041973874
+    },
+    "budget-race-4": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.4259147919947281
+    },
+    "budget-race-5": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.3226884999894537
+    },
+    "budget-race-6": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.2720367080182768
+    },
+    "budget-race-7": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.323829166998621
+    },
+    "budget-race-8": {
+      "exit_code": 0,
+      "elapsed_seconds": 3.357674750033766
+    },
+    "budget-race-9": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.3280664579942822
+    },
+    "build-normal": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.35048949997872114
+    },
+    "build-race": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.462672375026159
+    },
+    "build-regression-normal": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.2733687910367735
+    },
+    "build-regression-race": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.8087320000049658
+    },
+    "change-strict": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.3657606660271995
+    },
+    "diff-check": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.011551458039321005
+    },
+    "final-pg-state": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.10648904199479148
+    },
+    "go-race": {
+      "exit_code": 0,
+      "elapsed_seconds": 13.283957125036977
+    },
+    "go-unit": {
+      "exit_code": 0,
+      "elapsed_seconds": 7.2988189160241745
+    },
+    "go-vet": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.2259631659835577
+    },
+    "gofmt": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.08556708303513005
+    },
+    "linux-race": {
+      "exit_code": 0,
+      "elapsed_seconds": 13.546750957961194
+    },
+    "linux-unit": {
+      "exit_code": 0,
+      "elapsed_seconds": 7.935309084015898
+    },
+    "linux-vet": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.7735502090072259
+    },
+    "migration-hashes": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.10788320802384987
+    },
+    "postgres-regression": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.07236024999292567
+    },
+    "regression-normal-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 75.27922437497182
+    },
+    "regression-normal-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 60.71520437498111
+    },
+    "regression-normal-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 45.35533754195785
+    },
+    "regression-race-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 111.72760683303932
+    },
+    "regression-race-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 61.41895741602639
+    },
+    "regression-race-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 46.42725804197835
+    }
+  },
+  "strict_history": "unchanged4specs/7warnings; output SHA256 fef4737504c8a9567664c2e4925fa8db19971473867e035eb2f8dff3ca9bd3d1"
+}

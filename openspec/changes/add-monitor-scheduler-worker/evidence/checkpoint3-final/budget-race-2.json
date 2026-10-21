@@ -1,0 +1,40 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "container:264b8da8edc1f6c571aacd48d215c8280a5e9fd66458a621d60cd96499690f02",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/cp3-budget-race.test",
+    "devpilot-scheduler-fixture",
+    "-test.run",
+    "^TestBudgetStartRateRollback$",
+    "-test.v",
+    "-test.failfast",
+    "-test.timeout=120s"
+  ],
+  "started_at": "2026-10-21T06:43:31.073057+00:00",
+  "elapsed_seconds": 3.3700249579851516,
+  "exit_code": 0,
+  "head": "e05959ec7aa0e4e80981bcd59ea0d6ee4c823815",
+  "dirty": false,
+  "source_inventory_sha256": "615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp3-budget-race.test": "d195246f862f0431ff7565631fd1c4e799a1b219191c4da693db0ef7fda548bb",
+    "/private/tmp/devpilot-scheduler-tools/goose": "b9d42a96017db430bec647240d706bc9ae57775c76fa65321a7d24e7e38bbe3a"
+  },
+  "log_sha256": "5d16182a0561ccb46f33a1210d47b0d10cb19791cba0cd2106062c8aef0da4e8",
+  "source_inventory_ref": "source-inventories/615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96.json",
+  "original_receipt_ref": "raw-receipts/budget-race-2.json.gz",
+  "original_receipt_sha256": "f3b329f0e9a44b56ed7dbe28323a8a2e695c7ad2a33816cd4d3036c022db1d3c",
+  "log_ref": "budget-race-2.log"
+}

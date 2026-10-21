@@ -36,9 +36,9 @@
 
 ## 5. 集群槽、令牌与同目标预算
 
-- [ ] 5.1 实现global/W/P/M持久原子槽预订与固定顺序锁；PG18多实例竞争最后槽/取消/跨租户证明32/4/2/1上限，禁止无锁count，加入单元/race及预算文档。
-- [ ] 5.2 实现global8/s、W1/s、P每2s及Monitor持久not_before、整数token和有界key容量；真实并发与时间边界覆盖新v/g/interval/重启不缩短间隔、失败不退token、容量满安全拒绝。
-- [ ] 5.3 实现控制面HMAC origin/IP预算和fixture目标目录；跨W同origin/别名同IP实测1/2槽及60s/1s限速，确认不保存Path/原始DNS/IP、不向用户泄漏hash/其它租户；密钥轮换保留旧预算1h测试通过。
+- [x] 5.1 实现global/W/P/M持久原子槽预订与固定顺序锁；PG18多实例竞争最后槽/取消/跨租户证明32/4/2/1上限，禁止无锁count，加入单元/race及预算文档。
+- [x] 5.2 实现global8/s、W1/s、P每2s及Monitor持久not_before、整数token和有界key容量；真实并发与时间边界覆盖新v/g/interval/重启不缩短间隔、失败不退token、容量满安全拒绝。
+- [x] 5.3 实现控制面HMAC origin/IP预算和fixture目标目录；跨W同origin/别名同IP实测1/2槽及60s/1s限速，确认不保存Path/原始DNS/IP、不向用户泄漏hash/其它租户；密钥轮换保留旧预算1h测试通过。
 - [ ] 5.4 实现quarantine与独立物理终止回执绑定的槽释放，回执只改资源不伪造网络结果；PG与真实僵尸Probe测试证明lease过期不返槽、重连旧incarnation无新权限，补充安全优先导致blocked的运维说明。
 
 ## 6. Start、无凭据Probe与独立出口监督
