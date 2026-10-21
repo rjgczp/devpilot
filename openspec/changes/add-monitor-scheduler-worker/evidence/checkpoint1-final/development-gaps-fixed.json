@@ -1,0 +1,38 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "container:devpilot-scheduler-apply-pg18",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/cp1-final.test",
+    "devpilot-scheduler-fixture",
+    "-test.run",
+    "^TestCheckpointOne(StartOwnerLossBothOrders|StartExpiryAfterFinalWait|SessionIsNotBackgroundIdentity|HTTPIntentStatusContract|HTTPCutoverAllTagsAndRollback|DownRefusesUnsafeOrExhausted|LegacyAndAuthorizationSerialize|HTTPInventoryBlocksDatabaseAdmission)$",
+    "-test.failfast",
+    "-test.timeout=90s",
+    "-test.v"
+  ],
+  "started_at": "2026-10-20T08:25:37.362866+00:00",
+  "elapsed_seconds": 1.3760628330055624,
+  "exit_code": 1,
+  "head": "bd729b232e6eb206e44ca0f7cb63e31d95f55d30",
+  "dirty": true,
+  "source_inventory_sha256": "d2aeca090d5079e32921fd515cae60372a0ba4b465e1a572958082cf994c3413",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp1-final.test": "dc84fdde9eebec9f77aafa25eb669a1643868737c366595210dccff3ac99e2d9"
+  },
+  "log_sha256": "5bac982098363e8f9f56f2575a405c17304f2a62914b4ca76b164267da240dbb",
+  "source_inventory_ref": "source-inventories/d2aeca090d5079e32921fd515cae60372a0ba4b465e1a572958082cf994c3413.json",
+  "original_receipt_ref": "raw-receipts/development-gaps-fixed.json.gz",
+  "original_receipt_sha256": "5b279ef19a8439604f41f2ff685516533852e342b9ba01558eec2d31af75f9c8"
+}

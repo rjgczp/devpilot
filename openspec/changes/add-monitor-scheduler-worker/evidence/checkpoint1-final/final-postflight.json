@@ -1,0 +1,30 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "--user",
+    "postgres",
+    "devpilot-scheduler-apply-pg18",
+    "psql",
+    "-X",
+    "-U",
+    "devpilot_fixture",
+    "-d",
+    "devpilot_registration_test",
+    "-At",
+    "-v",
+    "ON_ERROR_STOP=1",
+    "-c",
+    "SELECT json_build_object('database',current_database(),'version',current_setting('server_version'),'migration',(SELECT coalesce(max(version_id),0) FROM goose_db_version WHERE is_applied),'schedules',to_regclass('public.monitor_schedules'),'temporary_roles',(SELECT count(*) FROM pg_roles WHERE rolname LIKE 'checkpoint1_%' OR rolname LIKE 'scheduler_test_%' OR rolname LIKE 'scheduler_claim_%'),'other_active_transactions',(SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid() AND xact_start IS NOT NULL),'lock_waiters',(SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock'));"
+  ],
+  "exit_code": 0,
+  "state": {
+    "database": "devpilot_registration_test",
+    "version": "18.6 (Debian 18.6-1.pgdg13+2)",
+    "migration": 0,
+    "schedules": null,
+    "temporary_roles": 0,
+    "other_active_transactions": 0,
+    "lock_waiters": 0
+  }
+}

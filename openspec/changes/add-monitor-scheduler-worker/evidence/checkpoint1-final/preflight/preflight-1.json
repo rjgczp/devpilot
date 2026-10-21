@@ -1,0 +1,26 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cap-add",
+    "NET_ADMIN",
+    "--sysctl",
+    "net.ipv6.conf.all.disable_ipv6=0",
+    "--memory=128m",
+    "--cpus=1",
+    "--pids-limit=128",
+    "--ulimit",
+    "nofile=256:256",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler:/runner:ro",
+    "devpilot-scheduler-fixture",
+    "-c",
+    "python3 /runner/preflight.py"
+  ],
+  "exit_code": 0,
+  "stdout": "{\"ipv6\": true, \"kernel_permit_expiry_cuts_established_flow\": true, \"linux\": \"6.12.76-linuxkit\", \"network_namespace\": \"net:[4026533241]\", \"nft\": \"nftables v1.1.3 (Commodore Bullmoose #4)\", \"rules\": \"table inet scheduler_preflight {\\n\\tset targets {\\n\\t\\ttype ipv4_addr . inet_service\\n\\t\\tflags timeout\\n\\t}\\n\\n\\tchain out {\\n\\t\\ttype filter hook output priority -200; policy drop;\\n\\t\\tip daddr . tcp dport @targets accept\\n\\t\\tip saddr . tcp sport @targets accept\\n\\t}\\n\\n\\tchain in {\\n\\t\\ttype filter hook input priority -200; policy drop;\\n\\t\\tip daddr . tcp dport @targets accept\\n\\t\\tip saddr . tcp sport @targets accept\\n\\t}\\n}\", \"unprivileged_probe_cannot_change_network\": true, \"upstream\": false}\n",
+  "stderr": ""
+}

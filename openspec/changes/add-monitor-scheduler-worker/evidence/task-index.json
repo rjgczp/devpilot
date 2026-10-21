@@ -198,8 +198,282 @@
         "evidence/checkpoint2/pg-full.log"
       ],
       "coverage_note": "Prior checks use actual PG transactions with controlled ACK-loss injection; authorization implementation and their source are byte-identical. They were not repeated. New gaps used 10000 real registrations, real quota/cooling and real 60s database time."
+    },
+    "1.3": {
+      "requirements": [
+        "Production execution stays hard closed without deployment evidence"
+      ],
+      "scenarios": [
+        "Security - Environment flag cannot unlock a probe"
+      ],
+      "implementation": [
+        "internal/monitoring/scheduler_boundary_test.go",
+        "internal/monitoring/execution_network_test.go",
+        "cmd/schedulerfixture/main_linux.go"
+      ],
+      "tests": [
+        "TestFixtureSchedulerBuildBoundary",
+        "TestReleaseArtifactAndProbeTestBoundary",
+        "TestMonitorNoTargetNetwork"
+      ],
+      "commands": [
+        "evidence/checkpoint1-final/final-unit.json",
+        "evidence/checkpoint1-final/final-unit-race.json",
+        "evidence/checkpoint1-final/final-fixture-unit-race.json",
+        "evidence/checkpoint1-final/final-zero-target-audit.json"
+      ],
+      "exit_code": 0,
+      "evidence": [
+        "evidence/checkpoint1-final/final-unit.log",
+        "evidence/checkpoint1-final/final-unit-race.log",
+        "evidence/checkpoint1-final/final-fixture-unit-race.log",
+        "evidence/checkpoint1-final/final-zero-target-audit.log"
+      ],
+      "implementation_commit": "d781d7560904ee81c4939d9520604ff2240766a4",
+      "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+      "limits": "Checkpoint1 scope only. Database projection/physical-preparation fixtures are not real network or Supervisor termination evidence. No deployed historical-role ACL or external-client deployment attestation."
+    },
+    "2.3": {
+      "requirements": [
+        "Every configuration revision atomically revokes activation",
+        "Execution authorization requires separate current Owner reconfirmation"
+      ],
+      "scenarios": [
+        "Security - Legacy writers cannot create or preserve execution permission",
+        "Concurrency - Old API transactions straddle upgrade"
+      ],
+      "implementation": [
+        "migrations/00008_create_monitor_scheduler.sql",
+        "internal/monitor/activation_store.go"
+      ],
+      "tests": [
+        "TestCheckpointOneLegacyAndAuthorizationSerialize",
+        "TestCheckpointOneOldWritersStraddleMigration",
+        "TestLegacyPatchColumnPrivilegesAcrossMigration",
+        "TestSchedulerLegacyDatabaseWriterAcrossMigration",
+        "TestCheckpointOneConfigurationRevokeRollback",
+        "TestExecutionAuthorizationScheduleFailureRollsBackIntent"
+      ],
+      "commands": [
+        "evidence/checkpoint1-final/final-pg-normal-0.json",
+        "evidence/checkpoint1-final/final-pg-race-0.json"
+      ],
+      "exit_code": 0,
+      "evidence": [
+        "evidence/checkpoint1-final/final-pg-normal-0.log",
+        "evidence/checkpoint1-final/final-pg-race-0.log"
+      ],
+      "implementation_commit": "d781d7560904ee81c4939d9520604ff2240766a4",
+      "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+      "limits": "Checkpoint1 scope only. Database projection/physical-preparation fixtures are not real network or Supervisor termination evidence. No deployed historical-role ACL or external-client deployment attestation."
+    },
+    "2.4": {
+      "requirements": [
+        "Probe identity is isolated from users and database control"
+      ],
+      "scenarios": [
+        "Security - Least privileged roles cannot bypass state transitions"
+      ],
+      "implementation": [
+        "migrations/00008_create_monitor_scheduler.sql",
+        "docs/monitor-scheduler-rollout.md"
+      ],
+      "tests": [
+        "TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities",
+        "TestCheckpointOneControllerPublicAndIncarnation",
+        "TestSchedulerSupervisorOwnsOneInputCapability",
+        "TestLegacyPatchColumnPrivilegesAcrossMigration"
+      ],
+      "commands": [
+        "evidence/checkpoint1-final/final-pg-normal-0.json",
+        "evidence/checkpoint1-final/final-pg-race-0.json"
+      ],
+      "exit_code": 0,
+      "evidence": [
+        "evidence/checkpoint1-final/final-pg-normal-0.log",
+        "evidence/checkpoint1-final/final-pg-race-0.log"
+      ],
+      "implementation_commit": "d781d7560904ee81c4939d9520604ff2240766a4",
+      "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+      "limits": "Checkpoint1 scope only. Database projection/physical-preparation fixtures are not real network or Supervisor termination evidence. No deployed historical-role ACL or external-client deployment attestation."
+    },
+    "2.5": {
+      "requirements": [
+        "Migration eight revokes legacy intent atomically without weakening guards"
+      ],
+      "scenarios": [
+        "Exception - Full migration rollback and exhaustion",
+        "Security - Representation cutover does not reuse a strong validator",
+        "Security - Disposable down never resurrects authorization"
+      ],
+      "implementation": [
+        "migrations/00008_create_monitor_scheduler.sql",
+        "tests/integration/scheduler_migration_test.go",
+        "tests/integration/registration_test.go"
+      ],
+      "tests": [
+        "TestSchedulerMigrationRetiresAllLegacyTags",
+        "TestSchedulerMigrationRollback",
+        "TestCheckpointOneDownRefusesUnsafeOrExhausted",
+        "TestCheckpointOneSchemaSevenFailsClosed",
+        "TestCheckpointOneHTTPCutoverAllTagsAndRollback",
+        "TestSchemaSevenFixtureMatchesReviewedHistoricalWriter",
+        "TestMigrationAndConstraints"
+      ],
+      "commands": [
+        "evidence/checkpoint1-final/final-pg-normal-0.json",
+        "evidence/checkpoint1-final/final-pg-race-0.json"
+      ],
+      "exit_code": 0,
+      "evidence": [
+        "evidence/checkpoint1-final/final-pg-normal-0.log",
+        "evidence/checkpoint1-final/final-pg-race-0.log"
+      ],
+      "implementation_commit": "d781d7560904ee81c4939d9520604ff2240766a4",
+      "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+      "limits": "Checkpoint1 scope only. Database projection/physical-preparation fixtures are not real network or Supervisor termination evidence. No deployed historical-role ACL or external-client deployment attestation."
+    },
+    "3.3": {
+      "requirements": [
+        "Activation transport and response projections are bounded and private",
+        "Deprecated execution fields have an explicit breaking compatibility protocol"
+      ],
+      "scenarios": [
+        "Success - Exact status representation",
+        "Exception - Legacy closed enum client or absent authoritative endpoint"
+      ],
+      "implementation": [
+        "internal/monitor/activation_handler.go",
+        "internal/monitor/activation_store.go",
+        "docs/api/openapi.yaml"
+      ],
+      "tests": [
+        "TestCheckpointOneHTTPIntentStatusContract",
+        "TestCheckpointOneHTTPCutoverAllTagsAndRollback",
+        "TestMonitorHTTPJourneyAndIsolation",
+        "TestMonitorNoTargetNetwork",
+        "TestSchemaSevenFixtureMatchesReviewedHistoricalWriter"
+      ],
+      "commands": [
+        "evidence/checkpoint1-final/final-unit.json",
+        "evidence/checkpoint1-final/final-unit-race.json",
+        "evidence/checkpoint1-final/final-pg-normal-0.json",
+        "evidence/checkpoint1-final/final-pg-race-0.json",
+        "evidence/checkpoint1-final/final-zero-target-audit.json"
+      ],
+      "exit_code": 0,
+      "evidence": [
+        "evidence/checkpoint1-final/final-unit.log",
+        "evidence/checkpoint1-final/final-unit-race.log",
+        "evidence/checkpoint1-final/final-pg-normal-0.log",
+        "evidence/checkpoint1-final/final-pg-race-0.log",
+        "evidence/checkpoint1-final/final-zero-target-audit.log"
+      ],
+      "implementation_commit": "d781d7560904ee81c4939d9520604ff2240766a4",
+      "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+      "limits": "Checkpoint1 scope only. Database projection/physical-preparation fixtures are not real network or Supervisor termination evidence. No deployed historical-role ACL or external-client deployment attestation."
+    },
+    "3.4": {
+      "requirements": [
+        "Execution authorization requires separate current Owner reconfirmation",
+        "Intent ownership survives its author while audit remains bounded"
+      ],
+      "scenarios": [
+        "Concurrency - Authorization expires without automatic renewal",
+        "Security - No active Owner never causes execution"
+      ],
+      "implementation": [
+        "migrations/00008_create_monitor_scheduler.sql",
+        "internal/monitor/execution_authorization_store.go"
+      ],
+      "tests": [
+        "TestCheckpointOneStartOwnerLossBothOrders",
+        "TestCheckpointOneStartExpiryAfterFinalWait",
+        "TestCheckpointOneSessionIsNotBackgroundIdentity",
+        "TestCheckpointOneRealExpiryExplicitRenewal",
+        "TestExecutionAuthorizationFreshTimeAfterEverySPIWait",
+        "TestExecutionAuthorizationLossWhileWaiting",
+        "TestSchedulerClaimOwnerHintInvalidation"
+      ],
+      "commands": [
+        "evidence/checkpoint1-final/final-pg-normal-0.json",
+        "evidence/checkpoint1-final/final-pg-normal-1.json",
+        "evidence/checkpoint1-final/final-pg-race-0.json",
+        "evidence/checkpoint1-final/final-pg-race-1.json"
+      ],
+      "exit_code": 0,
+      "evidence": [
+        "evidence/checkpoint1-final/final-pg-normal-0.log",
+        "evidence/checkpoint1-final/final-pg-normal-1.log",
+        "evidence/checkpoint1-final/final-pg-race-0.log",
+        "evidence/checkpoint1-final/final-pg-race-1.log"
+      ],
+      "implementation_commit": "d781d7560904ee81c4939d9520604ff2240766a4",
+      "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+      "limits": "Checkpoint1 scope only. Database projection/physical-preparation fixtures are not real network or Supervisor termination evidence. No deployed historical-role ACL or external-client deployment attestation."
+    },
+    "3.5": {
+      "requirements": [
+        "Deprecated execution fields have an explicit breaking compatibility protocol"
+      ],
+      "scenarios": [
+        "Concurrency - Runtime changes keep the intent validator stable",
+        "Exception - Legacy closed enum client or absent authoritative endpoint",
+        "Security - Old HTTP projection blocks fixture rollout"
+      ],
+      "implementation": [
+        "docs/monitor-scheduler-rollout.md",
+        "tests/scheduler/retire-projection-fixture.sql",
+        "tests/integration/scheduler_checkpoint1_projection_test.go"
+      ],
+      "tests": [
+        "TestCheckpointOneHTTPIntentStatusContract",
+        "TestCheckpointOneHTTPCutoverAllTagsAndRollback",
+        "TestCheckpointOneProjectionRetirementKeepsSchemaEight",
+        "TestCheckpointOneHTTPInventoryBlocksDatabaseAdmission"
+      ],
+      "commands": [
+        "evidence/checkpoint1-final/final-pg-normal-0.json",
+        "evidence/checkpoint1-final/final-pg-race-0.json",
+        "evidence/checkpoint1-final/final-zero-target-audit.json"
+      ],
+      "exit_code": 0,
+      "evidence": [
+        "evidence/checkpoint1-final/final-pg-normal-0.log",
+        "evidence/checkpoint1-final/final-pg-race-0.log",
+        "evidence/checkpoint1-final/final-zero-target-audit.log"
+      ],
+      "implementation_commit": "d781d7560904ee81c4939d9520604ff2240766a4",
+      "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+      "limits": "Checkpoint1 scope only. Database projection/physical-preparation fixtures are not real network or Supervisor termination evidence. No deployed historical-role ACL or external-client deployment attestation."
     }
   },
-  "remaining": "40 unchecked tasks; Checkpoint1 is not complete. Migration/legacy permissions and compatibility remain blocked pending independent review.",
-  "final_implementation_sha": null
+  "remaining": "33 unchecked tasks in groups4–10. Checkpoint1 accepted14/47; stop awaiting independent review. No Checkpoint2 advancement.",
+  "final_implementation_sha": null,
+  "checkpoint1_final": {
+    "tasks": [
+      "1.1",
+      "1.2",
+      "1.3",
+      "1.4",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4",
+      "2.5",
+      "3.1",
+      "3.2",
+      "3.3",
+      "3.4",
+      "3.5"
+    ],
+    "accepted": 14,
+    "total_change_tasks": 47,
+    "tested_implementation_sha": "d781d7560904ee81c4939d9520604ff2240766a4",
+    "normal_tests": 131,
+    "race_tests": 131,
+    "evidence": "evidence/checkpoint1-final/README.md",
+    "remaining": "All33 tasks in groups4–10 remain unchecked. No Checkpoint2 implementation work in this round."
+  },
+  "final_implementation_sha_note": "Whole planA Change is incomplete; final_implementation_sha stays null. checkpoint1_final.tested_implementation_sha is the real frozen acceptance SHA."
 }

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "env",
+    "GOCACHE=/private/tmp/devpilot-scheduler-go-cache",
+    "sh",
+    "-c",
+    "python3 -m unittest discover -s tests/network -p 'test_*.py' -v && python3 -m unittest discover -s tests/execution -p 'test_*.py' -v"
+  ],
+  "started_at": "2026-10-21T01:19:31.507289+00:00",
+  "elapsed_seconds": 0.5078724999912083,
+  "exit_code": 0,
+  "head": "d781d7560904ee81c4939d9520604ff2240766a4",
+  "dirty": false,
+  "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+  "binaries": {},
+  "log_sha256": "598b88e7068ba3a7244fa36b56fa3a5cdf339328f878a81f6ab5afb722c8c289",
+  "source_inventory_ref": "source-inventories/1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb.json",
+  "original_receipt_ref": "raw-receipts/final-audit-classifiers.json.gz",
+  "original_receipt_sha256": "327d73be058bf51984c40d29228eb899d75b7c5e6046264798548fc1219c1894"
+}

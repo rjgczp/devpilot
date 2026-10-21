@@ -1,0 +1,38 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "container:devpilot-scheduler-apply-pg18",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/cp1-isolation.test",
+    "devpilot-scheduler-fixture",
+    "-test.run",
+    "^TestCheckpointOneAuthorizationFixtureCleansSharedDatabase$",
+    "-test.failfast",
+    "-test.timeout=90s",
+    "-test.v"
+  ],
+  "started_at": "2026-10-21T01:17:28.191764+00:00",
+  "elapsed_seconds": 0.39414574997499585,
+  "exit_code": 1,
+  "head": "851137d65d746687e4b0cb0e151e36c2f0fb96da",
+  "dirty": true,
+  "source_inventory_sha256": "6d2e7186ae6a196bd9d6438d3cac5a6e4547501954da14b545c5b081bd8c10e0",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp1-isolation.test": "b102ed9a0c436be7b344dc85d35ab70490eb8a662d9e6f2cff9cab3d0d9ed38a"
+  },
+  "log_sha256": "82e8fc2c7e52e4c4a97fe8a0442b18c5176868991682c45baacdeeb4f5cbf728",
+  "source_inventory_ref": "source-inventories/6d2e7186ae6a196bd9d6438d3cac5a6e4547501954da14b545c5b081bd8c10e0.json",
+  "original_receipt_ref": "raw-receipts/isolation-root-cause.json.gz",
+  "original_receipt_sha256": "57d3326b950059977f57a3551098f8d59749f14c651ad53fca0c3b0aec405d51"
+}

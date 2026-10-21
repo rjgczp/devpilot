@@ -1,0 +1,67 @@
+=== RUN   TestMonitorNoTargetNetwork
+=== RUN   TestMonitorNoTargetNetwork/http-restart
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/unknown-commit-reconciliation
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/unknown-commit-reconciliation/rollback
+=== RUN   TestMonitorNoTargetNetwork/unknown-commit-reconciliation/lost
+=== NAME  TestMonitorNoTargetNetwork/unknown-commit-reconciliation
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/http-unknown-commit
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/http-unknown-commit/lost
+=== RUN   TestMonitorNoTargetNetwork/http-unknown-commit/rollback
+=== RUN   TestMonitorNoTargetNetwork/http-unknown-commit/deadlock
+=== RUN   TestMonitorNoTargetNetwork/http-unknown-commit/schema
+=== RUN   TestMonitorNoTargetNetwork/http-unknown-commit/timeout
+=== RUN   TestMonitorNoTargetNetwork/http-unknown-commit/actual-schema6
+=== NAME  TestMonitorNoTargetNetwork/http-unknown-commit
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/full-workspace-intent-cap
+    registration_test.go:79: native Goose up expected-success=true: verified
+    activation_test.go:360: two Store instances serialized at Workspace: exactly100; 101st409; pause/PATCH allowed; cooling429
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/finite-execution-authorization
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/disabled
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/blocked
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/authorized_waiting
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/due
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/leased
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/started
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/unknown
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/completed
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/configuration_changed
+=== RUN   TestMonitorNoTargetNetwork/intent-and-authoritative-status/expired
+=== NAME  TestMonitorNoTargetNetwork/intent-and-authoritative-status
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestMonitorNoTargetNetwork (1.66s)
+    --- PASS: TestMonitorNoTargetNetwork/http-restart (0.69s)
+    --- PASS: TestMonitorNoTargetNetwork/unknown-commit-reconciliation (0.15s)
+        --- PASS: TestMonitorNoTargetNetwork/unknown-commit-reconciliation/rollback (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/unknown-commit-reconciliation/lost (0.01s)
+    --- PASS: TestMonitorNoTargetNetwork/http-unknown-commit (0.17s)
+        --- PASS: TestMonitorNoTargetNetwork/http-unknown-commit/lost (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/http-unknown-commit/rollback (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/http-unknown-commit/deadlock (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/http-unknown-commit/schema (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/http-unknown-commit/timeout (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/http-unknown-commit/actual-schema6 (0.01s)
+    --- PASS: TestMonitorNoTargetNetwork/full-workspace-intent-cap (0.27s)
+    --- PASS: TestMonitorNoTargetNetwork/finite-execution-authorization (0.18s)
+    --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status (0.21s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/disabled (0.02s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/blocked (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/authorized_waiting (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/due (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/leased (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/started (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/unknown (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/completed (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/configuration_changed (0.01s)
+        --- PASS: TestMonitorNoTargetNetwork/intent-and-authoritative-status/expired (0.01s)
+PASS

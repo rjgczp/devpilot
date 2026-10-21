@@ -1,0 +1,1169 @@
+diff --git a/docs/monitor-scheduler-rollout.md b/docs/monitor-scheduler-rollout.md
+index 20563c6..6e25e0d 100644
+--- a/docs/monitor-scheduler-rollout.md
++++ b/docs/monitor-scheduler-rollout.md
+@@ -109,3 +109,30 @@ Run capacity reserves future terminal space before admission so loss of an ACK
+ or an unknown network outcome cannot leave an unauditable execution. It does
+ not refund Start rate tokens. Lease expiry cannot release physical slots.
+ These database rules do not by themselves prove Linux isolation or termination.
++
++## Checkpoint1 evidence scope and historical-role limitation
++
++There is no real historical deployment LOGIN/ACL inventory in this repository.
++The legacy test role proves the original Schema7 SQL dependencies only. Its
++column-specific Monitor INSERT fix is not a production GRANT recommendation.
++Do not invent, enlarge or deploy production privileges from that test profile.
++Actual deployment identity review and draining privileged connections remain
++mandatory before any future rollout; no production rollout is authorized here.
++
++Checkpoint1's executable consumer contract is
++`checkpointClientObservation` in the integration projection tests. It exercises
++real HTTP responses, missing/404/503/invalid status and v/g mismatch refresh;
++it is a reference protocol, not evidence that an external client was deployed.
++There is no frontend in this change. Cross-interface running/unknown/completed
++rows in these tests are administrative database projection fixtures, not network
++deliveries or completed Result/Supervisor implementations.
++
++`tests/scheduler/retire-projection-fixture.sql` is a guarded-PG18-only executable
++maintenance-protocol reference. It requires closed admission, drained HTTP
++inventory, revoked grants and no unconfirmed physical-resource record before
++retiring every intent tag atomically while keeping Schema8 and cooldowns.
++It grants no runtime role a capability, rejects non-test databases, and is not a
++production rollback command or a way to manufacture physical-stop proof.
++Actual Supervisor witnesses and complete deployed instance/client inventory
++remain later acceptance; Goose Down tests are separately disposable lifecycle
++tests. A generation overflow must abort tag retirement rather than reuse tags.
+diff --git a/internal/monitoring/execution_network_test.go b/internal/monitoring/execution_network_test.go
+index 1a08031..56e3067 100644
+--- a/internal/monitoring/execution_network_test.go
++++ b/internal/monitoring/execution_network_test.go
+@@ -1,4 +1,4 @@
+-//go:build executionnet
++//go:build executionnet && linux
+ 
+ package monitoring
+ 
+diff --git a/internal/monitoring/scheduler_boundary_test.go b/internal/monitoring/scheduler_boundary_test.go
+index 41296e5..b6d62ae 100644
+--- a/internal/monitoring/scheduler_boundary_test.go
++++ b/internal/monitoring/scheduler_boundary_test.go
+@@ -1,6 +1,7 @@
+ package monitoring
+ 
+ import (
++	"bytes"
+ 	"encoding/json"
+ 	"os"
+ 	"os/exec"
+@@ -64,3 +65,55 @@ func TestFixtureSchedulerBuildBoundary(t *testing.T) {
+ 		}
+ 	}
+ }
++
++func TestReleaseArtifactAndProbeTestBoundary(t *testing.T) {
++	probe, err := os.ReadFile("execution_network_test.go")
++	if err != nil || !bytes.HasPrefix(probe, []byte("//go:build executionnet && linux\n")) {
++		t.Fatal("Probe test entry must be Linux-only")
++	}
++	// Inspect a real ordinary Linux API artifact, not only the host's build graph.
++	bin := filepath.Join(t.TempDir(), "api")
++	run := func(args ...string) []byte {
++		t.Helper()
++		cmd := exec.Command("go", args...)
++		cmd.Dir = "../.."
++		cmd.Env = append(os.Environ(), "GOOS=linux", "CGO_ENABLED=0", "EGRESS_APPROVED=1", "DEVPILOT_SCHEDULER_ENABLED=true", "DEVPILOT_PROBE_ENABLED=true")
++		out, err := cmd.CombinedOutput()
++		if err != nil {
++			t.Fatalf("build boundary %v failed: %s", args, out)
++		}
++		return out
++	}
++	run("build", "-o", bin, "./cmd/api")
++	symbols := run("tool", "nm", bin)
++	for _, forbidden := range [][]byte{[]byte("devpilot/internal/monitoring."), []byte("devpilot/internal/scheduler.")} {
++		if bytes.Contains(symbols, forbidden) {
++			t.Fatal("release binary contains execution implementation")
++		}
++	}
++	for _, tags := range []string{"", "executionnet"} {
++		args := []string{"list", "-json"}
++		if tags != "" {
++			args = append(args, "-tags", tags)
++		}
++		args = append(args, "./internal/monitoring")
++		var p struct{ GoFiles, TestGoFiles []string }
++		if json.Unmarshal(run(args...), &p) != nil {
++			t.Fatal("invalid package inventory")
++		}
++		for _, f := range p.GoFiles {
++			if f == "execution_network_test.go" || f == "bridge_test.go" {
++				t.Fatal("Probe or snapshot bridge in ordinary library")
++			}
++		}
++		found := false
++		for _, f := range p.TestGoFiles {
++			if f == "execution_network_test.go" {
++				found = true
++			}
++		}
++		if found != (tags == "executionnet") {
++			t.Fatal("Probe requires explicit test build")
++		}
++	}
++}
+diff --git a/tests/integration/monitors_network_test.go b/tests/integration/monitors_network_test.go
+index cfad519..f790b8a 100644
+--- a/tests/integration/monitors_network_test.go
++++ b/tests/integration/monitors_network_test.go
+@@ -37,4 +37,6 @@ func TestMonitorNoTargetNetwork(t *testing.T) {
+ 	t.Run("unknown-commit-reconciliation", TestActivationCommitFaults)
+ 	t.Run("http-unknown-commit", TestActivationHTTPUnknownCommitAndFaults)
+ 	t.Run("full-workspace-intent-cap", TestActivationQuotaAndCAS)
++	t.Run("finite-execution-authorization", TestCheckpointOneAuthorizationRealHTTPStrictContract)
++	t.Run("intent-and-authoritative-status", TestCheckpointOneHTTPIntentStatusContract)
+ }
+diff --git a/tests/integration/scheduler_authorization_test.go b/tests/integration/scheduler_authorization_test.go
+index 20e6df5..8bffcbf 100644
+--- a/tests/integration/scheduler_authorization_test.go
++++ b/tests/integration/scheduler_authorization_test.go
+@@ -13,8 +13,7 @@ import (
+ )
+ 
+ func TestExecutionAuthorizationAtomicIntentAndRevocation(t *testing.T) {
+-	db := openDB(t)
+-	migrate(t)
++	db := workspaceDB(t)
+ 	f, m := monitorFixture(t, db)
+ 	ctx := context.Background()
+ 	s := monitor.Store{Pool: db}
+diff --git a/tests/integration/scheduler_checkpoint1_down_test.go b/tests/integration/scheduler_checkpoint1_down_test.go
+new file mode 100644
+index 0000000..8893d31
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_down_test.go
+@@ -0,0 +1,64 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"path/filepath"
++	"strings"
++	"testing"
++)
++
++func TestCheckpointOneDownRefusesUnsafeOrExhausted(t *testing.T) {
++	for _, mode := range []string{"open-gate", "unreleased-run", "disabled-overflow", "enabled-overflow"} {
++		t.Run(mode, func(t *testing.T) {
++			db := workspaceDB(t)
++			ctx := context.Background()
++			f, m, h := schedulerClaimFixture(t, db)
++			switch mode {
++			case "open-gate":
++				if _, err := db.Exec(ctx, `UPDATE scheduler_control SET gate='fixture',emergency_stop=false,verified_at=clock_timestamp(),expires_at=clock_timestamp()+interval '1 hour',manifest_digest=decode(repeat('ab',32),'hex') WHERE control_id='deployment'`); err != nil {
++					t.Fatal(err)
++				}
++			case "unreleased-run":
++				if _, err := db.Exec(ctx, `WITH t AS MATERIALIZED(SELECT clock_timestamp() n) INSERT INTO monitor_runs(workspace_id,project_id,monitor_id,run_id,configuration_version,activation_generation,scheduler_epoch,fencing_token,scheduled_at,claimed_at,lease_owner,worker_incarnation,lease_until,attempt_state) SELECT $1,$2,$3,$4,$5,$6,$7,1,n,n,session_user,uuidv7(),n+interval '45 seconds','leased' FROM t`, h.w, h.p, h.m, h.r, h.v, h.g, h.e); err != nil {
++					t.Fatal(err)
++				}
++			case "disabled-overflow":
++				activationSeed(t, db, m, "desired_state='disabled',activation_configuration_version=NULL,last_transition_kind='configuration_changed',last_actor_user_id=NULL,activation_generation=9223372036854775807")
++			case "enabled-overflow":
++				activationSeed(t, db, m, "activation_generation=9223372036854775807")
++			}
++			t.Cleanup(func() {
++				// Only database projection fixtures, never a physical stop receipt.
++				if _, err := db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'; UPDATE monitor_runs SET attempt_state='canceled',finished_at=clock_timestamp(),physical_release_confirmed_at=clock_timestamp() WHERE physical_release_confirmed_at IS NULL`); err != nil {
++					t.Error(err)
++				}
++				if strings.Contains(mode, "overflow") {
++					activationSeed(t, db, m, "desired_state='disabled',activation_configuration_version=NULL,last_transition_kind='configuration_changed',last_actor_user_id=NULL,activation_generation=2")
++				}
++			})
++			var before, after string
++			const snapshot = `SELECT jsonb_build_object('activation',(SELECT jsonb_agg(to_jsonb(a) ORDER BY monitor_id) FROM monitor_activation_states a),'schedules',(SELECT jsonb_agg(to_jsonb(s) ORDER BY monitor_id) FROM monitor_schedules s),'runs',(SELECT jsonb_agg(to_jsonb(r) ORDER BY run_id) FROM monitor_runs r),'roles',(SELECT jsonb_agg(rolname ORDER BY rolname) FROM pg_roles WHERE rolname LIKE 'devpilot_scheduler_%'))::text`
++			if err := db.QueryRow(ctx, snapshot).Scan(&before); err != nil {
++				t.Fatal(err)
++			}
++			out := goose(t, filepath.Join(root(), "migrations"), "down", false)
++			want := "independent physical stop and closed gate required"
++			if strings.Contains(mode, "overflow") {
++				want = "bigint out of range"
++			}
++			if !strings.Contains(string(out), want) {
++				t.Fatal("Down failed before intended boundary")
++			}
++			t.Logf("expected Down failure %s: %s", mode, out)
++			if err := db.QueryRow(ctx, snapshot).Scan(&after); err != nil || after != before {
++				t.Fatal("Down left partial tag/schema/permission changes", err)
++			}
++			if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 8 {
++				t.Fatal("failed Down changed migration version")
++			}
++			_ = f
++		})
++	}
++}
+diff --git a/tests/integration/scheduler_checkpoint1_final_gates_test.go b/tests/integration/scheduler_checkpoint1_final_gates_test.go
+new file mode 100644
+index 0000000..c2cd9d2
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_final_gates_test.go
+@@ -0,0 +1,220 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"errors"
++	"testing"
++	"time"
++
++	"github.com/jackc/pgx/v5"
++	"github.com/jackc/pgx/v5/pgconn"
++	"github.com/jackc/pgx/v5/pgxpool"
++	"github.com/rjgczp/devpilot/internal/monitor"
++	"github.com/rjgczp/devpilot/internal/session"
++)
++
++// Executes the existing Start function only to validate Checkpoint1 authority.
++// There is no Probe/namespace/network permit in these database-only fixtures.
++func checkpointStartAsync(t *testing.T, pool *pgxpool.Pool, inc string, h schedulerClaimHint) (int, <-chan error) {
++	t.Helper()
++	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
++	conn, err := pool.Acquire(ctx)
++	if err != nil {
++		cancel()
++		t.Fatal(err)
++	}
++	pid := int(conn.Conn().PgConn().PID())
++	done := make(chan error, 1)
++	go func() {
++		defer cancel()
++		err := func() error {
++			tx, err := conn.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted})
++			if err != nil {
++				return err
++			}
++			defer tx.Rollback(context.Background())
++			var raw []byte
++			if err = tx.QueryRow(ctx, schedulerStartSQL, inc, h.w, h.p, h.m, h.u, h.b, h.r, "1").Scan(&raw); err != nil {
++				return err
++			}
++			return tx.Commit(ctx)
++		}()
++		conn.Release()
++		done <- err
++	}()
++	return pid, done
++}
++
++func checkpointInvalidCandidate(t *testing.T, err error) {
++	t.Helper()
++	var p *pgconn.PgError
++	if !errors.As(err, &p) || p.Code != "P0001" || p.Message != "candidate_invalid" {
++		t.Fatalf("expected authority rejection, not timeout/deadlock: %v", err)
++	}
++	t.Logf("final gate rejected SQLSTATE=%s reason=%s", p.Code, p.Message)
++}
++
++func TestCheckpointOneStartOwnerLossBothOrders(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
++	schedulerDatabaseOnlyGate(t, db)
++	for _, mode := range []string{"disabled", "demoted", "removed", "rejoined-member", "rejoined-owner"} {
++		for _, order := range []string{"loss-first-wait", "start-first"} {
++			t.Run(mode+"/"+order, func(t *testing.T) {
++				f, m, h := schedulerClaimFixture(t, db)
++				if _, err := schedulerClaim(t, w, inc, h); err != nil {
++					t.Fatal(err)
++				}
++				schedulerPreparedDatabaseFixture(t, db, h)
++				before := activationRead(t, db, f.od, m)
++				if order == "start-first" {
++					if _, err := schedulerStart(t, w, inc, h); err != nil {
++						t.Fatal(err)
++					}
++				}
++				tx, err := db.Begin(ctx)
++				if err != nil {
++					t.Fatal(err)
++				}
++				defer tx.Rollback(ctx)
++				if mode == "disabled" {
++					_, err = tx.Exec(ctx, `UPDATE users SET status='disabled' WHERE id=$1`, f.owner.ID)
++				} else {
++					_, err = tx.Exec(ctx, `SELECT id FROM workspaces WHERE id=$1 FOR NO KEY UPDATE`, f.w.ID)
++					if err == nil {
++						if mode == "demoted" {
++							_, err = tx.Exec(ctx, `UPDATE workspace_members SET role='member' WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.owner.ID)
++						} else {
++							_, err = tx.Exec(ctx, `DELETE FROM workspace_members WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.owner.ID)
++							if err == nil && mode != "removed" {
++								role := "member"
++								if mode == "rejoined-owner" {
++									role = "owner"
++								}
++								_, err = tx.Exec(ctx, `INSERT INTO workspace_members(workspace_id,user_id,role) VALUES($1,$2,$3)`, f.w.ID, f.owner.ID, role)
++							}
++						}
++					}
++				}
++				if err != nil {
++					t.Fatal(err)
++				}
++				var done <-chan error
++				if order == "loss-first-wait" {
++					pid, ch := checkpointStartAsync(t, w, inc, h)
++					done = ch
++					waitActivationBlock(t, db, pid)
++					schedulerLockReceipt(t, db, "Owner mutation precedes waiting Start", pid)
++				}
++				if err = tx.Commit(ctx); err != nil {
++					t.Fatal(err)
++				}
++				if done != nil {
++					checkpointInvalidCandidate(t, <-done)
++				}
++				want := 0
++				if order == "start-first" {
++					want = 1
++				}
++				if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE monitor_id=$1 AND started_at IS NOT NULL`, m.ID) != want {
++					t.Fatal("Start authority ordering")
++				}
++				after := activationRead(t, db, f.md, m)
++				if monitor.ActivationETag(before) != monitor.ActivationETag(after) {
++					t.Fatal("Owner set mutation changed workspace intent")
++				}
++				status, err := (monitor.Store{Pool: db}).ExecutionStatus(ctx, f.md, h.w, h.p, h.m)
++				if err != nil {
++					t.Fatal(err)
++				}
++				if mode != "rejoined-owner" && (status.BlockedReason == nil || *status.BlockedReason != "owner_unavailable" || status.EffectiveAuthorization) {
++					t.Fatal("no active Owner not projected", status)
++				}
++			})
++		}
++	}
++}
++
++func TestCheckpointOneStartExpiryAfterFinalWait(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	_, m, h := schedulerClaimFixture(t, db)
++	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
++	schedulerDatabaseOnlyGate(t, db)
++	// Administrative short deadline before Claim; the public API still uses60s.
++	var expiry time.Time
++	if err := db.QueryRow(ctx, `UPDATE monitor_schedules SET expires_at=clock_timestamp()+interval '200ms',scheduler_epoch=scheduler_epoch+1 WHERE monitor_id=$1 RETURNING expires_at,scheduler_epoch::text`, m.ID).Scan(&expiry, &h.e); err != nil {
++		t.Fatal(err)
++	}
++	if _, err := schedulerClaim(t, w, inc, h); err != nil {
++		t.Fatal(err)
++	}
++	schedulerPreparedDatabaseFixture(t, db, h)
++	tx, err := db.Begin(ctx)
++	if err != nil {
++		t.Fatal(err)
++	}
++	defer tx.Rollback(ctx)
++	if _, err = tx.Exec(ctx, `SELECT control_id FROM scheduler_control WHERE control_id='deployment' FOR UPDATE`); err != nil {
++		t.Fatal(err)
++	}
++	pid, done := checkpointStartAsync(t, w, inc, h)
++	waitActivationBlock(t, db, pid)
++	schedulerLockReceipt(t, db, "Start final control wait across expiry", pid)
++	waitWorkspaceTime(t, db, expiry)
++	if err = tx.Commit(ctx); err != nil {
++		t.Fatal(err)
++	}
++	checkpointInvalidCandidate(t, <-done)
++	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE monitor_id=$1 AND attempt_state='leased' AND started_at IS NULL`, m.ID) != 1 {
++		t.Fatal("expired Start mutated run")
++	}
++	if queryInt(t, db, `SELECT tokens FROM scheduler_budget_state WHERE kind='project' AND budget_key=$1`, h.w+"/"+h.p) != 1000000 {
++		t.Fatal("rejected Start consumed token")
++	}
++}
++
++func TestCheckpointOneSessionIsNotBackgroundIdentity(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
++	schedulerDatabaseOnlyGate(t, db)
++	for _, mode := range []string{"logout", "expired"} {
++		t.Run(mode, func(t *testing.T) {
++			f, m, h := schedulerClaimFixture(t, db)
++			before := activationRead(t, db, f.od, m)
++			var expires time.Time
++			if err := db.QueryRow(ctx, `SELECT expires_at FROM monitor_schedules WHERE monitor_id=$1`, m.ID).Scan(&expires); err != nil {
++				t.Fatal(err)
++			}
++			if mode == "logout" {
++				if err := (session.Store{Pool: db}).Revoke(ctx, f.od); err != nil {
++					t.Fatal(err)
++				}
++			} else {
++				if _, err := db.Exec(ctx, `UPDATE sessions SET expires_at=clock_timestamp() WHERE token_hash=$1`, f.od[:]); err != nil {
++					t.Fatal(err)
++				}
++			}
++			_, err := (monitor.Store{Pool: db}).ExecutionAuthorize(ctx, f.od, h.w, h.p, h.m, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(before))
++			monitorWant(t, err, session.ErrInvalid)
++			if _, err = schedulerClaim(t, w, inc, h); err != nil {
++				t.Fatal("active Owner witness must not require former Session", err)
++			}
++			schedulerPreparedDatabaseFixture(t, db, h)
++			if _, err = schedulerStart(t, w, inc, h); err != nil {
++				t.Fatal("system Start borrowed former Session", err)
++			}
++			var after time.Time
++			if err = db.QueryRow(ctx, `SELECT expires_at FROM monitor_schedules WHERE monitor_id=$1`, m.ID).Scan(&after); err != nil || !after.Equal(expires) {
++				t.Fatal("session loss renewed/revoked workspace grant", err)
++			}
++			if monitor.ActivationETag(activationRead(t, db, f.md, m)) != monitor.ActivationETag(before) {
++				t.Fatal("background changed intent tag")
++			}
++		})
++	}
++}
+diff --git a/tests/integration/scheduler_checkpoint1_fixture_isolation_test.go b/tests/integration/scheduler_checkpoint1_fixture_isolation_test.go
+new file mode 100644
+index 0000000..fc02c4c
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_fixture_isolation_test.go
+@@ -0,0 +1,31 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"testing"
++)
++
++// Composite acceptance catches state left between independent suite cases,
++// which isolated executions cannot expose. Keep the real authorization test.
++func TestCheckpointOneAuthorizationFixtureCleansSharedDatabase(t *testing.T) {
++	db := openDB(t)
++	t.Cleanup(func() { goose(t, root()+"/migrations", "down-to 0", true) })
++	t.Run("authorization", TestExecutionAuthorizationAtomicIntentAndRevocation)
++	var version, schedules int
++	var exists bool
++	if err := db.QueryRow(context.Background(), `SELECT coalesce(max(version_id),0) FROM goose_db_version WHERE is_applied`).Scan(&version); err != nil {
++		t.Fatal(err)
++	}
++	if err := db.QueryRow(context.Background(), `SELECT to_regclass('public.monitor_schedules') IS NOT NULL`).Scan(&exists); err != nil {
++		t.Fatal(err)
++	}
++	if exists {
++		schedules = queryInt(t, db, `SELECT count(*) FROM monitor_schedules`)
++	}
++	t.Logf("post-test isolation: migration=%d scheduler_table=%v schedule_rows=%d", version, exists, schedules)
++	if version != 0 || exists {
++		t.Fatal("authorization fixture leaked state into following capacity test")
++	}
++}
+diff --git a/tests/integration/scheduler_checkpoint1_http_test.go b/tests/integration/scheduler_checkpoint1_http_test.go
+index 1e9d124..3d0a57b 100644
+--- a/tests/integration/scheduler_checkpoint1_http_test.go
++++ b/tests/integration/scheduler_checkpoint1_http_test.go
+@@ -28,7 +28,14 @@ func checkpointHTTPServer(t *testing.T, db *pgxpool.Pool) (*httptest.Server, *ht
+ 		t.Fatal(err)
+ 	}
+ 	h := monitor.New(monitor.Store{Pool: db}, config.AuthConfig{Mode: "production", Origin: origin}, slog.New(slog.NewJSONHandler(logs, nil)))
++	s, client := checkpointHTTPHandlerServer(t, h)
++	return s, client, logs
++}
++
++func checkpointHTTPHandlerServer(t *testing.T, h http.Handler) (*httptest.Server, *http.Client) {
++	t.Helper()
+ 	s := httptest.NewUnstartedServer(h)
++	var err error
+ 	if address := os.Getenv("MONITOR_PROBE_HTTP_ADDR"); address != "" {
+ 		s.Listener.Close()
+ 		s.Listener, err = net.Listen("tcp4", address)
+@@ -40,7 +47,7 @@ func checkpointHTTPServer(t *testing.T, db *pgxpool.Pool) (*httptest.Server, *ht
+ 	t.Cleanup(s.Close)
+ 	transport := &http.Transport{Proxy: nil}
+ 	t.Cleanup(transport.CloseIdleConnections)
+-	return s, &http.Client{Transport: transport}, logs
++	return s, &http.Client{Transport: transport}
+ }
+ func checkpointHTTP(t *testing.T, c *http.Client, server, method, path, body, token, tag string, modify func(http.Header)) (int, http.Header, []byte) {
+ 	t.Helper()
+diff --git a/tests/integration/scheduler_checkpoint1_legacy_race_test.go b/tests/integration/scheduler_checkpoint1_legacy_race_test.go
+new file mode 100644
+index 0000000..e63f554
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_legacy_race_test.go
+@@ -0,0 +1,141 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"testing"
++
++	"github.com/jackc/pgx/v5"
++	"github.com/jackc/pgx/v5/pgxpool"
++	"github.com/rjgczp/devpilot/internal/monitor"
++)
++
++func TestCheckpointOneLegacyAndAuthorizationSerialize(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	// This is a test profile, not an assertion about deployed historical ACLs.
++	if _, err := db.Exec(ctx, `CREATE ROLE checkpoint1_legacy LOGIN PASSWORD 'disposable_fixture_only';GRANT USAGE ON SCHEMA public TO checkpoint1_legacy;GRANT SELECT,UPDATE ON users,sessions,workspaces,workspace_members,projects,http_monitors,monitor_activation_states TO checkpoint1_legacy`); err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(func() {
++		if _, err := db.Exec(ctx, `DROP OWNED BY checkpoint1_legacy;DROP ROLE checkpoint1_legacy`); err != nil {
++			t.Error(err)
++		}
++	})
++	cfg := db.Config()
++	cfg.ConnConfig.User = "checkpoint1_legacy"
++	cfg.ConnConfig.Password = "disposable_fixture_only"
++	old, err := pgxpool.NewWithConfig(ctx, cfg)
++	if err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(old.Close)
++	for _, first := range []string{"legacy", "authorization"} {
++		t.Run(first, func(t *testing.T) {
++			f, m := monitorFixture(t, db)
++			a := activationRead(t, db, f.od, m)
++			tag := monitor.ActivationETag(a)
++			pause := newWorkspacePause(t)
++			pid := make(chan int, 1)
++			done1 := make(chan error, 1)
++			pid2 := make(chan int, 1)
++			done2 := make(chan error, 1)
++			call := func(kind string, observed workspaceObservedDB) error {
++				if kind == "legacy" {
++					_, err := (monitor.SchemaSevenFixtureStore{Pool: observed}).ActivationUpdate(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ActivationInput{DesiredState: "enabled", ConfigurationVersion: "1"}, tag)
++					return err
++				}
++				_, err := (monitor.Store{Pool: observed}).ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, tag)
++				return err
++			}
++			pool := db
++			other := "legacy"
++			otherPool := old
++			if first == "legacy" {
++				pool = old
++				other = "authorization"
++				otherPool = db
++			}
++			go func() {
++				done1 <- call(first, workspaceObservedDB{Pool: pool, pid: pid, wrap: func(tx pgx.Tx) pgx.Tx {
++					return workspaceObservedTx{Tx: tx, after: func(c context.Context, stage string) {
++						if stage == "commit" {
++							pause.stop(c)
++						}
++					}}
++				}})
++			}()
++			p1 := <-pid
++			pause.wait(t)
++			go func() { done2 <- call(other, workspaceObservedDB{Pool: otherPool, pid: pid2}) }()
++			p2 := <-pid2
++			waitActivationBlock(t, db, p2)
++			schedulerLockReceipt(t, db, first+" owns parent chain before commit", p1, p2)
++			pause.resume()
++			monitorWant(t, <-done1, nil)
++			monitorWant(t, <-done2, monitor.ErrPreconditionFailed)
++			want := 0
++			if first == "authorization" {
++				want = 1
++			}
++			if queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND authorized_activation_generation IS NOT NULL`, m.ID) != want {
++				t.Fatal("legacy granted or destroyed another commit without a fresh tag")
++			}
++			if first == "authorization" {
++				a = activationRead(t, db, f.od, m)
++				if _, err := (monitor.SchemaSevenFixtureStore{Pool: old}).ActivationUpdate(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ActivationInput{DesiredState: "disabled", ConfigurationVersion: "1"}, monitor.ActivationETag(a)); err != nil {
++					t.Fatal(err)
++				}
++				if queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND authorized_activation_generation IS NULL AND next_due_at IS NULL AND scheduler_epoch=2`, m.ID) != 1 {
++					t.Fatal("fresh legacy pause failed downward revocation")
++				}
++			}
++		})
++	}
++}
++
++func TestCheckpointOneHTTPInventoryBlocksDatabaseAdmission(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	_, m, h := schedulerClaimFixture(t, db)
++	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
++	schedulerDatabaseOnlyGate(t, db)
++	if _, err := db.Exec(ctx, `INSERT INTO scheduler_control(control_id,kind,login_name,incarnation,routable,status_ready) VALUES('old-http','http',session_user,uuidv7(),true,false)`); err != nil {
++		t.Fatal(err)
++	}
++	for _, mode := range []string{"old", "new-status-unready", "expired"} {
++		t.Run(mode, func(t *testing.T) {
++			sql := `UPDATE scheduler_control SET projection_protocol=NULL,status_ready=false,expires_at=NULL WHERE control_id='old-http'`
++			if mode == "new-status-unready" {
++				sql = `UPDATE scheduler_control SET projection_protocol='intent-v2',status_ready=false,expires_at=clock_timestamp()+interval '1 hour' WHERE control_id='old-http'`
++			}
++			if mode == "expired" {
++				sql = `UPDATE scheduler_control SET projection_protocol='intent-v2',status_ready=true,expires_at=clock_timestamp()-interval '1 second' WHERE control_id='old-http'`
++			}
++			if _, err := db.Exec(ctx, sql); err != nil {
++				t.Fatal(err)
++			}
++			_, err := schedulerClaim(t, w, inc, h)
++			checkpointInvalidCandidate(t, err)
++			if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE monitor_id=$1`, m.ID) != 0 {
++				t.Fatal("unready HTTP inventory permitted Claim")
++			}
++		})
++	}
++	if _, err := db.Exec(ctx, `UPDATE scheduler_control SET projection_protocol='intent-v2',status_ready=true,expires_at=clock_timestamp()+interval '1 hour' WHERE control_id='old-http'`); err != nil {
++		t.Fatal(err)
++	}
++	if _, err := schedulerClaim(t, w, inc, h); err != nil {
++		t.Fatal("verified database inventory positive control", err)
++	}
++	schedulerPreparedDatabaseFixture(t, db, h)
++	if _, err := db.Exec(ctx, `UPDATE scheduler_control SET projection_protocol=NULL WHERE control_id='old-http'`); err != nil {
++		t.Fatal(err)
++	}
++	_, err := schedulerStart(t, w, inc, h)
++	checkpointInvalidCandidate(t, err)
++	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE monitor_id=$1 AND started_at IS NOT NULL`, m.ID) != 0 {
++		t.Fatal("old HTTP returned before Start")
++	}
++}
+diff --git a/tests/integration/scheduler_checkpoint1_projection_test.go b/tests/integration/scheduler_checkpoint1_projection_test.go
+new file mode 100644
+index 0000000..7456b29
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_projection_test.go
+@@ -0,0 +1,390 @@
++//go:build integration
++
++package integration
++
++import (
++	"bytes"
++	"context"
++	"encoding/json"
++	"errors"
++	"github.com/jackc/pgx/v5/pgconn"
++	"io"
++	"log/slog"
++	"net/http"
++	"os"
++	"path/filepath"
++	"strings"
++	"testing"
++
++	"github.com/jackc/pgx/v5/pgxpool"
++	"github.com/rjgczp/devpilot/internal/config"
++	"github.com/rjgczp/devpilot/internal/monitor"
++	"github.com/rjgczp/devpilot/internal/session"
++)
++
++// Executable consumer contract, not a frontend or a deployed-client claim.
++// A missing/failed authority and different snapshots never imply idle/healthy.
++func checkpointClientObservation(header string, activation monitor.Activation, code int, raw []byte) string {
++	if header != "intent-v2" || code != 200 {
++		return "运行状态不可用"
++	}
++	var response struct{ Data monitor.ExecutionStatus }
++	if json.Unmarshal(raw, &response) != nil {
++		return "运行状态不可用"
++	}
++	s := response.Data
++	if s.MonitorID == "" || s.PauseSemantics != "start_commit" {
++		return "运行状态不可用"
++	}
++	if s.WorkspaceID != activation.WorkspaceID || s.ProjectID != activation.ProjectID || s.MonitorID != activation.MonitorID || s.ConfigurationVersion != activation.ConfigurationVersion || s.ActivationGeneration != activation.ActivationGeneration {
++		return "refresh_status"
++	}
++	if s.LatestAttempt != nil {
++		return s.LatestAttempt.AttemptState
++	}
++	return s.SchedulingState
++}
++
++func checkpointProjectionGet(t *testing.T, c *http.Client, server, path, token string) (monitor.Activation, http.Header, []byte) {
++	t.Helper()
++	code, h, raw := checkpointHTTP(t, c, server, "GET", path+"/activation", "", token, "", nil)
++	var a struct{ Data monitor.Activation }
++	if code != 200 || json.Unmarshal(raw, &a) != nil {
++		t.Fatal("activation projection", code)
++	}
++	if a.Data.ExecutionState != "not_reported" || a.Data.BlockedReason != "execution_status_required" || h.Get("DevPilot-Activation-Projection") != "intent-v2" {
++		t.Fatal("migration hints changed")
++	}
++	var shape struct{ Data map[string]any }
++	json.Unmarshal(raw, &shape)
++	if len(shape.Data) != 14 || shape.Data["next_due_at"] != nil {
++		t.Fatal("Activation shape changed")
++	}
++	return a.Data, h, raw
++}
++
++func TestCheckpointOneHTTPIntentStatusContract(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	server, client, _ := checkpointHTTPServer(t, db)
++	for _, state := range []string{"disabled", "blocked", "authorized_waiting", "due", "leased", "started", "unknown", "completed", "configuration_changed", "expired"} {
++		t.Run(state, func(t *testing.T) {
++			f, m := monitorFixture(t, db)
++			s := monitor.Store{Pool: db}
++			path := "/api/v1/workspaces/" + m.WorkspaceID + "/projects/" + m.ProjectID + "/monitors/" + m.ID
++			if state != "disabled" {
++				a := activationRead(t, db, f.od, m)
++				if _, err := s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(a)); err != nil {
++					t.Fatal(err)
++				}
++			}
++			if state != "disabled" && state != "blocked" {
++				if _, err := db.Exec(ctx, `UPDATE scheduler_control SET gate='fixture',emergency_stop=false,verified_at=clock_timestamp(),expires_at=clock_timestamp()+interval '1 hour',manifest_digest=decode(repeat('ab',32),'hex') WHERE control_id='deployment';`); err != nil {
++					t.Fatal(err)
++				}
++			}
++			if state == "authorized_waiting" {
++				if _, err := db.Exec(ctx, `UPDATE monitor_schedules SET next_due_at=clock_timestamp()+interval '1 minute' WHERE monitor_id=$1`, m.ID); err != nil {
++					t.Fatal(err)
++				}
++			}
++			if state == "due" {
++				if _, err := db.Exec(ctx, `UPDATE monitor_schedules SET next_due_at=clock_timestamp() WHERE monitor_id=$1`, m.ID); err != nil {
++					t.Fatal(err)
++				}
++			}
++			if state == "expired" {
++				if _, err := db.Exec(ctx, `UPDATE monitor_schedules SET issued_at=clock_timestamp()-interval '61 seconds',expires_at=clock_timestamp()-interval '1 second',scheduler_epoch=scheduler_epoch+1 WHERE monitor_id=$1`, m.ID); err != nil {
++					t.Fatal(err)
++				}
++			}
++			before, headers, body := checkpointProjectionGet(t, client, server.URL, path, f.memberToken)
++			// Administrative row fixtures validate HTTP projection only. No result
++			// commit, physical release or actual network execution is claimed here.
++			if state == "leased" || state == "started" || state == "unknown" || state == "completed" || state == "configuration_changed" {
++				var run string
++				if err := db.QueryRow(ctx, `WITH t AS MATERIALIZED(SELECT clock_timestamp() n) INSERT INTO monitor_runs(workspace_id,project_id,monitor_id,run_id,configuration_version,activation_generation,scheduler_epoch,fencing_token,scheduled_at,claimed_at,lease_owner,worker_incarnation,lease_until,attempt_state) SELECT s.workspace_id,s.project_id,s.monitor_id,uuidv7(),s.authorized_configuration_version,s.authorized_activation_generation,s.scheduler_epoch,1,n,n,session_user,uuidv7(),n+interval '45 seconds','leased' FROM monitor_schedules s CROSS JOIN t WHERE s.monitor_id=$1 RETURNING run_id::text`, m.ID).Scan(&run); err != nil {
++					t.Fatal(err)
++				}
++				if state != "leased" {
++					if _, err := db.Exec(ctx, `UPDATE monitor_runs SET attempt_state='started',started_at=clock_timestamp() WHERE run_id=$1`, run); err != nil {
++						t.Fatal(err)
++					}
++				}
++				if state == "unknown" {
++					if _, err := db.Exec(ctx, `UPDATE monitor_runs SET attempt_state='unknown',finished_at=clock_timestamp(),stop_reason='worker_lost' WHERE run_id=$1`, run); err != nil {
++						t.Fatal(err)
++					}
++				}
++				if state == "completed" {
++					if _, err := db.Exec(ctx, `UPDATE monitor_runs SET attempt_state='completed',finished_at=clock_timestamp(),result_commit_id=uuidv7(),duration_ms=1,http_status=200,success=true,physical_release_confirmed_at=clock_timestamp() WHERE run_id=$1`, run); err != nil {
++						t.Fatal(err)
++					}
++				}
++			}
++			if state == "configuration_changed" {
++				if _, err := s.Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitorInput("new configuration"), monitor.ETag(m)); err != nil {
++					t.Fatal(err)
++				}
++			}
++			current, h, after := checkpointProjectionGet(t, client, server.URL, path, f.memberToken)
++			if state != "configuration_changed" && (!bytes.Equal(body, after) || headers.Get("ETag") != h.Get("ETag")) {
++				t.Fatal("operational change mutated intent validator")
++			}
++			code, _, raw := checkpointHTTP(t, client, server.URL, "GET", path+"/execution-status", "", f.memberToken, "", nil)
++			var observed struct{ Data monitor.ExecutionStatus }
++			if code != 200 || json.Unmarshal(raw, &observed) != nil {
++				t.Fatal("authoritative HTTP status", code)
++			}
++			status := observed.Data
++			want := state
++			switch state {
++			case "expired":
++				want = "blocked"
++				if status.AuthorizationState != "expired" || status.EffectiveAuthorization {
++					t.Fatal("expired authorization")
++				}
++			case "configuration_changed":
++				want = "started"
++				if status.CurrentObservation != nil || status.SchedulingState != "disabled" || !status.InFlight {
++					t.Fatal("PATCH hid old in-flight lineage")
++				}
++			case "unknown":
++				if !status.InFlight || status.CurrentObservation != nil || status.LatestAttempt.Success != nil || status.LatestAttempt.HTTPStatus != nil {
++					t.Fatal("unknown falsified HTTP result")
++				}
++			case "completed":
++				if status.CurrentObservation == nil || status.InFlight {
++					t.Fatal("matching completed observation missing")
++				}
++			}
++			if got := checkpointClientObservation(h.Get("DevPilot-Activation-Projection"), current, code, raw); got != want {
++				t.Fatalf("client observed %q want %q", got, want)
++			}
++			for _, badCode := range []int{0, 404, 503} {
++				if checkpointClientObservation("intent-v2", current, badCode, raw) != "运行状态不可用" {
++					t.Fatal("client inferred state without authority")
++				}
++			}
++			if checkpointClientObservation("", current, 200, raw) != "运行状态不可用" || checkpointClientObservation("intent-v2", current, 200, []byte(`{}`)) != "运行状态不可用" {
++				t.Fatal("unsupported/invalid authority inferred execution")
++			}
++			if state == "configuration_changed" && checkpointClientObservation("intent-v2", before, 200, raw) != "refresh_status" {
++				t.Fatal("client merged snapshots across PATCH")
++			}
++			for _, token := range []string{"", f.otherToken} {
++				code, _, _ := checkpointHTTP(t, client, server.URL, "GET", path+"/execution-status", "", token, "", nil)
++				want := 401
++				if token != "" {
++					want = 404
++				}
++				if code != want {
++					t.Fatal("status real scope/identity", code)
++				}
++			}
++			code, _, _ = checkpointHTTP(t, client, server.URL, "GET", path+"/execution-status", "", f.ownerToken, "", nil)
++			if code != 200 {
++				t.Fatal("Owner status read")
++			}
++			// Tear down only fabricated database rows: no physical Probe was created.
++			if _, err := db.Exec(ctx, `UPDATE monitor_runs SET attempt_state=CASE WHEN started_at IS NULL THEN 'canceled' ELSE CASE WHEN attempt_state='started' THEN 'unknown' ELSE attempt_state END END,finished_at=coalesce(finished_at,clock_timestamp()),physical_release_confirmed_at=clock_timestamp() WHERE monitor_id=$1 AND physical_release_confirmed_at IS NULL`, m.ID); err != nil {
++				t.Fatal(err)
++			}
++			if _, err := db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'`); err != nil {
++				t.Fatal(err)
++			}
++		})
++	}
++}
++
++type checkpointLegacyResponse struct{ http.ResponseWriter }
++
++type checkpointLegacyRepository struct{ monitor.Store }
++
++func (s checkpointLegacyRepository) ActivationDetail(ctx context.Context, d session.Digest, w, p, m string) (monitor.Activation, error) {
++	return (monitor.SchemaSevenFixtureStore(s.Store)).ActivationDetail(ctx, d, w, p, m)
++}
++func (s checkpointLegacyRepository) ActivationUpdate(ctx context.Context, d session.Digest, w, p, m string, input monitor.ActivationInput, tag string) (monitor.Activation, error) {
++	return (monitor.SchemaSevenFixtureStore(s.Store)).ActivationUpdate(ctx, d, w, p, m, input, tag)
++}
++
++func (w checkpointLegacyResponse) WriteHeader(code int) {
++	w.Header().Del("DevPilot-Activation-Projection")
++	w.ResponseWriter.WriteHeader(code)
++}
++
++// Historical Activation handler differs only by the added projection header;
++// historical Store SQL is independently frozen and hash-checked by the suite.
++func checkpointHistoricalHandler(db *pgxpool.Pool) http.Handler {
++	origin, _ := config.ParseOrigin("https://app.example.com")
++	h := monitor.New(checkpointLegacyRepository{monitor.Store{Pool: db}}, config.AuthConfig{Mode: "production", Origin: origin}, slog.New(slog.NewTextHandler(io.Discard, nil)))
++	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		if strings.HasSuffix(r.URL.Path, "/execution-status") || strings.HasSuffix(r.URL.Path, "/execution-authorization") {
++			http.NotFound(w, r)
++			return
++		}
++		h.ServeHTTP(checkpointLegacyResponse{w}, r)
++	})
++}
++
++func TestCheckpointOneHTTPCutoverAllTagsAndRollback(t *testing.T) {
++	db := openDB(t)
++	ctx := context.Background()
++	dir := filepath.Join(root(), "migrations")
++	goose(t, dir, "up-to 7", true)
++	t.Cleanup(func() { goose(t, dir, "down-to 0", true) })
++	old, oldClient := checkpointHTTPHandlerServer(t, checkpointHistoricalHandler(db))
++	type item struct {
++		f         memberFixture
++		m         monitor.Public
++		tag, path string
++	}
++	var items []item
++	f, disabled := monitorFixture(t, db)
++	for _, enabled := range []bool{false, true} {
++		m := disabled
++		if enabled {
++			var err error
++			m, err = (monitor.Store{Pool: db}).Create(ctx, f.od, disabled.WorkspaceID, disabled.ProjectID, monitorInput("historical enabled"))
++			if err != nil {
++				t.Fatal(err)
++			}
++		}
++		a, err := (monitor.SchemaSevenFixtureStore{Pool: db}).ActivationDetail(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID)
++		if err != nil {
++			t.Fatal(err)
++		}
++		if enabled {
++			a, err = activationPut(monitor.SchemaSevenFixtureStore{Pool: db}, f.od, m, a, "enabled")
++			if err != nil {
++				t.Fatal(err)
++			}
++		}
++		path := "/api/v1/workspaces/" + m.WorkspaceID + "/projects/" + m.ProjectID + "/monitors/" + m.ID
++		code, h, raw := checkpointHTTP(t, oldClient, old.URL, "GET", path+"/activation", "", f.ownerToken, "", nil)
++		var legacy struct{ Data monitor.Activation }
++		if code != 200 || json.Unmarshal(raw, &legacy) != nil || legacy.Data.ExecutionState != "blocked" || legacy.Data.BlockedReason != "scheduler_unavailable" || h.Get("DevPilot-Activation-Projection") != "" {
++			t.Fatal("historical HTTP fixture changed")
++		}
++		items = append(items, item{f, m, h.Get("ETag"), path})
++	}
++	old.Close() // Simulated maintenance-window HTTP drain before the real migration.
++	goose(t, dir, "up-to 8", true)
++	server, client, _ := checkpointHTTPServer(t, db)
++	for i, it := range items {
++		a, h, _ := checkpointProjectionGet(t, client, server.URL, it.path, it.f.ownerToken)
++		if h.Get("ETag") == it.tag {
++			t.Fatal("old tag survived representation change")
++		}
++		code, _, _ := checkpointHTTP(t, client, server.URL, "PUT", it.path+"/activation", `{"desired_state":"disabled","configuration_version":"1"}`, it.f.ownerToken, it.tag, nil)
++		if code != 412 {
++			t.Fatal("old activation HTTP tag accepted", code)
++		}
++		code, _, _ = checkpointHTTP(t, client, server.URL, "PUT", it.path+"/execution-authorization", `{"configuration_version":"1","consent_profile":"periodic-http-get-v1","authorization_seconds":60}`, it.f.ownerToken, it.tag, nil)
++		if code != 412 {
++			t.Fatal("old authorization HTTP tag accepted", code)
++		}
++		items[i].tag = monitor.ActivationETag(a)
++		// Disposable Down closes the ledger only when no physical rights exist.
++	}
++	server.Close()
++	goose(t, dir, "down", true)
++	old, oldClient = checkpointHTTPHandlerServer(t, checkpointHistoricalHandler(db))
++	for _, it := range items {
++		code, h, raw := checkpointHTTP(t, oldClient, old.URL, "GET", it.path+"/activation", "", it.f.ownerToken, "", nil)
++		var legacy struct{ Data monitor.Activation }
++		if code != 200 || json.Unmarshal(raw, &legacy) != nil || legacy.Data.DesiredState != "disabled" || legacy.Data.ExecutionState != "blocked" || h.Get("ETag") == it.tag {
++			t.Fatal("rollback revived old intent/tag")
++		}
++		code, _, raw = checkpointHTTP(t, oldClient, old.URL, "GET", it.path+"/execution-status", "", it.f.ownerToken, "", nil)
++		if code != 404 || checkpointClientObservation("", legacy.Data, code, raw) != "运行状态不可用" {
++			t.Fatal("rollback client invented execution")
++		}
++	}
++	old.Close()
++	goose(t, dir, "up-to 8", true)
++}
++
++func TestCheckpointOneProjectionRetirementKeepsSchemaEight(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	f, m, h := schedulerClaimFixture(t, db)
++	script, err := os.ReadFile(filepath.Join(root(), "tests/scheduler/retire-projection-fixture.sql"))
++	if err != nil {
++		t.Fatal(err)
++	}
++	retire := func(want bool) {
++		t.Helper()
++		conn, err := db.Acquire(ctx)
++		if err != nil {
++			t.Fatal(err)
++		}
++		defer conn.Release()
++		_, err = conn.Exec(ctx, string(script))
++		if (err == nil) != want {
++			t.Fatalf("retirement expected-success=%v: %v", want, err)
++		}
++		if err != nil {
++			var p *pgconn.PgError
++			if !errors.As(err, &p) || p.Message != "projection_retirement_requires_drain_revoke_stop" {
++				t.Fatal("unexpected retirement error", err)
++			}
++			if _, err = conn.Exec(ctx, "ROLLBACK"); err != nil {
++				t.Fatal(err)
++			}
++		}
++	}
++	a := activationRead(t, db, f.od, m)
++	retire(false) // An outstanding authorization blocks cutover.
++	if monitor.ActivationETag(a) != monitor.ActivationETag(activationRead(t, db, f.od, m)) {
++		t.Fatal("failed retirement changed tag")
++	}
++	// Pause closes the logical grant first; there has never been a real Probe.
++	if _, err = activationPut(monitor.Store{Pool: db}, f.od, m, a, "disabled"); err != nil {
++		t.Fatal(err)
++	}
++	if _, err = db.Exec(ctx, `INSERT INTO scheduler_control(control_id,kind,login_name,incarnation,routable) VALUES('retirement-http','http',session_user,uuidv7(),true)`); err != nil {
++		t.Fatal(err)
++	}
++	retire(false) // Routable HTTP inventory must be drained.
++	if _, err = db.Exec(ctx, `UPDATE scheduler_control SET routable=false WHERE control_id='retirement-http'`); err != nil {
++		t.Fatal(err)
++	}
++	if _, err = db.Exec(ctx, `WITH t AS MATERIALIZED(SELECT clock_timestamp() n) INSERT INTO monitor_runs(workspace_id,project_id,monitor_id,run_id,configuration_version,activation_generation,scheduler_epoch,fencing_token,scheduled_at,claimed_at,started_at,finished_at,lease_owner,worker_incarnation,lease_until,attempt_state,stop_reason) SELECT $1,$2,$3,$4,$5,$6,$7,1,n,n,n,n,session_user,uuidv7(),n+interval '45 seconds','unknown','worker_lost' FROM t`, h.w, h.p, h.m, h.r, h.v, h.g, h.e); err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(func() {
++		if _, err := db.Exec(ctx, `UPDATE monitor_runs SET physical_release_confirmed_at=clock_timestamp() WHERE run_id=$1 AND physical_release_confirmed_at IS NULL`, h.r); err != nil {
++			t.Error(err)
++		}
++	})
++	retire(false) // Lease/unknown is not independent physical-stop proof.
++	// Administrator-only disposal of the fabricated row, NOT a real kill receipt.
++	if _, err = db.Exec(ctx, `UPDATE monitor_runs SET physical_release_confirmed_at=clock_timestamp() WHERE run_id=$1`, h.r); err != nil {
++		t.Fatal(err)
++	}
++	before := activationRead(t, db, f.od, m)
++	retire(true)
++	after := activationRead(t, db, f.od, m)
++	if monitor.ActivationETag(before) == monitor.ActivationETag(after) || !before.NextEnableAllowedAt.Equal(*after.NextEnableAllowedAt) || after.DesiredState != "disabled" {
++		t.Fatal("retained-schema cutover reused tag or cooldown")
++	}
++	if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 8 {
++		t.Fatal("operational protocol used Goose Down")
++	}
++	path := "/api/v1/workspaces/" + h.w + "/projects/" + h.p + "/monitors/" + h.m
++	old, client := checkpointHTTPHandlerServer(t, checkpointHistoricalHandler(db))
++	code, headers, raw := checkpointHTTP(t, client, old.URL, "GET", path+"/activation", "", f.ownerToken, "", nil)
++	var historical struct{ Data monitor.Activation }
++	if code != 200 || json.Unmarshal(raw, &historical) != nil || historical.Data.ExecutionState != "blocked" || headers.Get("ETag") == monitor.ActivationETag(before) {
++		t.Fatal("old projection reused new tag")
++	}
++	old.Close()
++	retire(true) // Switching back to intent-v2 is another representation change.
++	newer, c, _ := checkpointHTTPServer(t, db)
++	latest, _, _ := checkpointProjectionGet(t, c, newer.URL, path, f.ownerToken)
++	if monitor.ActivationETag(latest) == monitor.ActivationETag(historical.Data) {
++		t.Fatal("switch back reused historical tag")
++	}
++	t.Log("retained Schema8 maintenance protocol tested against guarded DB; no real physical execution or deployed client attestation")
++}
+diff --git a/tests/integration/scheduler_migration_test.go b/tests/integration/scheduler_migration_test.go
+index d0cfdbc..201a134 100644
+--- a/tests/integration/scheduler_migration_test.go
++++ b/tests/integration/scheduler_migration_test.go
+@@ -172,6 +172,14 @@ func TestSchedulerMigrationRollback(t *testing.T) {
+ }
+ 
+ func TestSchemaSevenFixtureMatchesReviewedHistoricalWriter(t *testing.T) {
++	handler, err := os.ReadFile(filepath.Join(root(), "internal/monitor/activation_handler.go"))
++	if err != nil {
++		t.Fatal(err)
++	}
++	historicalHandler := strings.Replace(string(handler), "\tw.Header().Set(\"DevPilot-Activation-Projection\", \"intent-v2\")\n", "", 1)
++	if fmt.Sprintf("%x", sha256.Sum256([]byte(historicalHandler))) != "7b0ed0c6848f079a05556a53ee92dd29950f133402f8397fa1020b7d1674aab6" {
++		t.Fatal("historical HTTP fixture assumption changed")
++	}
+ 	raw, err := os.ReadFile(filepath.Join(root(), "internal/monitor/schema7_fixture_integration.go"))
+ 	if err != nil {
+ 		t.Fatal(err)
+diff --git a/tests/scheduler/README.md b/tests/scheduler/README.md
+index c607aa6..360ae57 100644
+--- a/tests/scheduler/README.md
++++ b/tests/scheduler/README.md
+@@ -36,3 +36,18 @@ an upstream route merely to make host-side clients connect.
+ 
+ Full `run-docker.sh`, independent Supervisor and periodic/fault acceptance are
+ still being implemented; preflight success must not be reported as plan A done.
++
++Checkpoint1 build boundary: the existing network Probe is exclusively the
++`TestExecutionProbe` entry in `internal/monitoring/execution_network_test.go`,
++selected only in an explicit Linux `executionnet` test build. Its snapshot wire
++bridge is also a `_test.go` file. Neither enters ordinary library GoFiles or API
++artifacts. The Linux `schedulerfixture` command currently refuses startup; a
++periodic controller, per-run scheduler Probe bridge and Supervisor are not yet
++delivered. `TestReleaseArtifactAndProbeTestBoundary` inspects a real ordinary
++Linux API binary, including with execution-looking environment flags. These
++boundaries do not constitute the later per-process credential/permit acceptance.
++
++The API zero-target audit retains the two exact TCP destinations and includes
++finite authorization plus authoritative status HTTP/PG scenarios. No scheduler
++target is added to that whitelist. CGO provenance and NSCD counterexamples stay
++in the original classifier/build-gate tests.
+diff --git a/tests/scheduler/checkpoint1-pg.py b/tests/scheduler/checkpoint1-pg.py
+new file mode 100644
+index 0000000..31f70ba
+--- /dev/null
++++ b/tests/scheduler/checkpoint1-pg.py
+@@ -0,0 +1,51 @@
++#!/usr/bin/env python3
++"""Run every compiled integration test serially, with bounded complete partitions.
++
++The new real 60s authorization test has its own process so the historical 120s
++suite budget is retained. No test is skipped: inventory and coverage are checked.
++The container/database are pre-existing dedicated fixtures, not app resources.
++"""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import re
++import subprocess
++import sys
++
++parser = argparse.ArgumentParser()
++parser.add_argument('--binary', required=True, type=Path)
++parser.add_argument('--evidence', required=True, type=Path)
++parser.add_argument('--name', required=True)
++args = parser.parse_args()
++repo = Path(__file__).resolve().parents[2]
++binary = args.binary.resolve()
++assert binary.parent == Path('/private/tmp/devpilot-scheduler-tools')
++args.evidence.mkdir(parents=True, exist_ok=True)
++command = ['docker', 'run', '--rm', '--network', 'container:devpilot-scheduler-apply-pg18',
++           '-v', '/private/tmp/devpilot-scheduler-tools:/toolbin:ro',
++           '-v', f'{repo}:{repo}:ro',
++           '-e', 'PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
++           '-e', 'TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable',
++           '--entrypoint', '/toolbin/' + binary.name, 'devpilot-scheduler-fixture']
++listed = subprocess.run(command + ['-test.list', '^Test'], capture_output=True, text=True, check=True)
++names = listed.stdout.splitlines()
++assert names and all(re.fullmatch('Test[A-Za-z0-9_]+', n) for n in names), listed.stdout
++assert len(names) == len(set(names))
++long = 'TestCheckpointOneRealExpiryExplicitRenewal'
++assert long in names
++groups = [[n for n in names if n != long], [long]]
++assert sorted(sum(groups, [])) == sorted(names)
++manifest = {'binary_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
++            'inventory_command': command + ['-test.list', '^Test'], 'tests': names,
++            'partitions': groups, 'coverage': 'all compiled tests exactly once; no skip',
++            'reason': 'real minimum60s expiry separated; existing per-process120s retained'}
++(args.evidence / (args.name + '-coverage.json')).write_text(json.dumps(manifest, indent=2) + '\n')
++for i, group in enumerate(groups):
++    selected = '^(' + '|'.join(group) + ')$'
++    run = [sys.executable, str(repo / 'tests/scheduler/record.py'), '--evidence', str(args.evidence),
++           '--name', args.name + '-' + str(i), '--binary', str(binary), '--binary', str(binary.parent / 'goose'),
++           '--', *command, '-test.run', selected, '-test.failfast', '-test.timeout=120s', '-test.v']
++    result = subprocess.run(run, cwd=repo)
++    if result.returncode:
++        sys.exit(result.returncode)
+diff --git a/tests/scheduler/retire-projection-fixture.sql b/tests/scheduler/retire-projection-fixture.sql
+new file mode 100644
+index 0000000..b892c27
+--- /dev/null
++++ b/tests/scheduler/retire-projection-fixture.sql
+@@ -0,0 +1,22 @@
++-- Executable Checkpoint1 maintenance-protocol reference, GUARDED TEST DB ONLY.
++-- Not a production rollback tool or a physical Supervisor attestation.
++BEGIN;
++SET LOCAL statement_timeout='2s';
++SET LOCAL lock_timeout='250ms';
++LOCK TABLE public.http_monitors IN SHARE ROW EXCLUSIVE MODE;
++LOCK TABLE public.monitor_activation_states IN ACCESS EXCLUSIVE MODE;
++DO $$ BEGIN
++ IF current_database()<>'devpilot_registration_test'
++ OR current_setting('server_version_num')::integer NOT BETWEEN 180000 AND 189999 THEN
++  RAISE EXCEPTION 'guarded PG18 fixture required';
++ END IF;
++ IF EXISTS(SELECT 1 FROM public.scheduler_control WHERE gate<>'closed' OR (kind='http' AND routable))
++ OR EXISTS(SELECT 1 FROM public.monitor_schedules WHERE authorized_configuration_version IS NOT NULL)
++ OR EXISTS(SELECT 1 FROM public.monitor_runs WHERE physical_release_confirmed_at IS NULL) THEN
++  RAISE EXCEPTION 'projection_retirement_requires_drain_revoke_stop';
++ END IF;
++END $$;
++UPDATE public.monitor_activation_states SET desired_state='disabled',activation_configuration_version=NULL,
++ activation_generation=activation_generation+1,last_transition_kind='configuration_changed',last_actor_user_id=NULL,
++ updated_at=GREATEST(updated_at,clock_timestamp());
++COMMIT;

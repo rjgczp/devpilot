@@ -1,0 +1,7 @@
+child_exit=0 audit_exit=1
+approved_attempts=0 blocked_attempts=1
+unapproved attempted destination 192.0.2.1:80
+positive control: probe rejected the intentionally violating run
+child_exit=0 audit_exit=0
+approved_attempts=25 blocked_attempts=0
+real Monitor endpoints: zero unapproved target attempts

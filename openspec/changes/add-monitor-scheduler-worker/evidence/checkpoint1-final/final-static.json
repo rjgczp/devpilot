@@ -1,0 +1,20 @@
+{
+  "command": [
+    "env",
+    "GOCACHE=/private/tmp/devpilot-scheduler-go-cache",
+    "sh",
+    "-c",
+    "test -z \"$(gofmt -l cmd internal tests)\" && go vet ./... && go vet -tags=integration ./tests/integration && openspec validate add-monitor-scheduler-worker --strict && git diff --check"
+  ],
+  "started_at": "2026-10-21T01:18:27.791867+00:00",
+  "elapsed_seconds": 1.220174207992386,
+  "exit_code": 0,
+  "head": "d781d7560904ee81c4939d9520604ff2240766a4",
+  "dirty": false,
+  "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+  "binaries": {},
+  "log_sha256": "261d7318727283688fe61814d964d68b4d730cfe8b9f55ead352a3dc9dcfcc4b",
+  "source_inventory_ref": "source-inventories/1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb.json",
+  "original_receipt_ref": "raw-receipts/final-static.json.gz",
+  "original_receipt_sha256": "6929714d56b891f84d5108fc766fc0662ad54d3625cc4d64d5a8da608951ac12"
+}
