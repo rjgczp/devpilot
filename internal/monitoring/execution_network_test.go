@@ -332,6 +332,7 @@ func realConcurrency(t *testing.T, e *engine) {
 	base, _ := os.ReadDir("/proc/self/fd")
 	baseGoroutines := runtime.NumGoroutine()
 	results := make(chan *Result, 32)
+	permitCanceled := make(chan struct{}, 32)
 	for i := 0; i < 32; i++ {
 		wg.Add(1)
 		go func(i int) {
@@ -342,6 +343,13 @@ func realConcurrency(t *testing.T, e *engine) {
 			s.target = "http://hold-load.example.com/"
 			s.timeout = 30
 			r, err := e.execute(ctx, s)
+			if errors.Is(err, ErrTargetPermit) && ctx.Err() != nil && r == nil {
+				// Cancel before the newly required permit is a control-plane
+				// refusal, not a fabricated target HTTP failure. Account for
+				// every admitted run and still require the original GET witness.
+				permitCanceled <- struct{}{}
+				return
+			}
 			if err != nil {
 				t.Error("load preflight", err)
 				return
@@ -357,6 +365,9 @@ func realConcurrency(t *testing.T, e *engine) {
 	cancel()
 	wg.Wait()
 	close(results)
+	if len(results)+len(permitCanceled) != 32 {
+		t.Fatal("lost admitted cancellation outcome")
+	}
 	for r := range results {
 		if r.FailureCode == nil || *r.FailureCode != Canceled {
 			t.Fatal("load cancellation")
