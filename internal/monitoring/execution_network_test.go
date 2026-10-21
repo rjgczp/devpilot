@@ -118,6 +118,28 @@ func TestExecutionProbe(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// This existing network-none/UID-dropped kernel regression fixture is not
+	// a scheduler/Supervisor permit. Scheduler nil/missing permission denies.
+	e.targetPermit = func(context.Context, targetCandidate) error { return nil }
+	if strings.HasPrefix(caseName, "permit-") {
+		s := testSnapshot(1)
+		s.target = "http://" + caseName + ".example.com/secret-sentinel"
+		switch caseName {
+		case "permit-missing":
+			e.targetPermit = nil
+		case "permit-denied", "permit-disconnect", "permit-unknown":
+			e.targetPermit = func(context.Context, targetCandidate) error { return ErrTargetPermit }
+		case "permit-late":
+			e.targetPermit = func(ctx context.Context, _ targetCandidate) error { <-ctx.Done(); return nil }
+		}
+		s.timeout = 1
+		r, err := e.execute(context.Background(), s)
+		if r != nil || !errors.Is(err, ErrTargetPermit) {
+			t.Fatal("target permit refusal became target observation", err)
+		}
+		fmt.Println("CONTROL: target permission refused; no target result or dial")
+		return
+	}
 	ca, err := os.ReadFile("/fixtures/ca.pem")
 	if err != nil {
 		t.Fatal(err)

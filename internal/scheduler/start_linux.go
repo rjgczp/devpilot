@@ -24,8 +24,9 @@ var ErrInputConsumed = errors.New("execution input already consumed")
 // once-only execution envelope written after a confirmed Start commit.
 type StartSnapshot struct{ input *startInput }
 type startInput struct {
-	wire     startWire
-	consumed atomic.Bool
+	wire          startWire
+	consumed      atomic.Bool
+	targetAttempt atomic.Bool
 }
 type startWire struct {
 	Lease
@@ -98,5 +99,9 @@ func (s Store) Start(ctx context.Context, h Hint, lease Lease) (StartSnapshot, e
 	if !monitor.ValidStoredConfiguration("monitor", v.URL, "GET", int64(v.IntervalSeconds), int64(v.TimeoutSeconds), int64(v.ExpectedStatus)) {
 		return StartSnapshot{}, ErrUnavailable
 	}
+	// start_run returns lineage but intentionally omits Claim timestamps. Retain
+	// the already-validated original Lease for the later target reservation; no
+	// readback, reconstruction or privilege is introduced. PG rechecks it there.
+	v.Lease = lease
 	return StartSnapshot{input: &startInput{wire: v}}, nil
 }

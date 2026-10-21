@@ -3,20 +3,27 @@
 package monitoring
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"strconv"
+	"sync/atomic"
+	"time"
 
 	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
+	"github.com/rjgczp/devpilot/internal/monitoring/targetpermit"
 )
 
 // SchedulerInput keeps the original kernel's private Snapshot; there is no
 // network execution method. A future independently reviewed target-permit
 // bridge must reuse the private engine, never replace its DNS/TLS/HTTP client.
 type SchedulerInput struct {
-	snapshot Snapshot
-	lineage  handoff.Lineage
+	snapshot      Snapshot
+	lineage       handoff.Lineage
+	deadline      time.Time
+	permitAttempt *atomic.Bool
 }
 
 func (SchedulerInput) Format(f fmt.State, _ rune) {
@@ -37,5 +44,31 @@ func ReceiveSchedulerInput(receiver *handoff.Receiver, input *os.File) (Schedule
 	if !s.valid() {
 		return SchedulerInput{}, handoff.ErrInput
 	}
-	return SchedulerInput{snapshot: s, lineage: e.Lineage}, nil
+	return SchedulerInput{snapshot: s, lineage: e.Lineage, deadline: e.PermitDeadline, permitAttempt: &atomic.Bool{}}, nil
+}
+
+// targetHook is private and does not create an executable Probe. A later
+// independently protected runner must use this with the original engine.
+// Copies of a received input share one attempt. Missing pipes/default nil deny.
+func (s SchedulerInput) targetHook(client *targetpermit.Client) targetPermitHook {
+	return func(ctx context.Context, c targetCandidate) error {
+		if !s.Valid() || s.permitAttempt == nil || !s.permitAttempt.CompareAndSwap(false, true) || client == nil || c.scope != s.snapshot.scope || c.version != s.snapshot.version {
+			return ErrTargetPermit
+		}
+		u, err := url.Parse(s.snapshot.target)
+		if err != nil || c.host != u.Hostname() || c.scheme != u.Scheme {
+			return ErrTargetPermit
+		}
+		deadline := c.deadline
+		if s.deadline.Before(deadline) {
+			deadline = s.deadline
+		}
+		ctx, cancel := context.WithDeadline(ctx, deadline)
+		defer cancel()
+		r := targetpermit.Request{Lineage: s.lineage, Host: c.host, Scheme: c.scheme, IP: c.endpoint.Addr(), Port: c.endpoint.Port(), Deadline: deadline}
+		if client.Acquire(ctx, r) != nil {
+			return ErrTargetPermit
+		}
+		return nil
+	}
 }

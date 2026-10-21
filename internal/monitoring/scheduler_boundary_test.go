@@ -25,7 +25,7 @@ func TestFixtureSchedulerBuildBoundary(t *testing.T) {
 			t.Fatal("release execution dependency", name)
 		}
 	}
-	for _, dir := range []string{"internal/scheduler", "cmd/schedulerfixture", "cmd/probeinputfixture", "internal/monitoring/handoff", "internal/monitoring/probesandbox"} {
+	for _, dir := range []string{"internal/scheduler", "cmd/schedulerfixture", "cmd/probeinputfixture", "internal/monitoring/handoff", "internal/monitoring/probesandbox", "internal/monitoring/targetpermit"} {
 		files, err := filepath.Glob(filepath.Join("../..", dir, "*.go"))
 		if err != nil || len(files) == 0 {
 			t.Fatal("fixture boundary missing")

@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"net"
 	"net/http"
 	"net/http/httptrace"
@@ -19,9 +20,10 @@ import (
 // All execution constructors/calls are private. Only controlled tests use them.
 // No production command imports this package or obtains this capability.
 type engine struct {
-	resolver dnsResolver
-	gate     *admissionGate
-	roots    *x509.CertPool
+	resolver     dnsResolver
+	gate         *admissionGate
+	roots        *x509.CertPool
+	targetPermit targetPermitHook
 }
 
 var processAdmission admissionGate
@@ -98,11 +100,15 @@ func (e *engine) execute(parent context.Context, s Snapshot) (*Result, error) {
 	defer release()
 	ctx, cancel := context.WithTimeout(parent, time.Duration(s.timeout)*time.Second)
 	defer cancel()
-	status, code := e.probe(ctx, s)
+	var rejected atomic.Bool
+	status, code := e.probe(ctx, s, &rejected)
+	if rejected.Load() {
+		return nil, ErrTargetPermit
+	}
 	return result(s, start, time.Now(), status, code), nil
 }
 
-func (e *engine) probe(ctx context.Context, s Snapshot) (*int, Failure) {
+func (e *engine) probe(ctx context.Context, s Snapshot, rejected *atomic.Bool) (*int, Failure) {
 	u, err := url.Parse(s.target)
 	if err != nil {
 		return nil, ProtocolError
@@ -136,12 +142,31 @@ func (e *engine) probe(ctx context.Context, s Snapshot) (*int, Failure) {
 		if !e.resolver.policy.allowed(ip) {
 			return nil, fail(BlockedTarget)
 		}
-		tctx, tcancel := context.WithTimeout(dctx, 3*time.Second)
-		defer tcancel()
 		endpoint := netip.AddrPortFrom(ip, port)
-		conn, err := (&net.Dialer{}).DialContext(tctx, networkFor(ip), endpoint.String())
+		deadline, _ := ctx.Deadline()
+		candidate := targetCandidate{scope: s.scope, version: s.version, scheme: u.Scheme, host: host, endpoint: endpoint, deadline: deadline}
+		// The original full DNS/IP validation above is unchanged. This check can
+		// only subtract permission; it cannot select or re-resolve an address.
+		rejected.Store(true)
+		conn, err := permittedDial(dctx, candidate, e.targetPermit, func() (net.Conn, error) {
+			if !e.resolver.policy.allowed(ip) {
+				return nil, fail(BlockedTarget)
+			}
+			rejected.Store(false)
+			tctx, tcancel := context.WithTimeout(dctx, 3*time.Second)
+			defer tcancel()
+			conn, err := (&net.Dialer{}).DialContext(tctx, networkFor(ip), endpoint.String())
+			if err != nil {
+				return nil, fail(classify(tctx, err, ConnectFailed))
+			}
+			return conn, nil
+		})
+		if errors.Is(err, ErrTargetPermit) {
+			rejected.Store(true)
+			return nil, ErrTargetPermit
+		}
 		if err != nil {
-			return nil, fail(classify(tctx, err, ConnectFailed))
+			return nil, fail(classify(dctx, err, ConnectFailed))
 		}
 		if !active.install(conn) {
 			return nil, fail(classify(ctx, ctx.Err(), Canceled))
@@ -149,7 +174,7 @@ func (e *engine) probe(ctx context.Context, s Snapshot) (*int, Failure) {
 		if _, err = pinConnection(conn, endpoint); err != nil {
 			return nil, err
 		}
-		deadline, _ := ctx.Deadline()
+		deadline, _ = ctx.Deadline()
 		if conn.SetDeadline(deadline) != nil {
 			_ = conn.Close()
 			return nil, fail(ConnectFailed)
