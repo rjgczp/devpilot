@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **6.1–6.2已验收，累计25/47，冻结并停止等待独立复审**。起始已审HEAD/远端为`e56c69a5832e88dfaac469071f9ada51a758dadc`、工作区干净；本轮冻结实现及全部最终测试SHA为`7b761cad01706ff1abfba51bf0e13f2d091fd44a`。后续交付提交仅tasks/verification/evidence，代码、测试和授权文档字节不变。产品负责人本次Checkpoint3补充授权是两项目标预算EXECUTE的当前权威溯源，不能以Checkpoint2授权代替。5.4、6.3–6.5及第7–10组未完成，未提前实施。生产网络硬关闭，本轮只验证PG控制面及无目标网络的匿名pipe/进程边界；未创建PR/合并/Archive/部署。推送现有独立分支后立即停止。历史段落不代替本轮新SHA证据，以本节与末尾本轮验收为准。
+当前 **6.1–6.2已通过独立审核，累计25/47；本轮仅交付6.3默认拒绝/许可协议可独立验证部分，6.3仍未勾选**。起始已审HEAD为`0fd6502f30c0882ae083773feb7f24b8fe41a524`，分支`codex/add-monitor-scheduler-worker`，工作区干净。冻结实现/最终测试SHA为`8593edccd94e1ed00348e5cb0a98895f1b71cb71`，源码清单SHA256=`fb92054560fd6af9e348f147ab336f4f97bc6d0e7b40edd2489e3f35288b08bf`；其后仅verification/evidence元数据，代码/测试/tasks勾选不变。本轮复用原受限reserve_target，不新增SQL/EXECUTE/角色/表列/秘密权限；Migration1–8字节不变。完整许可联网验收依赖6.4/6.5，未实施这些任务，5.4仍未完成。生产执行硬关闭；未创建PR/合并/Archive/部署。推送现有分支后停止等待独立审核。历史段落仅代表当时进度，以本节和末尾本轮记录为准。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -37,7 +37,7 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 
 - 当前25/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3及第6组6.1–6.2。其余22项保持未勾选，包含5.4、6.3–6.5及第7–10组。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
-- 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/完整容量与故障及原76项新SHA复验仍未完成；第5组预算本轮单独验收。
+- 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/完整容量与故障仍未完成；原76项已在本轮冻结SHA的原隔离内核fixture复验通过，不代表新Scheduler拓扑验收。
 - 冻结SHA的全量Go unit/race与完整PG18 normal/integration-race已通过；本轮无Push/PR CI验收结论、未创建PR。正式CI/实现PR仍属于后续完整Change交付。
 - 生产网络/部署：未验证，保持硬关闭。
 
@@ -250,3 +250,44 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 开发期一个PG用例失败23514：紧停fixture使用了非法gate=fixture/stop=true组合，只修fixture为gate关闭与stop原子变化，原始失败与成功日志保留，未改安全约束/ACL/超时。最终SHA没有非预期安全超时、权限不一致或协议死锁；历史故障注入预期55P03/57014/40P01仍保留。测试通过不证明所有并发交错皆无缺陷。此前Supervisor工具审核首次超时原因仍无确定性证明；生产历史角色ACL清单仍缺失，不推断生产GRANT。
 
 5.4仍未完成；数据库准备/输入消费、子进程退出及可销毁fixture清理都不是独立Supervisor物理终止证明。新PG用例保留未释放账本并确认Down拒绝后销毁各自测试库，没有伪造终止回执/physical_release时间。PG发放与独立sandbox是同一协议/SHA的分层真实证明，尚非Supervisor全流程。6.3网络钩子、6.4 namespace/veth/防火墙、6.5独立物理停止，以及第7/8组均未实现。原76项/执行网络、live snapshot及API目标strace本轮因明确禁止目标网络而未执行/未声称通过，源码及白名单不变。unknown数据库状态协调属于第7组，本轮未知确认只返回无能力并保留资源，不冒称恢复系统完成。生产执行硬关闭，不创建PR/合并/Archive/部署，不自动进入6.3；推送后等待独立复审。
+
+
+## Task6.3 — default-deny target hook and protocol, partial review delivery
+
+产品负责人审核Checkpoint4 HEAD `0fd6502f30c0882ae083773feb7f24b8fe41a524`后仅批准6.3；明确允许当完整真实联网依赖6.4时先交默认拒绝和许可协议，保留未完成状态。本轮没有借此实施6.4/6.5、5.4回收或第7/8组。任务总数仍25/47，6.3保持未勾选。
+
+冻结实现/测试SHA `8593edccd94e1ed00348e5cb0a98895f1b71cb71`；最终命令全部HEAD干净、源码清单相同，实际命令/退出码/原始日志/二进制hash/Scenario映射及manifest见`evidence/target-permit-final/README.md`。2026-10-21至22同一冻结树执行，后续交付只补verification/evidence；没有把开发期或混合SHA的过渡运行记入最终通过数。
+
+### Implemented and actually verified
+
+- `internal/monitoring/executor.go`仅在原完整DNS验证和选中literal之后、原TCP调用之前插入私有钩子；nil默认拒绝，不改变DNS/IP/TLS/原域名SNI/RemoteAddr/Proxy=nil/无重定向重试/Header-only GET及原资源预算。许可等待计入原timeout，拒绝返回nil Result和固定控制面错误，不伪造目标HTTP失败；取消与Transport异步dial回调交错用原子阶段标记处理。
+- fixture-only `monitoring/targetpermit`为两个匿名pipe的单次2048字节规范严格JSON协议，完整scope/run/v/g/epoch/fence/namespace/Supervisor、原域名/方案/port/选定IP/截止时间绑定，无URL Path/凭据/HMAC密钥；精确长度/EOF、匿名fd、畸形/伪造回复/串Run及重复消费均拒绝。格式化脱敏，管道等待有2秒上限并受原deadline/取消进一步收紧。
+- `SchedulerInput.targetHook`私有桥绑定冻结配置及更早的原probe/hard deadline；没有新增公开执行方法/Probe构造器。`StartSnapshot.TargetController`只能从已确认、不可重建的本地Start能力派生，所有副本共享一次尝试位，任何拒绝/未知Commit均烧毁；保留已校验原Lease时间戳，不修改数据库Start协议。
+- 控制面只用既有HMAC fixture目录和Worker reserve_target函数，沿用父序、VOLATILE等待后新快照/数据库时间和Owner/scope/v/g/epoch/Lease/Fence/stop/Origin/IP预算；确认Commit、归还连接之后才调用独立Supervisor接口。没有具体规则安装器；nil/断连/ACK未知/错谱系IP域名ID期限/过期都拒绝，不重试、不换IP、不重解析。真实PG提交丢ACK和回滚对照均零installer调用；即使回滚也不能用同一Start重申许可。成功DB预订只证明持账，不是可拨号或物理停止证据。
+
+| Actual acceptance at frozen SHA | Result |
+| --- | --- |
+| 新2项Target Pipe＋21项Start/集群/同目标预算PG18 | normal/race各23，全部exit0、无skip |
+| 历史PG18 integration/integration-race | 各147，原145＋真实60s授权＋真实45s Lease串行，全部exit0 |
+| 请求截止的独立连接/Origin锁屏障补充详细PG日志 | normal/race exit0，真实pg_locks/pg_blocking_pids，服务端SQLSTATE57014；只增加日志详细度，原超时和权限不变 |
+| 原76项隔离内核网络安全场景 | 全部通过；4个故意bypass反例按原合同audit_exit1被检测，未弱化规则/白名单 |
+| 新5项许可缺失/拒绝/断连/未知/超时控制 | 全部通过，各1次真实DNS、0目标connect；独立receiver/trace/路由/防火墙/cgroup证据保留 |
+| Go全量unit/race/vet、Linux fixture unit/race/vet | 全部exit0、count1；普通发布无执行依赖/入口 |
+| Migration1–8、gofmt、diff-check | 字节与审核基线一致；全部exit0，无SQL/ACL变化 |
+| Change strict | exit0 |
+| 全库strict | exit1，仅原4份历史规格7项长度警告；按路径/内容对比无新增，不比较durationMs |
+| 原测试PG18最终状态 | schema0、无Scheduler角色/表/其它事务/锁等待 |
+
+网络的5个拒绝控制是原dial门控的受控callback失败；真实数据库Commit未知和实际匿名pipe协议在独立PG用例验证。它们是同一源码/SHA的分层证据，不能合写成已经完成的Supervisor/PG/Probe联网拓扑。协议witness只是检查Commit先后及ACK绑定，不安装规则、不伪造终止回执。原network-none内核fixture的显式test-only allow只存在executionnet测试，不是Scheduler许可。API零目标strace本轮未重跑，原精确白名单及CGO/NSCD守护未改。
+
+### Retained failures, dependencies and stop boundary
+
+开发首个PG用例因Start响应不含Claim时间戳，本地Lease完整校验在SQL前拒绝；最小修复是在确认Start后保留已经校验的原Claim Lease，数据库仍重新复验，不增加权限/读回重建。首次冻结网络concurrency旧断言把许可前取消误当网络结果错误；只在父context已取消且Result=nil时接受ErrTargetPermit，仍核算全部32个已admit结算、真实GET witness、Canceled结果及FD/槽回收。首个主机unit因沙箱禁止本地监听失败，正常审批允许本地测试监听后全量通过；Linux无网络测试也通过。失败原始日志均在development，未隐去或计作通过，未延长安全超时或放宽断言。
+
+2026-10-21自动审批服务用量限制阻止一次只读工具版本命令，命令未执行、不是安全否决；用户继续后于22日按正常审批流程成功。此前Supervisor工具权限审核首次超时原因仍无确定性证明；历史生产角色ACL清单仍缺失，不推断生产GRANT。历史race145项分区实际117.24s，接近原120s预算但通过；没有随意延长或凭通过断言不存在并发问题。预期故障注入55P03/57014/40P01与未知Commit对照保留。
+
+完整6.3验收仍缺：6.4的每Run默认拒绝namespace/veth/防火墙与可信规则安装通道、独立无凭据可联网Probe IPC，以及6.5的独立Supervisor物理终止。现有input-only Probe继续seccomp拒绝socket，未放开。没有完整允许的Scheduler GET、物理kill、周期或安全返槽；所有新PG用例保留未释放资源账并证实Down拒绝后销毁其可销毁数据库，不能将其作为终止证明。5.4/6.3/6.4/6.5均未勾选，生产网络硬关闭；本批推送现有分支后停止，不创建PR/合并/Archive/部署或进入6.4。
+
+2026-10-22交付审查包时，自动权限审批未在期限完成，Git提交/推送命令未执行；只读核对HEAD仍为冻结SHA、index为空。工具明确允许一次有界重试，按原审批路径执行，不绕过检查；审批超时原因未确定，与已通过PG/Linux安全测试分开记录。原工具回执信息见`evidence/target-permit-final/development/git-approval-timeout.json`；交付结果以最终HEAD及远端核对为准。
+
+上述唯一审批重试通过，随后提交前diff-check发现两份原始工具输出自带尾随空白并阻止提交；只将build/listeners原始文本改为gzip包装，解压字节和原SHA256保持，不关闭diff检查、不修改源码或验收结果。

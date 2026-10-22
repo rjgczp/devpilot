@@ -3356,5 +3356,16 @@
     "sql_acl_changes": false,
     "physical_release_proof": false,
     "target_network_executed": false
+  },
+  "task6_3_partial": {
+    "implementation_sha": "8593edccd94e1ed00348e5cb0a98895f1b71cb71",
+    "status": "partial_default_refusal_and_protocol_verified_not_completed",
+    "evidence": "target-permit-final/requirement-test-evidence.json",
+    "remaining_dependencies": [
+      "6.4 trusted default-deny namespace/firewall and installer acknowledgement",
+      "independent network-capable credential-free Probe IPC",
+      "6.5 physical Supervisor termination"
+    ],
+    "completed_count_unchanged": 25
   }
 }

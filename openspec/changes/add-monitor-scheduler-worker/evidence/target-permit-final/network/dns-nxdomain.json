@@ -1,0 +1,32 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 1,
+  "target_attempts": 0,
+  "case": "dns-nxdomain",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/dns-nxdomain.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "dns-nxdomain"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 0.07065904198680073
+}

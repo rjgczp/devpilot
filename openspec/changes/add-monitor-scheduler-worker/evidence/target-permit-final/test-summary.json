@@ -1,0 +1,15 @@
+{
+  "tested_implementation_sha": "8593edccd94e1ed00348e5cb0a98895f1b71cb71",
+  "source_inventory_sha256": "fb92054560fd6af9e348f147ab336f4f97bc6d0e7b40edd2489e3f35288b08bf",
+  "pg_normal": 23,
+  "pg_race": 23,
+  "history_normal": 147,
+  "history_race": 147,
+  "isolated_kernel_cases": 76,
+  "permit_denial_cases": 5,
+  "task_6_3_complete": false,
+  "tasks_complete": 25,
+  "tasks_total": 47,
+  "production_execution": "hard_closed",
+  "supervisor_physical_proof": false
+}

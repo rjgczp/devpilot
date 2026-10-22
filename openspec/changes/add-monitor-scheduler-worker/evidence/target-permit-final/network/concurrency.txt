@@ -1,0 +1,4 @@
+=== RUN   TestExecutionProbe
+RESOURCE: 32 admitted; excess rejected without queue; cancellation released all active slots/FDs
+--- PASS: TestExecutionProbe (0.08s)
+PASS

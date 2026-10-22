@@ -1,0 +1,4 @@
+=== RUN   TestExecutionProbe
+CONTROL: target permission refused; no target result or dial
+--- PASS: TestExecutionProbe (0.00s)
+PASS

@@ -1,0 +1,43 @@
+{
+  "binary_sha256": "7890085fdc09ad4398c22f0263972f5cdf76d5d7ecbd56a2555d53194efa3c99",
+  "tests": [
+    "TestBudgetTargetPipeDeadlineBarrier"
+  ],
+  "runs": [
+    {
+      "test": "TestBudgetTargetPipeDeadlineBarrier",
+      "container_id": "f0c8f3d55ae8d132cfe30e206d3e5517afda84092592a918633c0a11151bf56b",
+      "create_command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "devpilot-budget-02b84901f99f",
+        "--label",
+        "devpilot.disposable.budget=devpilot-budget-02b84901f99f",
+        "--network",
+        "devpilot-scheduler-apply-control",
+        "--memory=512m",
+        "--cpus=1",
+        "--pids-limit=128",
+        "-e",
+        "POSTGRES_USER=devpilot_fixture",
+        "-e",
+        "POSTGRES_PASSWORD=devpilot_fixture_only",
+        "-e",
+        "POSTGRES_DB=devpilot_registration_test",
+        "postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336",
+        "postgres",
+        "-c",
+        "cluster_name=devpilot-budget-disposable",
+        "-c",
+        "log_error_verbosity=verbose",
+        "-c",
+        "log_lock_waits=on",
+        "-c",
+        "deadlock_timeout=100ms"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

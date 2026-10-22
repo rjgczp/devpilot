@@ -1,0 +1,650 @@
+[
+  {
+    "case": "ok",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.06549945898586884
+  },
+  {
+    "case": "ipv6",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.049740249989554286
+  },
+  {
+    "case": "cname",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.05175420898012817
+  },
+  {
+    "case": "tls",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.0495749160181731
+  },
+  {
+    "case": "cname-tls",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.04895845794817433
+  },
+  {
+    "case": "expired",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.04964095802279189
+  },
+  {
+    "case": "untrusted",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.05081287503708154
+  },
+  {
+    "case": "wrong-name",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.049464749987237155
+  },
+  {
+    "case": "tls-big",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.05183341697556898
+  },
+  {
+    "case": "tls-stall",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 1.0570475420099683
+  },
+  {
+    "case": "tls-stage",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 3.1443667100393213
+  },
+  {
+    "case": "tcp-stage",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 3.08699591801269
+  },
+  {
+    "case": "dns-stage",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 2.097179334028624
+  },
+  {
+    "case": "dns-chain-slow",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 2.090047250967473
+  },
+  {
+    "case": "redirect-301",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.10223787499126047
+  },
+  {
+    "case": "redirect-302",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.07336220901925117
+  },
+  {
+    "case": "redirect-307",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.06644404196413234
+  },
+  {
+    "case": "redirect-308",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.05390416702721268
+  },
+  {
+    "case": "status",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.053232541016768664
+  },
+  {
+    "case": "infinite",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.05832020798698068
+  },
+  {
+    "case": "chunked",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.06128712499048561
+  },
+  {
+    "case": "gzip",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.0668261669925414
+  },
+  {
+    "case": "hints",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.11457537498790771
+  },
+  {
+    "case": "header-big",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.06902437499957159
+  },
+  {
+    "case": "flood",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.059229500009678304
+  },
+  {
+    "case": "flood-lf",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.10552216600626707
+  },
+  {
+    "case": "hints-big",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.06346787500660866
+  },
+  {
+    "case": "upgrade",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.043495124962646514
+  },
+  {
+    "case": "malformed",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.04365504201268777
+  },
+  {
+    "case": "slow",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 1.0565075839986093
+  },
+  {
+    "case": "t30",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 5.083648292988073
+  },
+  {
+    "case": "cancel",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.13365345797501504
+  },
+  {
+    "case": "refuse",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.10406041704118252
+  },
+  {
+    "case": "tcp-timeout",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 1.0966880430351011
+  },
+  {
+    "case": "mixed",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.13198370800819248
+  },
+  {
+    "case": "mixed6",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.042613958998117596
+  },
+  {
+    "case": "additional",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.0550785000086762
+  },
+  {
+    "case": "reserved-alias",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.04172191699035466
+  },
+  {
+    "case": "blocked-private",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.0830729590379633
+  },
+  {
+    "case": "blocked-metadata",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.08435587503481656
+  },
+  {
+    "case": "blocked-shared",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.08027758402749896
+  },
+  {
+    "case": "blocked-loopback",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07840037503046915
+  },
+  {
+    "case": "blocked-mapped",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07065725000575185
+  },
+  {
+    "case": "blocked-nat64",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07385812496067956
+  },
+  {
+    "case": "blocked-6to4",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.0783332500141114
+  },
+  {
+    "case": "blocked-teredo",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.05267216602806002
+  },
+  {
+    "case": "blocked-isatap",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.05559295800048858
+  },
+  {
+    "case": "blocked-doc",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07915720902383327
+  },
+  {
+    "case": "blocked-v6doc",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.10961841698735952
+  },
+  {
+    "case": "blocked-ula",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07101333304308355
+  },
+  {
+    "case": "dns-nxdomain",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07065904198680073
+  },
+  {
+    "case": "dns-servfail",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.1335502089932561
+  },
+  {
+    "case": "dns-empty",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07373420801013708
+  },
+  {
+    "case": "dns-truncated",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.3397197919548489
+  },
+  {
+    "case": "dns-id",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07297575002303347
+  },
+  {
+    "case": "dns-question",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.04389037500368431
+  },
+  {
+    "case": "dns-trailing",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.05881874996703118
+  },
+  {
+    "case": "dns-timeout",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 1.0555894169956446
+  },
+  {
+    "case": "inconsistent",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.06238345900783315
+  },
+  {
+    "case": "aliases",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.06545879202894866
+  },
+  {
+    "case": "addresses",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.05785179196391255
+  },
+  {
+    "case": "records",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.06165387504734099
+  },
+  {
+    "case": "oversize",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.07807420799508691
+  },
+  {
+    "case": "total",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.06881216599140316
+  },
+  {
+    "case": "dname",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.04510662495158613
+  },
+  {
+    "case": "nat-app",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.0426882499596104
+  },
+  {
+    "case": "rebinding",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 2,
+    "target_attempts": 1,
+    "duration": 0.059908541967161
+  },
+  {
+    "case": "repeat",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 2,
+    "target_attempts": 2,
+    "duration": 0.05045837501529604
+  },
+  {
+    "case": "capacity",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 0,
+    "target_attempts": 0,
+    "duration": 0.03386229200987145
+  },
+  {
+    "case": "concurrency",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 32,
+    "target_attempts": 17,
+    "duration": 0.11270829202840105
+  },
+  {
+    "case": "addresses-boundary",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.04482395900413394
+  },
+  {
+    "case": "records-boundary",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 1,
+    "duration": 0.043035083974245936
+  },
+  {
+    "case": "bypass-v4",
+    "child_exit": 0,
+    "audit_exit": 1,
+    "dns_attempts": 0,
+    "target_attempts": 1,
+    "duration": 0.025341750006191432
+  },
+  {
+    "case": "bypass-v6",
+    "child_exit": 0,
+    "audit_exit": 1,
+    "dns_attempts": 0,
+    "target_attempts": 1,
+    "duration": 1.0326574579812586
+  },
+  {
+    "case": "bypass-nat",
+    "child_exit": 0,
+    "audit_exit": 1,
+    "dns_attempts": 0,
+    "target_attempts": 1,
+    "duration": 1.0279494589776732
+  },
+  {
+    "case": "bypass-public",
+    "child_exit": 0,
+    "audit_exit": 1,
+    "dns_attempts": 0,
+    "target_attempts": 1,
+    "duration": 0.03067166596883908
+  },
+  {
+    "case": "permit-missing",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.02667079196544364
+  },
+  {
+    "case": "permit-denied",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.02340391604229808
+  },
+  {
+    "case": "permit-disconnect",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.023395916039589792
+  },
+  {
+    "case": "permit-unknown",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 0.025657291989773512
+  },
+  {
+    "case": "permit-late",
+    "child_exit": 0,
+    "audit_exit": 0,
+    "dns_attempts": 1,
+    "target_attempts": 0,
+    "duration": 1.0234302079770714
+  }
+]
