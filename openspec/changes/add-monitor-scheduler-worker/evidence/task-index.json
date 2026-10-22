@@ -3307,9 +3307,50 @@
       ],
       "implementation_commit": "930532ce28825f5bfb4778c3e3a3acb266c92eb8",
       "coverage_note": "Task6.4 independent fixture component only. Development receipts explicitly dirty; final exact-HEAD CI verifies again. Routing/node continuity scenario still needs6.5 node/emergency physical proof. No combined6.3 Probe, physical kill, quarantine release, Result or cycles accepted."
+    },
+    "6.5": {
+      "requirements": [
+        "Network permissions default deny and fail closed across lifecycle",
+        "Physical resource release requires independent termination proof",
+        "Probe identity is isolated from users and database control"
+      ],
+      "scenarios": [
+        "Security - Emergency stop affects established flows",
+        "Security - Routing and node continuity are required evidence",
+        "Exception - Database and supervisor are unavailable",
+        "Security - Probe compromise does not expose control credentials"
+      ],
+      "implementation": [
+        "internal/supervisorfixture/stop_linux.go",
+        "internal/supervisorfixture/receipt_linux.go",
+        "tests/scheduler/termination_init.py",
+        "tests/scheduler/termination_fixture.py",
+        "tests/scheduler/termination_actor.py",
+        "tests/scheduler/stop65.md"
+      ],
+      "tests": [
+        "TestBudgetPhysicalStopPG normal/race",
+        "TestFixtureStopReceiptPinsKeyAndEntireLineage",
+        "TestFixtureStopCannotRevokeAnotherNamespace",
+        "tls-established-independent-stop-ip4",
+        "tls-established-independent-stop-ip6",
+        "lost-both-rules-independent-revocation",
+        "supervisor-loss-quarantines-no-receipt",
+        "namespace-rebuild-old-node-control-replay",
+        "repeated-forged-foreign-key-old-fence-receipts"
+      ],
+      "command": "python3 tests/scheduler/run-stop65.py --tools ABSOLUTE_NATIVE_TOOLS --evidence FRESH_ABSOLUTE_EVIDENCE; commands/exit/source/binary/log hashes in evidence/stop65-development/*commands.json and exact-HEAD CI receipts",
+      "exit_code": 0,
+      "implementation_commit": "ddcaa3f1f0b41e76c6eb932ea01585576d24b9af",
+      "evidence": [
+        "evidence/stop65-development/README.md",
+        "evidence/stop65-development/implementation-binding.json",
+        "latest delivered HEAD execution-security stop65-evidence Actions Artifacts"
+      ],
+      "coverage_note": "Physical stop/receipt only. No DB release function or grants; 5.4 and6.3 remain unchecked. Development results are not latest-HEAD CI."
     }
   },
-  "remaining": "21 unchecked tasks:5.4,6.3,6.5,groups7–10. Task6.4 independent network policy accepted;26/47 overall. No physical release or production execution; stop for independent review.",
+  "remaining": "20 unchecked tasks:5.4,6.3,groups7–10. Task6.5 isolated physical stop accepted;27/47 overall. No DB capacity release or production execution; stop for independent review.",
   "final_implementation_sha": null,
   "checkpoint1_final": {
     "tasks": [
@@ -3418,5 +3459,17 @@
     "6.3": "unchecked",
     "6.5": "unchecked",
     "sql_acl_changes": false
+  },
+  "task6_5": {
+    "implementation_commit": "ddcaa3f1f0b41e76c6eb932ea01585576d24b9af",
+    "complete": 27,
+    "total": 47,
+    "development_source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "5.4": "unchecked",
+    "6.3": "unchecked",
+    "sql_acl_changes": false,
+    "physical_receipt": true,
+    "database_release": false,
+    "final_ci": "Inspect actual delivered HEAD Push/PR CI and immutable command/log/source hashes; no result prefilled."
   }
 }

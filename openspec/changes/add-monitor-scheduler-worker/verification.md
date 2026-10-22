@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **累计26/47，6.4独立组件验收通过；6.3、5.4、6.5保持未勾选**。产品负责人独立审核 `343540f1f23a579e35f796b27eddb48776178ab6` 并核实Push/PR三作业成功后，仅授权6.4：每Run独立Linux namespace/veth、双栈默认拒绝、精确Resolver和目标规则及不可延长许可。未授权进入6.5或物理容量回收，也不能将独立网络witness冒充原执行器的6.3联合验收。本轮新增fixture-only网络管理组件及独立Linux/PG18测试；原HTTP内核、输入-only Probe seal、Migration1–8、数据库函数/角色/ACL和API零目标白名单均保持。最终交付以同一冻结HEAD的真实Actions和Artifacts为准，开发态dirty证据仅用于诊断，不冒充冻结SHA验收。PR11保持Open；生产执行硬关闭，不合并/Archive/部署。
+当前 **累计27/47，新增6.5独立fixture物理终止验收；5.4、6.3保持未勾选**。产品负责人独立审查33fb5edde369a30f9bfb902d5e3fdd3525a46586并核实Push/PR成功后，明确仅授权6.5。实现提交ddcaa3f1f0b41e76c6eb932ea01585576d24b9af；后续只整理任务/证据元数据，最终仍以同一冻结交付HEAD的真实Actions为准，开发态dirty结果不冒称最终SHA验收。本批完成独立紧停、已建立TLS流切断、pidfd终止/回收同Run主进程及孤儿、完整谱系Ed25519回执/重放拒绝、丢失监督器及节点恢复的失败关闭和运维说明。没有DB回执提交/槽释放能力，未扩大数据库函数/角色/EXECUTE/表列权限，Migration1–8不变。真实HTTP内核Probe联合执行及物理容量回收仍待分别独立复审。PR11保持Open，生产执行硬关闭，不合并/Archive/部署。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -341,3 +341,32 @@ Go管理进程在启动子进程前原子安装双栈DROP，精确Resolver TCP53
 剩余边界：6.3原Probe/HTTP内核完整联合运行、6.5紧停切断既有流/实际进程kill/不可伪造终止回执/节点恢复，以及5.4 quarantine回收仍未验收。管理EOF+内核到期的网络证据不能证明进程结束或返还槽；没有发出这种回执。历史Supervisor工具审核超时未获确定性原因、真实部署旧角色ACL清单缺失的风险继续保留。生产执行未验证且硬关闭。
 
 本批源码已冻结为实现提交930532ce28825f5bfb4778c3e3a3acb266c92eb8；后续提交只整理任务和证据。开发态source/HEAD/dirty区别、原始失败与成功命令、PG真实SQLSTATE及held账、Linux receiver时间线见evidence/network64-development/。原始大体积trace/nft/route/进程证据由最新HEAD execution-security Artifacts保留并提供校验清单；不得用旧归档76项冒称该HEAD通过。开发态26条network证据条目中最后一条只说明无物理释放证明，不能作为额外完成测试；6.5及5.4不因此完成。
+
+
+## Task6.5 — independent physical termination and recovery
+
+本批授权来自产品负责人对33fb5ed的独立审查和本次明确请求，不引用早期其他Checkpoint授权扩大权限。代码仅fixture-only构建、私有管理IPC和受保护新建Linux/PG18；新部署入口、生产目标、SQL/GRANT和5.4未实施。代码/测试/运行手册是实现提交ddcaa3f1f0b41e76c6eb932ea01585576d24b9af的精确字节，详见`evidence/stop65-development/implementation-binding.json`。
+
+### Protocol and authority
+
+NET_ADMIN-only的原Run/Gateway管理进程增加绑定私有bootstrap账/实际namespace/完整谱系的终端revoke：先持久墓碑，原子全DROP（无ESTABLISHED例外），删除Run-facing veth、清双栈conntrack，复验独立链/无旧线/无连接跟踪后才给出网络证明。原控制进程退出或规则丢失也能由独立管理入口撤销，但任何失败不给终止回执。
+
+独立Linux PID1 Supervisor只有KILL/SETUID/SETGID/SETPCAP，无NET_ADMIN/SYS_ADMIN/host PID或网络；启动后不可dump，单次启动fixture Probe前清空其cap bounding set、所有组并降到UID/GID65534。实际检查caps五组全0、no_new_privs、128MiB/CPU1/PID128/FD256、只读根、精确干净env、无秘密/源码配置卷/Socket；Probe读PID1私有FD/mem/environ、信号PID1、管理路由/规则/namespace/raw socket均真实拒绝。该Probe是固定stream/恶意子进程生命周期witness，不冒充原HTTP内核的6.3完整联合执行。
+
+真实接收端先确认TLS/SNI/证书与before-stop frame。仍存活的原连接在独立网络撤销后尝试after-stop写入，接收端无新增frame；live-permit用实际nft毫秒TTL及Linux采样保守下界确认紧停先于自然到期。然后PID1以pidfd与原start_ticks捕获身份，SIGSTOP/SIGKILL全部同Run进程并收养/reap孤儿；2s内不能达到空域或任一pidfd未退出就不签。保存死子进程strace后再次确认空域，PID1自行退出，内核PID namespace不能重新fork。以上都在外部container删除清理之前完成。
+
+外部可信Supervisor私有0700状态与Ed25519密钥不进入Probe/Worker；仅在两层网络、进程/pidfd、空域和PID1退休全部确认后签<=4KiB回执。完整scope/run/v/g/epoch/fence及两incarnation、实际PID/net namespace、独立证明摘要均绑定；Run注册、不可变回执和消费账O_EXCL+fsync，重载同受信状态不能恢复旧Run/消费已用回执。PG18测试在Start前从可信管理通道固定公钥，验证Ed25519及完整谱系；Worker自带公钥不是授权。回执只说明物理终止，不说明HTTP结果，也不自动返还任何槽。
+
+### Actual development acceptance and failures
+
+最终同步源码清单be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8：原6.4五组normal/race/网络/PG18全部exit0（总246.56s），新增6.5三组Linux物理终止、PG18 normal/race全部exit0（总76.43s）。Go1.24.3原生Linux及Goose3.26.0，未模拟网络/PID/数据库，不增加skip或盲目重试。6.4现含原4项policy单元及新增2项真实边界/密码学parser单元，normal/race均通过。所有开发receipt诚实保留HEAD33fb5ed/dirty=true；与实现提交逐文件字节绑定，最新冻结交付SHA仍须在Push/PR重新执行所有要求后另报结果。
+
+6.5独立场景为：双栈真实TLS既有流紧停；故意忽略TERM/INT的主进程与直接/孤儿子进程pidfd退出/reap；原管理控制失联、局部及两层规则丢失后的独立revoke；重复/伪造/外来公钥/完整谱系任一部分替换回执拒绝；PID1 Supervisor被真正SIGKILL时无回执、持续quarantine；旧节点/新namespace/新incarnation不能重新绑定旧Run、跨namespace旧控制及旧bootstrap均拒绝。PG专用`TestBudgetPhysicalStopPG` normal/race分别实际IPv4/IPv6建立TLS、切流/杀进程，校验固定公钥的真实回执，但DB仍reserved、released_at/termination_receipt/physical_release_confirmed_at为空，所有32/4/2/1及目标容量保持原账。没有管理员UPDATE制造回执/释放，也不把容器清理当证明。
+
+保留两个开发失败及原因边界：最初密码学unit生成的签名未递归排序嵌套map，修正合成测试编码，未弱化验证；扩展真实物理测试已切流/回收pidfd后，Docker archive未找到tmpfs trace而非零退出，不能记为通过。改由可信PID1在子进程结束后，使用已有SETUID权限的fsuid读取实际trace并有界分帧/hash传出，未增加DAC_OVERRIDE或SYS_PTRACE、未放宽停止判断；随后读取到真实strace。未将Docker归档行为的更底层原因宣称已确定。原始失败/成功命令、退出码、日志、源码及二进制哈希见`evidence/stop65-development/`，大体积核验资料在最新execution-security的`stop65-evidence/`及`network64-evidence/`Artifacts。
+
+### Preserved boundaries and handoff
+
+停止/恢复/无法确认时继续quarantine的操作说明见`tests/scheduler/stop65.md`。监督器失联、状态/密钥丢失、网络/进程任一证明未知时保持blocked，不能换key/新目录/新namespace或靠lease/重启/Goose Down返还容量。回执可信持久消费、父序安全释放及所有旧HMAC代次对账属于5.4，仍未验收；6.3原内核联合执行仍未验收。没有变更Start Commit暂停语义或新加强暂停HTTP接口。
+
+CI保留现有verify/integration/execution-security、原147项PG normal/race分组、Schema6四Snapshot normal/race、原76+5网络安全、API精确零目标白名单及CGO/NSCD断言；在execution-security附加6.5 runner和raw Artifact，不提前完成独立scheduler-security任务10.1。最终全量unit/race/vet、PG18、原76+5/6.4/6.5、Change strict、Git diff及实际Push/PR状态须以冻结交付HEAD的命令receipt核验，不能预填绿色或使用旧SHA代替。本批完成后停止等待独立审查。历史Supervisor工具权限审核超时根因未确定、真实历史生产角色ACL清单缺失、生产出口未验证风险继续保留。

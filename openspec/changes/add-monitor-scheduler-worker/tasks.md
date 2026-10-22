@@ -47,7 +47,7 @@
 - [x] 6.2 实现单run有界匿名pipe/单次信封及私有内核桥；真实进程测试证明URL不在argv/env/log、重连/重启不恢复发送能力、Probe无DB/用户/云凭据或管理socket，保留128MiB/CPU1/PID128/FD256等资源约束并文档化。
 - [ ] 6.3 在原完整DNS验证与literal拨号之间实现只收紧权限的target-permit钩子；单元/race与独立网络测试证明失败/断连/ACK未知零dial、等待计入原timeout、无弱化HTTP/DNS实现，原76场景全部通过。
 - [x] 6.4 实现每run namespace/veth、双栈默认deny、精确Resolver与受控80/443、不可延长的短期permit；接收端/防火墙/路由证据验证规则先于Probe、恶意bypass被独立阻断、Probe不能改规则，记录仅fixture适用。
-- [ ] 6.5 实现独立Supervisor紧停/现有流切断/进程终止回执、漂移拒绝及namespace重建代次；真实TLS连接后切断、Supervisor失联、规则丢失和旧节点重连测试证明新执行关闭且旧槽不盲目回收，交付停止/恢复手册。
+- [x] 6.5 实现独立Supervisor紧停/现有流切断/进程终止回执、漂移拒绝及namespace重建代次；真实TLS连接后切断、Supervisor失联、规则丢失和旧节点重连测试证明新执行关闭且旧槽不盲目回收，交付停止/恢复手册。
 
 ## 7. 结果、unknown与最小状态投影
 

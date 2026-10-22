@@ -1,0 +1,125 @@
+[
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-stop65-network64-regression/network",
+      "--supervisor",
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture"
+    ],
+    "exit_code": 0,
+    "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+    "dirty": true,
+    "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "elapsed_seconds": 218.812567749992,
+    "binaries": {
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture": "e709d7eeea11f3ff5900911c76f71b5361162e4d7fbd19192ab61b39b4060376"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-stop65-network64-regression/pg-normal",
+      "--supervisor",
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture",
+      "--pg-binary",
+      "/private/tmp/devpilot-stop65-final-tools/network64-pg.test",
+      "--mode",
+      "normal"
+    ],
+    "exit_code": 0,
+    "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+    "dirty": true,
+    "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "elapsed_seconds": 12.079297291929834,
+    "binaries": {
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture": "e709d7eeea11f3ff5900911c76f71b5361162e4d7fbd19192ab61b39b4060376",
+      "/private/tmp/devpilot-stop65-final-tools/network64-pg.test": "02d6815eb1daf3a357c1c514a4b7fe2336e4a34cd42fd8dc86c2dbc3ec915a34",
+      "/private/tmp/devpilot-stop65-final-tools/goose": "b9d42a96017db430bec647240d706bc9ae57775c76fa65321a7d24e7e38bbe3a"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-stop65-network64-regression/pg-race",
+      "--supervisor",
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture",
+      "--pg-binary",
+      "/private/tmp/devpilot-stop65-final-tools/network64-pg-race.test",
+      "--mode",
+      "race"
+    ],
+    "exit_code": 0,
+    "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+    "dirty": true,
+    "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "elapsed_seconds": 13.12419108406175,
+    "binaries": {
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture": "e709d7eeea11f3ff5900911c76f71b5361162e4d7fbd19192ab61b39b4060376",
+      "/private/tmp/devpilot-stop65-final-tools/network64-pg-race.test": "f27184f09237052810c706b76241f8a3fe48c792c37af13dbffd627b9a471922",
+      "/private/tmp/devpilot-stop65-final-tools/goose": "b9d42a96017db430bec647240d706bc9ae57775c76fa65321a7d24e7e38bbe3a"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cap-drop",
+      "ALL",
+      "-v",
+      "/private/tmp/devpilot-stop65-final-tools/supervisorfixture-race.test:/suite:ro",
+      "--entrypoint",
+      "/suite",
+      "devpilot-scheduler-fixture",
+      "-test.v",
+      "-test.timeout=30s"
+    ],
+    "exit_code": 0,
+    "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+    "dirty": true,
+    "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "elapsed_seconds": 1.1848088749684393,
+    "binaries": {
+      "/private/tmp/devpilot-stop65-final-tools/supervisorfixture-race.test": "eff8c11a350e4375fcc0411aeb37acafa02e0e3b7083d8a88bdad20ea891e55a"
+    },
+    "log_sha256": "9a02c3804826f969206b68e1109ef9a506401400d79eb42fcae8dda1911bfa6a"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cap-drop",
+      "ALL",
+      "-v",
+      "/private/tmp/devpilot-stop65-final-tools/supervisorfixture.test:/suite:ro",
+      "--entrypoint",
+      "/suite",
+      "devpilot-scheduler-fixture",
+      "-test.v",
+      "-test.timeout=30s"
+    ],
+    "exit_code": 0,
+    "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+    "dirty": true,
+    "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "elapsed_seconds": 0.16881070798262954,
+    "binaries": {
+      "/private/tmp/devpilot-stop65-final-tools/supervisorfixture.test": "ad29dfbd2d05542cf4709e3f3811cdead1cae1b014c59b433e93d7825739e3a5"
+    },
+    "log_sha256": "424a203b8edd6479b714a9879a87879d8663026202d37813f34ca790c2425e57"
+  }
+]
