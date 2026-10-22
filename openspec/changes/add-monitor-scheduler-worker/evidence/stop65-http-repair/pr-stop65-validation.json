@@ -1,0 +1,62 @@
+{
+  "head": "87af881fae2358924102fbcb9fd891a310ec2266",
+  "groups": {
+    "linux-termination": {
+      "manifest_files_verified": 160,
+      "receipts": [
+        {
+          "run_id": "83278f3f-d40d-411e-954f-60888b843066",
+          "receipt_sha256": "ea16e7dc290adecc7e2192a0248d89b5a0e7d7d3ef1f3307d99b43d55ae781e6",
+          "process_count": 5,
+          "actual_target_connects": 1
+        },
+        {
+          "run_id": "1c1c144c-3601-4db6-90d3-f443020c1150",
+          "receipt_sha256": "23fd33d031f77ba8d343798ea9b05c2e1b8d964dea15440e07b20f8cdb5cff54",
+          "process_count": 5,
+          "actual_target_connects": 1
+        },
+        {
+          "run_id": "dff52444-76b0-4dc4-b042-695e204b819c",
+          "receipt_sha256": "ff50c0269556a9d9fb9a0114beddf3bb9b7d2f2b470d661e3127f19fe5408732",
+          "process_count": 5,
+          "actual_target_connects": 1
+        }
+      ],
+      "stream_opens": 4,
+      "before_frames": 4,
+      "after_frames": 0,
+      "db_capacity_released": false
+    },
+    "pg-normal": {
+      "manifest_files_verified": 49,
+      "receipts": [
+        {
+          "run_id": "01a1628a-feeb-762e-b444-c01e86568e8d",
+          "receipt_sha256": "bb49147ace38f4b335ca9acc5d72eb19d4f42e672afa57ddccf8b79a856fb0df",
+          "process_count": 5,
+          "actual_target_connects": 1
+        }
+      ],
+      "stream_opens": 1,
+      "before_frames": 1,
+      "after_frames": 0,
+      "db_capacity_released": false
+    },
+    "pg-race": {
+      "manifest_files_verified": 49,
+      "receipts": [
+        {
+          "run_id": "01a1628b-35d0-7540-859d-bad1ef1f9dc4",
+          "receipt_sha256": "e9f6f9d262990542dcf3169b094f5b3169c85e799b8751c1bdc590f451c68799",
+          "process_count": 5,
+          "actual_target_connects": 1
+        }
+      ],
+      "stream_opens": 1,
+      "before_frames": 1,
+      "after_frames": 0,
+      "db_capacity_released": false
+    }
+  }
+}

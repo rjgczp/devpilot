@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **累计27/47，新增6.5独立fixture物理终止验收；5.4、6.3保持未勾选**。产品负责人独立审查33fb5edde369a30f9bfb902d5e3fdd3525a46586并核实Push/PR成功后，明确仅授权6.5。实现提交ddcaa3f1f0b41e76c6eb932ea01585576d24b9af；后续只整理任务/证据元数据，最终仍以同一冻结交付HEAD的真实Actions为准，开发态dirty结果不冒称最终SHA验收。本批完成独立紧停、已建立TLS流切断、pidfd终止/回收同Run主进程及孤儿、完整谱系Ed25519回执/重放拒绝、丢失监督器及节点恢复的失败关闭和运维说明。没有DB回执提交/槽释放能力，未扩大数据库函数/角色/EXECUTE/表列权限，Migration1–8不变。真实HTTP内核Probe联合执行及物理容量回收仍待分别独立复审。PR11保持Open，生产执行硬关闭，不合并/Archive/部署。
+当前 **累计27/47，新增6.5独立fixture物理终止验收；5.4、6.3保持未勾选**。产品负责人独立审查33fb5edde369a30f9bfb902d5e3fdd3525a46586并核实Push/PR成功后，明确仅授权6.5。6.5实现提交ddcaa3f1f0b41e76c6eb932ea01585576d24b9af；另经单独授权的共享HTTP超限响应最小修复为73def21d5f6a06c9a7edd37847c2831b577740a8（原PR失败及回归见文末）。最终以同时包含两者的冻结交付HEAD真实Actions为准，开发态dirty结果不冒称最终SHA验收。本批完成独立紧停、已建立TLS流切断、pidfd终止/回收同Run主进程及孤儿、完整谱系Ed25519回执/重放拒绝、丢失监督器及节点恢复的失败关闭和运维说明。没有DB回执提交/槽释放能力，未扩大数据库函数/角色/EXECUTE/表列权限，Migration1–8不变。真实HTTP内核Probe联合执行及物理容量回收仍待分别独立复审。PR11保持Open，生产执行硬关闭，不合并/Archive/部署。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -370,3 +370,14 @@ NET_ADMIN-only的原Run/Gateway管理进程增加绑定私有bootstrap账/实际
 停止/恢复/无法确认时继续quarantine的操作说明见`tests/scheduler/stop65.md`。监督器失联、状态/密钥丢失、网络/进程任一证明未知时保持blocked，不能换key/新目录/新namespace或靠lease/重启/Goose Down返还容量。回执可信持久消费、父序安全释放及所有旧HMAC代次对账属于5.4，仍未验收；6.3原内核联合执行仍未验收。没有变更Start Commit暂停语义或新加强暂停HTTP接口。
 
 CI保留现有verify/integration/execution-security、原147项PG normal/race分组、Schema6四Snapshot normal/race、原76+5网络安全、API精确零目标白名单及CGO/NSCD断言；在execution-security附加6.5 runner和raw Artifact，不提前完成独立scheduler-security任务10.1。最终全量unit/race/vet、PG18、原76+5/6.4/6.5、Change strict、Git diff及实际Push/PR状态须以冻结交付HEAD的命令receipt核验，不能预填绿色或使用旧SHA代替。本批完成后停止等待独立审查。历史Supervisor工具权限审核超时根因未确定、真实历史生产角色ACL清单缺失、生产出口未验证风险继续保留。
+
+
+## Separately authorized HTTP overflow response repair after87af881 CI
+
+87af881fae2358924102fbcb9fd891a310ec2266的[Push39740892742](https://github.com/rjgczp/devpilot/actions/runs/39740892742)三个作业成功；[PR39740899418](https://github.com/rjgczp/devpilot/actions/runs/39740899418)verify/execution-security成功，integration-race/core-04失败，不能报告全部绿色。失败是旧`TestCheckpointOneAuthorizationRealHTTPStrictContract` case31/1025：HTTP200空body而非413，进程19.58s/原120s预算，并非测试超时或Supervisor停止失败。原HEAD/dirty=false/source4854c7c2ffd88d6567e1850d6f261107577d3130d258c4470c4f61ea03cd5643/exit1/原始日志及Actions元数据在`evidence/stop65-http-repair/`；没有重试旧失败workflow。两轮旧execution-security的6.5实际签名、独立证明摘要/原始manifest另已验证通过，这不抵消PR回归失败。
+
+已先向用户提供未应用diff、说明超出6.5-only范围；用户明确回复“授权最小超限响应修复及回归”。修复提交73def21d5f6a06c9a7edd37847c2831b577740a8只改`internal/monitor/handler.go`和新增`body_limit_response_test.go`。旧超限读取立即设过期读期限，可能令net/http后台读取消Request.Context，错误响应提交前被抑制/Abort；该次CI没有goroutine/transport trace，具体时序不宣称确定性证明。新增确定性取消屏障unit在原代码四路由均失败，修复后全部通过，明确只是该取消类模型，不能替代真实PG验收。
+
+最小修复在超限时保留原有有界读期限与Connection: close，错误响应提交后才中断剩余transport读、避免额外drain；真实ctx取消/读失败的提前中断仍保留。limit+1读取、配置/activation/授权/status原字节上限、5s/2s预算及所有旧测试断言/等待不变。全部Go unit/race及vet exit0；原六个HTTP/PG18用例（含原失败strict-contract）在受保护新建PG18中normal/race各通过，命令耗时1.45s/5.91s，未增加重试/skip或延长任何测试上限。开发source8db479acb1360ba915b09f0c093ad0396d138c16290b648cb3729e9910765243及诚实HEAD87af881/dirty=true与代码字节绑定见该证据目录。最新冻结交付HEAD必须再次跑完整Push/PR及原零目标/安全验收，不能拿旧SHA结果冒称通过。
+
+此额外修复不改变6.5协议、数据库权限/函数、Migration1–8或生产硬关闭；累计27/47不变，5.4/6.3继续未完成。最终报告保留原PR失败与新的实际结果，PR11保持Open，停止等待独立审核。

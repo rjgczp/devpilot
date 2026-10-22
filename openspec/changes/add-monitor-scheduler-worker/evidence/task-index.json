@@ -3471,5 +3471,18 @@
     "physical_receipt": true,
     "database_release": false,
     "final_ci": "Inspect actual delivered HEAD Push/PR CI and immutable command/log/source hashes; no result prefilled."
+  },
+  "http_overflow_repair": {
+    "authorized_separately": true,
+    "implementation_commit": "73def21d5f6a06c9a7edd37847c2831b577740a8",
+    "original_ci_head": "87af881fae2358924102fbcb9fd891a310ec2266",
+    "original_push": "success",
+    "original_pr": "failure: integration race/core-04 strict HTTP1025 expected413 got200 empty",
+    "evidence": "evidence/stop65-http-repair/README.md",
+    "development_unit_race_vet": 0,
+    "development_pg_normal_race": "6 unchanged HTTP tests each passed",
+    "whole_change_complete": false,
+    "count_unchanged": 27,
+    "final_ci": "Must inspect new delivered HEAD Push/PR; no result prefilled."
   }
 }
