@@ -381,3 +381,18 @@ CI保留现有verify/integration/execution-security、原147项PG normal/race分
 最小修复在超限时保留原有有界读期限与Connection: close，错误响应提交后才中断剩余transport读、避免额外drain；真实ctx取消/读失败的提前中断仍保留。limit+1读取、配置/activation/授权/status原字节上限、5s/2s预算及所有旧测试断言/等待不变。全部Go unit/race及vet exit0；原六个HTTP/PG18用例（含原失败strict-contract）在受保护新建PG18中normal/race各通过，命令耗时1.45s/5.91s，未增加重试/skip或延长任何测试上限。开发source8db479acb1360ba915b09f0c093ad0396d138c16290b648cb3729e9910765243及诚实HEAD87af881/dirty=true与代码字节绑定见该证据目录。最新冻结交付HEAD必须再次跑完整Push/PR及原零目标/安全验收，不能拿旧SHA结果冒称通过。
 
 此额外修复不改变6.5协议、数据库权限/函数、Migration1–8或生产硬关闭；累计27/47不变，5.4/6.3继续未完成。最终报告保留原PR失败与新的实际结果，PR11保持Open，停止等待独立审核。
+
+
+## Task5.4 — independently verified receipt settlement and quarantine
+
+本批源于产品对3489a41的独立审查及仅5.4授权；随后用户明确回复“批准仅上述3项能力及信任边界”。仅新增Controller的quarantine_physical和Supervisor的accept_termination/reconcile_termination三项SECURITY DEFINER/EXECUTE，精确签名、GRANT及外部密码学验证/数据库可信Supervisor身份边界见docs/monitor-scheduler-task54-capabilities.md。无其它角色属性、成员关系、表列/秘密权限扩展，Migration1–7不变。未把既有其它Checkpoint授权当本次许可。
+
+Migration8在准备时冻结可信登记公钥摘要；不可变原namespace/incarnation/v/g/epoch/fence绑定资源账。独立Supervisor先fsync提交真实网络/pidfd/reap/退役证明，再签并持久化回执；Go适配器验证固定公钥Ed25519、完整十项谱系和全部证明哈希/物理不变量后才获取DB连接。PL/pgSQL不验证Ed25519、不检查Linux；它只信任经session_user/incarnation绑定的独立Supervisor SQL身份，并核对原key pin/Run身份、严格4096-byte回执和唯一nonce/digest。没有把Worker自报、verified布尔或TTL当作回收许可。该可信Supervisor身份被攻破的风险不由本fixture解决。
+
+按D6回收子序W→P→M→Activation→Schedule→Run→global/W/P/M→全部排序origin/IP保留代次→Reservation→control；不获取User/Session/Membership，等待后新SPI和一次DB时钟复验。消费与物理释放、并发计数递减在同一PG事务完成。两代目标key均释放，但不退Start/target令牌、冷却、安全保留或运行记录容量；不写attempt/HTTP结果/当前观察/next_due，不改变配置、Activation或Owner强tag。旧started物理回收后仍可被原部分唯一索引阻止后续同MonitorClaim，留待结果/unknown协议收尾，不通过修改索引提前实施第7组。
+
+真实增强验收TestBudgetPhysicalReleasePG normal55.63s/race56.29s均exit0，同一运行源码3829b59ae0e4bb81dc9f03fa83cfac42f6b420db1c4a92dd2462303bfca61116。PID1被实际SIGSTOP后，原45s Lease真实过期，UID65534/caps0的主Probe、直接子进程及孤儿后代仍存活，global32与目标槽未返还；原<=35s网络许可不续期。显式独立stop后真实双栈网络撤销、pidfd退出/reap及PID namespace退役，提交匹配证明后一次返槽。两个消费连接/两个Worker最后槽竞争保存锁图和Commit屏障：只有一次消费、一项新Claim；未知Commit分别用实际Rollback和Commit后丢ACK，后者仅按原nonce/digest只读对账，不重新发GET/信封/许可。11个逐级真实锁等待点与控制锁等待期间的身份撤销证明新SPI复验；四个DML触发故障点全部回滚；跨租户/旧Fence/incarnation/未知key/签名或证明替换拒绝；真实Owner禁用并持User锁/PATCH新v/g后原Run仍可按旧谱系物理回收，HTTP结果保持NULL。最小角色LOGIN矩阵及原秘密/DDL/DML拒绝保留。
+
+开发失败、原始命令/退出码/源码与二进制/日志hash见evidence/release54-development/。初始本地构建路径/src与真实挂载不一致导致Goose收集目录失败，未跑迁移；修正构建路径后实际迁移通过。下一轮SIGCONT-only管理确认在原3s超时，网络已撤销但无pidfd/退役回执，DB保持quarantined/global32及目标槽，不将容器清理记为释放。一个PID1信号假设被独立反例否定；后续无网络单进程select诊断复现暂停期间的等待行为，显式控制消息唤醒。原失败缺恢复后的syscall/wait状态，精确原因仍保留未证明风险。改为既有显式绑定Run的stop协议，不延长3s/2s/35s/45s，不增加权限/skip/自动重试；normal/race通过不抹除首次超时。
+
+本批只勾选5.4，累计28/47；6.3与第7–10组仍未完成。运维步骤、未知ACK/监督器失联时保持blocked、禁止手改资源账/重建key/替代旧Run、手工恢复边界见tests/scheduler/release54.md。生产执行硬关闭，未合并/Archive/部署。开发态实际HEAD/dirty与实现字节绑定不能替代交付SHA；完整unit/race/vet、147项PG normal/race、原76+5、6.4及6.5与本批5.4的最终结果须由冻结HEAD实际Push/PR CI和独立Artifact哈希核验后另报，不预填绿色。Change strict已通过；全库仍仅历史四规格七条描述长度警告，未改无关主规格。

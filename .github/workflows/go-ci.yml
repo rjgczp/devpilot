@@ -197,17 +197,20 @@ jobs:
             python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/execution-meta" --name snapshot-race \
               --binary "$RUNNER_TEMP/execution-tools/execution.test" -- \
               go test -race -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v -timeout=120s
-      - name: Build task6.4 and6.5 fixture-only tooling
+      - name: Build task6.4,6.5 and5.4 fixture-only tooling
         run: |
           docker build -t devpilot-scheduler-fixture -f tests/scheduler/Dockerfile .
-          STOP65_TOOLS="$RUNNER_TEMP/network64-tools" \
-            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-stop65.sh
+          RELEASE54_TOOLS="$RUNNER_TEMP/network64-tools" \
+            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-release54.sh
       - name: Verify independent task6.4 dual-stack network policies and PG18 normal/race
         run: |
           python3 tests/scheduler/run-network64.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/network64-evidence"
       - name: Verify task6.5 independent physical stop and recovery with PG18 normal/race
         run: |
           python3 tests/scheduler/run-stop65.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/stop65-evidence"
+      - name: Verify task5.4 committed physical receipts and atomic PG18 release normal/race
+        run: |
+          python3 tests/scheduler/run-release54.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/release54-evidence"
       - name: Upload separate execution evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -223,4 +226,5 @@ jobs:
             ${{ runner.temp }}/network64-build/
             ${{ runner.temp }}/network64-evidence/
             ${{ runner.temp }}/stop65-evidence/
+            ${{ runner.temp }}/release54-evidence/
           if-no-files-found: error

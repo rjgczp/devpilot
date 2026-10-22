@@ -70,7 +70,13 @@ class Authority:
         payload=dict(protocol='fixture-physical-stop-v1',receipt_id=str(uuid.uuid4()),lineage=identity,
                      supervisor_key_id=self.key_id,network_sha256=digest(network),process_sha256=digest(process),
                      retire_sha256=digest(retired),pid_namespace=process['pid_namespace'],
-                     net_namespace=process['net_namespace'],process_count=len(process['pids']),at=now_string())
+                     net_namespace=process['net_namespace'],process_count=len(process['pids']),at=datetime.datetime.fromtimestamp(process['at_ns']/1e9,datetime.timezone.utc).isoformat())
+        # Commit the exact independent proofs before a signed attestation exists.
+        # Private immutable journal files are not Worker reports or Docker cleanup.
+        bundle=dict(network=network,process=process,retired=retired)
+        fd=os.open(self.path/(identity['run_id']+'.proofs'),os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+        with os.fdopen(fd,'wb') as f:f.write(canonical(bundle));f.flush();os.fsync(f.fileno())
+        sync_directory(self.path)
         raw=canonical(payload);assert len(raw)<=4096
         content=self.path/'payload';content.write_bytes(raw)
         sig=subprocess.run(['openssl','pkeyutl','-sign','-rawin','-inkey',str(self.key),'-in',str(content)],capture_output=True,check=True).stdout
@@ -165,7 +171,7 @@ class Lifecycle:
         self.instance.snapshot('physically-disconnected')
         return proofs
 
-    def stop(self,network=None):
+    def stop(self,network=None,consume=True):
         network=network or self.revoke()
         process=self.call('stop');assert process['event']=='processes_terminated'
         trace=bytearray()
@@ -183,8 +189,9 @@ class Lifecycle:
         self.stopped=True
         receipt=self.h.authority.sign(self.identity,network,process,retired)
         self.h.record(self.instance.name+'-termination-receipt',receipt)
-        assert self.h.authority.verify(receipt,self.identity)
-        assert not self.h.authority.verify(receipt,self.identity)
+        if consume:
+            assert self.h.authority.verify(receipt,self.identity)
+            assert not self.h.authority.verify(receipt,self.identity)
         self.h.receipt=receipt
         return receipt
 

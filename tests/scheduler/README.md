@@ -62,3 +62,5 @@ Task6.5's independent physical-stop and recovery fixture is documented in
 [stop65.md](stop65.md). It verifies existing TLS-flow cut, pidfd termination of
 all Run children, signed full-lineage receipts and failure quarantine. It does
 not release database capacity or complete5.4/6.3.
+
+Task5.4 physical quarantine/receipt settlement and conservative recovery: [release54.md](release54.md). Separate capability approval and cryptographic/SQL trust boundary: [capabilities](../../docs/monitor-scheduler-task54-capabilities.md). Task6.3 remains incomplete.

@@ -244,19 +244,25 @@ class Harness:
                     answer=dict(confirmation=confirmation)
                 elif op=='witness':
                     answer=self.pg_witness(instance,selected,mode)
-                else:raise RuntimeError('unknown driver operation')
+                else:answer=self.pg_operation(instance,op,request['payload'],selected,mode)
                 driver.stdin.write(json.dumps(answer).encode()+b'\n');driver.stdin.flush()
             status=driver.wait(timeout=3)
             assert status==0, 'actual PG/network driver failed'
-            self.cases.append(dict(case='real-pg18-network-binding-'+mode,exit_code=status,selected_family=4 if mode=='normal' else 6,physical_ledger_not_released=True))
+            self.cases.append(self.pg_completion(mode,status))
         finally:
             (self.dest/'pg-driver.log').write_bytes(b''.join(log))
             self.record('pg-driver-command',dict(command=cmd,exit_code=driver.poll(),binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest()))
             (self.dest/'postgres.log').write_bytes(subprocess.check_output(['docker','logs',cid],stderr=subprocess.STDOUT))
-            sql="SELECT jsonb_build_object('at',clock_timestamp(),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r),'reservations',(SELECT jsonb_agg(to_jsonb(q)) FROM scheduler_reservations q),'locks',(SELECT jsonb_agg(to_jsonb(l)) FROM pg_locks l),'activity',(SELECT jsonb_agg(jsonb_build_object('pid',pid,'wait',wait_event,'blockers',pg_blocking_pids(pid))) FROM pg_stat_activity WHERE datname=current_database()))"
+            sql="SELECT jsonb_build_object('at',clock_timestamp(),'budgets',(SELECT jsonb_agg(to_jsonb(b)) FROM scheduler_budget_state b),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r),'reservations',(SELECT jsonb_agg(to_jsonb(q)) FROM scheduler_reservations q),'locks',(SELECT jsonb_agg(to_jsonb(l)) FROM pg_locks l),'activity',(SELECT jsonb_agg(jsonb_build_object('pid',pid,'wait',wait_event,'blockers',pg_blocking_pids(pid))) FROM pg_stat_activity WHERE datname=current_database()))"
             result=subprocess.run(['docker','exec',cid,'psql','-U','devpilot_fixture','-d','devpilot_registration_test','-At','-c',sql],capture_output=True)
             (self.dest/'postgres-final-ledger.log').write_bytes(result.stdout+result.stderr)
 
+
+    def pg_operation(self,instance,op,payload,selected,mode):
+        raise RuntimeError('unknown driver operation')
+
+    def pg_completion(self,mode,status):
+        return dict(case='real-pg18-network-binding-'+mode,exit_code=status,selected_family=4 if mode=='normal' else 6,physical_ledger_not_released=True)
 
     def pg_test_name(self):
         return '^TestBudgetNetworkPolicyPG$'

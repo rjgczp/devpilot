@@ -94,9 +94,14 @@ stopped=False;proof=None;child=None
 emit(dict(event='lifecycle_ready',lineage=identity,net_namespace=os.readlink('/proc/self/ns/net'),pid_namespace=os.readlink('/proc/self/ns/pid')))
 try:
  while True:
-  if time.monotonic()>=hard:
+  if time.monotonic()>=hard and not stopped:
    emit(stop());break
-  if not select.select([sys.stdin],[],[],max(0,hard-time.monotonic()))[0]:continue
+  # After explicit termination only bounded trace/retirement management is
+  # allowed. Do not replace the existing pidfd proof with a second empty stop
+  # merely because the original permit deadline passed while PID1 was frozen.
+  if not select.select([sys.stdin],[],[],3 if stopped else max(0,hard-time.monotonic()))[0]:
+   if stopped:break
+   continue
   req=message()
   if req is None:
    emit(stop());break

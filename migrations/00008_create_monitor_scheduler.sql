@@ -119,6 +119,14 @@ CREATE TABLE public.scheduler_reservations (
  target_keys jsonb NOT NULL DEFAULT '[]' CHECK(jsonb_typeof(target_keys)='array' AND jsonb_array_length(target_keys)<=2),
  origin_key text CHECK(origin_key ~ '^[0-9a-f]{64}$'),ip_key text CHECK(ip_key ~ '^[0-9a-f]{64}$'),
  termination_receipt bytea CHECK(octet_length(termination_receipt)=32),released_at timestamptz,
+ stop_key_id bytea CHECK(octet_length(stop_key_id)=32),termination_receipt_id uuid,
+ termination_network_digest bytea CHECK(octet_length(termination_network_digest)=32),
+ termination_process_digest bytea CHECK(octet_length(termination_process_digest)=32),
+ termination_retire_digest bytea CHECK(octet_length(termination_retire_digest)=32),
+ CHECK((termination_receipt_id IS NULL AND termination_network_digest IS NULL AND termination_process_digest IS NULL AND termination_retire_digest IS NULL)
+ OR (reservation_state='released' AND release_basis='supervisor' AND termination_receipt_id IS NOT NULL AND stop_key_id IS NOT NULL
+ AND termination_network_digest IS NOT NULL AND termination_process_digest IS NOT NULL AND termination_retire_digest IS NOT NULL)),
+ CHECK(reservation_state<>'released' OR release_basis<>'supervisor' OR termination_receipt_id IS NOT NULL),
  PRIMARY KEY(workspace_id,project_id,monitor_id,run_id),UNIQUE(reservation_id),
  FOREIGN KEY(workspace_id,project_id,monitor_id,run_id) REFERENCES public.monitor_runs ON DELETE RESTRICT,
  CHECK((namespace_incarnation IS NULL)=(supervisor_incarnation IS NULL)),
@@ -126,9 +134,15 @@ CREATE TABLE public.scheduler_reservations (
  ((release_basis='supervisor' AND termination_receipt IS NOT NULL) OR (release_basis='never_prepared' AND termination_receipt IS NULL AND namespace_incarnation IS NULL)))
  OR (reservation_state<>'released' AND released_at IS NULL AND termination_receipt IS NULL))
 );
+CREATE UNIQUE INDEX scheduler_termination_nonce_idx ON public.scheduler_reservations(termination_receipt_id) WHERE termination_receipt_id IS NOT NULL;
+CREATE UNIQUE INDEX scheduler_termination_digest_idx ON public.scheduler_reservations(termination_receipt) WHERE termination_receipt IS NOT NULL;
 CREATE TABLE public.scheduler_control (
  control_id text PRIMARY KEY,kind text NOT NULL CHECK(kind IN ('deployment','worker','http','supervisor','controller')),
  login_name name,incarnation uuid,
+ -- Public key registration is offline trusted fixture provisioning, never a
+ -- Worker parameter. Its digest freezes at preparation, including across stop.
+ stop_public_key bytea CHECK(octet_length(stop_public_key) BETWEEN 1 AND 256),
+ CHECK(stop_public_key IS NULL OR kind='supervisor'),
  gate text NOT NULL DEFAULT 'closed' CHECK(gate IN ('closed','fixture')),emergency_stop boolean NOT NULL DEFAULT true,
  expires_at timestamptz,verified_at timestamptz,manifest_digest bytea CHECK(octet_length(manifest_digest)=32),
  projection_protocol text CHECK(projection_protocol='intent-v2'),status_ready boolean NOT NULL DEFAULT false,routable boolean NOT NULL DEFAULT false,
@@ -698,8 +712,8 @@ BEGIN
  supervisor:=administrator OR pg_has_role(session_user,'devpilot_scheduler_supervisor','MEMBER');
  IF ROW(NEW.workspace_id,NEW.project_id,NEW.monitor_id,NEW.run_id,NEW.reservation_id)
  IS DISTINCT FROM ROW(OLD.workspace_id,OLD.project_id,OLD.monitor_id,OLD.run_id,OLD.reservation_id)
- OR (OLD.namespace_incarnation IS NOT NULL AND ROW(NEW.namespace_incarnation,NEW.supervisor_incarnation,NEW.prepared_at,NEW.preparation_digest,NEW.permit_deadline)
- IS DISTINCT FROM ROW(OLD.namespace_incarnation,OLD.supervisor_incarnation,OLD.prepared_at,OLD.preparation_digest,OLD.permit_deadline))
+ OR (OLD.namespace_incarnation IS NOT NULL AND ROW(NEW.namespace_incarnation,NEW.supervisor_incarnation,NEW.prepared_at,NEW.preparation_digest,NEW.permit_deadline,NEW.stop_key_id)
+ IS DISTINCT FROM ROW(OLD.namespace_incarnation,OLD.supervisor_incarnation,OLD.prepared_at,OLD.preparation_digest,OLD.permit_deadline,OLD.stop_key_id))
  OR (OLD.origin_key IS NOT NULL AND ROW(NEW.origin_key,NEW.ip_key,NEW.target_permit_id,NEW.target_permit_committed_at) IS DISTINCT FROM ROW(OLD.origin_key,OLD.ip_key,OLD.target_permit_id,OLD.target_permit_committed_at))
  OR (OLD.input_consumed_at IS NOT NULL AND NEW.input_consumed_at IS DISTINCT FROM OLD.input_consumed_at)
  OR (OLD.permit_installed_at IS NOT NULL AND NEW.permit_installed_at IS DISTINCT FROM OLD.permit_installed_at)
@@ -831,7 +845,7 @@ BEGIN
  deadline:=gate_now+p_remaining_ms*interval '1 millisecond';
  IF r.lease_until<=gate_now OR deadline<gate_now+timeout_seconds*interval '1 second'
  OR NOT EXISTS(SELECT 1 FROM public.scheduler_control c WHERE c.control_id='deployment' AND c.gate='fixture' AND NOT c.emergency_stop AND c.expires_at>gate_now) THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
- UPDATE public.scheduler_reservations SET namespace_incarnation=p_namespace,supervisor_incarnation=p_incarnation,prepared_at=gate_now,permit_deadline=deadline,preparation_digest=p_manifest WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ UPDATE public.scheduler_reservations SET namespace_incarnation=p_namespace,supervisor_incarnation=p_incarnation,prepared_at=gate_now,permit_deadline=deadline,preparation_digest=p_manifest,stop_key_id=(SELECT sha256(c.stop_public_key) FROM public.scheduler_control c WHERE c.kind='supervisor' AND c.login_name=session_user AND c.incarnation=p_incarnation) WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
  UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=gate_now WHERE kind='supervisor' AND login_name=session_user AND incarnation=p_incarnation;
  RETURN jsonb_build_object('namespace_incarnation',p_namespace,'supervisor_incarnation',p_incarnation,'permit_deadline',deadline);
 END $$;
@@ -1147,6 +1161,150 @@ END $$;
 ALTER FUNCTION scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text) OWNER TO devpilot_scheduler_owner;
 REVOKE ALL ON FUNCTION scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text) TO devpilot_scheduler_worker;
+
+-- Task5.4 separately approved capabilities. No Worker physical-release grant.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.quarantine_physical(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_fence bigint)
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; previous xid8; n timestamptz;
+BEGIN
+ PERFORM scheduler_private.system_identity('controller',p_incarnation);
+ PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
+ SELECT * INTO r FROM public.monitor_runs WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ IF NOT FOUND OR r.fencing_token IS DISTINCT FROM p_fence THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_budgets(p_wid,p_pid,p_mid);
+ -- Isolation never releases target slots and does not acquire targets later.
+ SELECT * INTO q FROM public.scheduler_reservations WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ PERFORM 1 FROM public.scheduler_control WHERE control_id='deployment' FOR SHARE;
+ SELECT last_transaction INTO previous FROM public.scheduler_control WHERE kind='controller' AND login_name=session_user AND incarnation=p_incarnation FOR UPDATE;
+ IF NOT FOUND OR previous=pg_current_xact_id() THEN RAISE EXCEPTION 'one operation per transaction required' USING ERRCODE='25000'; END IF;
+ SELECT clock_timestamp() INTO n;
+ PERFORM scheduler_private.system_identity('controller',p_incarnation);
+ IF q.namespace_incarnation IS NULL OR q.reservation_state NOT IN ('reserved','quarantined') OR r.physical_release_confirmed_at IS NOT NULL
+ OR n<r.claimed_at OR n>transaction_timestamp()+interval '2 seconds' THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ UPDATE public.scheduler_reservations SET reservation_state='quarantined' WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=GREATEST(last_gate_at,n) WHERE kind='controller' AND login_name=session_user AND incarnation=p_incarnation;
+ RETURN jsonb_build_object('run_id',p_run,'state','quarantined');
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.quarantine_physical(uuid,uuid,uuid,uuid,uuid,bigint) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.quarantine_physical(uuid,uuid,uuid,uuid,uuid,bigint) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.quarantine_physical(uuid,uuid,uuid,uuid,uuid,bigint) TO devpilot_scheduler_controller;
+
+-- The trusted Supervisor adapter verifies Ed25519 AND committed Linux proofs
+-- before calling this attestation entry. PL/pgSQL does not verify Ed25519.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.accept_termination(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_receipt bytea)
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; hinted_keys jsonb;
+ raw json; payload json; doc jsonb; l jsonb; key_row record; field text; nonce uuid; receipt_at timestamptz;
+ key_id bytea; network_digest bytea; process_digest bytea; retire_digest bytea; receipt_digest bytea; n timestamptz; previous xid8;
+BEGIN
+ PERFORM scheduler_private.system_identity('supervisor',p_incarnation);
+ IF p_receipt IS NULL OR octet_length(p_receipt) NOT BETWEEN 1 AND 4096 THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ raw:=convert_from(p_receipt,'UTF8')::json;
+ IF json_typeof(raw)<>'object' THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ doc:=raw::jsonb;
+ IF (SELECT count(*) FROM json_object_keys(raw))<>2 OR NOT(doc ?& ARRAY['payload','signature']) OR json_typeof(raw->'payload')<>'object'
+ OR json_typeof(raw->'signature')<>'string' THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ payload:=raw->'payload';
+ IF (SELECT count(*) FROM json_object_keys(payload))<>11 OR (SELECT count(*) FROM jsonb_object_keys(payload::jsonb))<>11
+ OR NOT(payload::jsonb ?& ARRAY['protocol','receipt_id','lineage','supervisor_key_id','network_sha256','process_sha256','retire_sha256','pid_namespace','net_namespace','process_count','at'])
+ OR json_typeof(payload->'lineage')<>'object' THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ l:=payload->'lineage';
+ IF (SELECT count(*) FROM json_object_keys(payload->'lineage'))<>10 OR (SELECT count(*) FROM jsonb_object_keys(l))<>10
+ OR NOT(l ?& ARRAY['workspace_id','project_id','monitor_id','run_id','configuration_version','activation_generation','scheduler_epoch','fencing_token','namespace_incarnation','supervisor_incarnation'])
+ OR EXISTS(SELECT 1 FROM jsonb_each(l) WHERE jsonb_typeof(value)<>'string') THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ FOREACH field IN ARRAY ARRAY['protocol','receipt_id','supervisor_key_id','network_sha256','process_sha256','retire_sha256','pid_namespace','net_namespace','at'] LOOP
+  IF json_typeof(payload->field)<>'string' THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ END LOOP;
+ IF payload->>'protocol'<>'fixture-physical-stop-v1' OR payload->>'pid_namespace'!~'^pid:\[[1-9][0-9]{0,19}\]$'
+ OR payload->>'net_namespace'!~'^net:\[[1-9][0-9]{0,19}\]$' OR json_typeof(payload->'process_count')<>'number'
+ OR (payload->>'process_count')!~'^[1-9][0-9]{0,2}$' OR (payload->>'process_count')::integer>127
+ OR doc->>'signature'!~'^[A-Za-z0-9+/]{86}==$' OR octet_length(decode(doc->>'signature','base64'))<>64 THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ FOREACH field IN ARRAY ARRAY['supervisor_key_id','network_sha256','process_sha256','retire_sha256'] LOOP
+  IF payload->>field !~ '^[0-9a-f]{64}$' THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ END LOOP;
+ nonce:=(payload->>'receipt_id')::uuid;
+ IF nonce::text<>payload->>'receipt_id' OR nonce='00000000-0000-0000-0000-000000000000'::uuid THEN RAISE EXCEPTION 'invalid receipt' USING ERRCODE='22023'; END IF;
+ receipt_at:=(payload->>'at')::timestamptz;
+ key_id:=decode(payload->>'supervisor_key_id','hex');network_digest:=decode(payload->>'network_sha256','hex');
+ process_digest:=decode(payload->>'process_sha256','hex');retire_digest:=decode(payload->>'retire_sha256','hex');receipt_digest:=sha256(p_receipt);
+ PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
+ SELECT * INTO r FROM public.monitor_runs WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ IF NOT FOUND OR l->>'workspace_id'<>p_wid::text OR l->>'project_id'<>p_pid::text OR l->>'monitor_id'<>p_mid::text OR l->>'run_id'<>p_run::text
+ OR l->>'configuration_version'<>r.configuration_version::text OR l->>'activation_generation'<>r.activation_generation::text
+ OR l->>'scheduler_epoch'<>r.scheduler_epoch::text OR l->>'fencing_token'<>r.fencing_token::text THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_budgets(p_wid,p_pid,p_mid);
+ SELECT target_keys INTO hinted_keys FROM public.scheduler_reservations WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ FOR key_row IN SELECT kind,budget_key FROM (
+  SELECT 'origin'::text kind,k->>'origin_key' budget_key FROM jsonb_array_elements(hinted_keys) k
+  UNION SELECT 'ip',k->>'ip_key' FROM jsonb_array_elements(hinted_keys) k
+ ) keys ORDER BY CASE kind WHEN 'origin' THEN 0 ELSE 1 END,budget_key LOOP
+  PERFORM 1 FROM public.scheduler_budget_state WHERE kind=key_row.kind AND budget_key=key_row.budget_key FOR UPDATE;
+  IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+ END LOOP;
+ SELECT * INTO q FROM public.scheduler_reservations WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ PERFORM 1 FROM public.scheduler_control WHERE control_id='deployment' FOR SHARE;
+ SELECT last_transaction INTO previous FROM public.scheduler_control WHERE kind='supervisor' AND login_name=session_user AND incarnation=p_incarnation FOR UPDATE;
+ IF NOT FOUND OR previous=pg_current_xact_id() THEN RAISE EXCEPTION 'one operation per transaction required' USING ERRCODE='25000'; END IF;
+ SELECT clock_timestamp() INTO n;
+ PERFORM scheduler_private.system_identity('supervisor',p_incarnation);
+ -- A fresh SPI command after ALL waits. Current Owner, authorization, epoch,
+ -- deployment gate and Lease expiry do not invalidate old physical stop proof.
+ PERFORM 1 FROM public.scheduler_reservations x JOIN public.scheduler_control c ON c.kind='supervisor' AND c.login_name=session_user AND c.incarnation=p_incarnation
+ WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run
+ AND x.reservation_state IN ('reserved','quarantined') AND x.target_keys=hinted_keys
+ AND x.namespace_incarnation::text=l->>'namespace_incarnation' AND x.supervisor_incarnation=p_incarnation
+ AND l->>'supervisor_incarnation'=p_incarnation::text AND x.stop_key_id=key_id AND sha256(c.stop_public_key)=key_id
+ AND x.termination_receipt IS NULL AND r.physical_release_confirmed_at IS NULL;
+ IF NOT FOUND OR NOT isfinite(receipt_at) OR receipt_at<q.prepared_at OR receipt_at>n OR n<r.claimed_at
+ OR n>transaction_timestamp()+interval '2 seconds' THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ UPDATE public.scheduler_budget_state SET in_use=in_use-1,active_count=active_count-1 WHERE kind='global' AND budget_key='global' AND in_use>0 AND active_count>0;
+ IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+ UPDATE public.scheduler_budget_state SET in_use=in_use-1 WHERE kind='workspace' AND budget_key=p_wid::text AND in_use>0;
+ IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+ UPDATE public.scheduler_budget_state SET in_use=in_use-1 WHERE kind='project' AND budget_key=p_wid::text||'/'||p_pid::text AND in_use>0;
+ IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+ UPDATE public.scheduler_budget_state SET in_use=in_use-1 WHERE kind='monitor' AND budget_key=p_wid::text||'/'||p_pid::text||'/'||p_mid::text AND in_use>0;
+ IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+ FOR key_row IN SELECT kind,budget_key FROM (
+  SELECT 'origin'::text kind,k->>'origin_key' budget_key FROM jsonb_array_elements(q.target_keys) k
+  UNION SELECT 'ip',k->>'ip_key' FROM jsonb_array_elements(q.target_keys) k
+ ) keys ORDER BY CASE kind WHEN 'origin' THEN 0 ELSE 1 END,budget_key LOOP
+  UPDATE public.scheduler_budget_state SET in_use=in_use-1 WHERE kind=key_row.kind AND budget_key=key_row.budget_key AND in_use>0;
+  IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
+ END LOOP;
+ UPDATE public.scheduler_reservations SET reservation_state='released',release_basis='supervisor',released_at=n,termination_receipt=receipt_digest,
+ termination_receipt_id=nonce,termination_network_digest=network_digest,termination_process_digest=process_digest,termination_retire_digest=retire_digest
+ WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ UPDATE public.monitor_runs SET physical_release_confirmed_at=n WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=GREATEST(last_gate_at,n) WHERE kind='supervisor' AND login_name=session_user AND incarnation=p_incarnation;
+ RETURN jsonb_build_object('run_id',p_run,'receipt_id',nonce,'state','consumed','released_at',n);
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.accept_termination(uuid,uuid,uuid,uuid,uuid,bytea) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.accept_termination(uuid,uuid,uuid,uuid,uuid,bytea) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.accept_termination(uuid,uuid,uuid,uuid,uuid,bytea) TO devpilot_scheduler_supervisor;
+
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.reconcile_termination(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_receipt_id uuid,p_receipt_digest bytea)
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private AS $$
+DECLARE q public.scheduler_reservations%ROWTYPE;
+BEGIN
+ PERFORM scheduler_private.system_identity('supervisor',p_incarnation);
+ IF p_receipt_id IS NULL OR p_receipt_digest IS NULL OR octet_length(p_receipt_digest)<>32 THEN RAISE EXCEPTION 'invalid receipt identity' USING ERRCODE='22023'; END IF;
+ SELECT x.* INTO q FROM public.scheduler_reservations x JOIN public.monitor_runs r USING(workspace_id,project_id,monitor_id,run_id)
+ JOIN public.scheduler_control c ON c.kind='supervisor' AND c.login_name=session_user AND c.incarnation=p_incarnation
+ WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run AND x.supervisor_incarnation=p_incarnation AND x.stop_key_id=sha256(c.stop_public_key);
+ IF NOT FOUND OR (q.termination_receipt IS NOT NULL AND (q.termination_receipt IS DISTINCT FROM p_receipt_digest OR q.termination_receipt_id IS DISTINCT FROM p_receipt_id)) THEN
+  RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ RETURN jsonb_build_object('run_id',p_run,'receipt_id',p_receipt_id,'state',CASE WHEN q.reservation_state='released' THEN 'consumed' ELSE 'pending' END,'released_at',q.released_at);
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.reconcile_termination(uuid,uuid,uuid,uuid,uuid,uuid,bytea) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.reconcile_termination(uuid,uuid,uuid,uuid,uuid,uuid,bytea) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.reconcile_termination(uuid,uuid,uuid,uuid,uuid,uuid,bytea) TO devpilot_scheduler_supervisor;
 
 -- +goose Down
 LOCK TABLE public.http_monitors IN SHARE ROW EXCLUSIVE MODE;
