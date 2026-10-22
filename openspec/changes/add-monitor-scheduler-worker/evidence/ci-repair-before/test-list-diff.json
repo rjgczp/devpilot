@@ -1,0 +1,19 @@
+{
+  "before_count": 142,
+  "after_count": 147,
+  "removed": [],
+  "added_previously_reviewed_fixture_tests": [
+    "TestCheckpointTwoBoundedScanAndTick",
+    "TestCheckpointTwoClaimLostAcknowledgement",
+    "TestCheckpointTwoNarrowRecoveryCapabilities",
+    "TestCheckpointTwoUnlockedHintsAreNotAuthority",
+    "TestCheckpointTwoUnstartedRealLeaseExpiry"
+  ],
+  "before_commands": [
+    "go test -tags=integration ./tests/integration -run ^TestActivation -count=1 -v -timeout=120s",
+    "go test -tags=integration ./... -count=1 -timeout=120s",
+    "go test -race -tags=integration ./tests/integration -count=1 -timeout=120s"
+  ],
+  "after_manifest": "tests/ci/integration-groups.json",
+  "timeout_seconds_unchanged": 120
+}

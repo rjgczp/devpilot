@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **6.1–6.2已通过独立审核，累计25/47；本轮仅交付6.3默认拒绝/许可协议可独立验证部分，6.3仍未勾选**。起始已审HEAD为`0fd6502f30c0882ae083773feb7f24b8fe41a524`，分支`codex/add-monitor-scheduler-worker`，工作区干净。冻结实现/最终测试SHA为`8593edccd94e1ed00348e5cb0a98895f1b71cb71`，源码清单SHA256=`fb92054560fd6af9e348f147ab336f4f97bc6d0e7b40edd2489e3f35288b08bf`；其后仅verification/evidence元数据，代码/测试/tasks勾选不变。本轮复用原受限reserve_target，不新增SQL/EXECUTE/角色/表列/秘密权限；Migration1–8字节不变。完整许可联网验收依赖6.4/6.5，未实施这些任务，5.4仍未完成。生产执行硬关闭；未创建PR/合并/Archive/部署。推送现有分支后停止等待独立审核。历史段落仅代表当时进度，以本节和末尾本轮记录为准。
+当前 **累计25/47；6.3仍未完成，5.4/6.4/6.5保持未勾选**。产品负责人独立审核HEAD `b7742bc247cbf8fbd59c5ff591642e5f3cc0bc30`后仅授权修复PR11的CI及验证编排，暂不批准6.4。本轮只修改workflow和tests/ci工具/证据；不修改既有生产代码、旧安全断言、Migration1–8、数据库角色/EXECUTE/表列或秘密权限。修复前GitHub run39706081660的verify成功、integration及execution-security失败，完整原始日志及测试清单见`evidence/ci-repair-before/`。最终通过结论须绑定同一冻结HEAD的实际Push和PR Actions及Artifacts，不把本地绿灯或规划当GitHub通过；最新审查记录见末尾。PR11保持Open，生产执行硬关闭，不合并/Archive/部署或进入6.4。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -291,3 +291,14 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 2026-10-22交付审查包时，自动权限审批未在期限完成，Git提交/推送命令未执行；只读核对HEAD仍为冻结SHA、index为空。工具明确允许一次有界重试，按原审批路径执行，不绕过检查；审批超时原因未确定，与已通过PG/Linux安全测试分开记录。原工具回执信息见`evidence/target-permit-final/development/git-approval-timeout.json`；交付结果以最终HEAD及远端核对为准。
 
 上述唯一审批重试通过，随后提交前diff-check发现两份原始工具输出自带尾随空白并阻止提交；只将build/listeners原始文本改为gzip包装，解压字节和原SHA256保持，不关闭diff检查、不修改源码或验收结果。
+
+
+## PR11 CI repair — cumulative time budget and historical snapshot isolation
+
+本轮唯一授权是CI/验证编排修复。起始`b7742bc247cbf8fbd59c5ff591642e5f3cc0bc30`，分支`codex/add-monitor-scheduler-worker`且工作区干净，PR11实际Open。原run [39706081660](https://github.com/rjgczp/devpilot/actions/runs/39706081660) head匹配该审核SHA；原始run/jobs状态、失败及完整日志保留在`evidence/ci-repair-before/`，不将旧verify或原76+5成功冒充本轮新HEAD通过。
+
+- integration原整组进程上限120s；超时时TestCheckpointOneRealExpiryExplicitRenewal只执行36s，其余约84s已被此前用例消耗。栈为该真实等待，不是已证明数据库锁死。保留120s/原60s授权/45s Lease及全部旧测试，改用版本化显式147项清单：原integration142项全部保留，另5项已评审fixture Claim/恢复回归纳入；核心30/30/30/30/25，真实60s与45s各自单进程。`run_integration.py`编译发现后核对完整清单，未分配/重复/失效条目或任何测试skip均失败；Go JSON须证明每项恰好运行/通过一次，并保留原./...其它包的验证。normal/race对同一guarded PG18串行执行，不以增大超时或模拟时钟消除错误。
+- execution-security原步骤标签schema7但调用无限制Goose up；完整日志确认00008已成功应用、当前version8，四个旧Snapshot按原断言正确拒绝。只给独立execution-security job的空PG18测试服务使用`tests/ci/snapshot-schema`：原testdb身份/PG18/独立URL守护、检查原生Goose3.26.0、固定up-to6并断言无schema8对象；非空或schema8库拒绝，不自动Down/Drop。旧Snapshot四项原始源码不变，真实live接收端/v7-v8配置隔离及Race仍全量执行。
+- workflow为本开发分支启用Push，Push与PR显式checkout同一实际HEAD并断言/记录，避免将PR合成merge SHA当冻结实现。保留三个job，未新增Scheduler生产服务或6.4部署。normal/race分组、verify、Snapshot、76+5网络和原API零目标audit分别保留原命令/退出码/Git/source/binary/log哈希及Actions Artifacts。API白名单、CGO来源和NSCD反例、原执行器网络/资源审计全部保持。
+
+本地开发前置检查：Linux编译发现147项与清单完全相符，原142项无删除；分组覆盖守护3项、原网络分类/CGO来源7项、执行分类2项通过。主机直接运行Go unit曾因沙箱禁止本地listen而失败，不是本轮CI通过结果；设置独立可写Go cache后CGO分类测试通过，未改断言。最终CI结果以冻结提交上的实际Push/PR run及其result/receipt/artifacts为准，当前不预填通过。不勾选6.3或整个10.1（独立scheduler-security/Supervisor仍未交付），累计仍25/47。完整CI后保存实际run结果供独立复审，PR11保持Open；生产执行始终硬关闭。
