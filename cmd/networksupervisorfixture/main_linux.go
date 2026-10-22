@@ -54,6 +54,8 @@ func run() error {
 			if e == nil {
 				answer = p.Ready()
 			}
+		case m.Op == "revoke" && m.Config != nil && m.Install == nil:
+			answer, e = supervisorfixture.Revoke(ctx, *m.Config)
 		case m.Op == "install" && p != nil && m.Config == nil && m.Install != nil:
 			answer, e = p.Install(ctx, *m.Install)
 		default:

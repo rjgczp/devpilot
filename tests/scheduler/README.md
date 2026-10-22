@@ -57,3 +57,8 @@ The API zero-target audit retains the two exact TCP destinations and includes
 finite authorization plus authoritative status HTTP/PG scenarios. No scheduler
 target is added to that whitelist. CGO provenance and NSCD counterexamples stay
 in the original classifier/build-gate tests.
+
+Task6.5's independent physical-stop and recovery fixture is documented in
+[stop65.md](stop65.md). It verifies existing TLS-flow cut, pidfd termination of
+all Run children, signed full-lineage receipts and failure quarantine. It does
+not release database capacity or complete5.4/6.3.

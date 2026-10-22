@@ -34,6 +34,8 @@ type networkPolicyReply struct {
 	Ready            map[string]supervisorfixture.Ready `json:"ready"`
 	Confirmation     targetpermit.Confirmation          `json:"confirmation"`
 	IP               string                             `json:"ip"`
+	StopPublicKey    string                             `json:"stop_public_key,omitempty"`
+	StopReceipt      json.RawMessage                    `json:"stop_receipt,omitempty"`
 	TeardownComplete bool                               `json:"fixture_teardown_complete"`
 }
 
@@ -70,7 +72,9 @@ func (b *networkPolicyBroker) InstallTarget(ctx context.Context, r targetpermit.
 	return reply.Confirmation, nil
 }
 
-func TestBudgetNetworkPolicyPG(t *testing.T) {
+func TestBudgetNetworkPolicyPG(t *testing.T) { exerciseNetworkPolicy(t, false) }
+
+func exerciseNetworkPolicy(t *testing.T, physicalStop bool) {
 	db := budgetDB(t)
 	w, wi := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	s, si := schedulerSupervisorLogin(t, db)
@@ -139,7 +143,11 @@ func TestBudgetNetworkPolicyPG(t *testing.T) {
 	if receipt.Lineage != l {
 		t.Fatal("Start input lineage differs from prepared namespace")
 	}
-	r := targetpermit.Request{Lineage: l, Host: "a.fixture.example.com", Scheme: "https", IP: ip, Port: 443, Deadline: time.Now().UTC().Add(5 * time.Second)}
+	targetDuration := 5 * time.Second
+	if physicalStop {
+		targetDuration = 20 * time.Second
+	} // new live-flow stop test, within the same <=35s hard permit
+	r := targetpermit.Request{Lineage: l, Host: "a.fixture.example.com", Scheme: "https", IP: ip, Port: 443, Deadline: time.Now().UTC().Add(targetDuration)}
 	controller := snapshot.TargetController(store, checkpointTwoHint(h), directory, broker)
 	a, e := controller.Authorize(ctx, r)
 	if e != nil || !a.Matches(r) {
@@ -151,10 +159,22 @@ func TestBudgetNetworkPolicyPG(t *testing.T) {
 	if queryInt(t, db, `SELECT count(*) FROM scheduler_reservations WHERE workspace_id=$1 AND project_id=$2 AND monitor_id=$3 AND run_id=$4 AND reservation_state='reserved' AND released_at IS NULL AND termination_receipt IS NULL`, h.w, h.p, h.m, h.r) != 1 {
 		t.Fatal("target confirmation prematurely returned physical capacity")
 	}
-	// Host now witnesses the exact allowed fixture GET and destroys only the
-	// disposable namespaces. This is teardown, not a task6.5 termination receipt.
-	if !broker.exchange("witness", a).TeardownComplete {
+	// The original6.4 path witnesses a GET and tears down its fixtures. The
+	// dedicated6.5 path instead verifies an independent signed stop receipt;
+	// neither path releases database capacity.
+	assertNoDBDuringInput(t, db, w, s)
+	witness := broker.exchange("witness", a)
+	if physicalStop {
+		if supervisorfixture.VerifyStopReceipt(witness.StopReceipt, []byte(selection.StopPublicKey), l) != nil {
+			t.Fatal("independent physical termination receipt unverified")
+		}
+		if queryInt(t, db, `SELECT count(*) FROM scheduler_reservations WHERE workspace_id=$1 AND project_id=$2 AND monitor_id=$3 AND run_id=$4 AND reservation_state='reserved' AND released_at IS NULL AND termination_receipt IS NULL`, h.w, h.p, h.m, h.r) != 1 {
+			t.Fatal("6.5 receipt unexpectedly released capacity")
+		}
+		t.Log("6.5 pinned Ed25519 receipt verified for full lineage; physical proof does not release capacity")
+	}
+	if !physicalStop && !witness.TeardownComplete {
 		t.Fatal("fixture namespaces not torn down before DB cleanup")
 	}
-	t.Log("SQLSTATE=00000 confirmed Start/target Commit; both real namespace policies; no business DB connection across install; physical ledger remains held, no release receipt")
+	t.Log("SQLSTATE=00000 confirmed Start/target Commit; both real namespace policies; no business DB connection across install; physical ledger remains held, no DB release receipt")
 }

@@ -55,6 +55,22 @@ def connection(conn, port):
             if not chunk:
                 return
             data += chunk
+        if data.startswith(b'GET /fixture/stream HTTP/1.1\r\n'):
+            event('stream_open', target=local[0], port=port, sni=getattr(conn,'fixture_sni',None))
+            conn.sendall(b'HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n')
+            conn.settimeout(.2)
+            until=time.monotonic()+35
+            pending=b''
+            while time.monotonic()<until:
+                try:chunk=conn.recv(128)
+                except socket.timeout:continue
+                if not chunk:return
+                pending+=chunk
+                while b'\n' in pending:
+                    frame,pending=pending.split(b'\n',1)
+                    assert frame in (b'before-stop',b'after-stop')
+                    event('stream_frame',frame=frame.decode(),target=local[0])
+            return
         event('get', target=local[0], port=port, sni=getattr(conn, 'fixture_sni', None),
               is_get=data.startswith(b'GET /fixture HTTP/1.1\r\n'),
               credentials=any(k in data.lower() for k in (b'cookie:', b'authorization:', b'proxy-authorization:')))

@@ -82,3 +82,12 @@ func TestFixtureNetworkAuditKeepsSecurityStructure(t *testing.T) {
 		t.Fatal("audit ignored fail-open policy")
 	}
 }
+
+func TestFixtureStopCannotRevokeAnotherNamespace(t *testing.T) {
+	// A network-none/all-capabilities-dropped Linux test container is used by the
+	// runner. This rejection performs no mutation and is not physical-stop proof.
+	c := testConfig()
+	if _, e := Revoke(context.Background(), c); e == nil {
+		t.Fatal("foreign namespace revoked")
+	}
+}

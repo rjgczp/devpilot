@@ -215,7 +215,7 @@ class Harness:
              '-v',str(repo)+':'+str(repo)+':ro','-v',str(binary.parent)+':/toolbin:ro','-w',str(repo),
              '-e','PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
              '-e','TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable',
-             '--entrypoint','/toolbin/'+binary.name,IMAGE,'-test.run','^TestBudgetNetworkPolicyPG$','-test.v','-test.timeout=120s']
+             '--entrypoint','/toolbin/'+binary.name,IMAGE,'-test.run',self.pg_test_name(),'-test.v','-test.timeout=120s']
         driver=subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         self.processes.append(driver)
         log=[]
@@ -235,7 +235,7 @@ class Harness:
                 if not line.startswith(b'NETWORK64 '):continue
                 request=json.loads(line[len(b'NETWORK64 '):])
                 op=request['op']
-                if op=='catalog':answer=dict(ip=selected)
+                if op=='catalog':answer=self.public_catalog(selected)
                 elif op=='prepare':
                     instance.identity=request['payload']
                     answer=dict(ready=instance.boot())
@@ -243,17 +243,7 @@ class Harness:
                     confirmation=instance.install(data=request['payload'])
                     answer=dict(confirmation=confirmation)
                 elif op=='witness':
-                    before=len(self.events())
-                    result=instance.actor([dict(ip=selected,port=443,tls=True)],'pg-'+mode+'-allowed')
-                    assert result['actions'][0]['success'] and len(self.events())==before+1
-                    assert self.events()[-1]['sni']=='a.fixture.example.com' and not self.events()[-1]['credentials']
-                    instance.snapshot('pg-witness')
-                    # Actual fixture destruction, NOT an application termination
-                    # receipt. DB ledgers remain reserved through evidence capture.
-                    for p in instance.proc.values():p.stdin.close();assert p.wait(timeout=3)==0
-                    for owned in (instance.actor_container,instance.gateway,instance.run):
-                        self.run(['docker','rm','-f','-v',owned]);self.containers.remove(owned)
-                    answer=dict(fixture_teardown_complete=True)
+                    answer=self.pg_witness(instance,selected,mode)
                 else:raise RuntimeError('unknown driver operation')
                 driver.stdin.write(json.dumps(answer).encode()+b'\n');driver.stdin.flush()
             status=driver.wait(timeout=3)
@@ -266,6 +256,26 @@ class Harness:
             sql="SELECT jsonb_build_object('at',clock_timestamp(),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r),'reservations',(SELECT jsonb_agg(to_jsonb(q)) FROM scheduler_reservations q),'locks',(SELECT jsonb_agg(to_jsonb(l)) FROM pg_locks l),'activity',(SELECT jsonb_agg(jsonb_build_object('pid',pid,'wait',wait_event,'blockers',pg_blocking_pids(pid))) FROM pg_stat_activity WHERE datname=current_database()))"
             result=subprocess.run(['docker','exec',cid,'psql','-U','devpilot_fixture','-d','devpilot_registration_test','-At','-c',sql],capture_output=True)
             (self.dest/'postgres-final-ledger.log').write_bytes(result.stdout+result.stderr)
+
+
+    def pg_test_name(self):
+        return '^TestBudgetNetworkPolicyPG$'
+
+    def public_catalog(self,selected):
+        return dict(ip=selected)
+
+    def pg_witness(self,instance,selected,mode):
+        before=len(self.events())
+        result=instance.actor([dict(ip=selected,port=443,tls=True)],'pg-'+mode+'-allowed')
+        assert result['actions'][0]['success'] and len(self.events())==before+1
+        assert self.events()[-1]['sni']=='a.fixture.example.com' and not self.events()[-1]['credentials']
+        instance.snapshot('pg-witness')
+        # Actual fixture destruction, NOT an application termination
+        # receipt. DB ledgers remain reserved through evidence capture.
+        for p in instance.proc.values():p.stdin.close();assert p.wait(timeout=3)==0
+        for owned in (instance.actor_container,instance.gateway,instance.run):
+            self.run(['docker','rm','-f','-v',owned]);self.containers.remove(owned)
+        return dict(fixture_teardown_complete=True)
 
 
 class Instance:
