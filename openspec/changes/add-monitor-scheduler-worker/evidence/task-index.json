@@ -3393,7 +3393,7 @@
       "implementation_commit": "30870fc2d713c8865e9921fe6d6e5bcec8c35e0d"
     }
   },
-  "remaining": "20 unchecked tasks:5.4,6.3,groups7–10. Task6.5 isolated physical stop accepted;27/47 overall. No DB capacity release or production execution; stop for independent review.",
+  "remaining": "19 unchecked tasks:6.3,groups7–10. Task5.4 physical quarantine/receipt settlement and task6.5 isolated physical stop accepted in their fixture scopes;28/47 overall. No production execution or task6.3 combined-kernel acceptance; stop for independent review. Final frozen-HEAD CI is reported separately.",
   "final_implementation_sha": null,
   "checkpoint1_final": {
     "tasks": [

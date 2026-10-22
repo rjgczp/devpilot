@@ -6,6 +6,11 @@ kernel remain unchanged. The streaming adversarial fixture Probe is a lifecycle
 witness, not completion of6.3's original-kernel combined execution acceptance.
 There is no public stop API, production mode or environment-variable unlock.
 
+This document and its no-release tests describe the accepted task6.5 batch.
+References below to pending task5.4 describe that batch's boundary. The separate,
+subsequently authorized settlement protocol is documented in [release54.md](release54.md);
+the original6.5 regression still deliberately keeps its database slots held.
+
 ## Separate authorities and evidence
 
 The trusted outer Supervisor owns only its newly allocated, labeled containers,
