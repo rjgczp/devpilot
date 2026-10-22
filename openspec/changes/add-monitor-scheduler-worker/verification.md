@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **累计25/47；6.3仍未完成，5.4/6.4/6.5保持未勾选**。产品负责人独立审核HEAD `b7742bc247cbf8fbd59c5ff591642e5f3cc0bc30`后仅授权修复PR11的CI及验证编排，暂不批准6.4。本轮只修改workflow和tests/ci工具/证据；不修改既有生产代码、旧安全断言、Migration1–8、数据库角色/EXECUTE/表列或秘密权限。修复前GitHub run39706081660的verify成功、integration及execution-security失败，完整原始日志及测试清单见`evidence/ci-repair-before/`。最终通过结论须绑定同一冻结HEAD的实际Push和PR Actions及Artifacts，不把本地绿灯或规划当GitHub通过；最新审查记录见末尾。PR11保持Open，生产执行硬关闭，不合并/Archive/部署或进入6.4。
+当前 **累计25/47；6.3仍未完成，5.4/6.4/6.5保持未勾选**。产品负责人独立审核HEAD `b7742bc247cbf8fbd59c5ff591642e5f3cc0bc30`后仅授权修复PR11的CI及验证编排，暂不批准6.4。本轮只修改workflow和tests/ci工具/证据；不修改既有生产代码、旧安全断言、Migration1–8、数据库角色/EXECUTE/表列或秘密权限。修复前GitHub run39706081660的verify成功、integration及execution-security失败，完整原始日志及测试清单见`evidence/ci-repair-before/`。冻结实现691c9933956aa7e1d7e6a30cfde628941b9cac06的实际Push和PR均通过verify、integration、execution-security，已下载核对Artifacts；最新审查记录及源码/日志哈希索引见末尾及evidence/ci-repair-final/。PR11保持Open，生产执行硬关闭，不合并/Archive/部署或进入6.4。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -38,7 +38,7 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 - 当前25/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3及第6组6.1–6.2。其余22项保持未勾选，包含5.4、6.3–6.5及第7–10组。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
 - 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/完整容量与故障仍未完成；原76项已在本轮冻结SHA的原隔离内核fixture复验通过，不代表新Scheduler拓扑验收。
-- 冻结SHA的全量Go unit/race与完整PG18 normal/integration-race已通过；本轮无Push/PR CI验收结论、未创建PR。正式CI/实现PR仍属于后续完整Change交付。
+- 冻结实现691c993的全量Go unit/race、vet、完整PG18 normal/integration-race及隔离execution-security已在实际Push/PR CI通过。PR11保持Open；完整方案A、独立Supervisor及后续任务仍未验收。
 - 生产网络/部署：未验证，保持硬关闭。
 
 ## Continuation: database Claim/Start (preliminary)
@@ -302,3 +302,16 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 - workflow为本开发分支启用Push，Push与PR显式checkout同一实际HEAD并断言/记录，避免将PR合成merge SHA当冻结实现。保留三个job，未新增Scheduler生产服务或6.4部署。normal/race分组、verify、Snapshot、76+5网络和原API零目标audit分别保留原命令/退出码/Git/source/binary/log哈希及Actions Artifacts。API白名单、CGO来源和NSCD反例、原执行器网络/资源审计全部保持。
 
 本地开发前置检查：Linux编译发现147项与清单完全相符，原142项无删除；分组覆盖守护3项、原网络分类/CGO来源7项、执行分类2项通过。主机直接运行Go unit曾因沙箱禁止本地listen而失败，不是本轮CI通过结果；设置独立可写Go cache后CGO分类测试通过，未改断言。最终CI结果以冻结提交上的实际Push/PR run及其result/receipt/artifacts为准，当前不预填通过。不勾选6.3或整个10.1（独立scheduler-security/Supervisor仍未交付），累计仍25/47。完整CI后保存实际run结果供独立复审，PR11保持Open；生产执行始终硬关闭。
+
+### CI repair — actual frozen implementation results
+
+冻结实现 `691c9933956aa7e1d7e6a30cfde628941b9cac06`：Push [39708326035](https://github.com/rjgczp/devpilot/actions/runs/39708326035) 和 PR [39708331695](https://github.com/rjgczp/devpilot/actions/runs/39708331695) 的 verify / integration / execution-security 全部实际 success。两套下载的原始Artifacts已逐项校验：所有命令receipt均exit0、dirty=false、HEAD匹配；源码清单SHA256统一为 `1956bbc2c6b2ad25504c5d6fe5dae5df42ff6cb101cbc10a32e1965d12fe2228`，原始日志SHA匹配。详见 `evidence/ci-repair-final/summary.json`、命令receipt索引、run/jobs元数据及Artifact文件哈希；大体积trace保留在索引链接的Actions Artifacts，GitHub报告的archive digest与本地解压文件校验值明确区分。
+
+- normal/race各147项PG18和151项其它包测试通过，清单无遗漏或skip。真实授权组命令耗时60.91–62.24s，真实Lease组45.94–47.22s；最长核心组53.60s。仍使用原120s进程上限，未缩短真实等待，未模拟时间。每一项具体测试、命令、退出码和时间见normal/race plan及receipt索引。
+- 原四项Snapshot在独立空库使用Goose3.26.0 up-to6后，normal/race全部通过，含原live isolated execution；Schema8套件不共用该数据库。未修改历史安全断言或绕过schema检查。
+- 原76项隔离网络场景和5项Target Permit拒绝通过；五项拒绝各有真实DNS尝试且目标连接数为0。API配置/Activation/授权/status原零目标边界通过，故意绕过对照audit exit1如预期；未扩大目的白名单、移除CGO来源或NSCD反例。
+- verify中的全量unit/race、vet及原守护通过；本地clean691c993 Change strict exit0，命令与原始日志已归档。Migration1–8、既有生产/安全内核、旧测试断言和ACL均未改。
+
+最初推送曾被GitHub拒绝：默认Git凭据缺workflow scope；使用同账户已有workflow授权的gh凭据后推送成功，用户亦完成refresh/setup-git。未保存任何Token或设备验证码。此问题不同于历史Supervisor工具权限审核超时，后者原因未获确定性证明的风险仍保留。
+
+本次证据交付提交只更新verification及CI证据元数据，其最新HEAD的Push/PR仍须实际完成后另报结论，不用691c993结果冒称后继SHA已测。累计25/47不变，6.3、5.4、6.4、6.5未勾选；真实独立可联网Probe、Supervisor安装/物理终止及完整周期尚未验收。未推进6.4、扩大权限、合并、Archive或部署；生产执行硬关闭。完成交付后停止等待独立复审。

@@ -1,0 +1,386 @@
+{
+  "head": "691c9933956aa7e1d7e6a30cfde628941b9cac06",
+  "runs": {
+    "push": {
+      "run_id": 39708326035,
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/39708326035",
+      "event": "push",
+      "conclusion": "success",
+      "jobs": {
+        "integration": {
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708326035/job/119593481025",
+          "conclusion": "success"
+        },
+        "execution-security": {
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708326035/job/119593481222",
+          "conclusion": "success"
+        },
+        "verify": {
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708326035/job/119593481310",
+          "conclusion": "success"
+        }
+      },
+      "integration": {
+        "normal": {
+          "pg_test_count": 147,
+          "other_test_count": 151,
+          "groups": [
+            {
+              "name": "core-01",
+              "tests": 30,
+              "elapsed_seconds": 43.735550651999986
+            },
+            {
+              "name": "core-02",
+              "tests": 30,
+              "elapsed_seconds": 17.497086387999985
+            },
+            {
+              "name": "core-03",
+              "tests": 30,
+              "elapsed_seconds": 20.965102814999995
+            },
+            {
+              "name": "core-04",
+              "tests": 30,
+              "elapsed_seconds": 17.598976424
+            },
+            {
+              "name": "core-05",
+              "tests": 25,
+              "elapsed_seconds": 10.502628853999994
+            },
+            {
+              "name": "real-authorization-60s",
+              "tests": 1,
+              "elapsed_seconds": 60.91325332400001
+            },
+            {
+              "name": "real-unstarted-lease-45s",
+              "tests": 1,
+              "elapsed_seconds": 45.93659542700004
+            }
+          ]
+        },
+        "race": {
+          "pg_test_count": 147,
+          "other_test_count": 151,
+          "groups": [
+            {
+              "name": "core-01",
+              "tests": 30,
+              "elapsed_seconds": 52.58703274699997
+            },
+            {
+              "name": "core-02",
+              "tests": 30,
+              "elapsed_seconds": 20.51422056900003
+            },
+            {
+              "name": "core-03",
+              "tests": 30,
+              "elapsed_seconds": 25.395968924999977
+            },
+            {
+              "name": "core-04",
+              "tests": 30,
+              "elapsed_seconds": 20.880899365999994
+            },
+            {
+              "name": "core-05",
+              "tests": 25,
+              "elapsed_seconds": 13.171911058999967
+            },
+            {
+              "name": "real-authorization-60s",
+              "tests": 1,
+              "elapsed_seconds": 62.10591036499994
+            },
+            {
+              "name": "real-unstarted-lease-45s",
+              "tests": 1,
+              "elapsed_seconds": 47.10973884700002
+            }
+          ]
+        }
+      },
+      "snapshots": {
+        "snapshot-normal": [
+          "TestSystemSnapshotPGAuthorityIsNotCookieAuthority",
+          "TestSystemSnapshotPGLiveIsolatedExecution",
+          "TestSystemSnapshotPGScopePrivilegesAndRelease",
+          "TestSystemSnapshotPGStatementConsistency"
+        ],
+        "snapshot-race": [
+          "TestSystemSnapshotPGAuthorityIsNotCookieAuthority",
+          "TestSystemSnapshotPGLiveIsolatedExecution",
+          "TestSystemSnapshotPGScopePrivilegesAndRelease",
+          "TestSystemSnapshotPGStatementConsistency"
+        ]
+      },
+      "kernel_cases": 76,
+      "permit_denials": [
+        {
+          "case": "permit-missing",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 0.048555939999999964
+        },
+        {
+          "case": "permit-denied",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 0.0483082669999817
+        },
+        {
+          "case": "permit-disconnect",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 0.051469012000012526
+        },
+        {
+          "case": "permit-unknown",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 0.052330963999992264
+        },
+        {
+          "case": "permit-late",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 1.0444469499999798
+        }
+      ],
+      "api_audit": {
+        "real_child": 0,
+        "real_audit": 0,
+        "control_child": 0,
+        "control_audit": 1
+      },
+      "artifacts": [
+        {
+          "id": 12396156484,
+          "name": "verify-evidence",
+          "github_archive_digest": "sha256:6470a6aa355466c5b7daa97e6636d52b70678c2144116563a3e037e9efb9fe7c",
+          "size_in_bytes": 170297,
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708326035/artifacts/12396156484"
+        },
+        {
+          "id": 12396106674,
+          "name": "execution-security-evidence",
+          "github_archive_digest": "sha256:7ae101784896110a3e03a33871a298a37e323a95aecb80f0483966e45b8d756e",
+          "size_in_bytes": 434583,
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708326035/artifacts/12396106674"
+        },
+        {
+          "id": 12395514667,
+          "name": "integration-and-monitor-network-evidence",
+          "github_archive_digest": "sha256:f68d9a43ac67891f5006684dd5c498e07a44516feaebb9aeec4ca6355e41a1f2",
+          "size_in_bytes": 1448092,
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708326035/artifacts/12395514667"
+        }
+      ]
+    },
+    "pr": {
+      "run_id": 39708331695,
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/39708331695",
+      "event": "pull_request",
+      "conclusion": "success",
+      "jobs": {
+        "integration": {
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708331695/job/119593498524",
+          "conclusion": "success"
+        },
+        "verify": {
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708331695/job/119593498925",
+          "conclusion": "success"
+        },
+        "execution-security": {
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708331695/job/119593499058",
+          "conclusion": "success"
+        }
+      },
+      "integration": {
+        "normal": {
+          "pg_test_count": 147,
+          "other_test_count": 151,
+          "groups": [
+            {
+              "name": "core-01",
+              "tests": 30,
+              "elapsed_seconds": 43.724548373999994
+            },
+            {
+              "name": "core-02",
+              "tests": 30,
+              "elapsed_seconds": 17.86908829500001
+            },
+            {
+              "name": "core-03",
+              "tests": 30,
+              "elapsed_seconds": 21.886948343
+            },
+            {
+              "name": "core-04",
+              "tests": 30,
+              "elapsed_seconds": 18.452551856000014
+            },
+            {
+              "name": "core-05",
+              "tests": 25,
+              "elapsed_seconds": 11.051645622999985
+            },
+            {
+              "name": "real-authorization-60s",
+              "tests": 1,
+              "elapsed_seconds": 61.02112923600001
+            },
+            {
+              "name": "real-unstarted-lease-45s",
+              "tests": 1,
+              "elapsed_seconds": 45.969893641
+            }
+          ]
+        },
+        "race": {
+          "pg_test_count": 147,
+          "other_test_count": 151,
+          "groups": [
+            {
+              "name": "core-01",
+              "tests": 30,
+              "elapsed_seconds": 53.59668414199996
+            },
+            {
+              "name": "core-02",
+              "tests": 30,
+              "elapsed_seconds": 21.10726774599999
+            },
+            {
+              "name": "core-03",
+              "tests": 30,
+              "elapsed_seconds": 26.271590027000002
+            },
+            {
+              "name": "core-04",
+              "tests": 30,
+              "elapsed_seconds": 21.95987115600002
+            },
+            {
+              "name": "core-05",
+              "tests": 25,
+              "elapsed_seconds": 13.643133851000016
+            },
+            {
+              "name": "real-authorization-60s",
+              "tests": 1,
+              "elapsed_seconds": 62.238057835000006
+            },
+            {
+              "name": "real-unstarted-lease-45s",
+              "tests": 1,
+              "elapsed_seconds": 47.22133769300001
+            }
+          ]
+        }
+      },
+      "snapshots": {
+        "snapshot-normal": [
+          "TestSystemSnapshotPGAuthorityIsNotCookieAuthority",
+          "TestSystemSnapshotPGLiveIsolatedExecution",
+          "TestSystemSnapshotPGScopePrivilegesAndRelease",
+          "TestSystemSnapshotPGStatementConsistency"
+        ],
+        "snapshot-race": [
+          "TestSystemSnapshotPGAuthorityIsNotCookieAuthority",
+          "TestSystemSnapshotPGLiveIsolatedExecution",
+          "TestSystemSnapshotPGScopePrivilegesAndRelease",
+          "TestSystemSnapshotPGStatementConsistency"
+        ]
+      },
+      "kernel_cases": 76,
+      "permit_denials": [
+        {
+          "case": "permit-missing",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 0.054984789000002365
+        },
+        {
+          "case": "permit-denied",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 0.05350068000001329
+        },
+        {
+          "case": "permit-disconnect",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 0.05160539399997788
+        },
+        {
+          "case": "permit-unknown",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 0.04657693499999027
+        },
+        {
+          "case": "permit-late",
+          "child_exit": 0,
+          "audit_exit": 0,
+          "dns_attempts": 1,
+          "target_attempts": 0,
+          "duration": 1.042739570000009
+        }
+      ],
+      "api_audit": {
+        "real_child": 0,
+        "real_audit": 0,
+        "control_child": 0,
+        "control_audit": 1
+      },
+      "artifacts": [
+        {
+          "id": 12396156760,
+          "name": "execution-security-evidence",
+          "github_archive_digest": "sha256:9a31a86f9ccdfc983d1dfeb39fb48f6d9876217d6fb3519a8facfba1bcd71f88",
+          "size_in_bytes": 434151,
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708331695/artifacts/12396156760"
+        },
+        {
+          "id": 12396038168,
+          "name": "integration-and-monitor-network-evidence",
+          "github_archive_digest": "sha256:d538b13d4bb4e84b33c871d7ca9ed842bd9ad7276d59267d9d1081e99089a1ad",
+          "size_in_bytes": 1448490,
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708331695/artifacts/12396038168"
+        },
+        {
+          "id": 12395773241,
+          "name": "verify-evidence",
+          "github_archive_digest": "sha256:466c09fec52347d14ba4ac3f8d96573bea11fcaa9a5e3bce49de6a5b614f123f",
+          "size_in_bytes": 170291,
+          "url": "https://github.com/rjgczp/devpilot/actions/runs/39708331695/artifacts/12395773241"
+        }
+      ]
+    }
+  },
+  "source_inventory_sha256": "1956bbc2c6b2ad25504c5d6fe5dae5df42ff6cb101cbc10a32e1965d12fe2228"
+}
