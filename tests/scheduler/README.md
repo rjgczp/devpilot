@@ -37,6 +37,12 @@ an upstream route merely to make host-side clients connect.
 Full `run-docker.sh`, independent Supervisor and periodic/fault acceptance are
 still being implemented; preflight success must not be reported as plan A done.
 
+Task6.4's independent network-policy component and dedicated acceptance are
+described in [network64.md](network64.md). It uses direct veth pairs between
+network-none namespaces, not the earlier bridge experiment or a production
+network. Its raw-socket witness does not replace the approved execution kernel;
+physical termination/release and combined6.3 acceptance remain outstanding.
+
 Checkpoint1 build boundary: the existing network Probe is exclusively the
 `TestExecutionProbe` entry in `internal/monitoring/execution_network_test.go`,
 selected only in an explicit Linux `executionnet` test build. Its snapshot wire
