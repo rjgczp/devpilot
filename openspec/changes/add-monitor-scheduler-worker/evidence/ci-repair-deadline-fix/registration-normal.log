@@ -1,0 +1,26 @@
+--- FAIL: TestClientCancellationInStoreAndRealHTTP (0.00s)
+panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted [recovered]
+	panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted
+
+goroutine 4 [running]:
+testing.tRunner.func1.2({0x104f32fa0, 0x14000036730})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1734 +0x1ac
+testing.tRunner.func1()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1737 +0x334
+panic({0x104f32fa0?, 0x14000036730?})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/runtime/panic.go:792 +0x124
+net/http/httptest.newLocalListener()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:71 +0xdc
+net/http/httptest.NewUnstartedServer(...)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:119
+net/http/httptest.NewServer({0x104fcac40, 0x14000412320})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:106 +0x28
+github.com/rjgczp/devpilot/internal/registration.TestClientCancellationInStoreAndRealHTTP(0x14000003180)
+	/Users/sansea/Documents/ChatGPT/devpilot/internal/registration/handler_test.go:413 +0x184
+testing.tRunner(0x14000003180, 0x104fc6b98)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1792 +0xe4
+created by testing.(*T).Run in goroutine 1
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1851 +0x374
+FAIL	github.com/rjgczp/devpilot/internal/registration	0.750s
+FAIL
+go: failed to trim cache: open /Users/sansea/Library/Caches/go-build/trim.txt: operation not permitted

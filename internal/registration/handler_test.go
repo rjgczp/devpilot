@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -324,6 +325,40 @@ func TestErrorResponsesAndSlotRelease(t *testing.T) {
 		if h.budget.Active() != 0 || strings.Contains(w.Body.String(), "sentinel") {
 			t.Fatal("hash failure unsafe")
 		}
+	}
+}
+
+// Model the interval after a deadline passes but before its timer callback
+// publishes cancellation. The deadline gate must not depend on timer scheduling.
+type pendingDeadlineContext struct {
+	context.Context
+	deadline time.Time
+}
+
+func (c pendingDeadlineContext) Deadline() (time.Time, bool) { return c.deadline, true }
+
+func TestProcessingDeadlineBeforeCancellation(t *testing.T) {
+	h := newTestHandler()
+	for _, expired := range []bool{false, true} {
+		t.Run(fmt.Sprintf("expired=%t", expired), func(t *testing.T) {
+			delay := time.Hour
+			if expired {
+				delay = -time.Hour
+			}
+			ctx := pendingDeadlineContext{Context: context.Background(), deadline: time.Now().Add(delay)}
+			if ctx.Err() != nil {
+				t.Fatal("fixture already canceled")
+			}
+			w := httptest.NewRecorder()
+			if got := h.expired(w, request("{}"), ctx); got != expired {
+				t.Fatalf("expired=%t want %t before timer cancellation", got, expired)
+			}
+			if expired {
+				assertResponse(t, w, 503, "service_unavailable")
+			} else if w.Body.Len() != 0 {
+				t.Fatal("live deadline wrote a response")
+			}
+		})
 	}
 }
 

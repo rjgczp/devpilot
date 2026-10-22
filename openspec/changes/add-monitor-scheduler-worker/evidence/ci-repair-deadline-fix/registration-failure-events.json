@@ -1,0 +1,43 @@
+[
+  {
+    "Time": "2026-10-22T02:14:03.156192313Z",
+    "Action": "run",
+    "Package": "github.com/rjgczp/devpilot/internal/registration",
+    "Test": "TestServerDeadlineAndUnknownCommit"
+  },
+  {
+    "Time": "2026-10-22T02:14:03.156199255Z",
+    "Action": "output",
+    "Package": "github.com/rjgczp/devpilot/internal/registration",
+    "Test": "TestServerDeadlineAndUnknownCommit",
+    "Output": "=== RUN   TestServerDeadlineAndUnknownCommit\n"
+  },
+  {
+    "Time": "2026-10-22T02:14:03.16324267Z",
+    "Action": "output",
+    "Package": "github.com/rjgczp/devpilot/internal/registration",
+    "Test": "TestServerDeadlineAndUnknownCommit",
+    "Output": "    handler_test.go:335: expired request inserted\n"
+  },
+  {
+    "Time": "2026-10-22T02:14:03.163265673Z",
+    "Action": "output",
+    "Package": "github.com/rjgczp/devpilot/internal/registration",
+    "Test": "TestServerDeadlineAndUnknownCommit",
+    "Output": "    handler_test.go:338: status=201 want 503 body={\"data\":{\"id\":\"\",\"email\":\"\",\"status\":\"\",\"created_at\":\"0001-01-01T00:00:00Z\"}}\n"
+  },
+  {
+    "Time": "2026-10-22T02:14:03.163276042Z",
+    "Action": "output",
+    "Package": "github.com/rjgczp/devpilot/internal/registration",
+    "Test": "TestServerDeadlineAndUnknownCommit",
+    "Output": "--- FAIL: TestServerDeadlineAndUnknownCommit (0.01s)\n"
+  },
+  {
+    "Time": "2026-10-22T02:14:03.163281061Z",
+    "Action": "fail",
+    "Package": "github.com/rjgczp/devpilot/internal/registration",
+    "Test": "TestServerDeadlineAndUnknownCommit",
+    "Elapsed": 0.01
+  }
+]

@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **累计25/47；6.3仍未完成，5.4/6.4/6.5保持未勾选**。产品负责人独立审核HEAD `b7742bc247cbf8fbd59c5ff591642e5f3cc0bc30`后仅授权修复PR11的CI及验证编排，暂不批准6.4。本轮只修改workflow和tests/ci工具/证据；不修改既有生产代码、旧安全断言、Migration1–8、数据库角色/EXECUTE/表列或秘密权限。修复前GitHub run39706081660的verify成功、integration及execution-security失败，完整原始日志及测试清单见`evidence/ci-repair-before/`。冻结实现691c9933956aa7e1d7e6a30cfde628941b9cac06的实际Push和PR均通过verify、integration、execution-security，已下载核对Artifacts；最新审查记录及源码/日志哈希索引见末尾及evidence/ci-repair-final/。PR11保持Open，生产执行硬关闭，不合并/Archive/部署或进入6.4。
+当前 **累计25/47；6.3仍未完成，5.4/6.4/6.5保持未勾选**。产品负责人独立审核HEAD `b7742bc247cbf8fbd59c5ff591642e5f3cc0bc30`后仅授权修复PR11的CI及验证编排，暂不批准6.4。原CI编排修复只修改workflow和tests/ci工具/证据。后续交付SHA暴露旧注册期限门控失败，用户另行明确授权最小期限修复及回归；仅追加registration期限检查和新测试，保留旧安全断言、Migration1–8、数据库角色/EXECUTE/表列或秘密权限。修复前GitHub run39706081660的verify成功、integration及execution-security失败，完整原始日志及测试清单见`evidence/ci-repair-before/`。冻结实现691c9933956aa7e1d7e6a30cfde628941b9cac06的实际Push和PR均通过verify、integration、execution-security，已下载核对Artifacts；最新审查记录及源码/日志哈希索引见末尾及evidence/ci-repair-final/。PR11保持Open，生产执行硬关闭，不合并/Archive/部署或进入6.4。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -315,3 +315,13 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 最初推送曾被GitHub拒绝：默认Git凭据缺workflow scope；使用同账户已有workflow授权的gh凭据后推送成功，用户亦完成refresh/setup-git。未保存任何Token或设备验证码。此问题不同于历史Supervisor工具权限审核超时，后者原因未获确定性证明的风险仍保留。
 
 本次证据交付提交只更新verification及CI证据元数据，其最新HEAD的Push/PR仍须实际完成后另报结论，不用691c993结果冒称后继SHA已测。累计25/47不变，6.3、5.4、6.4、6.5未勾选；真实独立可联网Probe、Supervisor安装/物理终止及完整周期尚未验收。未推进6.4、扩大权限、合并、Archive或部署；生产执行硬关闭。完成交付后停止等待独立复审。
+
+### Additional authorized deadline gate fix after delivery CI failure
+
+交付HEAD `a5b49c16355418b8c9dcf63e72907702961b6eba`：[Push39709818391](https://github.com/rjgczp/devpilot/actions/runs/39709818391) verify/execution-security成功，integration在147项PG18 normal通过后，旧单元测试`TestServerDeadlineAndUnknownCommit`失败（handler_test.go335/338，expired request inserted，201而非503）。该Push的race/API审计未执行，不能标通过。同SHA [PR39709822402](https://github.com/rjgczp/devpilot/actions/runs/39709822402)三个作业成功；这不抵消Push失败，未重试原失败流程。原命令/退出码/源码与日志hash、完整失败日志及元数据保存在`evidence/ci-repair-deadline-fix/`。
+
+已向用户提交review-only最小diff并说明超出仅CI编排范围，用户明确回复“授权最小期限修复及回归”。既有`Handler.expired`仅检查`ctx.Err()`；真实期限已到但取消回调尚未执行时可能放行。该运行没有runtime timer trace，因此精确调度交错未被确定性证明；新增确定性单元回归模拟past Deadline/Err=nil，在旧代码稳定拒绝失败，在修复后通过，不冒称真实PG或网络验收。
+
+最小改动`internal/registration/handler.go`在原pre-Store期限门控同时检查实际Deadline；保留标准单调时钟、公有5s/2s预算、API/Commit语义。`handler_test.go`仅新增一个回归及fmt import，全部旧测试内容字节未改（包括1ms/5ms真实等待与未知Commit断言）。开发树完整unit/race、vet、定向normal/race exit0；receipt显式dirty=true，不能替代最新冻结SHA CI。最初本地沙箱禁止HTTP监听/cache造成的失败也保留。最终HEAD实际Push/PR结果与新源码哈希须由交付Artifacts和最终审查报告核实，不能沿用691c993/a5b49c1的通过结果。
+
+本次最小修复不涉及Scheduler网络/数据库/权限，不进入6.4。任务25/47和未验收边界不变，生产执行硬关闭；完成后保持PR11Open，停止等待独立复审。
