@@ -52,6 +52,13 @@ func (w *responseWriter) Write(b []byte) (int, error) {
 func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	w := &responseWriter{ResponseWriter: out}
 	defer func() {
+		// Interrupt any remaining transport read only after the error response
+		// has been committed; do not let an oversized body trigger a drain.
+		if w.written && w.Header().Get("Connection") == "close" {
+			_ = http.NewResponseController(w).SetReadDeadline(time.Now())
+		}
+	}()
+	defer func() {
 		if recovered := recover(); recovered != nil {
 			if recovered == http.ErrAbortHandler {
 				panic(recovered)
@@ -243,7 +250,11 @@ func readBodyLimit(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 	}
 	if int64(len(b)) > limit || err != nil || ctx.Err() != nil {
 		w.Header().Set("Connection", "close")
-		if supported {
+		// Preserve the existing bounded read deadline for an oversized body:
+		// an immediate deadline can cancel Request.Context before the error
+		// response is committed. Connection: close prevents implicit draining.
+		// Actual cancellation/read failures retain the existing interruption.
+		if supported && int64(len(b)) <= limit {
 			_ = c.SetReadDeadline(time.Now())
 		}
 	} else if supported {
