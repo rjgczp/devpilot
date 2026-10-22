@@ -3348,6 +3348,49 @@
         "latest delivered HEAD execution-security stop65-evidence Actions Artifacts"
       ],
       "coverage_note": "Physical stop/receipt only. No DB release function or grants; 5.4 and6.3 remain unchecked. Development results are not latest-HEAD CI."
+    },
+    "5.4": {
+      "requirements": [
+        "Physical resource release requires independent termination proof",
+        "Cluster admission reserves shared concurrency and rate atomically",
+        "Shared public target budgets protect privacy without claiming complete abuse prevention",
+        "Scheduler persistence separates owner changes from operational updates"
+      ],
+      "scenarios": [
+        "Concurrency - Expired lease leaves a live zombie",
+        "Exception - Database and supervisor are unavailable",
+        "Concurrency - Many workers reserve the last capacity",
+        "Concurrency - Operational updates do not invalidate Owner validators"
+      ],
+      "implementation": [
+        ".github/workflows/go-ci.yml",
+        "migrations/00008_create_monitor_scheduler.sql",
+        "internal/supervisorfixture/settlement_linux.go",
+        "internal/supervisorfixture/settlement_linux_test.go",
+        "tests/integration/scheduler_physical_release_test.go",
+        "tests/scheduler/network_fixture.py",
+        "tests/scheduler/termination_fixture.py",
+        "tests/scheduler/termination_init.py",
+        "tests/scheduler/build-release54.sh",
+        "tests/scheduler/release_fixture.py",
+        "tests/scheduler/run-release54.py",
+        "tests/scheduler/release54.md",
+        "docs/monitor-scheduler-task54-capabilities.md"
+      ],
+      "tests": [
+        "TestBudgetPhysicalReleasePG (normal/race; actual45s zombie,11lock barriers,post-wait revocation,four DML fault rollbacks,real rollback vs Commit-then-lost-ACK,two consumers/two Claimants)",
+        "TestStopBundleRequiresPhysicalProofSemantics",
+        "TestStopBundleDigestRetainsIntegerPrecision"
+      ],
+      "command": "python3 tests/scheduler/run-release54.py --tools <native-linux-Go1.24.3-Goose3.26.0> --evidence <fresh-path>; exact commands/binaries/source/log hashes in receipts",
+      "exit_code": 0,
+      "evidence": [
+        "evidence/release54-development/manifest.json",
+        "evidence/release54-development/enhanced-validation.json.gz",
+        "evidence/release54-development/implementation-binding.json",
+        "Actions execution-security release54-evidence/{normal,race}; frozen HEAD CI reported separately"
+      ],
+      "implementation_commit": "30870fc2d713c8865e9921fe6d6e5bcec8c35e0d"
     }
   },
   "remaining": "20 unchecked tasks:5.4,6.3,groups7–10. Task6.5 isolated physical stop accepted;27/47 overall. No DB capacity release or production execution; stop for independent review.",
