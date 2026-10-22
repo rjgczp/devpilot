@@ -8,7 +8,7 @@
 
 ## Current checkpoint
 
-当前 **累计25/47；6.3仍未完成，5.4/6.4/6.5保持未勾选**。产品负责人独立审核HEAD `b7742bc247cbf8fbd59c5ff591642e5f3cc0bc30`后仅授权修复PR11的CI及验证编排，暂不批准6.4。原CI编排修复只修改workflow和tests/ci工具/证据。后续交付SHA暴露旧注册期限门控失败，用户另行明确授权最小期限修复及回归；仅追加registration期限检查和新测试，保留旧安全断言、Migration1–8、数据库角色/EXECUTE/表列或秘密权限。修复前GitHub run39706081660的verify成功、integration及execution-security失败，完整原始日志及测试清单见`evidence/ci-repair-before/`。冻结实现691c9933956aa7e1d7e6a30cfde628941b9cac06的实际Push和PR均通过verify、integration、execution-security，已下载核对Artifacts；最新审查记录及源码/日志哈希索引见末尾及evidence/ci-repair-final/。PR11保持Open，生产执行硬关闭，不合并/Archive/部署或进入6.4。
+当前 **累计26/47，6.4独立组件验收通过；6.3、5.4、6.5保持未勾选**。产品负责人独立审核 `343540f1f23a579e35f796b27eddb48776178ab6` 并核实Push/PR三作业成功后，仅授权6.4：每Run独立Linux namespace/veth、双栈默认拒绝、精确Resolver和目标规则及不可延长许可。未授权进入6.5或物理容量回收，也不能将独立网络witness冒充原执行器的6.3联合验收。本轮新增fixture-only网络管理组件及独立Linux/PG18测试；原HTTP内核、输入-only Probe seal、Migration1–8、数据库函数/角色/ACL和API零目标白名单均保持。最终交付以同一冻结HEAD的真实Actions和Artifacts为准，开发态dirty证据仅用于诊断，不冒充冻结SHA验收。PR11保持Open；生产执行硬关闭，不合并/Archive/部署。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -35,7 +35,7 @@ tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实�
 
 ## Acceptance status
 
-- 当前25/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3及第6组6.1–6.2。其余22项保持未勾选，包含5.4、6.3–6.5及第7–10组。
+- 当前26/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3及第6组6.1–6.2、6.4。其余21项保持未勾选，包含5.4、6.3、6.5及第7–10组。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
 - 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/完整容量与故障仍未完成；原76项已在本轮冻结SHA的原隔离内核fixture复验通过，不代表新Scheduler拓扑验收。
 - 冻结实现691c993的全量Go unit/race、vet、完整PG18 normal/integration-race及隔离execution-security已在实际Push/PR CI通过。PR11保持Open；完整方案A、独立Supervisor及后续任务仍未验收。
@@ -325,3 +325,19 @@ Claim最终control等待到期测试已加强为必须得到`P0001/candidate_inv
 最小改动`internal/registration/handler.go`在原pre-Store期限门控同时检查实际Deadline；保留标准单调时钟、公有5s/2s预算、API/Commit语义。`handler_test.go`仅新增一个回归及fmt import，全部旧测试内容字节未改（包括1ms/5ms真实等待与未知Commit断言）。开发树完整unit/race、vet、定向normal/race exit0；receipt显式dirty=true，不能替代最新冻结SHA CI。最初本地沙箱禁止HTTP监听/cache造成的失败也保留。最终HEAD实际Push/PR结果与新源码哈希须由交付Artifacts和最终审查报告核实，不能沿用691c993/a5b49c1的通过结果。
 
 本次最小修复不涉及Scheduler网络/数据库/权限，不进入6.4。任务25/47和未验收边界不变，生产执行硬关闭；完成后保持PR11Open，停止等待独立复审。
+
+## Task6.4 — independent namespace and timed network policy
+
+用户明确批准仅6.4，复审基线为343540f1f23a579e35f796b27eddb48776178ab6。实现为`internal/supervisorfixture/`、`cmd/networksupervisorfixture/`（均schedulerfixture && linux）及`tests/scheduler/network_fixture.py`可信分配器；由Docker只创建network-none namespace，NET_ADMIN-only管理域通过新veth点对点连入自己持有的Run/独立guard/receiver，不使用host网络/PID、Docker bridge、SYS_ADMIN或privileged。无权限测试子进程UID65534/caps0/no_new_privs、独立PID/mount/cgroup、只读根、128MiB/CPU1/PID128/FD256，无管理管道、Docker Socket、配置源码/DB/用户/云凭据。它是恶意绕过与接收端witness，不能取代原HTTP执行器或作为完整Scheduler Probe验收。
+
+Go管理进程在启动子进程前原子安装双栈DROP，精确Resolver TCP53及单literal TCP80/443有内核超时；完整Run/v/g/epoch/fence和两种incarnation、真实namespace inode、接口/route/RPDB/地址/规则摘要受复验。目标只允许预登记fixture域名/IP。单次CAS及管理域私有bootstrap账防重复安装/同namespace重启，首个目标SYN的conntrack mark和一日单包burst限制一个目标连接，没有ESTABLISHED放通。Resolver也有固定硬截止；规则hash忽略运行计数/动态TTL显示，但安装时独立检查实际元素/截止上界，拒绝TTL漂移，内核设置前扣除完整2s工具预算避免相对timeout晚插入延长许可。已批准DB父序、Fence和origin/IP预算代码不改。详细信任边界、命令和剩余依赖见`tests/scheduler/network64.md`。
+
+专用`TestBudgetNetworkPolicyPG`使用networkfixture标签、现有guarded新建PG18和既有受限角色/函数，先取得真实Linux准备proof，再以Supervisor身份prepare/consume，Worker确认Start和目标预算Commit/连接归池后才安装。normal/race分别有IPv4/IPv6 TLS接收端实到/SNI与证书核验；禁止第二许可，完整scope核对数据库账仍reserved、released_at/termination_receipt及run物理释放字段NULL。没有管理员UPDATE伪造释放；销毁fixture是测试清理，Goose Down须拒绝仍持物理账的started行，不作为6.5终止回执。
+
+开发过程保留失败，不以重试成功推断无竞态：Docker能力显示名与只读sysctl适配后仍是NET_ADMIN-only（forwarding在新namespace创建时设置）；早期bridge实验IPv4 Resolver失败，未放宽规则，改成直接veth后双栈正向成功，未将具体bridge丢包机制宣称已确定。独立策略用例的合成Commit时间一度来自Darwin，固定阶段诊断证明Linux严格future-proof门控正确拒绝；合成时间改为Linux来源，真实PG时间/门控不改，并以future-commit-proof负向继续验证。UDP connect仅本地操作的测试记账、JSON时间字符串精度及DNAT注入器语法作最小fixture修复；nft check-only独立确认两族语法后才复验。开发态有一轮因正在迭代脚本与旧工具混用而失败，不能计入最终验收；最终统一源码/工具重建。全部诊断与命令/退出码/源码/二进制/日志hash在本轮证据索引记录，实际冻结SHA结论须另核对CI。
+
+固定源码/工具后的开发态完整6.4验收已通过，故只勾选6.4；对应实现提交为930532ce28825f5bfb4778c3e3a3acb266c92eb8。五组实际命令（Linux policy normal/race、network-adversarial、PG18 normal/race）全部exit0，同一源码清单0fa96eada4462c5b592b2fdc58175aa6031ecbcd13634026244e982448e4e68a；receipt保留真实head343540f和dirty=true。`evidence/network64-development/implementation-binding.json`逐文件核对运行代码字节与实现提交相同；这不替代交付HEAD的实际CI复验。最终Push/PR与source/log/binary哈希须以最新HEAD的Artifacts和交付报告核实，不预填通过。CI在现有execution-security中增加本任务专用步骤并上传原始trace/receiver/nft/iptables/ip6tables/route/cgroup/PG账，不创建独立scheduler-security作业或勾选10.1。原76+5、四Snapshot normal/race、完整PG18 normal/race和原API零目标审计均保留，白名单/CGO/NSCD断言不改。
+
+剩余边界：6.3原Probe/HTTP内核完整联合运行、6.5紧停切断既有流/实际进程kill/不可伪造终止回执/节点恢复，以及5.4 quarantine回收仍未验收。管理EOF+内核到期的网络证据不能证明进程结束或返还槽；没有发出这种回执。历史Supervisor工具审核超时未获确定性原因、真实部署旧角色ACL清单缺失的风险继续保留。生产执行未验证且硬关闭。
+
+本批源码已冻结为实现提交930532ce28825f5bfb4778c3e3a3acb266c92eb8；后续提交只整理任务和证据。开发态source/HEAD/dirty区别、原始失败与成功命令、PG真实SQLSTATE及held账、Linux receiver时间线见evidence/network64-development/。原始大体积trace/nft/route/进程证据由最新HEAD execution-security Artifacts保留并提供校验清单；不得用旧归档76项冒称该HEAD通过。开发态26条network证据条目中最后一条只说明无物理释放证明，不能作为额外完成测试；6.5及5.4不因此完成。

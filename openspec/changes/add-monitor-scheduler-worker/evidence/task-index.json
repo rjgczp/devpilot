@@ -3269,9 +3269,47 @@
       "tested_sha": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
       "implementation_commit": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
       "scope": "Input-only real PG18/Linux acceptance. No target traffic,6.3–6.5,5.4 physical release,Result/retention or full Supervisor integration. SHA256 receipt binds trusted anonymous descriptors; not a public authentication token."
+    },
+    "6.4": {
+      "requirements": [
+        "Network permissions default deny and fail closed across lifecycle",
+        "Probe identity is isolated from users and database control",
+        "Production execution stays hard closed without deployment evidence"
+      ],
+      "scenarios": [
+        "Security - Application policy bypass is independently blocked",
+        "Security - Exact resolver exception never authorizes target access",
+        "Security - Probe compromise does not expose control credentials",
+        "Security - Environment flag cannot unlock a probe"
+      ],
+      "implementation": [
+        "internal/supervisorfixture/policy_linux.go",
+        "cmd/networksupervisorfixture/main_linux.go",
+        "tests/scheduler/network_fixture.py"
+      ],
+      "tests": [
+        "TestFixtureNetworkConfigAndRules",
+        "TestFixtureNetworkManagementDecode",
+        "TestFixtureNetworkDeniedAttemptIsNotRenewable",
+        "TestFixtureNetworkAuditKeepsSecurityStructure",
+        "TestBudgetNetworkPolicyPG",
+        "TestNetworkSupervisorFixtureIsAbsentFromRelease",
+        "network_fixture.py suite (see network-cases.json)"
+      ],
+      "command": "python3 tests/scheduler/run-network64.py --tools <pinned Linux tools> --evidence <fresh dedicated path>",
+      "exit_code": 0,
+      "command_receipt": "evidence/network64-development/synchronized-commands.json",
+      "evidence": [
+        "evidence/network64-development/result.json",
+        "evidence/network64-development/implementation-binding.json",
+        "evidence/network64-development/network-cases.json",
+        "exact final HEAD execution-security Actions Artifacts: network64-evidence/"
+      ],
+      "implementation_commit": "930532ce28825f5bfb4778c3e3a3acb266c92eb8",
+      "coverage_note": "Task6.4 independent fixture component only. Development receipts explicitly dirty; final exact-HEAD CI verifies again. Routing/node continuity scenario still needs6.5 node/emergency physical proof. No combined6.3 Probe, physical kill, quarantine release, Result or cycles accepted."
     }
   },
-  "remaining": "22 unchecked tasks:5.4,6.3–6.5,groups7–10. Tasks6.1–6.2 independently accepted;25/47 overall. Stop for independent review; production/target networking closed.",
+  "remaining": "21 unchecked tasks:5.4,6.3,6.5,groups7–10. Task6.4 independent network policy accepted;26/47 overall. No physical release or production execution; stop for independent review.",
   "final_implementation_sha": null,
   "checkpoint1_final": {
     "tasks": [
@@ -3367,5 +3405,18 @@
       "6.5 physical Supervisor termination"
     ],
     "completed_count_unchanged": 25
+  },
+  "task6_4": {
+    "implementation_commit": "930532ce28825f5bfb4778c3e3a3acb266c92eb8",
+    "complete": 26,
+    "total": 47,
+    "local_source_inventory_sha256": "0fa96eada4462c5b592b2fdc58175aa6031ecbcd13634026244e982448e4e68a",
+    "local_dirty": true,
+    "evidence": "evidence/network64-development/README.md",
+    "final_ci": "Must inspect actual delivered HEAD Push and PR Artifacts; no result prefilled",
+    "5.4": "unchecked",
+    "6.3": "unchecked",
+    "6.5": "unchecked",
+    "sql_acl_changes": false
   }
 }
