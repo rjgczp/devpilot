@@ -1,0 +1,5 @@
+=== RUN   TestExecutionProbe
+    execution_network_test.go:346: load preflight target_permit_unavailable
+RESOURCE: 32 admitted; excess rejected without queue; cancellation released all active slots/FDs
+--- FAIL: TestExecutionProbe (0.28s)
+FAIL

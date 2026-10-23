@@ -13,9 +13,14 @@ on:
       - codex/add-http-monitor
       - codex/add-monitoring-engine
       - codex/add-monitor-activation-scheduler
+      - codex/add-monitor-scheduler-worker
   pull_request:
     branches:
       - main
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  CI_EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
 
 permissions:
   contents: read
@@ -25,6 +30,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Record frozen checkout
+        run: |
+          test "$(git rev-parse HEAD)" = "$CI_EXPECTED_HEAD"
+          python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/ci-context" --name checkout -- git show -s --format=fuller HEAD
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
@@ -40,12 +51,23 @@ jobs:
         run: python3 -m unittest discover -s tests/network -p 'test_*.py' -v
       - name: Test independent execution classifier
         run: python3 -m unittest discover -s tests/execution -p 'test_*.py' -v
+      - name: Check complete integration grouping contract
+        run: python3 -m unittest discover -s tests/ci -p 'test_*.py' -v
       - name: Run go vet
         run: go vet ./...
       - name: Run tests
-        run: go test ./... -count=1
+        run: python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/verify-evidence" --name unit -- go test ./... -count=1
       - name: Run race tests
-        run: go test -race ./... -count=1
+        run: python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/verify-evidence" --name race -- go test -race ./... -count=1
+      - name: Upload verify evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-evidence
+          path: |
+            ${{ runner.temp }}/ci-context/
+            ${{ runner.temp }}/verify-evidence/
+          if-no-files-found: error
 
   integration:
     runs-on: ubuntu-latest
@@ -65,19 +87,22 @@ jobs:
       TEST_DATABASE_URL: postgres://devpilot_test:registration_test_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Record frozen checkout
+        run: |
+          test "$(git rev-parse HEAD)" = "$CI_EXPECTED_HEAD"
+          python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/ci-context" --name checkout -- git show -s --format=fuller HEAD
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
       - name: Install pinned native Goose CLI
         run: go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.26.0
-      - name: Verify Activation Intent Foundation and Migration7
-        run: go test -tags=integration ./tests/integration -run '^TestActivation' -count=1 -v -timeout=120s
-      - name: Verify PostgreSQL 18 integration
-        run: go test -tags=integration ./... -count=1 -timeout=120s
-
-      - name: Verify PostgreSQL integration with race detector
-        run: go test -race -tags=integration ./tests/integration -count=1 -timeout=120s
+      - name: Verify complete PostgreSQL 18 integration in exact serial groups
+        run: python3 tests/ci/run_integration.py --mode normal --evidence "$RUNNER_TEMP/integration-evidence/normal"
+      - name: Verify complete PostgreSQL integration with race detector in exact serial groups
+        run: python3 tests/ci/run_integration.py --mode race --evidence "$RUNNER_TEMP/integration-evidence/race"
 
       - name: Build Monitor network audit tools
         run: |
@@ -90,6 +115,7 @@ jobs:
       - name: Calibrate probe and audit real Monitor endpoints
         run: |
           mkdir -p "$RUNNER_TEMP/monitor-network-evidence"
+          python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/monitor-network-evidence" --name api-audit -- \
           docker run --rm --cap-add NET_ADMIN --cap-add SYS_PTRACE \
             --network "container:${{ job.services.postgres.id }}" \
             -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE:ro" \
@@ -105,8 +131,11 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: monitor-network-evidence
-          path: ${{ runner.temp }}/monitor-network-evidence/
+          name: integration-and-monitor-network-evidence
+          path: |
+            ${{ runner.temp }}/ci-context/
+            ${{ runner.temp }}/integration-evidence/
+            ${{ runner.temp }}/monitor-network-evidence/
           if-no-files-found: error
 
   execution-security:
@@ -127,6 +156,12 @@ jobs:
       TEST_DATABASE_URL: postgres://devpilot_test:registration_test_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Record frozen checkout
+        run: |
+          test "$(git rev-parse HEAD)" = "$CI_EXPECTED_HEAD"
+          python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/ci-context" --name checkout -- git show -s --format=fuller HEAD
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
@@ -139,12 +174,12 @@ jobs:
           go test ./internal/monitoring -run '^$' -fuzz '^FuzzAddressPolicy$' -fuzztime=5s -parallel=2
       - name: Independently verify real probe networking and egress isolation
         run: |
-          EXECUTION_EVIDENCE="$RUNNER_TEMP/execution-network" sh tests/execution/run-docker.sh
-      - name: Apply current schema7 only to the guarded disposable PG18
-        env:
-          GOOSE_DRIVER: postgres
-          GOOSE_DBSTRING: ${{ env.TEST_DATABASE_URL }}
-        run: goose -env=none -dir migrations up
+          python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/execution-meta" --name kernel-network -- \
+            env EXECUTION_EVIDENCE="$RUNNER_TEMP/execution-network" sh tests/execution/run-docker.sh
+      - name: Prepare separate guarded historical schema6 with pinned native Goose
+        run: |
+          python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/execution-meta" --name schema6 -- \
+            go run -tags=integration ./tests/ci/snapshot-schema
       - name: Build credential-free Linux probe for PG controller
         run: |
           mkdir -p "$RUNNER_TEMP/execution-tools"
@@ -153,19 +188,52 @@ jobs:
       - name: Verify PG18 role snapshot and live network version isolation
         run: |
           EXECUTION_TEST_TOOLS="$RUNNER_TEMP/execution-tools" EXECUTION_PG_EVIDENCE="$RUNNER_TEMP/execution-pg" \
-            go test -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v
+            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/execution-meta" --name snapshot-normal \
+              --binary "$RUNNER_TEMP/execution-tools/execution.test" -- \
+              go test -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v -timeout=120s
       - name: Verify snapshot controller under Race Detector
         run: |
           EXECUTION_TEST_TOOLS="$RUNNER_TEMP/execution-tools" EXECUTION_PG_EVIDENCE="$RUNNER_TEMP/execution-pg-race" \
-            go test -race -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v
+            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/execution-meta" --name snapshot-race \
+              --binary "$RUNNER_TEMP/execution-tools/execution.test" -- \
+              go test -race -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v -timeout=120s
+      - name: Build task6.3,6.4,6.5 and5.4 fixture-only tooling
+        run: |
+          docker build -t devpilot-scheduler-fixture -f tests/scheduler/Dockerfile .
+          JOINT63_TOOLS="$RUNNER_TEMP/network64-tools" \
+            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-joint63.sh
+      - name: Verify all23 separate Budget fixtures with guarded PG18 normal/race
+        run: |
+          python3 tests/scheduler/run-budget.py --binary "$RUNNER_TEMP/network64-tools/budget-pg.test" --mode normal --name normal --evidence "$RUNNER_TEMP/budget-evidence/normal"
+          python3 tests/scheduler/run-budget.py --binary "$RUNNER_TEMP/network64-tools/budget-pg-race.test" --mode race --name race --evidence "$RUNNER_TEMP/budget-evidence/race"
+      - name: Verify independent task6.4 dual-stack network policies and PG18 normal/race
+        run: |
+          python3 tests/scheduler/run-network64.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/network64-evidence"
+      - name: Verify task6.5 independent physical stop and recovery with PG18 normal/race
+        run: |
+          python3 tests/scheduler/run-stop65.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/stop65-evidence"
+      - name: Verify task5.4 committed physical receipts and atomic PG18 release normal/race
+        run: |
+          python3 tests/scheduler/run-release54.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/release54-evidence"
+      - name: Verify task6.3 original kernel joint execution and tracer-fault quarantine normal/race
+        run: |
+          python3 tests/scheduler/run-joint63.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/joint63-evidence"
       - name: Upload separate execution evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: execution-security-evidence
           path: |
+            ${{ runner.temp }}/ci-context/
+            ${{ runner.temp }}/execution-meta/
             ${{ runner.temp }}/execution-network/
             ${{ runner.temp }}/execution-pg/
             ${{ runner.temp }}/execution-pg-race/
             ${{ runner.temp }}/execution-tools/build.txt
+            ${{ runner.temp }}/network64-build/
+            ${{ runner.temp }}/budget-evidence/
+            ${{ runner.temp }}/network64-evidence/
+            ${{ runner.temp }}/stop65-evidence/
+            ${{ runner.temp }}/release54-evidence/
+            ${{ runner.temp }}/joint63-evidence/
           if-no-files-found: error

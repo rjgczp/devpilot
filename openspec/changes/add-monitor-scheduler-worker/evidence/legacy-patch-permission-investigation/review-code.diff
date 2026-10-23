@@ -1,0 +1,287 @@
+diff --git a/tests/integration/scheduler_checkpoint1_migration_concurrency_test.go b/tests/integration/scheduler_checkpoint1_migration_concurrency_test.go
+index 2b88e34..189e2d8 100644
+--- a/tests/integration/scheduler_checkpoint1_migration_concurrency_test.go
++++ b/tests/integration/scheduler_checkpoint1_migration_concurrency_test.go
+@@ -78,6 +78,9 @@ func TestCheckpointOneOldWritersStraddleMigration(t *testing.T) {
+ 					t.Error(err)
+ 				}
+ 			})
++			if _, err := db.Exec(ctx, legacyPatchInsertColumns); err != nil {
++				t.Fatal(err)
++			}
+ 			cfg := db.Config()
+ 			cfg.ConnConfig.User = "checkpoint1_legacy"
+ 			cfg.ConnConfig.Password = "disposable_fixture_only"
+diff --git a/tests/integration/scheduler_legacy_patch_permissions_test.go b/tests/integration/scheduler_legacy_patch_permissions_test.go
+new file mode 100644
+index 0000000..a2b6e17
+--- /dev/null
++++ b/tests/integration/scheduler_legacy_patch_permissions_test.go
+@@ -0,0 +1,267 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"path/filepath"
++	"reflect"
++	"strings"
++	"testing"
++
++	"github.com/jackc/pgx/v5"
++	"github.com/jackc/pgx/v5/pgconn"
++	"github.com/jackc/pgx/v5/pgxpool"
++	"github.com/rjgczp/devpilot/internal/monitor"
++	"github.com/rjgczp/devpilot/internal/user"
++)
++
++// Schema7's shared POST/PATCH statement names these INSERT columns even when
++// the PATCH branch inserts zero rows. This is not a scheduler privilege.
++const legacyPatchInsertColumns = `GRANT INSERT(workspace_id,project_id,name,url,method,interval_seconds,timeout_seconds,expected_status,created_by_user_id) ON public.http_monitors TO checkpoint1_legacy`
++
++// Records the real Store statement and driver error before Store classification.
++// Never records arguments (session digest and monitor URL are not diagnostics).
++type legacyPermissionTx struct {
++	pgx.Tx
++	t   *testing.T
++	err **pgconn.PgError
++}
++
++func (tx legacyPermissionTx) QueryRow(ctx context.Context, sql string, args ...any) pgx.Row {
++	return legacyPermissionRow{Row: tx.Tx.QueryRow(ctx, sql, args...), tx: tx, sql: sql}
++}
++
++type legacyPermissionRow struct {
++	pgx.Row
++	tx  legacyPermissionTx
++	sql string
++}
++
++func (r legacyPermissionRow) Scan(dest ...any) error {
++	err := r.Row.Scan(dest...)
++	var p *pgconn.PgError
++	if errors.As(err, &p) {
++		*r.tx.err = p
++		r.tx.t.Logf("driver error: SQLSTATE=%s message=%q where=%q internal_query=%q schema=%q table=%q routine=%q position=%d\nSQL (arguments withheld):\n%s", p.Code, p.Message, p.Where, p.InternalQuery, p.SchemaName, p.TableName, p.Routine, p.Position, r.sql)
++	}
++	return err
++}
++
++func legacyPermissionStore(t *testing.T, pool *pgxpool.Pool, captured **pgconn.PgError) monitor.Store {
++	t.Helper()
++	return monitor.Store{Pool: workspaceObservedDB{Pool: pool, wrap: func(tx pgx.Tx) pgx.Tx {
++		var identity string
++		if err := tx.QueryRow(context.Background(), `SELECT json_build_object('session_user',session_user,'current_user',current_user,'pid',pg_backend_pid(),'isolation',current_setting('transaction_isolation'))::text`).Scan(&identity); err != nil {
++			t.Error(err)
++		}
++		t.Log("PATCH transaction identity: " + identity)
++		return legacyPermissionTx{Tx: tx, t: t, err: captured}
++	}}}
++}
++
++func legacyPermissionSnapshot(t *testing.T, db *pgxpool.Pool, label, role string) string {
++	t.Helper()
++	var snapshot string
++	err := db.QueryRow(context.Background(), `SELECT jsonb_build_object(
++ 'database',(SELECT jsonb_build_object('owner',pg_get_userbyid(datdba),'acl',datacl,'create',has_database_privilege($1,oid,'CREATE'),'temp',has_database_privilege($1,oid,'TEMP')) FROM pg_database WHERE datname=current_database()),
++ 'schemas',(SELECT jsonb_agg(jsonb_build_object('schema',nspname,'owner',pg_get_userbyid(nspowner),'acl',nspacl,'usage',has_schema_privilege($1,oid,'USAGE'),'create',has_schema_privilege($1,oid,'CREATE')) ORDER BY nspname) FROM pg_namespace WHERE nspname IN ('public','scheduler_private')),
++ 'role',(SELECT to_jsonb(r) FROM (SELECT rolname,rolsuper,rolinherit,rolcreaterole,rolcreatedb,rolcanlogin,rolreplication,rolbypassrls FROM pg_roles WHERE rolname=$1) r),
++ 'memberships',(SELECT coalesce(jsonb_agg(parent.rolname ORDER BY parent.rolname),'[]') FROM pg_auth_members a JOIN pg_roles parent ON parent.oid=a.roleid JOIN pg_roles child ON child.oid=a.member WHERE child.rolname=$1),
++ 'tables',(SELECT jsonb_agg(jsonb_build_object('table',c.relname,'owner',pg_get_userbyid(c.relowner),'acl',c.relacl,'rls',c.relrowsecurity,'select',has_table_privilege($1,c.oid,'SELECT'),'insert',has_table_privilege($1,c.oid,'INSERT'),'update',has_table_privilege($1,c.oid,'UPDATE'),'columns',(SELECT jsonb_agg(jsonb_build_object('name',a.attname,'acl',a.attacl,'insert',has_column_privilege($1,c.oid,a.attnum,'INSERT'),'update',has_column_privilege($1,c.oid,a.attnum,'UPDATE')) ORDER BY a.attnum) FROM pg_attribute a WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped)) ORDER BY c.relname) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind='r' AND c.relname<>'goose_db_version'),
++ 'functions',(SELECT jsonb_agg(jsonb_build_object('function',p.oid::regprocedure::text,'owner',pg_get_userbyid(p.proowner),'definer',p.prosecdef,'settings',p.proconfig,'acl',p.proacl,'execute',has_function_privilege($1,p.oid,'EXECUTE')) ORDER BY p.oid::regprocedure::text) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname IN ('public','scheduler_private')),
++ 'triggers',(SELECT jsonb_agg(jsonb_build_object('table',c.relname,'definition',pg_get_triggerdef(t.oid),'function',p.oid::regprocedure::text,'definer',p.prosecdef,'owner',pg_get_userbyid(p.proowner)) ORDER BY c.relname,t.tgname) FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace JOIN pg_proc p ON p.oid=t.tgfoid WHERE NOT t.tgisinternal AND n.nspname='public'),
++ 'dependencies',(SELECT jsonb_agg(jsonb_build_object('table',c.relname,'constraint',pg_get_constraintdef(k.oid)) ORDER BY c.relname,k.conname) FROM pg_constraint k JOIN pg_class c ON c.oid=k.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('http_monitors','monitor_activation_states')),
++ 'defaults',(SELECT jsonb_agg(pg_get_expr(d.adbin,d.adrelid)) FROM pg_attrdef d WHERE d.adrelid='public.http_monitors'::regclass)
++ )::text`, role).Scan(&snapshot)
++	if err != nil {
++		t.Fatal(err)
++	}
++	t.Logf("ACL snapshot %s: %s", label, snapshot)
++	return snapshot
++}
++
++// Reproduces the unchanged failed fixture on schema7, before any corrective
++// GRANT or migration8. Expected denial is evidence, not a passing PATCH.
++func TestLegacyPatchOriginalFixtureSchemaSevenDiagnosis(t *testing.T) {
++	db := openDB(t)
++	ctx := context.Background()
++	dir := filepath.Join(root(), "migrations")
++	goose(t, dir, "up-to 7", true)
++	t.Cleanup(func() { goose(t, dir, "down-to 0", true) })
++	f, m := monitorFixture(t, db)
++	if _, err := db.Exec(ctx, `CREATE ROLE checkpoint1_legacy LOGIN PASSWORD 'disposable_fixture_only'; GRANT USAGE ON SCHEMA public TO checkpoint1_legacy; GRANT SELECT,UPDATE ON users,sessions,workspaces,workspace_members,projects,http_monitors,monitor_activation_states TO checkpoint1_legacy`); err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(func() {
++		if _, err := db.Exec(ctx, `DROP OWNED BY checkpoint1_legacy; DROP ROLE checkpoint1_legacy`); err != nil {
++			t.Error(err)
++		}
++	})
++	cfg := db.Config()
++	cfg.ConnConfig.User, cfg.ConnConfig.Password = "checkpoint1_legacy", "disposable_fixture_only"
++	pool, err := pgxpool.NewWithConfig(ctx, cfg)
++	if err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(pool.Close)
++	legacyPermissionSnapshot(t, db, "schema7-original-fixture", "checkpoint1_legacy")
++	var captured *pgconn.PgError
++	_, err = legacyPermissionStore(t, pool, &captured).Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitorInput("schema7 original fixture PATCH"), monitor.ETag(m))
++	if err != user.ErrInternal || captured == nil || captured.Code != "42501" || captured.Message != "permission denied for table http_monitors" || captured.Where != "" {
++		t.Fatalf("different baseline failure: classified=%v raw=%+v", err, captured)
++	}
++	if queryInt(t, db, `SELECT version FROM http_monitors WHERE id=$1`, m.ID) != 1 {
++		t.Fatal("denied PATCH mutated monitor")
++	}
++	t.Log("Schema7 original fixture FAILS identical PATCH before Migration8; no corrective privilege granted")
++}
++
++func TestLegacyPatchColumnPrivilegesAcrossMigration(t *testing.T) {
++	db := openDB(t)
++	ctx := context.Background()
++	dir := filepath.Join(root(), "migrations")
++	goose(t, dir, "up-to 7", true)
++	t.Cleanup(func() { goose(t, dir, "down-to 0", true) })
++	f, m := monitorFixture(t, db)
++	if _, err := db.Exec(ctx, `CREATE ROLE checkpoint1_legacy LOGIN PASSWORD 'disposable_fixture_only'; GRANT USAGE ON SCHEMA public TO checkpoint1_legacy; GRANT SELECT,UPDATE ON users,sessions,workspaces,workspace_members,projects,http_monitors,monitor_activation_states TO checkpoint1_legacy`); err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(func() {
++		if _, err := db.Exec(ctx, `DROP OWNED BY checkpoint1_legacy; DROP ROLE checkpoint1_legacy`); err != nil {
++			t.Error(err)
++		}
++	})
++	cfg := db.Config()
++	cfg.ConnConfig.User, cfg.ConnConfig.Password = "checkpoint1_legacy", "disposable_fixture_only"
++	pool, err := pgxpool.NewWithConfig(ctx, cfg)
++	if err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(pool.Close)
++	legacyPermissionSnapshot(t, db, "schema7-before-column-fix", "checkpoint1_legacy")
++	if _, err = db.Exec(ctx, legacyPatchInsertColumns); err != nil {
++		t.Fatal(err)
++	}
++	t.Log("fixture-only corrective SQL: " + legacyPatchInsertColumns)
++	before := legacyPermissionSnapshot(t, db, "schema7-fixed", "checkpoint1_legacy")
++	var captured *pgconn.PgError
++	s := legacyPermissionStore(t, pool, &captured)
++	m, err = s.Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitorInput("schema7 successful PATCH"), monitor.ETag(m))
++	if err != nil || captured != nil {
++		t.Fatalf("schema7 corrected baseline PATCH: %v / %+v", err, captured)
++	}
++	if m.Version != "2" {
++		t.Fatal("schema7 PATCH did not commit")
++	}
++	goose(t, dir, "up-to 8", true)
++	after := legacyPermissionSnapshot(t, db, "schema8-same-login", "checkpoint1_legacy")
++	// Existing table/column ACLs, function EXECUTE and role memberships must
++	// survive exactly. New scheduler objects are deliberately absent in before.
++	var b, a map[string]any
++	if err = json.Unmarshal([]byte(before), &b); err != nil {
++		t.Fatal(err)
++	}
++	if err = json.Unmarshal([]byte(after), &a); err != nil {
++		t.Fatal(err)
++	}
++	for _, key := range []string{"role", "memberships"} {
++		if !reflect.DeepEqual(b[key], a[key]) {
++			t.Fatal("legacy identity changed", key)
++		}
++	}
++	for _, key := range []string{"tables", "functions"} {
++		id := "table"
++		if key == "functions" {
++			id = "function"
++		}
++		for _, old := range b[key].([]any) {
++			found := false
++			for _, next := range a[key].([]any) {
++				if old.(map[string]any)[id] == next.(map[string]any)[id] {
++					// M8 legitimately adds different principals to raw ACLs.
++					// Compare this legacy principal plus PUBLIC, retaining all
++					// effective privilege booleans and object owner metadata.
++					if !reflect.DeepEqual(legacyPrincipalACL(old), legacyPrincipalACL(next)) {
++						t.Fatalf("legacy ACL changed: %v", old.(map[string]any)[id])
++					}
++					found = true
++				}
++			}
++			if !found {
++				t.Fatal("legacy object disappeared", old)
++			}
++		}
++	}
++	if queryInt(t, db, `SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='scheduler_private' AND has_function_privilege('checkpoint1_legacy',p.oid,'EXECUTE')`) != 0 {
++		t.Fatal("legacy gained scheduler function EXECUTE")
++	}
++	for _, sql := range []string{
++		`SELECT * FROM public.monitor_schedules`, `SELECT * FROM public.monitor_runs`,
++		`UPDATE public.monitor_schedules SET next_due_at=NULL`, `DELETE FROM public.monitor_runs`,
++		`SELECT scheduler_private.authorize(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,60)`,
++		`SELECT scheduler_private.claim(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)`,
++		`INSERT INTO public.http_monitors(id) VALUES(uuidv7())`,
++	} {
++		_, err = pool.Exec(ctx, sql)
++		var denied *pgconn.PgError
++		if !errors.As(err, &denied) || denied.Code != "42501" {
++			t.Fatalf("expected privilege denial %s: %v", sql, err)
++		}
++		t.Logf("legacy negative boundary SQLSTATE=%s SQL=%s", denied.Code, sql)
++	}
++	// Populate a real authorization via the separately approved API identity;
++	// the unchanged legacy PATCH must revoke it through the private trigger
++	// without obtaining direct EXECUTE or table privileges itself.
++	activationSeed(t, db, m, "next_enable_allowed_at=statement_timestamp()-interval '1s'")
++	activation := activationRead(t, db, f.od, m)
++	_, err = (monitor.Store{Pool: db}).ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: m.Version, ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(activation))
++	if err != nil {
++		t.Fatal(err)
++	}
++	m, err = s.Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitorInput("schema8 same old login PATCH"), monitor.ETag(m))
++	if err != nil || captured != nil || m.Version != "3" {
++		t.Fatalf("schema8 old login PATCH: %v / %+v", err, captured)
++	}
++	if queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND authorized_activation_generation IS NULL AND expires_at IS NULL AND next_due_at IS NULL AND scheduler_epoch=2`, m.ID) != 1 {
++		t.Fatal("legacy PATCH failed to revoke new authorization")
++	}
++	if queryInt(t, db, `SELECT count(*) FROM monitor_runs`) != 0 {
++		t.Fatal("legacy PATCH created Run")
++	}
++	t.Log("schema7 and schema8 PATCH committed with same non-owner LOGIN; old table/column/function ACLs unchanged; new scheduler capabilities denied; private trigger revoked grant")
++}
++
++func legacyPrincipalACL(value any) any {
++	switch v := value.(type) {
++	case map[string]any:
++		out := make(map[string]any, len(v))
++		for key, child := range v {
++			if key == "acl" {
++				var entries []any
++				if list, ok := child.([]any); ok {
++					for _, entry := range list {
++						s := entry.(string)
++						if strings.HasPrefix(s, "checkpoint1_legacy=") || strings.HasPrefix(s, "=") {
++							entries = append(entries, s)
++						}
++					}
++				}
++				out[key] = entries
++			} else {
++				out[key] = legacyPrincipalACL(child)
++			}
++		}
++		return out
++	case []any:
++		out := make([]any, len(v))
++		for i := range v {
++			out[i] = legacyPrincipalACL(v[i])
++		}
++		return out
++	default:
++		return value
++	}
++}

@@ -27,7 +27,7 @@ func activationRead(t *testing.T, db *pgxpool.Pool, d session.Digest, m monitor.
 	}
 	return a
 }
-func activationPut(s monitor.Store, d session.Digest, m monitor.Public, a monitor.Activation, state string) (monitor.Activation, error) {
+func activationPut(s monitor.ActivationRepository, d session.Digest, m monitor.Public, a monitor.Activation, state string) (monitor.Activation, error) {
 	return s.ActivationUpdate(context.Background(), d, m.WorkspaceID, m.ProjectID, m.ID, monitor.ActivationInput{DesiredState: state, ConfigurationVersion: a.ConfigurationVersion}, monitor.ActivationETag(a))
 }
 
@@ -84,18 +84,21 @@ func TestActivationMigration(t *testing.T) {
 			t.Fatal("copy")
 		}
 	}
-	goose(t, tmp, "up", false)
+	goose(t, tmp, "up-to 7", false)
 	if queryInt(t, db, `SELECT count(*) FROM pg_class WHERE relname LIKE 'monitor_activation%'`) != 0 || queryInt(t, db, `SELECT count(*) FROM pg_proc WHERE proname LIKE 'monitor_activation%' OR proname='monitor_configuration_revision_guard'`) != 0 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=7 AND is_applied`) != 0 {
 		t.Fatal("partial7")
 	}
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 7", true)
+	goose(t, dir, "up-to 7", true)
 	var after string
 	db.QueryRow(ctx, `SELECT to_jsonb(m)::text FROM http_monitors m WHERE id=$1`, m.ID).Scan(&after)
 	if before != after || prior != monitorHistory(t, db) {
 		t.Fatal("upgrade changed history")
 	}
-	a := activationRead(t, db, f.od, m)
+	a, err := (monitor.SchemaSevenFixtureStore{Pool: db}).ActivationDetail(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if a.DesiredState != "disabled" || a.ActivationGeneration != "1" || a.ActivationConfigurationVersion != nil || a.NextDueAt != nil || a.ExecutionState != "blocked" {
 		t.Fatal("backfill")
 	}
@@ -113,7 +116,7 @@ func TestActivationMigration(t *testing.T) {
 	if _, e := db.Exec(ctx, `INSERT INTO monitor_activation_states(workspace_id,project_id,monitor_id) VALUES($1,$2,$3)`, f.z.ID, m.ProjectID, m.ID); e == nil {
 		t.Fatal("mixed FK")
 	}
-	a, e := activationPut(monitor.Store{Pool: db}, f.od, m, a, "enabled")
+	a, e := activationPut(monitor.SchemaSevenFixtureStore{Pool: db}, f.od, m, a, "enabled")
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -145,9 +148,9 @@ func TestActivationMigration(t *testing.T) {
 	if queryInt(t, db, `SELECT count(*) FROM http_monitors WHERE id=$1`, m.ID) != 1 {
 		t.Fatal("down erased config")
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 7", true)
 	goose(t, dir, "down-to 0", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 7", true)
 	if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 7 {
 		t.Fatal("fresh7")
 	}
@@ -251,6 +254,10 @@ func TestActivationTriggerAtomicFailureAndBoundedAudit(t *testing.T) {
 				}
 			case "overflow":
 				activationSeed(t, db, m, "activation_generation=9223372036854775807")
+				// This deliberately unreachable fixture must be removed before
+				// schema8 Down retires all validators. Down must still reject
+				// a real exhausted generation; do not weaken that protection.
+				t.Cleanup(func() { activationSeed(t, db, m, "activation_generation=1") })
 			case "trigger":
 				if _, e = db.Exec(ctx, `CREATE FUNCTION activation_update_fixture_fail() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture'; END $$; CREATE TRIGGER activation_update_fixture_fail BEFORE UPDATE ON monitor_activation_states FOR EACH ROW EXECUTE FUNCTION activation_update_fixture_fail()`); e != nil {
 					t.Fatal(e)
@@ -412,7 +419,7 @@ func TestActivationWorkspaceIntentLifetime(t *testing.T) {
 				}
 			}
 			got := activationRead(t, db, f.md, m)
-			if got.DesiredState != "enabled" || got.ActivationGeneration != a.ActivationGeneration || got.ExecutionState != "blocked" || got.NextDueAt != nil {
+			if got.DesiredState != "enabled" || got.ActivationGeneration != a.ActivationGeneration || got.ExecutionState != "not_reported" || got.BlockedReason != "execution_status_required" || got.NextDueAt != nil {
 				t.Fatal("intent/execution lifetime")
 			}
 		})

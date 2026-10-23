@@ -1,0 +1,9 @@
+{
+  "tested_source_inventory_sha256": "9008c5c7e580cc80f9875463479155a269bc30ac0fff70a2bf46ce61a88bd704",
+  "changed_since_failed_runtime": [
+    "tests/scheduler/joint63-blocker.md"
+  ],
+  "runtime_sources_unchanged": true,
+  "task63_checked": false,
+  "completed_tasks": 28
+}

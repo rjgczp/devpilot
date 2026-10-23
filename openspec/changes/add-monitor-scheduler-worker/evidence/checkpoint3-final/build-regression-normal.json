@@ -1,0 +1,30 @@
+{
+  "command": [
+    "env",
+    "GOCACHE=/private/tmp/devpilot-scheduler-go-cache",
+    "GOOS=linux",
+    "GOARCH=arm64",
+    "CGO_ENABLED=0",
+    "go",
+    "test",
+    "-c",
+    "-tags=integration,schedulerfixture",
+    "-o",
+    "/private/tmp/devpilot-scheduler-tools/cp3-regression.test",
+    "./tests/integration"
+  ],
+  "started_at": "2026-10-21T06:41:57.571985+00:00",
+  "elapsed_seconds": 0.2733687910367735,
+  "exit_code": 0,
+  "head": "e05959ec7aa0e4e80981bcd59ea0d6ee4c823815",
+  "dirty": false,
+  "source_inventory_sha256": "615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp3-regression.test": "fee4a0300abcd2477d2268f46493c11ceee667e99aa39344244b92e1a6240127"
+  },
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_inventory_ref": "source-inventories/615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96.json",
+  "original_receipt_ref": "raw-receipts/build-regression-normal.json.gz",
+  "original_receipt_sha256": "c0817fe7ba8af004938ac6bac501cad186a039fc85a0657cb2c005248ff6805e",
+  "log_ref": "build-regression-normal.log"
+}

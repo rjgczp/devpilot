@@ -1,0 +1,248 @@
+{
+  "Id": "8dc0b4cf1623e1765b6a27421d8f7ff8fbe8d0926e088868cba0b70523a2c899",
+  "Created": "2026-10-21T07:49:16.190610844Z",
+  "Path": "docker-entrypoint.sh",
+  "Args": [
+    "postgres",
+    "-c",
+    "cluster_name=devpilot-budget-disposable",
+    "-c",
+    "log_lock_waits=on",
+    "-c",
+    "deadlock_timeout=100ms"
+  ],
+  "State": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 69834,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-10-21T07:49:16.231351802Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "Image": "sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336",
+  "ResolvConfPath": "/var/lib/docker/containers/8dc0b4cf1623e1765b6a27421d8f7ff8fbe8d0926e088868cba0b70523a2c899/resolv.conf",
+  "HostnamePath": "/var/lib/docker/containers/8dc0b4cf1623e1765b6a27421d8f7ff8fbe8d0926e088868cba0b70523a2c899/hostname",
+  "HostsPath": "/var/lib/docker/containers/8dc0b4cf1623e1765b6a27421d8f7ff8fbe8d0926e088868cba0b70523a2c899/hosts",
+  "LogPath": "/var/lib/docker/containers/8dc0b4cf1623e1765b6a27421d8f7ff8fbe8d0926e088868cba0b70523a2c899/8dc0b4cf1623e1765b6a27421d8f7ff8fbe8d0926e088868cba0b70523a2c899-json.log",
+  "Name": "/devpilot-budget-ac576ee4f91e",
+  "RestartCount": 0,
+  "Driver": "overlayfs",
+  "Platform": "linux",
+  "MountLabel": "",
+  "ProcessLabel": "",
+  "AppArmorProfile": "",
+  "ExecIDs": null,
+  "HostConfig": {
+    "Binds": null,
+    "ContainerIDFile": "",
+    "LogConfig": {
+      "Type": "json-file",
+      "Config": {}
+    },
+    "NetworkMode": "devpilot-scheduler-apply-control",
+    "PortBindings": {},
+    "RestartPolicy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "AutoRemove": false,
+    "VolumeDriver": "",
+    "VolumesFrom": null,
+    "ConsoleSize": [
+      0,
+      0
+    ],
+    "CapAdd": null,
+    "CapDrop": null,
+    "CgroupnsMode": "private",
+    "Dns": null,
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": null,
+    "GroupAdd": null,
+    "IpcMode": "private",
+    "Cgroup": "",
+    "Links": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "Privileged": false,
+    "PublishAllPorts": false,
+    "ReadonlyRootfs": false,
+    "SecurityOpt": null,
+    "UTSMode": "",
+    "UsernsMode": "",
+    "ShmSize": 67108864,
+    "Runtime": "runc",
+    "Isolation": "",
+    "CpuShares": 0,
+    "Memory": 536870912,
+    "NanoCpus": 1000000000,
+    "CgroupParent": "",
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "BlkioDeviceReadBps": [],
+    "BlkioDeviceWriteBps": [],
+    "BlkioDeviceReadIOps": [],
+    "BlkioDeviceWriteIOps": [],
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "Devices": [],
+    "DeviceCgroupRules": null,
+    "DeviceRequests": null,
+    "MemoryReservation": 0,
+    "MemorySwap": 1073741824,
+    "MemorySwappiness": null,
+    "OomKillDisable": null,
+    "PidsLimit": 128,
+    "Ulimits": [],
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "IOMaximumIOps": 0,
+    "IOMaximumBandwidth": 0,
+    "MaskedPaths": [
+      "/proc/acpi",
+      "/proc/asound",
+      "/proc/interrupts",
+      "/proc/kcore",
+      "/proc/keys",
+      "/proc/latency_stats",
+      "/proc/sched_debug",
+      "/proc/scsi",
+      "/proc/timer_list",
+      "/proc/timer_stats",
+      "/sys/devices/virtual/powercap",
+      "/sys/firmware"
+    ],
+    "ReadonlyPaths": [
+      "/proc/bus",
+      "/proc/fs",
+      "/proc/irq",
+      "/proc/sys",
+      "/proc/sysrq-trigger"
+    ]
+  },
+  "Storage": {
+    "RootFS": {
+      "Snapshot": {
+        "Name": "overlayfs"
+      }
+    }
+  },
+  "Mounts": [
+    {
+      "Type": "volume",
+      "Name": "1e7bca358d2af25a3fd0d2169a09eb2247f83b1879f664f50adfc74f94716fde",
+      "Source": "/var/lib/docker/volumes/1e7bca358d2af25a3fd0d2169a09eb2247f83b1879f664f50adfc74f94716fde/_data",
+      "Destination": "/var/lib/postgresql",
+      "Driver": "local",
+      "Mode": "",
+      "RW": true,
+      "Propagation": ""
+    }
+  ],
+  "Config": {
+    "Hostname": "8dc0b4cf1623",
+    "Domainname": "",
+    "User": "",
+    "AttachStdin": false,
+    "AttachStdout": false,
+    "AttachStderr": false,
+    "ExposedPorts": {
+      "5432/tcp": {}
+    },
+    "Tty": false,
+    "OpenStdin": false,
+    "StdinOnce": false,
+    "Env": [
+      "POSTGRES_USER=devpilot_fixture",
+      "POSTGRES_PASSWORD=devpilot_fixture_only",
+      "POSTGRES_DB=devpilot_registration_test",
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/postgresql/18/bin",
+      "GOSU_VERSION=1.19",
+      "LANG=en_US.utf8",
+      "PG_MAJOR=18",
+      "PG_VERSION=18.6-1.pgdg13+2",
+      "PGDATA=/var/lib/postgresql/18/docker"
+    ],
+    "Cmd": [
+      "postgres",
+      "-c",
+      "cluster_name=devpilot-budget-disposable",
+      "-c",
+      "log_lock_waits=on",
+      "-c",
+      "deadlock_timeout=100ms"
+    ],
+    "Image": "postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336",
+    "Volumes": {
+      "/var/lib/postgresql": {}
+    },
+    "WorkingDir": "",
+    "Entrypoint": [
+      "docker-entrypoint.sh"
+    ],
+    "Labels": {
+      "devpilot.disposable.budget": "devpilot-budget-ac576ee4f91e"
+    },
+    "StopSignal": "SIGINT",
+    "StopTimeout": 1
+  },
+  "NetworkSettings": {
+    "SandboxID": "d96fb196555eb947a8097285497348f1736ac93cd45daa24d6bbb29115c7940b",
+    "SandboxKey": "/var/run/docker/netns/d96fb196555e",
+    "Ports": {
+      "5432/tcp": null
+    },
+    "Networks": {
+      "devpilot-scheduler-apply-control": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "DriverOpts": null,
+        "GwPriority": 0,
+        "NetworkID": "55e7af0982bd83c2b2b8171c0135e6ec6b04fe35c575bc895ccea35bbeef93bc",
+        "EndpointID": "5c58c7ac56b924a2d2bff8001b29b65c3f2c31b83e9c6d4fc98ccc00bf4f2bc9",
+        "Gateway": "",
+        "IPAddress": "172.18.0.4",
+        "MacAddress": "0e:ca:ed:5f:5c:66",
+        "IPPrefixLen": 16,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "DNSNames": [
+          "devpilot-budget-ac576ee4f91e",
+          "8dc0b4cf1623"
+        ]
+      }
+    }
+  },
+  "ImageManifestDescriptor": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "digest": "sha256:a63b24165ea0eacced7585766d790ac08bbaefe10a1841f87783a4505d29a69c",
+    "size": 3441,
+    "annotations": {
+      "com.docker.official-images.bashbrew.arch": "arm64v8",
+      "org.opencontainers.image.base.digest": "sha256:a2ca65377c251208de42e1a2722cb949211236c161b634f6f3663754e2d06850",
+      "org.opencontainers.image.base.name": "debian:trixie-slim",
+      "org.opencontainers.image.created": "2026-10-06T01:34:42Z",
+      "org.opencontainers.image.revision": "e00e1bd34ec5c8a8e7ad89b273b3d42efaf6d5bc",
+      "org.opencontainers.image.source": "https://github.com/docker-library/postgres.git#e00e1bd34ec5c8a8e7ad89b273b3d42efaf6d5bc:18/trixie",
+      "org.opencontainers.image.url": "https://hub.docker.com/_/postgres",
+      "org.opencontainers.image.version": "18.6"
+    },
+    "platform": {
+      "architecture": "arm64",
+      "os": "linux",
+      "variant": "v8"
+    }
+  }
+}

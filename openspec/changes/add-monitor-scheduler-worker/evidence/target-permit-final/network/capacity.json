@@ -1,0 +1,27 @@
+{
+  "attempts": [],
+  "violations": [],
+  "dns_attempts": 0,
+  "target_attempts": 0,
+  "case": "capacity",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/capacity.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "capacity"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 0.03386229200987145
+}

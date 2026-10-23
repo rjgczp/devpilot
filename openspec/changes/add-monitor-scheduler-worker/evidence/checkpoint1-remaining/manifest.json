@@ -1,0 +1,35 @@
+{
+  "pg-contracts": {
+    "exit_code": 0,
+    "head": "3774a75eb7d3e733b174530d71816ed319d9f084",
+    "dirty": true,
+    "binary": {
+      "/private/tmp/devpilot-scheduler-tools/checkpoint1.test": "fd513b776fa7e0d1079a781c55a3b9ca455532d4e958e3dc62d24bcf1172c264"
+    },
+    "source_inventory_sha256": "5d817cde4e4fa1cb046db457bcd67fcd0d4da79635a1a88090c17860bf12b790",
+    "log_sha256": "fceda20ed2d59f492716d41ca816b96455dcf5d9009f1c229dc4f3147c7b1fbe",
+    "elapsed_seconds": 0.7876602499745786
+  },
+  "pg-capacity-expiry": {
+    "exit_code": 0,
+    "head": "3774a75eb7d3e733b174530d71816ed319d9f084",
+    "dirty": true,
+    "binary": {
+      "/private/tmp/devpilot-scheduler-tools/checkpoint1.test": "7e0af83a1d1adfa537bc1997e54ef2a96515fcff3f0e1a70d01b776860fd5716"
+    },
+    "source_inventory_sha256": "22e3b7746037ce91a60e95be7c0a8bf5edacf714b292c48bceecb720563b64a2",
+    "log_sha256": "10f03c0b37a6acadd00e6581bd2409a4e3201dd21912b5b2ef4228bd7c724394",
+    "elapsed_seconds": 62.26787212502677
+  },
+  "pg-migration-interleave": {
+    "exit_code": 1,
+    "head": "3774a75eb7d3e733b174530d71816ed319d9f084",
+    "dirty": true,
+    "binary": {
+      "/private/tmp/devpilot-scheduler-tools/checkpoint1.test": "cd9c716f05714d6c633f70831028651b27c5a5983a0836f28c55c64cf7f61a8a"
+    },
+    "source_inventory_sha256": "944532c85f0eb918056753fdd7feb3eb546ae8475177e6eee23eb9a2cd34dc58",
+    "log_sha256": "d700f93cc7e47a3580dd7ca9ee7ecb46ff3977e59ede262ce823a0c6498e0a33",
+    "elapsed_seconds": 0.49172395904315636
+  }
+}

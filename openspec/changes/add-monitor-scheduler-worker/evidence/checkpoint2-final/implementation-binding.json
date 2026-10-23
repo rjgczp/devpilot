@@ -1,0 +1,18 @@
+{
+  "tested_sha": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+  "clean_at_all_final_runs": true,
+  "source_inventory_sha256": "c93642d57c7469533da7b9d9fa801a255d160fa80e48be14efc13e07a2d9112a",
+  "source_inventory_ref": "source-inventories/c93642d57c7469533da7b9d9fa801a255d160fa80e48be14efc13e07a2d9112a.json",
+  "source_file_count": 1324,
+  "post_test_source_differences": [
+    "openspec/changes/add-monitor-scheduler-worker/tasks.md"
+  ],
+  "post_test_diff_reason": "Only six task checkboxes after corresponding acceptance passed. Verification/evidence excluded from source inventory. No implementation/test source differences. Later review-delivery commit is evidence/docs only.",
+  "last_reviewed_sha": "8ebba60bc4d70f2407d052b26796a4fd20c16a56",
+  "migration1_7_unchanged": true,
+  "new_execute_grants_only": [
+    "scheduler_private.reconcile_claim(uuid,uuid,uuid,uuid,uuid)",
+    "scheduler_private.expire_unstarted(uuid,uuid,uuid,uuid,uuid,bigint)"
+  ],
+  "runtime_role_attributes_and_table_column_acl_unchanged": true
+}

@@ -1,0 +1,40 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "container:36a52ec159c4e2b492811598636590945b027840d037a4f1065b78a9f8be0ff9",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/cp4-pg-race.test",
+    "devpilot-scheduler-fixture",
+    "-test.run",
+    "^TestBudgetTargetRotationPreservesCooling$",
+    "-test.v",
+    "-test.failfast",
+    "-test.timeout=120s"
+  ],
+  "started_at": "2026-10-21T07:50:07.120675+00:00",
+  "elapsed_seconds": 1.296763332968112,
+  "exit_code": 0,
+  "head": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
+  "dirty": false,
+  "source_inventory_sha256": "215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp4-pg-race.test": "af93b274d855ffa35ce7ce35e6f4b9e3937407001508bbe3e3e7cf3ec1a9ce4b",
+    "/private/tmp/devpilot-scheduler-tools/goose": "b9d42a96017db430bec647240d706bc9ae57775c76fa65321a7d24e7e38bbe3a"
+  },
+  "log_sha256": "88c2aab24dc07cdebcec178ceed6b2d127accba6e5039b8f7d6c8178ce5482f3",
+  "source_inventory_ref": "source-inventories/215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528.json",
+  "original_receipt_ref": "raw-receipts/pg-race-16.json.gz",
+  "original_receipt_sha256": "9ef17a12b8e12064c3644059ccc65e2ccc3ec46fb956c3d48077e20f1be6228f",
+  "log_ref": "pg-race-16.log"
+}

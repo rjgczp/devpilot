@@ -52,6 +52,13 @@ func (w *responseWriter) Write(b []byte) (int, error) {
 func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	w := &responseWriter{ResponseWriter: out}
 	defer func() {
+		// Interrupt any remaining transport read only after the error response
+		// has been committed; do not let an oversized body trigger a drain.
+		if w.written && w.Header().Get("Connection") == "close" {
+			_ = http.NewResponseController(w).SetReadDeadline(time.Now())
+		}
+	}()
+	defer func() {
 		if recovered := recover(); recovered != nil {
 			if recovered == http.ErrAbortHandler {
 				panic(recovered)
@@ -72,6 +79,14 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	_ = http.NewResponseController(w).SetReadDeadline(deadline)
 	// Keep the transport's implicit body drain bounded on ALL early exits too.
 	parts := strings.Split(strings.TrimPrefix(r.URL.Path, collection), "/")
+	if len(parts) == 6 && parts[5] == "execution-status" {
+		h.serveExecutionStatus(w, r, ctx, parts)
+		return
+	}
+	if len(parts) == 6 && parts[5] == "execution-authorization" {
+		h.serveExecutionAuthorization(w, r, ctx, parts)
+		return
+	}
 	if len(parts) == 6 && parts[5] == "activation" {
 		h.serveActivation(w, r, ctx, parts)
 		return
@@ -235,7 +250,11 @@ func readBodyLimit(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 	}
 	if int64(len(b)) > limit || err != nil || ctx.Err() != nil {
 		w.Header().Set("Connection", "close")
-		if supported {
+		// Preserve the existing bounded read deadline for an oversized body:
+		// an immediate deadline can cancel Request.Context before the error
+		// response is committed. Connection: close prevents implicit draining.
+		// Actual cancellation/read failures retain the existing interruption.
+		if supported && int64(len(b)) <= limit {
 			_ = c.SetReadDeadline(time.Now())
 		}
 	} else if supported {
@@ -245,6 +264,7 @@ func readBodyLimit(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 }
 
 var messages = map[string]string{
+	"retention_capacity":       "Execution retention capacity unavailable.",
 	"activation_limit_reached": "Workspace activation intent limit reached.",
 	"activation_rate_limited":  "Monitor activation intent is cooling down.",
 	"invalid_request":          "Invalid monitor request.", "unauthenticated": "Authentication required.", "csrf_rejected": "Request origin could not be verified.",

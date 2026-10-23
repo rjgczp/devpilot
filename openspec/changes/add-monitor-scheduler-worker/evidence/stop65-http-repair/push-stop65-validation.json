@@ -1,0 +1,62 @@
+{
+  "head": "87af881fae2358924102fbcb9fd891a310ec2266",
+  "groups": {
+    "linux-termination": {
+      "manifest_files_verified": 160,
+      "receipts": [
+        {
+          "run_id": "1cd3ec5b-5bec-4669-93b9-2ff93901462c",
+          "receipt_sha256": "e16aef7d90778714f8fecd5f55ca353333c4235ce2b337dfe8349328b883a7ff",
+          "process_count": 5,
+          "actual_target_connects": 1
+        },
+        {
+          "run_id": "8f754fdc-23f4-422c-ba25-a627371b0652",
+          "receipt_sha256": "fc36f59370cb5948ac21e46e089facb725fc8c8bd66ec2c385f4098f3260e7b0",
+          "process_count": 5,
+          "actual_target_connects": 1
+        },
+        {
+          "run_id": "c68455f6-55ea-49c7-a7c0-8bdbedf5b16d",
+          "receipt_sha256": "8d3e3b4da3c208972c07edecdc282eb4dbd7d37151c3870911f9d4891395aeba",
+          "process_count": 5,
+          "actual_target_connects": 1
+        }
+      ],
+      "stream_opens": 4,
+      "before_frames": 4,
+      "after_frames": 0,
+      "db_capacity_released": false
+    },
+    "pg-normal": {
+      "manifest_files_verified": 49,
+      "receipts": [
+        {
+          "run_id": "01a1628b-6db6-70f0-9fa2-e3a21441f7f6",
+          "receipt_sha256": "8234d7a496f322e74bae60294b552dd565c8bc66d5885c25c714a57843f5b76a",
+          "process_count": 5,
+          "actual_target_connects": 1
+        }
+      ],
+      "stream_opens": 1,
+      "before_frames": 1,
+      "after_frames": 0,
+      "db_capacity_released": false
+    },
+    "pg-race": {
+      "manifest_files_verified": 49,
+      "receipts": [
+        {
+          "run_id": "01a1628b-a8ed-7247-bba4-f36a6722d752",
+          "receipt_sha256": "ca1dc19f93014bc7eef29be52004a294565421b7c221cc0ffe3c6090e4c25f21",
+          "process_count": 5,
+          "actual_target_connects": 1
+        }
+      ],
+      "stream_opens": 1,
+      "before_frames": 1,
+      "after_frames": 0,
+      "db_capacity_released": false
+    }
+  }
+}

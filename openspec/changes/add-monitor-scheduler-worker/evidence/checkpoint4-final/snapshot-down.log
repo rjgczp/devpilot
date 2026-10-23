@@ -1,0 +1,7 @@
+2026/10/21 07:58:54 OK   00006_create_http_monitors.sql (2.66ms)
+2026/10/21 07:58:54 OK   00005_create_projects.sql (2.1ms)
+2026/10/21 07:58:54 OK   00004_create_workspace_invitations.sql (1.82ms)
+2026/10/21 07:58:54 OK   00003_create_workspaces.sql (1.64ms)
+2026/10/21 07:58:54 OK   00002_create_sessions.sql (1.19ms)
+2026/10/21 07:58:54 OK   00001_create_users.sql (988µs)
+2026/10/21 07:58:54 goose: no migrations to run. current version: 0

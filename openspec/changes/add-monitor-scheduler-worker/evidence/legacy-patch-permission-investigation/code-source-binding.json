@@ -1,0 +1,16 @@
+{
+  "source_commit": "cf3477d2801acc5d1bb53aded6d476a632899a35",
+  "runtime_head": "80ba9671ded3e0d0b022e5cf4cda8cfc14dbeabe",
+  "runtime_dirty": true,
+  "passing_receipt": "targeted-regression.json",
+  "exit_code": 0,
+  "source_inventory_sha256": "577e55e633d96470dcb6a7a9274a6f1b6fc622d1064cf287059c3d689ea619c7",
+  "verified_source_files": 1308,
+  "mismatches": [],
+  "test_source_sha256": {
+    "tests/integration/scheduler_checkpoint1_migration_concurrency_test.go": "3207df32adabbc3a56aef1345a8a6fcd8ccedb43556e3f9f72e81525612145c8",
+    "tests/integration/scheduler_legacy_patch_permissions_test.go": "18a81d1be7434d34d0d2aa449800c4ed09edc8ef18f6e2ca2d0e9b4b8822153c"
+  },
+  "production_and_migrations_unchanged_from_runtime_head": true,
+  "note": "Post-test commit records identical source by hashes, not a claim that test execution happened at this later SHA. Subsequent commit contains evidence metadata only."
+}

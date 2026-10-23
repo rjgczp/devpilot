@@ -1,0 +1,68 @@
+[
+  {
+    "requirement": "Worker handoff only narrows the approved single execution kernel",
+    "scenario": "Security - Additional target permit never bypasses address policy",
+    "tests": [
+      "TestTargetPermitSoleDialGate",
+      "TestSchedulerPermitBridgeBindsFrozenInput",
+      "TestTargetPipeOneAttempt",
+      "TestTargetPipeConcurrentSingleConsumer",
+      "TestTargetPipeMalformed",
+      "TestTargetPipeRejectsUntrustedReply"
+    ],
+    "evidence": [
+      "linux-unit-vet.log.gz",
+      "linux-race.log.gz",
+      "network/summary.json"
+    ],
+    "status": "default-refusal and protocol validated; full scheduler allow depends on6.4/6.5"
+  },
+  {
+    "requirement": "Shared public target budgets protect privacy without claiming complete abuse prevention",
+    "scenario": "Exception - Target permit acknowledgement is uncertain",
+    "tests": [
+      "TestBudgetTargetPipeCommitBoundary",
+      "TestBudgetTargetPipeDeadlineBarrier",
+      "TestBudgetTargetUnknownCommitAndACL",
+      "TestBudgetTargetConcurrentLastSlot",
+      "TestBudgetTargetFinalSupervisorGate"
+    ],
+    "evidence": [
+      "pg-normal-coverage.json",
+      "pg-race-coverage.json",
+      "verbose-normal-coverage.json",
+      "verbose-race-coverage.json"
+    ],
+    "status": "actual PG18 commits/rollback/ACK-loss and IPC verified; witness is not physical Supervisor"
+  },
+  {
+    "requirement": "Production execution stays hard closed without deployment evidence",
+    "scenario": "Security - Environment flag cannot unlock a probe",
+    "tests": [
+      "TestFixtureSchedulerBuildBoundary",
+      "TestReleaseArtifactAndProbeTestBoundary"
+    ],
+    "evidence": [
+      "unit.log.gz",
+      "race.log.gz",
+      "linux-unit-vet.log.gz"
+    ],
+    "status": "passed"
+  },
+  {
+    "requirement": "Acceptance separately verifies database network fault and production boundaries",
+    "scenario": "Exception - Planning or old successful artifacts are insufficient",
+    "tests": [
+      "original76 executionnet cases",
+      "5 additional controlled permit denials"
+    ],
+    "evidence": [
+      "network/summary.json",
+      "network/topology.json",
+      "network/firewall-v4.txt",
+      "network/firewall-v6.txt",
+      "network/resources.json"
+    ],
+    "status": "original isolated kernel regression only; no per-Run scheduler network topology or physical-stop acceptance"
+  }
+]

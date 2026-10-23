@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/bin/zsh",
+    "-c",
+    "set -eu; test -z \"$(gofmt -l internal cmd tests)\"; GOCACHE=/private/tmp/devpilot-scheduler-go-cache go vet ./...; git diff --check; shasum -a 256 migrations/0000[1-7]*"
+  ],
+  "started_at": "2026-10-21T02:14:47.887083+00:00",
+  "elapsed_seconds": 0.29630525002721697,
+  "exit_code": 0,
+  "head": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+  "dirty": false,
+  "source_inventory_sha256": "c93642d57c7469533da7b9d9fa801a255d160fa80e48be14efc13e07a2d9112a",
+  "binaries": {},
+  "log_sha256": "479684011c8b4686ce23725eb67103bf9b9f5269a2d052cfb3d10a6e5190b334",
+  "source_inventory_ref": "source-inventories/c93642d57c7469533da7b9d9fa801a255d160fa80e48be14efc13e07a2d9112a.json",
+  "original_receipt_ref": "raw-receipts/static.json.gz",
+  "original_receipt_sha256": "e13ddb6a1add6254bc1b41994624dab5d5bbb729bdfa0331e2264be35b124387"
+}

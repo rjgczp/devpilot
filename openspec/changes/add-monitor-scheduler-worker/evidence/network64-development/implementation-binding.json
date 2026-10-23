@@ -1,0 +1,18 @@
+{
+  "implementation_commit": "930532ce28825f5bfb4778c3e3a3acb266c92eb8",
+  "local_receipt_head": "343540f1f23a579e35f796b27eddb48776178ab6",
+  "local_dirty": true,
+  "runtime_files_sha256": {
+    "cmd/networksupervisorfixture/main_linux.go": "ef3326fbec6bbcfd1df76849ff3b783d848b4ee1cb1d87e7759ff2fd46e2456f",
+    "internal/monitoring/network_policy_boundary_test.go": "ef67db0b73a12c48c83930261c2d5d6fff85d7ec647038862de4f178b627ae6c",
+    "internal/supervisorfixture/policy_linux.go": "471cc48f1ccbc967a656c7c43ea7c4ecf8a1498c188e845310902e75608c4ff5",
+    "internal/supervisorfixture/policy_linux_test.go": "c7ba88b390f1b933ec1e1a0f8f491aa2994bde492bd7f0184e6bdbba1ed85acd",
+    "tests/integration/scheduler_network_policy_test.go": "c817eb47941fcff9c348c4a5215e6485658fab70eff85b66a22caf8d1fc55740",
+    "tests/scheduler/build-network64.sh": "2c0044b89f5a296b182b5055eb52e64131cacb6c6ec1d4e2152a2862f14d763d",
+    "tests/scheduler/network_actor.py": "103d265e871a05515a37c7bef803867c5e07998fc63019676781899f8d6b2caf",
+    "tests/scheduler/network_fixture.py": "4d2206832f4d1fe9d0355d5f710c33a77b2b52c11466e029932e904ce1257888",
+    "tests/scheduler/network_receiver.py": "cc7e893c8137ec8e75c245a5d23cb522d944e27a7cfd9da6dba57401a77c06c9",
+    "tests/scheduler/run-network64.py": "87c2f0e417b1311c2dbb705d9cbf2b8d746847c8dadf7a6ceaeae806e792ada6"
+  },
+  "note": "Runtime bytes match implementation commit. Exact final HEAD CI receipts remain mandatory."
+}

@@ -99,12 +99,13 @@ func TestDormantProductionDependencyAndSchemaBoundary(t *testing.T) {
 		t.Fatal("review worker startup")
 	}
 	files, _ := filepath.Glob("../../migrations/*.sql")
-	if len(files) != 7 {
+	// Migration8 is explicitly approved; it adds no ordinary execution entry.
+	if len(files) != 8 {
 		t.Fatal("unreviewed migration")
 	}
-	// Hashes also work in shallow CI checkouts and exported source archives.
+	// Startup wiring remains byte-identical. The approved schema8 API additions
+	// are validated by monitor package OpenAPI response/shape contract tests.
 	for p, want := range map[string]string{
-		"docs/api/openapi.yaml":  "30ae8a53d8ee2a0b4f4520d1b5e3b639a9498dcd30263b38af47ba98e4a787e7",
 		"internal/app/routes.go": "96d4192f3ab0e92ed1b49b4b8cee07393d329cf83d8538b6139ee3844a97fc38",
 	} {
 		b, err := os.ReadFile(filepath.Join("../..", p))

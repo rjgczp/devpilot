@@ -1,0 +1,11 @@
+23    execve("/toolbin/cp1-audit.test", ["/toolbin/cp1-audit.test", "-test.run", "^TestMonitorNetworkProbePositiveControl$", "-test.v", "-test.timeout=60s"], 0xffffd9b5c858 /* 17 vars */) = 0
+23    clone(child_stack=0x4000042000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 24
+24    tgkill(23, 23, SIGURG <unfinished ...>
+23    clone(child_stack=0x4000090000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM <unfinished ...>
+24    <... tgkill resumed>)             = 0
+23    <... clone resumed>)              = 25
+23    --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=23, si_uid=0} ---
+23    clone(child_stack=0x400008c000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 26
+25    clone(child_stack=0x40000ae000, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 27
+23    connect(5<TCP:[3243082]>, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("192.0.2.1")}, 16) = -1 ENETUNREACH (Network is unreachable)
+23    exit_group(0)                     = ?

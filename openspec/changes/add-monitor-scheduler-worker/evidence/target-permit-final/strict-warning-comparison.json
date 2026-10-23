@@ -1,0 +1,22 @@
+{
+  "unchanged": true,
+  "paths": {
+    "user-authentication": [
+      "requirements[11]"
+    ],
+    "workspace-access": [
+      "requirements[7]",
+      "requirements[8]"
+    ],
+    "workspace-members": [
+      "requirements[2]",
+      "requirements[3]"
+    ],
+    "workspace-persistence": [
+      "requirements[1]",
+      "requirements[8]"
+    ]
+  },
+  "count": 7,
+  "comparison_base": "checkpoint4-final/strict-history.log"
+}

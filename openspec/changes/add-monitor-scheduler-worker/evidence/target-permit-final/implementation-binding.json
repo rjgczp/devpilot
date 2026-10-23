@@ -1,0 +1,5 @@
+{
+  "tested_sha": "8593edccd94e1ed00348e5cb0a98895f1b71cb71",
+  "metadata_policy": "Only verification/evidence metadata follows this commit; no task checkboxes or implementation/test bytes change. Source inventory excludes this change evidence/verification only.",
+  "baseline_sha": "0fd6502f30c0882ae083773feb7f24b8fe41a524"
+}

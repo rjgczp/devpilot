@@ -15,7 +15,7 @@ const activationJSON = `jsonb_build_object('workspace_id',a.workspace_id,'projec
  'configuration_version',m.version::text,'desired_state',a.desired_state,
  'activation_configuration_version',a.activation_configuration_version::text,'activation_generation',a.activation_generation::text,
  'next_due_at',a.next_due_at,'next_enable_allowed_at',a.next_enable_allowed_at,'last_transition_kind',a.last_transition_kind,
- 'created_at',a.created_at,'updated_at',a.updated_at,'execution_state','blocked','blocked_reason','scheduler_unavailable')`
+ 'created_at',a.created_at,'updated_at',a.updated_at,'execution_state','not_reported','blocked_reason','execution_status_required')`
 
 func decodeActivation(raw []byte) (Activation, error) {
 	var a Activation

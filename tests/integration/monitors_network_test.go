@@ -37,4 +37,6 @@ func TestMonitorNoTargetNetwork(t *testing.T) {
 	t.Run("unknown-commit-reconciliation", TestActivationCommitFaults)
 	t.Run("http-unknown-commit", TestActivationHTTPUnknownCommitAndFaults)
 	t.Run("full-workspace-intent-cap", TestActivationQuotaAndCAS)
+	t.Run("finite-execution-authorization", TestCheckpointOneAuthorizationRealHTTPStrictContract)
+	t.Run("intent-and-authoritative-status", TestCheckpointOneHTTPIntentStatusContract)
 }

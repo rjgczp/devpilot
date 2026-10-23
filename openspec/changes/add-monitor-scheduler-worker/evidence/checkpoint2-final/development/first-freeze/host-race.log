@@ -1,0 +1,15 @@
+ok  	github.com/rjgczp/devpilot/cmd/api	(cached)
+ok  	github.com/rjgczp/devpilot/internal/app	(cached)
+ok  	github.com/rjgczp/devpilot/internal/auth	(cached)
+ok  	github.com/rjgczp/devpilot/internal/config	(cached)
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	(cached)
+ok  	github.com/rjgczp/devpilot/internal/monitor	1.876s
+ok  	github.com/rjgczp/devpilot/internal/monitoring	2.927s
+ok  	github.com/rjgczp/devpilot/internal/password	(cached)
+ok  	github.com/rjgczp/devpilot/internal/project	1.789s
+ok  	github.com/rjgczp/devpilot/internal/registration	(cached)
+ok  	github.com/rjgczp/devpilot/internal/session	(cached)
+ok  	github.com/rjgczp/devpilot/internal/testdb	(cached)
+ok  	github.com/rjgczp/devpilot/internal/user	(cached)
+ok  	github.com/rjgczp/devpilot/internal/workspace	(cached)

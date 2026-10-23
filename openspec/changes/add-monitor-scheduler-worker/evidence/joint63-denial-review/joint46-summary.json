@@ -1,0 +1,934 @@
+[
+  {
+    "mode": "normal",
+    "case": "allow-https",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "allow-https",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:47:30.814438Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "tls-stop",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "tls-stop",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:47:45.274278Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "tracer-stopped",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "tracer-stopped",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:47:59.845556Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "tracer-crashed",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "supervisor-killed",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "stop-ack-lost",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "journal-collision",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "allow-http",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "allow-http",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:49:12.771746Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "permit-missing",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "permit-missing",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:49:25.077192Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "permit-timeout",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "permit-timeout",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:49:39.281796Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "target-commit-unknown",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "target-commit-unknown",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:49:51.405221Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "supervisor-lost",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "supervisor-lost",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:50:03.683119Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "rules-missing",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "rules-missing",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:50:16.297704Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "old-fence",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "old-fence",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:50:28.368666Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "old-incarnation",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "old-incarnation",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:50:40.426186Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "cross-run",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "cross-run",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:50:52.638943Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "duplicate-envelope",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "duplicate-envelope",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:51:05.493294Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "cross-run-envelope",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "rebinding",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "rebinding",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:51:28.525022Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "ipv6-poison",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "ipv6-poison",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:51:40.504906Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "tls-invalid",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "tls-invalid",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:51:52.744698Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "start-commit-unknown",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "normal",
+    "case": "input-commit-unknown",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "allow-https",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "allow-https",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:52:27.232174Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "tls-stop",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "tls-stop",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:52:42.689678Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "tracer-stopped",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "tracer-stopped",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:52:57.778768Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "tracer-crashed",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "supervisor-killed",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "stop-ack-lost",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "journal-collision",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "allow-http",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "allow-http",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:54:15.489905Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "permit-missing",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "permit-missing",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:54:28.838444Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "permit-timeout",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "permit-timeout",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:54:44.185936Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "target-commit-unknown",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "target-commit-unknown",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:54:57.583985Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "supervisor-lost",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "supervisor-lost",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:55:11.270750Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "rules-missing",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "rules-missing",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:55:24.476447Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "old-fence",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "old-fence",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:55:37.761344Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "old-incarnation",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "old-incarnation",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:55:51.306117Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "cross-run",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "cross-run",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:56:04.273521Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "duplicate-envelope",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "duplicate-envelope",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 1,
+      "physical_stop": true,
+      "at": "2026-10-23T06:56:17.888830Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "cross-run-envelope",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "rebinding",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "rebinding",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:56:43.321652Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "ipv6-poison",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "ipv6-poison",
+      "total_connect_syscalls": 1,
+      "dns_connects": 1,
+      "target_connect_syscalls": 0,
+      "target_accepts": 0,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:56:56.532295Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "tls-invalid",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": {
+      "case": "tls-invalid",
+      "total_connect_syscalls": 2,
+      "dns_connects": 1,
+      "target_connect_syscalls": 1,
+      "target_accepts": 1,
+      "get_count": 0,
+      "physical_stop": true,
+      "at": "2026-10-23T06:57:09.884421Z"
+    },
+    "global_in_use": [
+      0
+    ],
+    "reservation_states": [
+      "released"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "start-commit-unknown",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  },
+  {
+    "mode": "race",
+    "case": "input-commit-unknown",
+    "exit_code": 0,
+    "source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+    "witness": null,
+    "global_in_use": [
+      1
+    ],
+    "reservation_states": [
+      "quarantined"
+    ],
+    "http_result_columns_all_null": true
+  }
+]

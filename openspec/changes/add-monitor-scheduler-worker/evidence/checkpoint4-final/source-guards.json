@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "-c",
+    "import pathlib,subprocess,hashlib; files=[str(p) for p in pathlib.Path(\".\").rglob(\"*.go\") if \".git\" not in p.parts]; assert not subprocess.check_output([\"gofmt\",\"-l\",*files]); subprocess.run([\"git\",\"diff\",\"--check\"],check=True); migrations=sorted(pathlib.Path(\"migrations\").glob(\"*.sql\")); assert len(migrations)==8; [(print(str(p),hashlib.sha256(p.read_bytes()).hexdigest()),p.read_bytes()==subprocess.check_output([\"git\",\"show\",\"e56c69a5832e88dfaac469071f9ada51a758dadc:\"+str(p)]) or (_ for _ in ()).throw(AssertionError(str(p)))) for p in migrations]"
+  ],
+  "started_at": "2026-10-21T07:49:46.543556+00:00",
+  "elapsed_seconds": 0.18240495800273493,
+  "exit_code": 0,
+  "head": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
+  "dirty": false,
+  "source_inventory_sha256": "215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528",
+  "binaries": {},
+  "log_sha256": "86dad1d28fbf4f6ee761f5ac3b15acdd47334fca36d9016aaf37c16817362e15",
+  "source_inventory_ref": "source-inventories/215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528.json",
+  "original_receipt_ref": "raw-receipts/source-guards.json.gz",
+  "original_receipt_sha256": "b2aa21a22eae36658892a339437f0c98f012059db63206a6aff16229c3226856",
+  "log_ref": "source-guards.log"
+}

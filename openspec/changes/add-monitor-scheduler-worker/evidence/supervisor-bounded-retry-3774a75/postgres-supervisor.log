@@ -1,0 +1,25 @@
+2026-10-20T07:13:53.812513594Z 2026-10-20 07:13:53.812 UTC [2922] ERROR:  permission denied for function prepare_run
+2026-10-20T07:13:53.812533136Z 2026-10-20 07:13:53.812 UTC [2922] STATEMENT:  SELECT scheduler_private.prepare_run($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::uuid,35000,decode(repeat('ab',32),'hex'))
+2026-10-20T07:13:53.817151886Z 2026-10-20 07:13:53.817 UTC [2923] ERROR:  candidate_invalid
+2026-10-20T07:13:53.817162927Z 2026-10-20 07:13:53.817 UTC [2923] CONTEXT:  PL/pgSQL function prepare_run(uuid,uuid,uuid,uuid,uuid,uuid,uuid,integer,bytea) line 11 at RAISE
+2026-10-20T07:13:53.817164761Z 2026-10-20 07:13:53.817 UTC [2923] STATEMENT:  SELECT scheduler_private.prepare_run($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::uuid,35000,decode(repeat('ab',32),'hex'))
+2026-10-20T07:13:53.821288094Z 2026-10-20 07:13:53.821 UTC [2922] ERROR:  permission denied for function consume_input
+2026-10-20T07:13:53.821296427Z 2026-10-20 07:13:53.821 UTC [2922] STATEMENT:  SELECT scheduler_private.consume_input($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,1)
+2026-10-20T07:13:53.823050511Z 2026-10-20 07:13:53.822 UTC [2923] ERROR:  candidate_invalid
+2026-10-20T07:13:53.823055427Z 2026-10-20 07:13:53.822 UTC [2923] CONTEXT:  PL/pgSQL function consume_input(uuid,uuid,uuid,uuid,uuid,uuid,bigint) line 19 at RAISE
+2026-10-20T07:13:53.823056594Z 2026-10-20 07:13:53.822 UTC [2923] STATEMENT:  SELECT scheduler_private.consume_input($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,1)
+2026-10-20T07:13:53.823772761Z 2026-10-20 07:13:53.823 UTC [2913] ERROR:  reservation lineage or consumed capability is immutable
+2026-10-20T07:13:53.823775927Z 2026-10-20 07:13:53.823 UTC [2913] CONTEXT:  PL/pgSQL function reservation_guard() line 14 at RAISE
+2026-10-20T07:13:53.823776844Z 2026-10-20 07:13:53.823 UTC [2913] STATEMENT:  UPDATE scheduler_reservations SET input_consumed_at=NULL WHERE monitor_id=$1
+2026-10-20T07:13:53.824030677Z 2026-10-20 07:13:53.824 UTC [2923] ERROR:  permission denied for table users
+2026-10-20T07:13:53.824035011Z 2026-10-20 07:13:53.824 UTC [2923] STATEMENT:  SELECT password_hash FROM users
+2026-10-20T07:13:53.824172886Z 2026-10-20 07:13:53.824 UTC [2923] ERROR:  permission denied for table sessions
+2026-10-20T07:13:53.824175594Z 2026-10-20 07:13:53.824 UTC [2923] STATEMENT:  SELECT token_hash FROM sessions
+2026-10-20T07:13:53.824234052Z 2026-10-20 07:13:53.824 UTC [2923] ERROR:  permission denied for table monitor_runs
+2026-10-20T07:13:53.824236802Z 2026-10-20 07:13:53.824 UTC [2923] STATEMENT:  UPDATE monitor_runs SET physical_release_confirmed_at=clock_timestamp()
+2026-10-20T07:13:53.824326469Z 2026-10-20 07:13:53.824 UTC [2923] ERROR:  permission denied for table scheduler_control
+2026-10-20T07:13:53.824338719Z 2026-10-20 07:13:53.824 UTC [2923] STATEMENT:  UPDATE scheduler_control SET gate='fixture'
+2026-10-20T07:13:53.824455386Z 2026-10-20 07:13:53.824 UTC [2923] ERROR:  permission denied to set role "devpilot_scheduler_owner"
+2026-10-20T07:13:53.824457636Z 2026-10-20 07:13:53.824 UTC [2923] STATEMENT:  SET ROLE devpilot_scheduler_owner
+2026-10-20T07:13:53.824533844Z 2026-10-20 07:13:53.824 UTC [2923] ERROR:  permission denied to create temporary tables in database "devpilot_registration_test" at character 19
+2026-10-20T07:13:53.824536052Z 2026-10-20 07:13:53.824 UTC [2923] STATEMENT:  CREATE TEMP TABLE forged(i integer)

@@ -1,0 +1,17 @@
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority/exit
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority/revoked
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority/disabled
+=== RUN   TestSystemSnapshotPGAuthorityIsNotCookieAuthority/cleanup
+--- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority (0.03s)
+    --- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority/exit (0.01s)
+    --- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority/revoked (0.00s)
+    --- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority/disabled (0.00s)
+    --- PASS: TestSystemSnapshotPGAuthorityIsNotCookieAuthority/cleanup (0.00s)
+=== RUN   TestSystemSnapshotPGScopePrivilegesAndRelease
+    snapshot_pg_test.go:337: PG18: actual LOGIN role, complete scope, denied writes/DDL/identity reads, released pool/locks, 2s deadline
+--- PASS: TestSystemSnapshotPGScopePrivilegesAndRelease (2.02s)
+=== RUN   TestSystemSnapshotPGStatementConsistency
+    snapshot_pg_test.go:380: PG18: independent writer transaction barriers prove complete old/v8 snapshots; supported Owner update reaches v9
+--- PASS: TestSystemSnapshotPGStatementConsistency (0.04s)
+PASS

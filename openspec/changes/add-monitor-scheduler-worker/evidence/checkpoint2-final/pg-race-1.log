@@ -1,0 +1,6 @@
+=== RUN   TestCheckpointOneRealExpiryExplicitRenewal
+    registration_test.go:79: native Goose up expected-success=true: verified
+    scheduler_checkpoint1_test.go:185: database lifetime: issued=2026-10-21 02:20:16.838774 +0000 UTC expired=2026-10-21 02:21:16.838774 +0000 UTC explicit-renewal=2026-10-21 02:21:16.875174 +0000 UTC
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOneRealExpiryExplicitRenewal (60.19s)
+PASS

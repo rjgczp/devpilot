@@ -1,0 +1,52 @@
+{
+  "collected_at": "2026-10-20T07:54:36.809878+00:00",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{.Id}} {{.Config.Image}} privileged={{.HostConfig.Privileged}} caps={{json .HostConfig.CapAdd}} ports={{json .HostConfig.PortBindings}} networks={{json .NetworkSettings.Networks}}",
+        "devpilot-scheduler-apply-pg18"
+      ],
+      "exit_code": 0,
+      "stdout": "db0774ff4cff96278db0eeab88ec0c2ed64f561a1c28d1671c200e4f31015103 postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336 privileged=false caps=null ports={} networks={\"devpilot-scheduler-apply-control\":{\"Aliases\":null,\"DNSNames\":[\"devpilot-scheduler-apply-pg18\",\"db0774ff4cff\"],\"DriverOpts\":null,\"EndpointID\":\"4fe22f8d6e9858be99577f228571fb32f7a9be4cb369b20079076f13c124cc46\",\"Gateway\":\"\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"GwPriority\":0,\"IPAMConfig\":null,\"IPAddress\":\"172.18.0.2\",\"IPPrefixLen\":16,\"IPv6Gateway\":\"\",\"Links\":null,\"MacAddress\":\"52:65:1b:84:f6:04\",\"NetworkID\":\"55e7af0982bd83c2b2b8171c0135e6ec6b04fe35c575bc895ccea35bbeef93bc\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "network",
+        "inspect",
+        "--format",
+        "{{.Id}} internal={{.Internal}} ipv6={{.EnableIPv6}}",
+        "devpilot-scheduler-apply-control"
+      ],
+      "exit_code": 0,
+      "stdout": "55e7af0982bd83c2b2b8171c0135e6ec6b04fe35c575bc895ccea35bbeef93bc internal=true ipv6=false\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "--format",
+        "{{.Id}}",
+        "devpilot-scheduler-fixture"
+      ],
+      "exit_code": 0,
+      "stdout": "sha256:60a78b61cd1378bdb343af6bf6321f383a33f64737c54852a2d462cdfc1df15c\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "go",
+        "version"
+      ],
+      "exit_code": 0,
+      "stdout": "go version go1.24.3 darwin/arm64\n",
+      "stderr": ""
+    }
+  ]
+}

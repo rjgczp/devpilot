@@ -1,0 +1,10 @@
+{
+  "accepted65_head": "3489a41aa588bff5171347c91a36c6915a81fe45",
+  "original_pending_diff_sha256": "b85737d461ccd379b372580f2069817cde9b8e8bffae0e7f6b21bf20103bc432",
+  "accepted65_supervisor_entry": "python3 -u -c <pinned init>",
+  "accepted65_child_trace_entry": "strace -f ... python3 <fixed actor>",
+  "rejected63_supervisor_entry": "strace -D -f ... python3 -u -c <pinned init>",
+  "fault": "PID1 became a tracee of a descendant that its stop loop SIGSTOPs",
+  "evidence": "PID1 TracerPid10 + tracer10 stopped + final pidfd_send_signal(SIGSTOP) syscall; exact pending syscall return was not captured",
+  "new_permissions": false
+}

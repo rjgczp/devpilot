@@ -1,0 +1,226 @@
+{
+  "compared_to_failed_source": "9008c5c7e580cc80f9875463479155a269bc30ac0fff70a2bf46ce61a88bd704",
+  "changed": [
+    "tests/scheduler/joint63-blocker.md",
+    "tests/scheduler/joint_bootstrap.py",
+    "tests/scheduler/joint_init.py",
+    "tests/scheduler/run-joint63.py"
+  ],
+  "new": [
+    "tests/scheduler/check-nscd-source.py"
+  ],
+  "connect_audit_unchanged": true,
+  "protected_files": [
+    {
+      "path": "internal/monitoring/admission.go",
+      "sha256": "48ad2f80d929d85063efb900549f812e708fa744d0b443068ab50a4bc985222c",
+      "equals_head": true
+    },
+    {
+      "path": "internal/monitoring/dns.go",
+      "sha256": "bb75343bfc8eee14ba01938a51d9aef48f49e350fa3d1d84e16992bd30187424",
+      "equals_head": true
+    },
+    {
+      "path": "internal/monitoring/execution_network_test.go",
+      "sha256": "80da9e3028d2b18a22e0cd1a2f0eeb9226b9138a22472942b27aa28e1714d207",
+      "equals_head": true
+    },
+    {
+      "path": "internal/monitoring/executor.go",
+      "sha256": "487d50f228050586af0b77988bf964ef5157337e6748f54011e45ab36c217c5d",
+      "equals_head": true
+    },
+    {
+      "path": "internal/monitoring/policy.go",
+      "sha256": "516d975441ebe32a2667fca23a942fd78d81ee21f0a0ccb02bd7e89d7c1c158b",
+      "equals_head": true
+    },
+    {
+      "path": "internal/monitoring/result.go",
+      "sha256": "c5a042be2f95d095b46023eacca59f5fc3779eb7862147cb104b15bca6e5170c",
+      "equals_head": true
+    },
+    {
+      "path": "migrations/00001_create_users.sql",
+      "sha256": "e09f6476b25ce0a60cbd6607486a9b4208f2c3413957c83e54110e0e661b5490",
+      "equals_head": true
+    },
+    {
+      "path": "migrations/00002_create_sessions.sql",
+      "sha256": "27ce132375459ea1e061aac1e2c00de1010c9dc8f94c21489e7c24243f02c96a",
+      "equals_head": true
+    },
+    {
+      "path": "migrations/00003_create_workspaces.sql",
+      "sha256": "327651e7727c512d80062792bab0ea874f1f63320b98ca6b0491dd8e6f94223d",
+      "equals_head": true
+    },
+    {
+      "path": "migrations/00004_create_workspace_invitations.sql",
+      "sha256": "0374475bb78a985a9baf3de72055032bcc08e6f18512b850442a59940f20fdfb",
+      "equals_head": true
+    },
+    {
+      "path": "migrations/00005_create_projects.sql",
+      "sha256": "4715106905a92991c7f1dcb2da08afb7fd93217716bfa83eb4a33bb8145ac519",
+      "equals_head": true
+    },
+    {
+      "path": "migrations/00006_create_http_monitors.sql",
+      "sha256": "26ac26c66da96b0f16076342f0f11258bb6ea92be5f71a6b015c97a3075ee4e2",
+      "equals_head": true
+    },
+    {
+      "path": "migrations/00007_create_monitor_activation_states.sql",
+      "sha256": "713c39b60a3ede8156c1163404a6883cea00b6c8979b94b36a96047a5532cfaa",
+      "equals_head": true
+    },
+    {
+      "path": "migrations/00008_create_monitor_scheduler.sql",
+      "sha256": "af3b8ea3d366f114879d5f7ff4cf338c70e17ce20e1ba224693085a3d8fce1c2",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/.gitignore",
+      "sha256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/Dockerfile",
+      "sha256": "8fe38aafb798488bcb481dcdffeb8d547333ffe2fbe531bde16d9d3e98fbf05a",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/README.md",
+      "sha256": "ecb762b8a696cc75e0f3c660dbc79c3f005c464930898f80a8ce96dcdff4792e",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/audit_trace.py",
+      "sha256": "6135beac43e2d08bed672faa16fed9efc8b941be9a5fbbece88da5a8faa6cdda",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/check_audit_build.py",
+      "sha256": "92d45f2a2cd5cd9fd175c11d4900fc03f04d0f2245afc9b358b8cc7e754bdcb9",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/fixtures/README.md",
+      "sha256": "193f26b67ab2873dd9d306f006b7b14b8f4ffbd598a99bf2d4b9274b97927a1d",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/fixtures/ci-39193625995-nscd.trace",
+      "sha256": "fb1f6417f08f5c5fb6118100be1f3ce8021343a8fc3249a81c5839cd9fa25919",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/run-monitor-audit-docker.sh",
+      "sha256": "9c29edeca87b8812a9920253de80762a84c9e675455566aa831068d64d5e6f57",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/run-monitor-audit.sh",
+      "sha256": "5e1791e56644686333902f692a243d97ce8872f1875755aabbc0ffd7d03dbdd2",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/test_audit_build.py",
+      "sha256": "b967f8fbf9e01fb3f8a43af987b39c3790aa8b1a1db08dcc34a93d6207c9f129",
+      "equals_head": true
+    },
+    {
+      "path": "tests/network/test_audit_trace.py",
+      "sha256": "2f101c4b062e9b7bfe2e6288a97f646aa7f7c06c1646e042270d18c3e9861afd",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/retire-projection-fixture.sql",
+      "sha256": "6c91960e97f2263add0d8dc9dc55191c32779dcd6753b47699f2600be082572d",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/termination_fixture.py",
+      "sha256": "ac6e0890ca67f8341ad150e98ae3c8e981f6ceab122d6e7449e7f9f3d13091f6",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/termination_init.py",
+      "sha256": "59e21f6925e247a5875a08a270fdae0ee2b2874f82ad8424fcc745c33d528a0f",
+      "equals_head": true
+    },
+    {
+      "path": "internal/supervisorfixture/policy_linux.go",
+      "sha256": "471cc48f1ccbc967a656c7c43ea7c4ecf8a1498c188e845310902e75608c4ff5",
+      "equals_head": true
+    },
+    {
+      "path": "internal/supervisorfixture/policy_linux_test.go",
+      "sha256": "444654ab25780147b5073bc7201a0183212e1277e84c79a837eb1d053a09367a",
+      "equals_head": true
+    },
+    {
+      "path": "internal/supervisorfixture/receipt_linux.go",
+      "sha256": "8f78a542c989f843a43758891e0d3cb0f76b3048fa3e5a07621d4d1499934425",
+      "equals_head": true
+    },
+    {
+      "path": "internal/supervisorfixture/receipt_linux_test.go",
+      "sha256": "e0ab6c18bb2e3e0e653be959e278976aedc39cb44a54955d1d4889ccc20c6f07",
+      "equals_head": true
+    },
+    {
+      "path": "internal/supervisorfixture/settlement_linux.go",
+      "sha256": "8370f0eb3affef6ec341bbe0fcade99cbec60afa05850660858b99030ef0bf84",
+      "equals_head": true
+    },
+    {
+      "path": "internal/supervisorfixture/settlement_linux_test.go",
+      "sha256": "d6b54ee5e74984ea4b5847e6433d92234efdfeaceb7e26c0a756ff2595c3bf27",
+      "equals_head": true
+    },
+    {
+      "path": "internal/supervisorfixture/stop_linux.go",
+      "sha256": "046e1335b84b3516ca9aca0bbe8138d5a9214e0d3ffc93687d944d0047bf5e97",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/network_actor.py",
+      "sha256": "103d265e871a05515a37c7bef803867c5e07998fc63019676781899f8d6b2caf",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/network_receiver.py",
+      "sha256": "63d1d0fc3e1d6ae10bd4af310a8a4d60a3bdd15f076a3f482f2aacfb717d2b2d",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/release_fixture.py",
+      "sha256": "69df1f76aef66bc969fa9f74c337f71e05b8a8ebb730ef844e27bf8e1e407824",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/run-network64.py",
+      "sha256": "87c2f0e417b1311c2dbb705d9cbf2b8d746847c8dadf7a6ceaeae806e792ada6",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/run-release54.py",
+      "sha256": "46542506f6735584aefd0afe5358133eddd54fecf5e04f4222da1ffdd96298a3",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/run-stop65.py",
+      "sha256": "b609173ab0951441e2286061d91fab242385e774c71d8e13231a1bf50d724d76",
+      "equals_head": true
+    },
+    {
+      "path": "tests/scheduler/termination_actor.py",
+      "sha256": "147027c224ac19982521146fbd2fa75175141b52f54724665b81d646a1c1f46d",
+      "equals_head": true
+    }
+  ],
+  "prior_draft_shared_network_fixture_unchanged_by_nscd_repair": true
+}

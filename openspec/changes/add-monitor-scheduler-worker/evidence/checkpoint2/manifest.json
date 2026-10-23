@@ -1,0 +1,32 @@
+{
+  "pg-full": {
+    "log_sha256": "06797c0765bd1d2247c3929c3a06a3aa9828ff5425f8b97efbea2244c3f148f7",
+    "exit_code": 0,
+    "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555"
+  },
+  "unit-race": {
+    "log_sha256": "f9e485cfc320bf08f84c49b86bde5c483d10c5e200882f4acd4570aa0875bdec",
+    "exit_code": 0,
+    "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555"
+  },
+  "vet": {
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "exit_code": 0,
+    "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555"
+  },
+  "change-strict": {
+    "log_sha256": "261d7318727283688fe61814d964d68b4d730cfe8b9f55ead352a3dc9dcfcc4b",
+    "exit_code": 0,
+    "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555"
+  },
+  "all-strict": {
+    "log_sha256": "fef4737504c8a9567664c2e4925fa8db19971473867e035eb2f8dff3ca9bd3d1",
+    "exit_code": 1,
+    "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555"
+  },
+  "pg-race": {
+    "log_sha256": "88ac65fb6928c06fa30e7d865d23a6e7e82cfdf46bcbf30c2eb2a0aedebc8e27",
+    "exit_code": 1,
+    "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555"
+  }
+}

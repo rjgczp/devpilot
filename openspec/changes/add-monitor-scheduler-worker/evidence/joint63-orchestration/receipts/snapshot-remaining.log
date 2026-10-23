@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/private/tmp/devpilot-joint63-snapshot-remaining.py", line 18, in <module>
+    ports=inspect['NetworkSettings']['Ports']['5432/tcp'];assert len(ports)==1 and ports[0]['HostIp']=='127.0.0.1';port=int(ports[0]['HostPort'])
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

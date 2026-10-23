@@ -1,0 +1,544 @@
+[
+  {
+    "file": "verify/ci-context/checkout.json",
+    "command": [
+      "git",
+      "show",
+      "-s",
+      "--format=fuller",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.004687657999994599,
+    "log_sha256": "7007493308e571bf90535dcfba41240989c1b205365b78428634baaf6aad9ff8",
+    "binaries": {}
+  },
+  {
+    "file": "verify/verify-evidence/race.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "./...",
+      "-count=1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 11.552267748999995,
+    "log_sha256": "c80becef56eba50eeddd67c545f6308d7f24576662d51f27961c3c308be034f0",
+    "binaries": {}
+  },
+  {
+    "file": "verify/verify-evidence/unit.json",
+    "command": [
+      "go",
+      "test",
+      "./...",
+      "-count=1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 10.815898261000008,
+    "log_sha256": "ad45d213a41af9a26483c0a74eda6284f66a3101506cdc7f9e6d3fdb24216812",
+    "binaries": {}
+  },
+  {
+    "file": "execution/ci-context/checkout.json",
+    "command": [
+      "git",
+      "show",
+      "-s",
+      "--format=fuller",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.004703949999999679,
+    "log_sha256": "7007493308e571bf90535dcfba41240989c1b205365b78428634baaf6aad9ff8",
+    "binaries": {}
+  },
+  {
+    "file": "execution/execution-meta/kernel-network.json",
+    "command": [
+      "env",
+      "EXECUTION_EVIDENCE=/home/runner/work/_temp/execution-network",
+      "sh",
+      "tests/execution/run-docker.sh"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 42.119146128,
+    "log_sha256": "3c20e759f20d374071836a08bf36e140653a3c63bff2ad473c0ef341dc741fbe",
+    "binaries": {}
+  },
+  {
+    "file": "execution/execution-meta/schema6.json",
+    "command": [
+      "go",
+      "run",
+      "-tags=integration",
+      "./tests/ci/snapshot-schema"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.4535927029999982,
+    "log_sha256": "51ebe85fbe4c175538be1abc1e5f34b52b24c0c9c1dcb83baeb182018210dd06",
+    "binaries": {}
+  },
+  {
+    "file": "execution/execution-meta/snapshot-normal.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,executionsnapshot",
+      "./internal/monitoring",
+      "-run",
+      "^TestSystemSnapshot",
+      "-count=1",
+      "-v",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 4.90622793,
+    "log_sha256": "7685dcd97eda2c480ecb8e336384df4119bbb2b02eb98cc5268a6c14bf12a1e3",
+    "binaries": {
+      "/home/runner/work/_temp/execution-tools/execution.test": "d2438ae0e4a4c7f0d62df21b2f79d69c7e2e6407163b790b247c6ad683849abb"
+    }
+  },
+  {
+    "file": "execution/execution-meta/snapshot-race.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,executionsnapshot",
+      "./internal/monitoring",
+      "-run",
+      "^TestSystemSnapshot",
+      "-count=1",
+      "-v",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 6.538860043,
+    "log_sha256": "d5e1b9bd8cab1ca725e5f0a01551e1377c40c6231a9898ccd25c8344738ab619",
+    "binaries": {
+      "/home/runner/work/_temp/execution-tools/execution.test": "d2438ae0e4a4c7f0d62df21b2f79d69c7e2e6407163b790b247c6ad683849abb"
+    }
+  },
+  {
+    "file": "integration/ci-context/checkout.json",
+    "command": [
+      "git",
+      "show",
+      "-s",
+      "--format=fuller",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.004526247000001149,
+    "log_sha256": "7007493308e571bf90535dcfba41240989c1b205365b78428634baaf6aad9ff8",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/core-01.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestActivationExpiryAfterEveryProtectiveWait|TestActivationIdentityAndMembershipOrderings|TestActivationDelayedOwnerRequestCannotUseRejoin|TestActivationCleanupCandidateOrdering|TestActivationTwoOwnerCASAndConfigOrderings|TestActivationProjectWriteOrderings|TestActivationHTTPUnknownCommitAndFaults|TestActivationMigration|TestActivationStatePermissionsAndInvalidation|TestActivationTriggerAtomicFailureAndBoundedAudit|TestActivationQuotaAndCAS|TestActivationCommitFaults|TestActivationWorkspaceIntentLifetime|TestAuthenticationWithPostgreSQL|TestAuthenticationDatabaseFailuresAndCancellation|TestCleanupBatchMultiInstanceAndFaults|TestDelayedDeletePreservesRejoin|TestInvitationDeleteHeldLockAndSelfReplay|TestInvitationActionRaces|TestInvitationQuotaAndLazyExpiry|TestInvitationFaultAtomicity|TestInvitationLockOrderAndIdentity|TestInvitationExpiryAfterEveryLockWait|TestInvitationPostGateExpiry|TestInvitationProtectedIdentityOrderings|TestInvitationCreationUserUUIDOrder|TestInvitationSessionCleanupOrderings|TestInvitationHTTPFaultsAndCancellation|TestInvitationMigration|TestInvitationLifecycle)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 43.735550651999986,
+    "log_sha256": "e70815c9ca040e01cea5b4835d2744c1d0990a9ed5389df056ef0f82e48e02cf",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/core-02.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestInvitationHTTP|TestInvitationListsAndTenantPermissions|TestInvitationAcceptanceVisibilityAndIndependentTenant|TestInvitationIndexPlans|TestMemberWriteLockOrder|TestMemberConcurrentOwnerAndExitRaces|TestMemberPermissionChangeOrdering|TestMemberIdentityChangeOrdering|TestMemberExpiryAfterEveryLockWait|TestMemberPostGateExpiryAndCleanup|TestMemberTransactionFailures|TestMemberPoolTimeoutAndMissingSchema|TestMemberHTTPCancellationAfterGate|TestMemberHTTPPermissionsAndRevocation|TestMemberRosterSnapshotAndCursorRevocation|TestMemberMixedOperationsAndCleanup|TestMemberRosterStore|TestMemberDeleteStore|TestMonitorConcurrentVersions|TestMonitorExpiryAfterEveryProtectiveWait|TestMonitorIdentityAndMembershipOrderings|TestMonitorFaultAtomicityAndTenantIndependence|TestMonitorReadSnapshotAndLateCommit|TestMonitorSameTenantSerializationAndParentReferences|TestMonitorDelayedOwnerRequestCannotUseRejoin|TestMonitorProjectWriteOrderings|TestMonitorCleanupCandidateOrdering|TestMonitorHTTPFaultsCancellationAndRecovery|TestMonitorHTTPJourneyAndIsolation|TestMonitorMigration)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 17.497086387999985,
+    "log_sha256": "4f990e419bbcc0945ecc74db927510e0910107f86b46b7087fee5d279716e3d5",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/core-03.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestMonitorStorePermissionsPaginationAndVersions|TestMonitorCreatorReferenceAndEmptyScope|TestMonitorMergedConfigurationRevalidated|TestProjectConcurrentVersions|TestProjectExpiryAfterEveryProtectiveWait|TestProjectIdentityAndMembershipOrderings|TestProjectFaultAtomicityAndTenantIndependence|TestProjectReadSnapshotAndLateCommit|TestProjectSameTenantSerializationAndParentReferences|TestProjectDelayedOwnerRequestCannotUseRejoin|TestProjectHTTPJourneyAndIsolation|TestProjectHTTPFaultsCancellationAndRecovery|TestProjectMigration|TestProjectStorePermissionsPaginationAndVersions|TestProjectLiveAuthorityAndCreatorLifetime|TestMigrationAndConstraints|TestRegistrationWithPostgreSQL|TestUnavailableDatabaseAndRecovery|TestExecutionAuthorizationFreshTimeAfterEverySPIWait|TestExecutionAuthorizationTwoOwnersSameTag|TestExecutionAuthorizationLossWhileWaiting|TestExecutionAuthorizationCommitAcknowledgementUnknown|TestExecutionAuthorizationAtomicIntentAndRevocation|TestCheckpointOneRegistrationCapacityLastSlot|TestCheckpointOneEnabledQuotaAndCooling|TestCheckpointOneDownRefusesUnsafeOrExhausted|TestCheckpointOneStartOwnerLossBothOrders|TestCheckpointOneStartExpiryAfterFinalWait|TestCheckpointOneSessionIsNotBackgroundIdentity|TestCheckpointOneAuthorizationFixtureCleansSharedDatabase)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 20.965102814999995,
+    "log_sha256": "06822294d5f525926b5a856f89e77c5c31e25b996ecedbe2d41d109b24bd9786",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/core-04.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestCheckpointOneAuthorizationRealHTTPStrictContract|TestCheckpointOneLegacyAndAuthorizationSerialize|TestCheckpointOneHTTPInventoryBlocksDatabaseAdmission|TestCheckpointOneOldWritersStraddleMigration|TestCheckpointOneHTTPIntentStatusContract|TestCheckpointOneHTTPCutoverAllTagsAndRollback|TestCheckpointOneProjectionRetirementKeepsSchemaEight|TestCheckpointOneControllerPublicAndIncarnation|TestCheckpointOnePersistenceConstraints|TestCheckpointOneSchemaSevenFailsClosed|TestCheckpointOneConfigurationRevokeRollback|TestCheckpointTwoClaimCompetingOwners|TestCheckpointTwoClaimOwnerLossBothOrders|TestCheckpointTwoPatchBeforeWorkers|TestCheckpointTwoDifferentWorkspaceCandidates|TestCheckpointTwoDifferentMonitorSameWorkspace|TestCheckpointTwoClaimLostAcknowledgement|TestCheckpointTwoUnlockedHintsAreNotAuthority|TestCheckpointTwoNarrowRecoveryCapabilities|TestCheckpointTwoBoundedScanAndTick|TestCheckpointTwoAttemptTransitionMatrix|TestCheckpointTwoFenceOverflowAndClockRegression|TestCheckpointTwoParentStagesAndRollback|TestCheckpointTwoScheduleSkip|TestCheckpointTwoLateLocksAndFreshStop|TestCheckpointTwoInjectedExternalDeadlock|TestSchedulerClaimTwoOwnersWorkersAndUserPatch|TestSchedulerClaimOwnerHintInvalidation|TestSchedulerClaimFinalClockAfterControlWait|TestSchedulerClaimAtomicFenceAndSlots)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 17.598976424,
+    "log_sha256": "7856a507f296214b0cbf6370294fbf3f2dda5cd85877cc7f38df38b98e4c1269",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/core-05.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestSchedulerClaimWorkspaceSkipReleasesUser|TestLegacyPatchOriginalFixtureSchemaSevenDiagnosis|TestLegacyPatchColumnPrivilegesAcrossMigration|TestSchedulerLegacyDatabaseWriterAcrossMigration|TestExecutionAuthorizationScheduleFailureRollsBackIntent|TestSchedulerMigrationRetiresAllLegacyTags|TestSchedulerMigrationRollback|TestSchemaSevenFixtureMatchesReviewedHistoricalWriter|TestSchedulerPersistenceScopeLineageAndShape|TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities|TestSchedulerStartRequiresPreparedSupervisorAndConsumesTokens|TestSchedulerPauseBeforeStartAndWhileWaiting|TestSchedulerSupervisorOwnsOneInputCapability|TestSessionStoreAndUpgrade|TestSessionCreationRechecksConcurrentUpdate|TestCreationLockSerializesDisableAndConcurrentRevocation|TestWorkspaceCreationLockOrdering|TestWorkspaceExpiryAndCleanupBoundaries|TestWorkspaceReadSnapshotMembershipAndIdentityChanges|TestWorkspaceTransactionFaultsAndUnknownCommit|TestWorkspaceHTTPAuthenticationAndTenantIsolation|TestWorkspaceHTTPDatabaseFailuresAndRecovery|TestWorkspaceListSnapshotAndCursorChanges|TestWorkspaceMigrationAndConstraints|TestWorkspaceTenantQueriesAndConcurrentCreation)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 10.502628853999994,
+    "log_sha256": "6043912c4aca3b413538dab08abc3b8aadb710d79470314655ed3cc442b8eaf2",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/inventory.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "-list",
+      ".",
+      "./..."
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 6.0723221389999935,
+    "log_sha256": "afd908a4ae96df88e661fd5efad15cafeb267d0592a25d124c147eb0ddb52c3a",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/other-packages.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "github.com/rjgczp/devpilot/cmd/api",
+      "github.com/rjgczp/devpilot/cmd/probeinputfixture",
+      "github.com/rjgczp/devpilot/cmd/schedulerfixture",
+      "github.com/rjgczp/devpilot/internal/app",
+      "github.com/rjgczp/devpilot/internal/auth",
+      "github.com/rjgczp/devpilot/internal/config",
+      "github.com/rjgczp/devpilot/internal/credentials",
+      "github.com/rjgczp/devpilot/internal/health",
+      "github.com/rjgczp/devpilot/internal/monitor",
+      "github.com/rjgczp/devpilot/internal/monitoring",
+      "github.com/rjgczp/devpilot/internal/monitoring/handoff",
+      "github.com/rjgczp/devpilot/internal/monitoring/probesandbox",
+      "github.com/rjgczp/devpilot/internal/monitoring/targetpermit",
+      "github.com/rjgczp/devpilot/internal/password",
+      "github.com/rjgczp/devpilot/internal/project",
+      "github.com/rjgczp/devpilot/internal/registration",
+      "github.com/rjgczp/devpilot/internal/scheduler",
+      "github.com/rjgczp/devpilot/internal/session",
+      "github.com/rjgczp/devpilot/internal/testdb",
+      "github.com/rjgczp/devpilot/internal/user",
+      "github.com/rjgczp/devpilot/internal/workspace",
+      "github.com/rjgczp/devpilot/tests/ci/snapshot-schema",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 11.306296446000033,
+    "log_sha256": "4acca8017513ec63bda53f0d316bbcf7592c028e7315b2202f1eda2a09e1f092",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/real-authorization-60s.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestCheckpointOneRealExpiryExplicitRenewal)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 60.91325332400001,
+    "log_sha256": "228ab6bd9a059fb9e00a3693253de060915db37525bbd4646e04547ec18c90b2",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/normal/real-unstarted-lease-45s.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestCheckpointTwoUnstartedRealLeaseExpiry)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 45.93659542700004,
+    "log_sha256": "fcc922e21c8ed426d8a6a7832521784e9e5c4a067ec4e55b0419e742233b9a63",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/core-01.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestActivationExpiryAfterEveryProtectiveWait|TestActivationIdentityAndMembershipOrderings|TestActivationDelayedOwnerRequestCannotUseRejoin|TestActivationCleanupCandidateOrdering|TestActivationTwoOwnerCASAndConfigOrderings|TestActivationProjectWriteOrderings|TestActivationHTTPUnknownCommitAndFaults|TestActivationMigration|TestActivationStatePermissionsAndInvalidation|TestActivationTriggerAtomicFailureAndBoundedAudit|TestActivationQuotaAndCAS|TestActivationCommitFaults|TestActivationWorkspaceIntentLifetime|TestAuthenticationWithPostgreSQL|TestAuthenticationDatabaseFailuresAndCancellation|TestCleanupBatchMultiInstanceAndFaults|TestDelayedDeletePreservesRejoin|TestInvitationDeleteHeldLockAndSelfReplay|TestInvitationActionRaces|TestInvitationQuotaAndLazyExpiry|TestInvitationFaultAtomicity|TestInvitationLockOrderAndIdentity|TestInvitationExpiryAfterEveryLockWait|TestInvitationPostGateExpiry|TestInvitationProtectedIdentityOrderings|TestInvitationCreationUserUUIDOrder|TestInvitationSessionCleanupOrderings|TestInvitationHTTPFaultsAndCancellation|TestInvitationMigration|TestInvitationLifecycle)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 52.58703274699997,
+    "log_sha256": "ae45fa6b219312d97c15d760fa129ff88951c3b0bba9db2c7a0624559598ccc9",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/core-02.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestInvitationHTTP|TestInvitationListsAndTenantPermissions|TestInvitationAcceptanceVisibilityAndIndependentTenant|TestInvitationIndexPlans|TestMemberWriteLockOrder|TestMemberConcurrentOwnerAndExitRaces|TestMemberPermissionChangeOrdering|TestMemberIdentityChangeOrdering|TestMemberExpiryAfterEveryLockWait|TestMemberPostGateExpiryAndCleanup|TestMemberTransactionFailures|TestMemberPoolTimeoutAndMissingSchema|TestMemberHTTPCancellationAfterGate|TestMemberHTTPPermissionsAndRevocation|TestMemberRosterSnapshotAndCursorRevocation|TestMemberMixedOperationsAndCleanup|TestMemberRosterStore|TestMemberDeleteStore|TestMonitorConcurrentVersions|TestMonitorExpiryAfterEveryProtectiveWait|TestMonitorIdentityAndMembershipOrderings|TestMonitorFaultAtomicityAndTenantIndependence|TestMonitorReadSnapshotAndLateCommit|TestMonitorSameTenantSerializationAndParentReferences|TestMonitorDelayedOwnerRequestCannotUseRejoin|TestMonitorProjectWriteOrderings|TestMonitorCleanupCandidateOrdering|TestMonitorHTTPFaultsCancellationAndRecovery|TestMonitorHTTPJourneyAndIsolation|TestMonitorMigration)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 20.51422056900003,
+    "log_sha256": "a881508280fd133c4f6dec24aa04c21d5b0127e40644c0dc92e634d42f6297d2",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/core-03.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestMonitorStorePermissionsPaginationAndVersions|TestMonitorCreatorReferenceAndEmptyScope|TestMonitorMergedConfigurationRevalidated|TestProjectConcurrentVersions|TestProjectExpiryAfterEveryProtectiveWait|TestProjectIdentityAndMembershipOrderings|TestProjectFaultAtomicityAndTenantIndependence|TestProjectReadSnapshotAndLateCommit|TestProjectSameTenantSerializationAndParentReferences|TestProjectDelayedOwnerRequestCannotUseRejoin|TestProjectHTTPJourneyAndIsolation|TestProjectHTTPFaultsCancellationAndRecovery|TestProjectMigration|TestProjectStorePermissionsPaginationAndVersions|TestProjectLiveAuthorityAndCreatorLifetime|TestMigrationAndConstraints|TestRegistrationWithPostgreSQL|TestUnavailableDatabaseAndRecovery|TestExecutionAuthorizationFreshTimeAfterEverySPIWait|TestExecutionAuthorizationTwoOwnersSameTag|TestExecutionAuthorizationLossWhileWaiting|TestExecutionAuthorizationCommitAcknowledgementUnknown|TestExecutionAuthorizationAtomicIntentAndRevocation|TestCheckpointOneRegistrationCapacityLastSlot|TestCheckpointOneEnabledQuotaAndCooling|TestCheckpointOneDownRefusesUnsafeOrExhausted|TestCheckpointOneStartOwnerLossBothOrders|TestCheckpointOneStartExpiryAfterFinalWait|TestCheckpointOneSessionIsNotBackgroundIdentity|TestCheckpointOneAuthorizationFixtureCleansSharedDatabase)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 25.395968924999977,
+    "log_sha256": "ae3499f9861acae4c6e75782a60a0fe24ec2e00b5f2231f3af798edcced98845",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/core-04.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestCheckpointOneAuthorizationRealHTTPStrictContract|TestCheckpointOneLegacyAndAuthorizationSerialize|TestCheckpointOneHTTPInventoryBlocksDatabaseAdmission|TestCheckpointOneOldWritersStraddleMigration|TestCheckpointOneHTTPIntentStatusContract|TestCheckpointOneHTTPCutoverAllTagsAndRollback|TestCheckpointOneProjectionRetirementKeepsSchemaEight|TestCheckpointOneControllerPublicAndIncarnation|TestCheckpointOnePersistenceConstraints|TestCheckpointOneSchemaSevenFailsClosed|TestCheckpointOneConfigurationRevokeRollback|TestCheckpointTwoClaimCompetingOwners|TestCheckpointTwoClaimOwnerLossBothOrders|TestCheckpointTwoPatchBeforeWorkers|TestCheckpointTwoDifferentWorkspaceCandidates|TestCheckpointTwoDifferentMonitorSameWorkspace|TestCheckpointTwoClaimLostAcknowledgement|TestCheckpointTwoUnlockedHintsAreNotAuthority|TestCheckpointTwoNarrowRecoveryCapabilities|TestCheckpointTwoBoundedScanAndTick|TestCheckpointTwoAttemptTransitionMatrix|TestCheckpointTwoFenceOverflowAndClockRegression|TestCheckpointTwoParentStagesAndRollback|TestCheckpointTwoScheduleSkip|TestCheckpointTwoLateLocksAndFreshStop|TestCheckpointTwoInjectedExternalDeadlock|TestSchedulerClaimTwoOwnersWorkersAndUserPatch|TestSchedulerClaimOwnerHintInvalidation|TestSchedulerClaimFinalClockAfterControlWait|TestSchedulerClaimAtomicFenceAndSlots)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 20.880899365999994,
+    "log_sha256": "2fb84114709a5e956f7553234f3f0e49453e929c5348e418201755a55e0732f3",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/core-05.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestSchedulerClaimWorkspaceSkipReleasesUser|TestLegacyPatchOriginalFixtureSchemaSevenDiagnosis|TestLegacyPatchColumnPrivilegesAcrossMigration|TestSchedulerLegacyDatabaseWriterAcrossMigration|TestExecutionAuthorizationScheduleFailureRollsBackIntent|TestSchedulerMigrationRetiresAllLegacyTags|TestSchedulerMigrationRollback|TestSchemaSevenFixtureMatchesReviewedHistoricalWriter|TestSchedulerPersistenceScopeLineageAndShape|TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities|TestSchedulerStartRequiresPreparedSupervisorAndConsumesTokens|TestSchedulerPauseBeforeStartAndWhileWaiting|TestSchedulerSupervisorOwnsOneInputCapability|TestSessionStoreAndUpgrade|TestSessionCreationRechecksConcurrentUpdate|TestCreationLockSerializesDisableAndConcurrentRevocation|TestWorkspaceCreationLockOrdering|TestWorkspaceExpiryAndCleanupBoundaries|TestWorkspaceReadSnapshotMembershipAndIdentityChanges|TestWorkspaceTransactionFaultsAndUnknownCommit|TestWorkspaceHTTPAuthenticationAndTenantIsolation|TestWorkspaceHTTPDatabaseFailuresAndRecovery|TestWorkspaceListSnapshotAndCursorChanges|TestWorkspaceMigrationAndConstraints|TestWorkspaceTenantQueriesAndConcurrentCreation)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 13.171911058999967,
+    "log_sha256": "37bd51579ba891724db3594fa472183464508cf2d220d672a63f2e3a64029a23",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/inventory.json",
+    "command": [
+      "go",
+      "test",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "-list",
+      ".",
+      "./..."
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.4967548870000087,
+    "log_sha256": "cc9b87f2640371506260f253b2403b0b10f214d5bcac9fabf5eb6222455d2f32",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/other-packages.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "github.com/rjgczp/devpilot/cmd/api",
+      "github.com/rjgczp/devpilot/cmd/probeinputfixture",
+      "github.com/rjgczp/devpilot/cmd/schedulerfixture",
+      "github.com/rjgczp/devpilot/internal/app",
+      "github.com/rjgczp/devpilot/internal/auth",
+      "github.com/rjgczp/devpilot/internal/config",
+      "github.com/rjgczp/devpilot/internal/credentials",
+      "github.com/rjgczp/devpilot/internal/health",
+      "github.com/rjgczp/devpilot/internal/monitor",
+      "github.com/rjgczp/devpilot/internal/monitoring",
+      "github.com/rjgczp/devpilot/internal/monitoring/handoff",
+      "github.com/rjgczp/devpilot/internal/monitoring/probesandbox",
+      "github.com/rjgczp/devpilot/internal/monitoring/targetpermit",
+      "github.com/rjgczp/devpilot/internal/password",
+      "github.com/rjgczp/devpilot/internal/project",
+      "github.com/rjgczp/devpilot/internal/registration",
+      "github.com/rjgczp/devpilot/internal/scheduler",
+      "github.com/rjgczp/devpilot/internal/session",
+      "github.com/rjgczp/devpilot/internal/testdb",
+      "github.com/rjgczp/devpilot/internal/user",
+      "github.com/rjgczp/devpilot/internal/workspace",
+      "github.com/rjgczp/devpilot/tests/ci/snapshot-schema",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 12.926606393000043,
+    "log_sha256": "e4a755a9660428a5afa1ec2afd4feffd4afc18538f6d070af0c6f6b6cea6f8b3",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/real-authorization-60s.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestCheckpointOneRealExpiryExplicitRenewal)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 62.10591036499994,
+    "log_sha256": "3a6465acadd6b54179251be8747f8494042472fe0308b213bb2776aeca9a4cc3",
+    "binaries": {}
+  },
+  {
+    "file": "integration/integration-evidence/race/real-unstarted-lease-45s.json",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-tags=integration,schedulerfixture",
+      "-json",
+      "./tests/integration",
+      "-run",
+      "^(TestCheckpointTwoUnstartedRealLeaseExpiry)$",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 47.10973884700002,
+    "log_sha256": "6366ba9be3c3472c897ceb6f46013fa8b2ac8cd938eb194578d9b2a9223f4ad7",
+    "binaries": {}
+  },
+  {
+    "file": "integration/monitor-network-evidence/api-audit.json",
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--cap-add",
+      "NET_ADMIN",
+      "--cap-add",
+      "SYS_PTRACE",
+      "--network",
+      "container:92d043c5175d073341706fb171261dd9dc7ed1eabd863156f7498ff202580859",
+      "-v",
+      "/home/runner/work/devpilot/devpilot:/home/runner/work/devpilot/devpilot:ro",
+      "-v",
+      "/home/runner/work/_temp/monitor-linux:/testtools:ro",
+      "-v",
+      "/home/runner/work/_temp/monitor-tools:/toolbin:ro",
+      "-v",
+      "/home/runner/work/_temp/monitor-network-evidence:/evidence",
+      "-w",
+      "/home/runner/work/devpilot/devpilot",
+      "-e",
+      "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-e",
+      "MONITOR_PROBE_ISOLATED=1",
+      "-e",
+      "MONITOR_TEST_BINARY=/testtools/integration.test",
+      "-e",
+      "MONITOR_AUDIT_OUTPUT=/evidence",
+      "-e",
+      "TEST_DATABASE_URL",
+      "devpilot-monitor-audit",
+      "tests/network/run-monitor-audit.sh"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 4.361097900999994,
+    "log_sha256": "f42530c33579aeb3baa41539ad1c7d403d43cd377938def9416b145bc4b5267a",
+    "binaries": {}
+  }
+]

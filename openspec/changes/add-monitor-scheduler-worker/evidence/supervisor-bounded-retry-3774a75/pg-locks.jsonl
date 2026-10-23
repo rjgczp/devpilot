@@ -1,0 +1,6 @@
+{"observed_at" : "2026-10-20T07:13:53.39218+00:00", "backends" : []}
+{"observed_at" : "2026-10-20T07:13:53.50359+00:00", "backends" : []}
+{"observed_at" : "2026-10-20T07:13:53.639244+00:00", "backends" : []}
+{"observed_at" : "2026-10-20T07:13:53.754695+00:00", "backends" : [{"pid" : 2920, "user" : "devpilot_fixture", "state" : "idle", "xact_start" : null, "query_start" : "2026-10-20T07:13:53.75353+00:00", "wait_event_type" : "Client", "wait_event" : "ClientRead", "blocking_pids" : [], "operation" : "setup_cleanup_or_other", "locks" : []}, {"pid" : 2913, "user" : "devpilot_fixture", "state" : "idle", "xact_start" : null, "query_start" : "2026-10-20T07:13:53.704838+00:00", "wait_event_type" : "Client", "wait_event" : "ClientRead", "blocking_pids" : [], "operation" : "setup_cleanup_or_other", "locks" : []}]}
+{"observed_at" : "2026-10-20T07:13:53.870804+00:00", "backends" : []}
+{"observed_at" : "2026-10-20T07:13:53.997619+00:00", "backends" : []}

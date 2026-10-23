@@ -1,0 +1,42 @@
+[
+  {
+    "original": "joint63-denial-review/denial-only.diff",
+    "original_sha256": "29bb0d07602eed953f1b258cf91c90327235c0d8772b2ff2e7e7a680b6f9ebe3",
+    "original_preserved_at": "/private/tmp/devpilot-joint63-raw-whitespace/joint63-denial-review/denial-only.diff",
+    "git_copy": "joint63-denial-review/denial-only.diff.gz",
+    "gzip_sha256": "f3e2d1fe5e8d1218c4200672ebd19ed6aaa1f509afc99fff69cc7ace8edb29ef",
+    "decompresses_byte_identically": true
+  },
+  {
+    "original": "joint63-nscd-failure/nscd-only.diff",
+    "original_sha256": "32aa420aa027d3d953ba5f5a5e6ec127ae5b3ae0992719e3d766baf8b7e31df1",
+    "original_preserved_at": "/private/tmp/devpilot-joint63-raw-whitespace/joint63-nscd-failure/nscd-only.diff",
+    "git_copy": "joint63-nscd-failure/nscd-only.diff.gz",
+    "gzip_sha256": "50b769cce51231e4888f00cc7285bbb35198875802ffede93f37208a32ea98b0",
+    "decompresses_byte_identically": true
+  },
+  {
+    "original": "joint63-orchestration/budget-normal/build.txt",
+    "original_sha256": "3f20f97709e8dd69c8d0203f16ca3d5333d2a63ab7d5fe8d02031233a262cf1a",
+    "original_preserved_at": "/private/tmp/devpilot-joint63-raw-whitespace/joint63-orchestration/budget-normal/build.txt",
+    "git_copy": "joint63-orchestration/budget-normal/build.txt.gz",
+    "gzip_sha256": "523558e8d0ede8551d8ff51857ca8c423ad0fd9b913a4cf5c2e85ab6569fd85d",
+    "decompresses_byte_identically": true
+  },
+  {
+    "original": "joint63-orchestration/budget-race/build.txt",
+    "original_sha256": "8624139fcf10f789996e99780d2cb5899f43b4dfe6c27b99f6d0b6c4ad1bf76c",
+    "original_preserved_at": "/private/tmp/devpilot-joint63-raw-whitespace/joint63-orchestration/budget-race/build.txt",
+    "git_copy": "joint63-orchestration/budget-race/build.txt.gz",
+    "gzip_sha256": "65fd3b2ffbe85e661ee628aaf0c42dbd3453ddc91ec8d508392d7676c830b4b2",
+    "decompresses_byte_identically": true
+  },
+  {
+    "original": "joint63-orchestration/build/budget.log",
+    "original_sha256": "6413ae54dd21873004efb11f7cefb88cbe9e54c9d1ebb290859424cd5199f1ca",
+    "original_preserved_at": "/private/tmp/devpilot-joint63-raw-whitespace/joint63-orchestration/build/budget.log",
+    "git_copy": "joint63-orchestration/build/budget.log.gz",
+    "gzip_sha256": "cf9ed3232ae1baf498c5b7db506c249ced14b4bcfc4c76327aacf1bc8e70382f",
+    "decompresses_byte_identically": true
+  }
+]

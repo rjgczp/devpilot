@@ -1,0 +1,38 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "container:devpilot-scheduler-apply-pg18",
+    "-v",
+    "/private/tmp/devpilot-scheduler-tools:/toolbin:ro",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/cp2.test",
+    "devpilot-scheduler-fixture",
+    "-test.run",
+    "^TestCheckpointTwo(LateLocksAndFreshStop|InjectedExternalDeadlock)$",
+    "-test.failfast",
+    "-test.timeout=30s",
+    "-test.v"
+  ],
+  "started_at": "2026-10-21T02:01:23.406926+00:00",
+  "elapsed_seconds": 0.7900594170205295,
+  "exit_code": 0,
+  "head": "8ebba60bc4d70f2407d052b26796a4fd20c16a56",
+  "dirty": true,
+  "source_inventory_sha256": "33776d74dd4835147bb8bc2ee7680795c924dcc1a40d3ed726229a8f6101e687",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp2.test": "537b846193adfb94c6dc12aa56b28cf4c28787389f5504dea895f236d4d23306"
+  },
+  "log_sha256": "d74ad56b9db5d4680beb453730d477ec2ef4aef1bedb7224ff47d90ef6dbd771",
+  "source_inventory_ref": "../../source-inventories/33776d74dd4835147bb8bc2ee7680795c924dcc1a40d3ed726229a8f6101e687.json",
+  "original_receipt_ref": "../../raw-receipts/development/interim/late-locks-normal.json.gz",
+  "original_receipt_sha256": "06a58888982420a81bddd228f51b9f558f21735f196e6a80a5878441325ae1e5"
+}

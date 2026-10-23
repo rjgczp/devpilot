@@ -1,0 +1,7 @@
+--- FAIL: TestProcessingDeadlineBeforeCancellation (0.00s)
+    --- FAIL: TestProcessingDeadlineBeforeCancellation/expired=true (0.00s)
+        handler_test.go:354: expired=false want true before timer cancellation
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/registration	1.808s
+FAIL
+go: failed to trim cache: open /Users/sansea/Library/Caches/go-build/trim.txt: operation not permitted

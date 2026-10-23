@@ -1,0 +1,27 @@
+{
+  "payload": {
+    "protocol": "fixture-physical-stop-v1",
+    "receipt_id": "031709b4-4653-4b38-b718-6cb007425e50",
+    "lineage": {
+      "workspace_id": "9d68d750-8e0d-44fe-9f59-0217c55a6fee",
+      "project_id": "2d2c08cc-2c65-49d8-89b6-6486e4cf6d22",
+      "monitor_id": "d72035ef-2925-4098-b7b2-f6037fc48643",
+      "run_id": "ae8b2e0b-b74b-41d0-adb0-c2a89e51f8bc",
+      "configuration_version": "1",
+      "activation_generation": "1",
+      "scheduler_epoch": "1",
+      "fencing_token": "1",
+      "namespace_incarnation": "c66e14c0-75b7-4902-9949-1874d64c7727",
+      "supervisor_incarnation": "4d4c9232-8bb0-444e-b956-a2d4deda181c"
+    },
+    "supervisor_key_id": "675904e721620d37d6e372508cd9779d86472d0558a5fae9ffe42dc5a412a2e6",
+    "network_sha256": "8814daba3464b2ad874ad1ee6fd68237aa3343fae96546c9be0a93f645c310f2",
+    "process_sha256": "ea8025ec59296e96b771e2fa3fc06a495891c4910bdef79e9afded1f217c11dd",
+    "retire_sha256": "b6075be976448112b1e28fe53befe42e343c5c751b52fa45e8ba433d9b72ae6a",
+    "pid_namespace": "pid:[4026534577]",
+    "net_namespace": "net:[4026534312]",
+    "process_count": 5,
+    "at": "2026-10-22T07:21:41.295166Z"
+  },
+  "signature": "gzHOOLrr2PtG00PmZiU+FhL155ybJP++mcXw8DA8XOtY+iM8Mvb2U7U6TvqQPgdOre6w8/ngiHomPR8poipKAg=="
+}

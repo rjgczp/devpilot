@@ -143,6 +143,7 @@ func (h *Handler) serveActivation(w http.ResponseWriter, r *http.Request, ctx co
 		}
 		return
 	}
+	w.Header().Set("DevPilot-Activation-Projection", "intent-v2")
 	w.Header().Set("ETag", ActivationETag(a))
 	h.write(w, r, 200, struct {
 		Data Activation `json:"data"`

@@ -231,7 +231,7 @@ func TestMonitorHTTPJourneyAndIsolation(t *testing.T) {
 		t.Fatal("Member activation write")
 	}
 	status, ah, ab = monitorHTTP(t, owner, server.URL, "PUT", item+"/activation", command, ah.Get("ETag"))
-	if status != 200 || json.Unmarshal(ab, &activation) != nil || activation.Data.DesiredState != "enabled" || activation.Data.ExecutionState != "blocked" || activation.Data.NextDueAt != nil {
+	if status != 200 || json.Unmarshal(ab, &activation) != nil || activation.Data.DesiredState != "enabled" || activation.Data.ExecutionState != "not_reported" || activation.Data.BlockedReason != "execution_status_required" || ah.Get("DevPilot-Activation-Projection") != "intent-v2" || activation.Data.NextDueAt != nil {
 		t.Fatal("activation enable", status, string(ab))
 	}
 	status, _, _ = monitorHTTP(t, owner, server.URL, "PUT", item+"/activation", command, ah.Get("ETag"))

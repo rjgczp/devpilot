@@ -1,0 +1,90 @@
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.utf8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are enabled.
+
+fixing permissions on existing directory /var/lib/postgresql/18/docker ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Etc/UTC
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+
+Success. You can now start the database server using:
+
+    pg_ctl -D /var/lib/postgresql/18/docker -l logfile start
+
+initdb: warning: enabling "trust" authentication for local connections
+initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+waiting for server to start....2026-10-21 07:47:30.633 UTC [59] LOG:  starting PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-21 07:47:30.633 UTC [59] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-21 07:47:30.636 UTC [65] LOG:  database system was shut down at 2026-10-21 07:47:30 UTC
+2026-10-21 07:47:30.638 UTC [59] LOG:  database system is ready to accept connections
+ done
+server started
+CREATE DATABASE
+
+
+/usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+
+waiting for server to shut down....2026-10-21 07:47:30.781 UTC [59] LOG:  received fast shutdown request
+2026-10-21 07:47:30.784 UTC [59] LOG:  aborting any active transactions
+2026-10-21 07:47:30.785 UTC [59] LOG:  background worker "logical replication launcher" (PID 74) exited with exit code 1
+2026-10-21 07:47:30.785 UTC [63] LOG:  shutting down
+2026-10-21 07:47:30.785 UTC [63] LOG:  checkpoint starting: shutdown immediate
+2026-10-21 07:47:30.808 UTC [63] LOG:  checkpoint complete: wrote 943 buffers (5.8%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.014 s, total=0.023 s; sync files=303, longest=0.006 s, average=0.001 s; distance=4352 kB, estimate=4352 kB; lsn=0/1BA1C08, redo lsn=0/1BA1C08
+2026-10-21 07:47:30.811 UTC [59] LOG:  database system is shut down
+ done
+server stopped
+
+PostgreSQL init process complete; ready for start up.
+
+2026-10-21 07:47:30.896 UTC [1] LOG:  starting PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-21 07:47:30.896 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-10-21 07:47:30.896 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-10-21 07:47:30.899 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-21 07:47:30.900 UTC [93] LOG:  database system was shut down at 2026-10-21 07:47:30 UTC
+2026-10-21 07:47:30.902 UTC [1] LOG:  database system is ready to accept connections
+2026-10-21 07:47:31.151 UTC [99] ERROR:  relation "goose_db_version" does not exist at character 36
+2026-10-21 07:47:31.151 UTC [99] STATEMENT:  SELECT version_id, is_applied from goose_db_version ORDER BY id DESC
+2026-10-21 07:47:31.229 UTC [102] ERROR:  candidate_busy
+2026-10-21 07:47:31.229 UTC [102] CONTEXT:  PL/pgSQL function lock_parents(uuid,uuid,uuid,uuid,uuid,boolean) line 13 at RAISE
+	SQL statement "SELECT scheduler_private.lock_parents(p_wid,p_pid,p_mid,p_uid,p_membership,true)"
+	PL/pgSQL function claim(uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,uuid) line 6 at PERFORM
+2026-10-21 07:47:31.229 UTC [102] STATEMENT:  SELECT scheduler_private.claim($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::bigint,$8::bigint,$9::bigint,$10::uuid)
+2026-10-21 07:47:31.236 UTC [102] ERROR:  resource_limited
+2026-10-21 07:47:31.236 UTC [102] CONTEXT:  PL/pgSQL function claim(uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,uuid) line 48 at RAISE
+2026-10-21 07:47:31.236 UTC [102] STATEMENT:  SELECT scheduler_private.claim($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::bigint,$8::bigint,$9::bigint,$10::uuid)
+2026-10-21 07:47:31.246 UTC [102] ERROR:  candidate_busy
+2026-10-21 07:47:31.246 UTC [102] CONTEXT:  PL/pgSQL function lock_parents(uuid,uuid,uuid,uuid,uuid,boolean) line 13 at RAISE
+	SQL statement "SELECT scheduler_private.lock_parents(p_wid,p_pid,p_mid,p_uid,p_membership,true)"
+	PL/pgSQL function claim(uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,uuid) line 6 at PERFORM
+2026-10-21 07:47:31.246 UTC [102] STATEMENT:  SELECT scheduler_private.claim($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::bigint,$8::bigint,$9::bigint,$10::uuid)
+2026-10-21 07:47:31.250 UTC [102] ERROR:  resource_limited
+2026-10-21 07:47:31.250 UTC [102] CONTEXT:  PL/pgSQL function claim(uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,uuid) line 51 at RAISE
+2026-10-21 07:47:31.250 UTC [102] STATEMENT:  SELECT scheduler_private.claim($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::bigint,$8::bigint,$9::bigint,$10::uuid)
+2026-10-21 07:47:31.256 UTC [102] ERROR:  candidate_busy
+2026-10-21 07:47:31.256 UTC [102] CONTEXT:  PL/pgSQL function lock_parents(uuid,uuid,uuid,uuid,uuid,boolean) line 13 at RAISE
+	SQL statement "SELECT scheduler_private.lock_parents(p_wid,p_pid,p_mid,p_uid,p_membership,true)"
+	PL/pgSQL function claim(uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,uuid) line 6 at PERFORM
+2026-10-21 07:47:31.256 UTC [102] STATEMENT:  SELECT scheduler_private.claim($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::bigint,$8::bigint,$9::bigint,$10::uuid)
+2026-10-21 07:47:31.258 UTC [102] ERROR:  candidate_busy
+2026-10-21 07:47:31.258 UTC [102] CONTEXT:  PL/pgSQL function claim(uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,uuid) line 11 at RAISE
+2026-10-21 07:47:31.258 UTC [102] STATEMENT:  SELECT scheduler_private.claim($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::bigint,$8::bigint,$9::bigint,$10::uuid)
+2026-10-21 07:47:31.267 UTC [103] ERROR:  independent physical stop and closed gate required
+2026-10-21 07:47:31.267 UTC [103] CONTEXT:  PL/pgSQL function inline_code_block line 4 at RAISE
+2026-10-21 07:47:31.267 UTC [103] STATEMENT:  DO $$ BEGIN
+	 IF EXISTS(SELECT 1 FROM public.monitor_runs WHERE physical_release_confirmed_at IS NULL)
+	 OR EXISTS(SELECT 1 FROM public.scheduler_control WHERE gate<>'closed') THEN
+	  RAISE EXCEPTION 'independent physical stop and closed gate required';
+	 END IF;
+	END $$;

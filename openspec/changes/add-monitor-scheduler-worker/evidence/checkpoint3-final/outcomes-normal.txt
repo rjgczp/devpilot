@@ -1,0 +1,388 @@
+budget-normal-0.log:37:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:38:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:39:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:40:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:41:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:42:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:43:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:44:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:45:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:46:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:47:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:48:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:49:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:50:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:51:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:52:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:53:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:54:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:55:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:56:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:57:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:58:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:59:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:60:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:61:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:62:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:63:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:64:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:65:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:66:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:67:     scheduler_budget_fixture_test.go:148: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:69:     scheduler_budget_fixture_test.go:167: SQLSTATE=00000 error=<nil>
+budget-normal-0.log:70:     scheduler_budget_fixture_test.go:168: SQLSTATE=P0001 error=ERROR: retention_capacity (SQLSTATE P0001)
+budget-normal-0.log:71:     scheduler_budget_fixture_test.go:175: SQLSTATE=P0001 error=ERROR: retention_capacity (SQLSTATE P0001)
+budget-normal-0.log:74: --- PASS: TestBudgetGlobalLastSlot (0.23s)
+budget-normal-1.log:3:     scheduler_budget_fixture_test.go:190: SQLSTATE=00000 error=<nil>
+budget-normal-1.log:4:     scheduler_budget_fixture_test.go:190: SQLSTATE=00000 error=<nil>
+budget-normal-1.log:5:     scheduler_budget_fixture_test.go:193: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-1.log:6:     scheduler_budget_fixture_test.go:195: SQLSTATE=P0001 error=ERROR: candidate_busy (SQLSTATE P0001)
+budget-normal-1.log:7:     scheduler_budget_fixture_test.go:204: SQLSTATE=00000 error=<nil>
+budget-normal-1.log:8:     scheduler_budget_fixture_test.go:204: SQLSTATE=00000 error=<nil>
+budget-normal-1.log:9:     scheduler_budget_fixture_test.go:213: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-1.log:12: --- PASS: TestBudgetScopedSlots (0.11s)
+budget-normal-10.log:5:     scheduler_target_budget_test.go:173: SQLSTATE=00000 error=<nil>
+budget-normal-10.log:6:     scheduler_target_budget_test.go:177: SQLSTATE=P0001 error=ERROR: candidate_invalid (SQLSTATE P0001)
+budget-normal-10.log:7:     scheduler_target_budget_test.go:179: SQLSTATE=P0001 error=ERROR: candidate_invalid (SQLSTATE P0001)
+budget-normal-10.log:8:     scheduler_target_budget_test.go:182: SQLSTATE=P0001 error=ERROR: candidate_invalid (SQLSTATE P0001)
+budget-normal-10.log:9:     scheduler_target_budget_test.go:188: SQLSTATE=P0001 error=ERROR: candidate_invalid (SQLSTATE P0001)
+budget-normal-10.log:10:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table users (SQLSTATE 42501)
+budget-normal-10.log:11:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table sessions (SQLSTATE 42501)
+budget-normal-10.log:12:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table scheduler_reservations (SQLSTATE 42501)
+budget-normal-10.log:13:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table scheduler_budget_state (SQLSTATE 42501)
+budget-normal-10.log:14:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table scheduler_control (SQLSTATE 42501)
+budget-normal-10.log:15:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied to set role "devpilot_scheduler_owner" (SQLSTATE 42501)
+budget-normal-10.log:16:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table users (SQLSTATE 42501)
+budget-normal-10.log:17:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table sessions (SQLSTATE 42501)
+budget-normal-10.log:18:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table scheduler_reservations (SQLSTATE 42501)
+budget-normal-10.log:19:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table scheduler_budget_state (SQLSTATE 42501)
+budget-normal-10.log:20:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied for table scheduler_control (SQLSTATE 42501)
+budget-normal-10.log:21:     scheduler_target_budget_test.go:201: SQLSTATE=42501 error=ERROR: permission denied to set role "devpilot_scheduler_owner" (SQLSTATE 42501)
+budget-normal-10.log:24: --- PASS: TestBudgetTargetUnknownCommitAndACL (0.11s)
+budget-normal-11.log:6:     scheduler_target_budget_test.go:214: SQLSTATE=00000 error=<nil>
+budget-normal-11.log:8:     scheduler_target_budget_test.go:241: SQLSTATE=00000 error=<nil>
+budget-normal-11.log:9:     scheduler_target_budget_test.go:242: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-11.log:12: --- PASS: TestBudgetTargetConcurrentLastSlot (0.13s)
+budget-normal-12.log:5:     scheduler_target_budget_test.go:253: SQLSTATE=00000 error=<nil>
+budget-normal-12.log:6:     scheduler_target_budget_test.go:273: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-12.log:7:     scheduler_target_budget_test.go:278: SQLSTATE=00000 error=<nil>
+budget-normal-12.log:8:     scheduler_target_budget_test.go:279: real origin60s deadline=2026-10-21T06:43:41.002707Z; before deadline refused, after deadline single reservation committed
+budget-normal-12.log:11: --- PASS: TestBudgetTargetRealOriginCooldown (60.15s)
+budget-normal-13.log:5:     scheduler_target_budget_test.go:286: SQLSTATE=00000 error=<nil>
+budget-normal-13.log:7:     scheduler_target_budget_test.go:305: SQLSTATE=P0001 error=ERROR: candidate_invalid (SQLSTATE P0001)
+budget-normal-13.log:10: --- PASS: TestBudgetTargetFinalSupervisorGate (0.12s)
+budget-normal-2.log:3:     scheduler_budget_fixture_test.go:239: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-2.log:6: --- PASS: TestBudgetStartRateRollback (2.10s)
+budget-normal-3.log:4:     scheduler_budget_fixture_test.go:329: SQLSTATE=P0001 error=ERROR: clock_untrusted (SQLSTATE P0001)
+budget-normal-3.log:5:     scheduler_budget_fixture_test.go:330: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-3.log:6:     scheduler_budget_fixture_test.go:331: SQLSTATE=00000 error=<nil>
+budget-normal-3.log:8:     scheduler_budget_fixture_test.go:329: SQLSTATE=P0001 error=ERROR: clock_untrusted (SQLSTATE P0001)
+budget-normal-3.log:9:     scheduler_budget_fixture_test.go:330: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-3.log:10:     scheduler_budget_fixture_test.go:331: SQLSTATE=00000 error=<nil>
+budget-normal-3.log:12:     scheduler_budget_fixture_test.go:329: SQLSTATE=P0001 error=ERROR: clock_untrusted (SQLSTATE P0001)
+budget-normal-3.log:13:     scheduler_budget_fixture_test.go:330: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-3.log:14:     scheduler_budget_fixture_test.go:331: SQLSTATE=00000 error=<nil>
+budget-normal-3.log:16:     scheduler_budget_fixture_test.go:329: SQLSTATE=P0001 error=ERROR: clock_untrusted (SQLSTATE P0001)
+budget-normal-3.log:17:     scheduler_budget_fixture_test.go:330: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-3.log:18:     scheduler_budget_fixture_test.go:331: SQLSTATE=00000 error=<nil>
+budget-normal-3.log:20:     scheduler_budget_fixture_test.go:329: SQLSTATE=P0001 error=ERROR: clock_untrusted (SQLSTATE P0001)
+budget-normal-3.log:21:     scheduler_budget_fixture_test.go:330: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-3.log:22:     scheduler_budget_fixture_test.go:331: SQLSTATE=00000 error=<nil>
+budget-normal-3.log:25: --- PASS: TestBudgetArithmeticAndKeyCapacity (1.17s)
+budget-normal-4.log:14:     scheduler_budget_fixture_test.go:433: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-4.log:15:     scheduler_budget_fixture_test.go:447: real DB nine Start transactions:8 accepted,1 refused, accepted span=0.021124s
+budget-normal-4.log:18: --- PASS: TestBudgetGlobalRateConcurrentStarts (0.25s)
+budget-normal-5.log:3:     scheduler_budget_fixture_test.go:475: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-5.log:6: --- PASS: TestBudgetWorkspaceRateAcrossProjects (1.15s)
+budget-normal-6.log:3:     scheduler_budget_fixture_test.go:506: SQLSTATE=P0001 error=ERROR: candidate_invalid (SQLSTATE P0001)
+budget-normal-6.log:4:     scheduler_budget_fixture_test.go:537: SQLSTATE=P0001 error=ERROR: candidate_invalid (SQLSTATE P0001)
+budget-normal-6.log:7: --- PASS: TestBudgetMonitorCoolingAcrossVersionAndRestart (0.10s)
+budget-normal-7.log:4:     scheduler_budget_fixture_test.go:585: SQLSTATE=00000 error=<nil>
+budget-normal-7.log:5:     scheduler_budget_fixture_test.go:585: SQLSTATE=00000 error=<nil>
+budget-normal-7.log:6:     scheduler_budget_fixture_test.go:585: SQLSTATE=00000 error=<nil>
+budget-normal-7.log:7:     scheduler_budget_fixture_test.go:598: SQLSTATE=P0001 error=ERROR: candidate_busy (SQLSTATE P0001)
+budget-normal-7.log:9:     scheduler_budget_fixture_test.go:604: SQLSTATE=00000 error=<nil>
+budget-normal-7.log:10:     scheduler_budget_fixture_test.go:606: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-7.log:12:     scheduler_budget_fixture_test.go:585: SQLSTATE=00000 error=<nil>
+budget-normal-7.log:13:     scheduler_budget_fixture_test.go:598: SQLSTATE=P0001 error=ERROR: candidate_busy (SQLSTATE P0001)
+budget-normal-7.log:15:     scheduler_budget_fixture_test.go:604: SQLSTATE=00000 error=<nil>
+budget-normal-7.log:16:     scheduler_budget_fixture_test.go:606: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-7.log:18:     scheduler_budget_fixture_test.go:598: SQLSTATE=P0001 error=ERROR: candidate_busy (SQLSTATE P0001)
+budget-normal-7.log:20:     scheduler_budget_fixture_test.go:604: SQLSTATE=00000 error=<nil>
+budget-normal-7.log:21:     scheduler_budget_fixture_test.go:606: SQLSTATE=P0001 error=ERROR: candidate_busy (SQLSTATE P0001)
+budget-normal-7.log:25: --- PASS: TestBudgetScopedLastSlotInterleavings (0.13s)
+budget-normal-8.log:8:     scheduler_target_budget_test.go:93: SQLSTATE=00000 error=<nil>
+budget-normal-8.log:9:     scheduler_target_budget_test.go:103: SQLSTATE=00000 error=<nil>
+budget-normal-8.log:10:     scheduler_target_budget_test.go:104: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-8.log:11:     scheduler_target_budget_test.go:105: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-8.log:12:     scheduler_target_budget_test.go:110: SQLSTATE=00000 error=<nil>
+budget-normal-8.log:13:     scheduler_target_budget_test.go:112: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-8.log:14:     scheduler_target_budget_test.go:116: SQLSTATE=P0001 error=ERROR: candidate_invalid (SQLSTATE P0001)
+budget-normal-8.log:17: --- PASS: TestBudgetTargetCrossTenant (2.19s)
+budget-normal-9.log:5:     scheduler_target_budget_test.go:139: SQLSTATE=00000 error=<nil>
+budget-normal-9.log:6:     scheduler_target_budget_test.go:149: SQLSTATE=00000 error=<nil>
+budget-normal-9.log:7:     scheduler_target_budget_test.go:159: SQLSTATE=P0001 error=ERROR: target rotation unavailable (SQLSTATE P0001)
+budget-normal-9.log:8:     scheduler_target_budget_test.go:163: SQLSTATE=P0001 error=ERROR: resource_limited (SQLSTATE P0001)
+budget-normal-9.log:11: --- PASS: TestBudgetTargetRotationPreservesCooling (0.14s)
+regression-normal-0.log:21: --- PASS: TestActivationExpiryAfterEveryProtectiveWait (2.63s)
+regression-normal-0.log:66: --- PASS: TestActivationIdentityAndMembershipOrderings (0.26s)
+regression-normal-0.log:97: --- PASS: TestActivationDelayedOwnerRequestCannotUseRejoin (0.16s)
+regression-normal-0.log:103: --- PASS: TestActivationCleanupCandidateOrdering (0.10s)
+regression-normal-0.log:111: --- PASS: TestActivationTwoOwnerCASAndConfigOrderings (0.11s)
+regression-normal-0.log:123: --- PASS: TestActivationProjectWriteOrderings (0.15s)
+regression-normal-0.log:138: --- PASS: TestActivationHTTPUnknownCommitAndFaults (0.12s)
+regression-normal-0.log:156: --- PASS: TestActivationMigration (0.17s)
+regression-normal-0.log:160: --- PASS: TestActivationStatePermissionsAndInvalidation (0.13s)
+regression-normal-0.log:169: --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit (0.18s)
+regression-normal-0.log:177: --- PASS: TestActivationQuotaAndCAS (0.26s)
+regression-normal-0.log:184: --- PASS: TestActivationCommitFaults (0.10s)
+regression-normal-0.log:193: --- PASS: TestActivationWorkspaceIntentLifetime (0.16s)
+regression-normal-0.log:202: --- PASS: TestAuthenticationWithPostgreSQL (2.24s)
+regression-normal-0.log:208: --- PASS: TestAuthenticationDatabaseFailuresAndCancellation (6.72s)
+regression-normal-0.log:212: --- PASS: TestCleanupBatchMultiInstanceAndFaults (0.13s)
+regression-normal-0.log:216: --- PASS: TestDelayedDeletePreservesRejoin (0.09s)
+regression-normal-0.log:225: --- PASS: TestInvitationDeleteHeldLockAndSelfReplay (0.11s)
+regression-normal-0.log:252: --- PASS: TestInvitationActionRaces (0.24s)
+regression-normal-0.log:279: --- PASS: TestInvitationQuotaAndLazyExpiry (0.16s)
+regression-normal-0.log:349: --- PASS: TestInvitationFaultAtomicity (0.41s)
+regression-normal-0.log:431: --- PASS: TestInvitationLockOrderAndIdentity (0.16s)
+regression-normal-0.log:492: --- PASS: TestInvitationExpiryAfterEveryLockWait (12.58s)
+regression-normal-0.log:541: --- PASS: TestInvitationPostGateExpiry (1.38s)
+regression-normal-0.log:574: --- PASS: TestInvitationProtectedIdentityOrderings (0.23s)
+regression-normal-0.log:602: --- PASS: TestInvitationCreationUserUUIDOrder (0.08s)
+regression-normal-0.log:615: --- PASS: TestInvitationSessionCleanupOrderings (1.39s)
+regression-normal-0.log:651: --- PASS: TestInvitationHTTPFaultsAndCancellation (4.21s)
+regression-normal-0.log:686: --- PASS: TestInvitationMigration (0.12s)
+regression-normal-0.log:703: --- PASS: TestInvitationLifecycle (0.16s)
+regression-normal-0.log:719: --- PASS: TestInvitationHTTP (0.09s)
+regression-normal-0.log:723: --- PASS: TestInvitationListsAndTenantPermissions (0.09s)
+regression-normal-0.log:727: --- PASS: TestInvitationAcceptanceVisibilityAndIndependentTenant (0.08s)
+regression-normal-0.log:734: --- PASS: TestInvitationIndexPlans (0.09s)
+regression-normal-0.log:738: --- PASS: TestMemberWriteLockOrder (0.08s)
+regression-normal-0.log:755: --- PASS: TestMemberConcurrentOwnerAndExitRaces (0.13s)
+regression-normal-0.log:778: --- PASS: TestMemberPermissionChangeOrdering (0.11s)
+regression-normal-0.log:793: --- PASS: TestMemberIdentityChangeOrdering (0.10s)
+regression-normal-0.log:806: --- PASS: TestMemberExpiryAfterEveryLockWait (1.37s)
+regression-normal-0.log:814: --- PASS: TestMemberPostGateExpiryAndCleanup (0.42s)
+regression-normal-0.log:829: --- PASS: TestMemberTransactionFailures (2.14s)
+regression-normal-0.log:843: --- PASS: TestMemberPoolTimeoutAndMissingSchema (2.12s)
+regression-normal-0.log:847: --- PASS: TestMemberHTTPCancellationAfterGate (0.09s)
+regression-normal-0.log:857: --- PASS: TestMemberHTTPPermissionsAndRevocation (0.11s)
+regression-normal-0.log:871: --- PASS: TestMemberRosterSnapshotAndCursorRevocation (0.09s)
+regression-normal-0.log:882: --- PASS: TestMemberMixedOperationsAndCleanup (0.08s)
+regression-normal-0.log:888: --- PASS: TestMemberRosterStore (0.08s)
+regression-normal-0.log:906: --- PASS: TestMemberDeleteStore (0.11s)
+regression-normal-0.log:926: --- PASS: TestMonitorConcurrentVersions (0.10s)
+regression-normal-0.log:946: --- PASS: TestMonitorExpiryAfterEveryProtectiveWait (2.23s)
+regression-normal-0.log:988: --- PASS: TestMonitorIdentityAndMembershipOrderings (0.23s)
+regression-normal-0.log:1037: --- PASS: TestMonitorFaultAtomicityAndTenantIndependence (0.14s)
+regression-normal-0.log:1061: --- PASS: TestMonitorReadSnapshotAndLateCommit (0.09s)
+regression-normal-0.log:1068: --- PASS: TestMonitorSameTenantSerializationAndParentReferences (0.09s)
+regression-normal-0.log:1077: --- PASS: TestMonitorDelayedOwnerRequestCannotUseRejoin (0.09s)
+regression-normal-0.log:1088: --- PASS: TestMonitorProjectWriteOrderings (0.11s)
+regression-normal-0.log:1096: --- PASS: TestMonitorCleanupCandidateOrdering (0.08s)
+regression-normal-0.log:1116: --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery (0.20s)
+regression-normal-0.log:1135: --- PASS: TestMonitorHTTPJourneyAndIsolation (0.55s)
+regression-normal-0.log:1147: --- PASS: TestMonitorMigration (0.14s)
+regression-normal-0.log:1151: --- PASS: TestMonitorStorePermissionsPaginationAndVersions (0.09s)
+regression-normal-0.log:1155: --- PASS: TestMonitorCreatorReferenceAndEmptyScope (0.09s)
+regression-normal-0.log:1159: --- PASS: TestMonitorMergedConfigurationRevalidated (0.08s)
+regression-normal-0.log:1166: --- PASS: TestProjectConcurrentVersions (0.09s)
+regression-normal-0.log:1184: --- PASS: TestProjectExpiryAfterEveryProtectiveWait (1.89s)
+regression-normal-0.log:1224: --- PASS: TestProjectIdentityAndMembershipOrderings (0.24s)
+regression-normal-0.log:1271: --- PASS: TestProjectFaultAtomicityAndTenantIndependence (0.12s)
+regression-normal-0.log:1293: --- PASS: TestProjectReadSnapshotAndLateCommit (0.08s)
+regression-normal-0.log:1300: --- PASS: TestProjectSameTenantSerializationAndParentReferences (0.09s)
+regression-normal-0.log:1309: --- PASS: TestProjectDelayedOwnerRequestCannotUseRejoin (0.09s)
+regression-normal-0.log:1315: --- PASS: TestProjectHTTPJourneyAndIsolation (0.53s)
+regression-normal-0.log:1335: --- PASS: TestProjectHTTPFaultsCancellationAndRecovery (0.20s)
+regression-normal-0.log:1363: --- PASS: TestProjectMigration (0.15s)
+regression-normal-0.log:1367: --- PASS: TestProjectStorePermissionsPaginationAndVersions (0.09s)
+regression-normal-0.log:1377: --- PASS: TestProjectLiveAuthorityAndCreatorLifetime (0.10s)
+regression-normal-0.log:1405: --- PASS: TestMigrationAndConstraints (0.20s)
+regression-normal-0.log:1423: --- PASS: TestRegistrationWithPostgreSQL (2.91s)
+regression-normal-0.log:1431: --- PASS: TestUnavailableDatabaseAndRecovery (0.29s)
+regression-normal-0.log:1456: --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait (2.27s)
+regression-normal-0.log:1472: --- PASS: TestExecutionAuthorizationTwoOwnersSameTag (0.09s)
+regression-normal-0.log:1482: --- PASS: TestExecutionAuthorizationLossWhileWaiting (0.11s)
+regression-normal-0.log:1494: --- PASS: TestExecutionAuthorizationCommitAcknowledgementUnknown (0.09s)
+regression-normal-0.log:1500: --- PASS: TestExecutionAuthorizationAtomicIntentAndRevocation (0.08s)
+regression-normal-0.log:1505: --- PASS: TestCheckpointOneRegistrationCapacityLastSlot (1.46s)
+regression-normal-0.log:1509: --- PASS: TestCheckpointOneEnabledQuotaAndCooling (0.09s)
+regression-normal-0.log:1531: --- PASS: TestCheckpointOneDownRefusesUnsafeOrExhausted (0.39s)
+regression-normal-0.log:1540:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1544:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1548:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1552:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1556:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1560: --- PASS: TestCheckpointOneStartOwnerLossBothOrders (0.17s)
+regression-normal-0.log:1574:     scheduler_checkpoint1_final_gates_test.go:171: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1576: --- PASS: TestCheckpointOneStartExpiryAfterFinalWait (0.30s)
+regression-normal-0.log:1583: --- PASS: TestCheckpointOneSessionIsNotBackgroundIdentity (0.11s)
+regression-normal-0.log:1593: --- PASS: TestCheckpointOneAuthorizationFixtureCleansSharedDatabase (0.10s)
+regression-normal-0.log:1598: --- PASS: TestCheckpointOneAuthorizationRealHTTPStrictContract (0.10s)
+regression-normal-0.log:1607: --- PASS: TestCheckpointOneLegacyAndAuthorizationSerialize (0.10s)
+regression-normal-0.log:1613:     scheduler_checkpoint1_legacy_race_test.go:120: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1615:     scheduler_checkpoint1_legacy_race_test.go:120: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1617:     scheduler_checkpoint1_legacy_race_test.go:120: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1619:     scheduler_checkpoint1_legacy_race_test.go:137: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1621: --- PASS: TestCheckpointOneHTTPInventoryBlocksDatabaseAdmission (0.10s)
+regression-normal-0.log:1641: --- PASS: TestCheckpointOneOldWritersStraddleMigration (0.30s)
+regression-normal-0.log:1659: --- PASS: TestCheckpointOneHTTPIntentStatusContract (0.13s)
+regression-normal-0.log:1676: --- PASS: TestCheckpointOneHTTPCutoverAllTagsAndRollback (0.15s)
+regression-normal-0.log:1681: --- PASS: TestCheckpointOneProjectionRetirementKeepsSchemaEight (0.09s)
+regression-normal-0.log:1684:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1685:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1686:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1687:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1688:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1689:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1690:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1691:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1692:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1693:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1694:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1695:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1696:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1697:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1698:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1699:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1700:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1701:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1702:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1703:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1704:     scheduler_checkpoint1_roles_test.go:65: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1705:     scheduler_checkpoint1_roles_test.go:70: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1706:     scheduler_checkpoint1_roles_test.go:73: database rejected SQLSTATE=42501 constraint=
+regression-normal-0.log:1708: --- PASS: TestCheckpointOneControllerPublicAndIncarnation (0.09s)
+regression-normal-0.log:1711:     scheduler_checkpoint1_test.go:38: database rejected SQLSTATE=23503 constraint=monitor_schedules_workspace_id_project_id_monitor_id_fkey
+regression-normal-0.log:1712:     scheduler_checkpoint1_test.go:44: database rejected SQLSTATE=23505 constraint=monitor_runs_outstanding_idx
+regression-normal-0.log:1713:     scheduler_checkpoint1_test.go:45: database rejected SQLSTATE=23503 constraint=scheduler_reservations_workspace_id_project_id_monitor_id__fkey
+regression-normal-0.log:1714:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1715:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1716:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1717:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1718:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1719:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_reservations_check1
+regression-normal-0.log:1720:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_preparation_shape
+regression-normal-0.log:1721:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_preparation_shape
+regression-normal-0.log:1722:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_reservations_origin_key_check
+regression-normal-0.log:1723:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_target_permit_shape
+regression-normal-0.log:1724:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1725:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1726:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1727:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1728:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1729:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1730:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+regression-normal-0.log:1731:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+regression-normal-0.log:1732:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+regression-normal-0.log:1733:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check2
+regression-normal-0.log:1734:     scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1735:     scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1736:     scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+regression-normal-0.log:1737:     scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=monitor_schedules_check1
+regression-normal-0.log:1738:     scheduler_checkpoint1_test.go:61: database rejected SQLSTATE=23514 constraint=scheduler_control_check1
+regression-normal-0.log:1739:     scheduler_checkpoint1_test.go:62: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check
+regression-normal-0.log:1740:     scheduler_checkpoint1_test.go:63: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check1
+regression-normal-0.log:1741:     scheduler_checkpoint1_test.go:64: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check2
+regression-normal-0.log:1742:     scheduler_checkpoint1_test.go:72: database rejected SQLSTATE=23505 constraint=monitor_runs_outstanding_idx
+regression-normal-0.log:1743:     scheduler_checkpoint1_test.go:84: database rejected SQLSTATE=23505 constraint=monitor_runs_workspace_id_project_id_monitor_id_fencing_tok_key
+regression-normal-0.log:1745: --- PASS: TestCheckpointOnePersistenceConstraints (0.09s)
+regression-normal-0.log:1749: --- PASS: TestCheckpointOneSchemaSevenFailsClosed (0.06s)
+regression-normal-0.log:1753: --- PASS: TestCheckpointOneConfigurationRevokeRollback (0.13s)
+regression-normal-0.log:1757:     scheduler_checkpoint2_locks_test.go:107: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1759:     scheduler_checkpoint2_locks_test.go:115: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-42e7-7353-9063-a27fc2453680", "claimed_at": "2026-10-21T06:43:23.000102+00:00", "monitor_id": "01a15d33-42e4-782e-9986-46331e0ad5c5", "project_id": "01a15d33-42e3-7634-a47a-3fe39881d4ec", "lease_until": "2026-10-21T06:44:08.000102+00:00", "workspace_id": "01a15d33-42df-76fa-b3c3-c9772e4dd336", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:23.002275Z
+regression-normal-0.log:1765:     scheduler_checkpoint2_locks_test.go:107: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1767:     scheduler_checkpoint2_locks_test.go:115: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-434f-7287-bfbb-5cd3fd21e406", "claimed_at": "2026-10-21T06:43:23.115942+00:00", "monitor_id": "01a15d33-434c-7855-a14a-f13b877ee1a7", "project_id": "01a15d33-434b-7879-bab8-639fda68c1f6", "lease_until": "2026-10-21T06:44:08.115942+00:00", "workspace_id": "01a15d33-4347-7c66-b94a-85c6375d34f2", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:23.121079Z
+regression-normal-0.log:1771: --- PASS: TestCheckpointTwoClaimCompetingOwners (0.24s)
+regression-normal-0.log:1778:     scheduler_checkpoint2_locks_test.go:181: outcome database SQLSTATE=P0001 message=ERROR: candidate_invalid (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1779:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1786:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-443b-7e59-870e-b1edb285487c", "claimed_at": "2026-10-21T06:43:23.341398+00:00", "monitor_id": "01a15d33-4439-7365-926c-0ab62c9122e4", "project_id": "01a15d33-4438-72cc-8e4d-e077e67f99be", "lease_until": "2026-10-21T06:44:08.341398+00:00", "workspace_id": "01a15d33-4434-71be-b417-0f7eef515f05", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:23.343479Z
+regression-normal-0.log:1792:     scheduler_checkpoint2_locks_test.go:183: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1794:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1801:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-4512-76aa-9453-e6c8c09c1cba", "claimed_at": "2026-10-21T06:43:23.553472+00:00", "monitor_id": "01a15d33-450f-7a16-8045-9c901b92f52b", "project_id": "01a15d33-450e-797e-b896-a0890912e5a3", "lease_until": "2026-10-21T06:44:08.553472+00:00", "workspace_id": "01a15d33-450a-7a7d-9115-1dad2a47f5dc", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:23.555537Z
+regression-normal-0.log:1807:     scheduler_checkpoint2_locks_test.go:183: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1809:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1816:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-45e2-769a-b614-7c6100cb9706", "claimed_at": "2026-10-21T06:43:23.763458+00:00", "monitor_id": "01a15d33-45df-7ea9-818f-ebb42b89c5f1", "project_id": "01a15d33-45de-7b9c-8478-87c09531478a", "lease_until": "2026-10-21T06:44:08.763458+00:00", "workspace_id": "01a15d33-45da-7e30-a185-ee34ff8042f6", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:23.765516Z
+regression-normal-0.log:1822:     scheduler_checkpoint2_locks_test.go:183: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1824:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1831:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-46d8-750b-b623-51e99247b5a1", "claimed_at": "2026-10-21T06:43:24.015114+00:00", "monitor_id": "01a15d33-46d2-7369-bdd0-5753add8001a", "project_id": "01a15d33-46cb-7046-a422-8d0eaa3fc0f7", "lease_until": "2026-10-21T06:44:09.015114+00:00", "workspace_id": "01a15d33-46bf-7be9-906c-61c353bb9125", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:24.017513Z
+regression-normal-0.log:1837:     scheduler_checkpoint2_locks_test.go:183: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1839:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+regression-normal-0.log:1846:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-4802-7970-a2c7-81860ba314b3", "claimed_at": "2026-10-21T06:43:24.307919+00:00", "monitor_id": "01a15d33-47ff-7d95-a372-e353449aefd1", "project_id": "01a15d33-47fe-7ce0-bce8-fba678ddba1d", "lease_until": "2026-10-21T06:44:09.307919+00:00", "workspace_id": "01a15d33-47fa-7e1e-a3b3-0411224aa6ae", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:24.310247Z
+regression-normal-0.log:1850: --- PASS: TestCheckpointTwoClaimOwnerLossBothOrders (1.19s)
+regression-normal-0.log:1863:     scheduler_checkpoint2_locks_test.go:260: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1865:     scheduler_checkpoint2_locks_test.go:260: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1870: --- PASS: TestCheckpointTwoPatchBeforeWorkers (0.13s)
+regression-normal-0.log:1877:     scheduler_checkpoint2_locks_test.go:313: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-48f2-7b6c-8692-f7b3c5e012de", "claimed_at": "2026-10-21T06:43:24.558882+00:00", "monitor_id": "01a15d33-48ef-7a7b-8118-c5678a153d09", "project_id": "01a15d33-48ee-75d3-8fc8-b412c313d0f3", "lease_until": "2026-10-21T06:44:09.558882+00:00", "workspace_id": "01a15d33-48e9-7f0b-bed6-76ed775b666b", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:24.561515Z
+regression-normal-0.log:1878:     scheduler_checkpoint2_locks_test.go:314: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-48f8-78d7-aa11-615b1f9e4216", "claimed_at": "2026-10-21T06:43:24.56262+00:00", "monitor_id": "01a15d33-48f7-7692-9a64-d3b86ba11827", "project_id": "01a15d33-48f6-7c59-af65-b4a53b9ef8ac", "lease_until": "2026-10-21T06:44:09.56262+00:00", "workspace_id": "01a15d33-48f5-7218-b2da-0675292855d5", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:24.565143Z
+regression-normal-0.log:1884: --- PASS: TestCheckpointTwoDifferentWorkspaceCandidates (0.13s)
+regression-normal-0.log:1889:     scheduler_checkpoint2_locks_test.go:354: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:1891:     scheduler_checkpoint2_locks_test.go:359: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-496f-76f2-b8cb-8c3783c71400", "claimed_at": "2026-10-21T06:43:24.677526+00:00", "monitor_id": "01a15d33-496c-7744-8b82-03b8b72a8676", "project_id": "01a15d33-496b-74a0-8544-c94f658ea797", "lease_until": "2026-10-21T06:44:09.677526+00:00", "workspace_id": "01a15d33-4966-7f8d-be10-f2bd515dab98", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:24.679747Z
+regression-normal-0.log:1897: --- PASS: TestCheckpointTwoDifferentMonitorSameWorkspace (0.12s)
+regression-normal-0.log:1911: --- PASS: TestCheckpointTwoClaimLostAcknowledgement (0.29s)
+regression-normal-0.log:1920: --- PASS: TestCheckpointTwoUnlockedHintsAreNotAuthority (0.11s)
+regression-normal-0.log:1934: --- PASS: TestCheckpointTwoNarrowRecoveryCapabilities (0.11s)
+regression-normal-0.log:2005: --- PASS: TestCheckpointTwoBoundedScanAndTick (0.34s)
+regression-normal-0.log:2147: --- PASS: TestCheckpointTwoAttemptTransitionMatrix (0.21s)
+regression-normal-0.log:2187:     scheduler_checkpoint2_state_test.go:106: SQLSTATE=22003 reason=bigint out of range
+regression-normal-0.log:2201:     scheduler_checkpoint2_state_test.go:106: SQLSTATE=P0001 reason=clock_untrusted
+regression-normal-0.log:2205: --- PASS: TestCheckpointTwoFenceOverflowAndClockRegression (0.66s)
+regression-normal-0.log:2214:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-50f3-74e2-a018-6c75df96b494", "claimed_at": "2026-10-21T06:43:26.598054+00:00", "monitor_id": "01a15d33-50ef-73ac-b11f-ae02455b90cf", "project_id": "01a15d33-50ed-78c8-9b55-76b4ade0f8a8", "lease_until": "2026-10-21T06:44:11.598054+00:00", "workspace_id": "01a15d33-50e7-77c6-a2fb-b26bec50f06d", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:26.608949Z
+regression-normal-0.log:2221:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-51d3-7d38-8e4c-9836ebdff008", "claimed_at": "2026-10-21T06:43:26.827009+00:00", "monitor_id": "01a15d33-51d0-7d1c-a427-302292a14d91", "project_id": "01a15d33-51cf-7a5b-967b-86c530c4a190", "lease_until": "2026-10-21T06:44:11.827009+00:00", "workspace_id": "01a15d33-51cb-7283-a386-edde4760e315", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:26.831754Z
+regression-normal-0.log:2228:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-52b7-75cc-9c8b-f58b8b8e0e2b", "claimed_at": "2026-10-21T06:43:27.044344+00:00", "monitor_id": "01a15d33-52b2-77e2-aeb2-3b85ccfc5573", "project_id": "01a15d33-52af-7bf2-98b8-af0cc26d4f83", "lease_until": "2026-10-21T06:44:12.044344+00:00", "workspace_id": "01a15d33-52a7-730a-a3e4-430f88ea11f3", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:27.047072Z
+regression-normal-0.log:2235:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-544e-7047-865f-75c7dae98ec9", "claimed_at": "2026-10-21T06:43:27.455828+00:00", "monitor_id": "01a15d33-5449-7963-b3fd-8c13c138e495", "project_id": "01a15d33-5447-71be-9828-e2959b0445ac", "lease_until": "2026-10-21T06:44:12.455828+00:00", "workspace_id": "01a15d33-5439-72a7-b835-8a9b803531b0", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:27.459452Z
+regression-normal-0.log:2242:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-54ea-7b86-ac49-b926445aeb8b", "claimed_at": "2026-10-21T06:43:27.613154+00:00", "monitor_id": "01a15d33-54e6-7cab-a373-50b6c2236db6", "project_id": "01a15d33-54e4-7810-88f8-6edbc363c7da", "lease_until": "2026-10-21T06:44:12.613154+00:00", "workspace_id": "01a15d33-54db-7463-b4ff-cb004b834b8f", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:27.616205Z
+regression-normal-0.log:2249:     scheduler_checkpoint2_waits_test.go:83: outcome database SQLSTATE=55P03 message=ERROR: canceling statement due to lock timeout (SQLSTATE 55P03) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:2256:     scheduler_checkpoint2_waits_test.go:83: outcome database SQLSTATE=57014 message=ERROR: canceling statement due to user request (SQLSTATE 57014) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:2260: --- PASS: TestCheckpointTwoParentStagesAndRollback (1.92s)
+regression-normal-0.log:2273: --- PASS: TestCheckpointTwoScheduleSkip (0.24s)
+regression-normal-0.log:2278:     scheduler_checkpoint2_waits_test.go:168: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:2285:     scheduler_checkpoint2_waits_test.go:168: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-5a67-7954-af87-5f30bdf6ddde", "claimed_at": "2026-10-21T06:43:29.013964+00:00", "monitor_id": "01a15d33-5a63-7bd7-9ca2-d1cff7490f30", "project_id": "01a15d33-5a61-7c82-a077-ccf419d12b06", "lease_until": "2026-10-21T06:44:14.013964+00:00", "workspace_id": "01a15d33-5a59-72e4-afbc-9f8b9455de77", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:29.016593Z
+regression-normal-0.log:2292:     scheduler_checkpoint2_waits_test.go:168: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15d33-5ae3-7ac5-8be4-bd56d9e77921", "claimed_at": "2026-10-21T06:43:29.135903+00:00", "monitor_id": "01a15d33-5ae0-7c3b-b1e1-35fcb45bf916", "project_id": "01a15d33-5adf-79b7-9f88-250130e9fd6e", "lease_until": "2026-10-21T06:44:14.135903+00:00", "workspace_id": "01a15d33-5adb-725e-896d-515860e2e98a", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T06:43:29.138506Z
+regression-normal-0.log:2299:     scheduler_checkpoint2_waits_test.go:168: outcome database SQLSTATE=P0001 message=ERROR: candidate_invalid (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+regression-normal-0.log:2303: --- PASS: TestCheckpointTwoLateLocksAndFreshStop (0.68s)
+regression-normal-0.log:2311:     scheduler_checkpoint2_waits_test.go:221: SQLSTATE=40P01 message=deadlock detected detail=Process 12809 waits for ShareLock on transaction 136602; blocked by process 12811.
+regression-normal-0.log:2316: --- PASS: TestCheckpointTwoInjectedExternalDeadlock (0.21s)
+regression-normal-0.log:2320:     scheduler_claim_concurrency_test.go:129: claim SQLSTATE=P0001 ACK observed DB=0001-01-01T00:00:00Z error=ERROR: candidate_busy (SQLSTATE P0001)
+regression-normal-0.log:2322:     scheduler_claim_concurrency_test.go:134: claim SQLSTATE=00000 ACK observed DB=2026-10-21T06:43:29.634131Z error=<nil>
+regression-normal-0.log:2327: --- PASS: TestSchedulerClaimTwoOwnersWorkersAndUserPatch (0.19s)
+regression-normal-0.log:2337: --- PASS: TestSchedulerClaimOwnerHintInvalidation (0.22s)
+regression-normal-0.log:2347: --- PASS: TestSchedulerClaimFinalClockAfterControlWait (0.42s)
+regression-normal-0.log:2351: --- PASS: TestSchedulerClaimAtomicFenceAndSlots (0.18s)
+regression-normal-0.log:2355: --- PASS: TestSchedulerClaimWorkspaceSkipReleasesUser (0.16s)
+regression-normal-0.log:2360:     scheduler_legacy_patch_permissions_test.go:48: driver error: SQLSTATE=42501 message="permission denied for table http_monitors" where="" internal_query="" schema="" table="" routine="aclcheck_error" position=0
+regression-normal-0.log:2400: --- PASS: TestLegacyPatchOriginalFixtureSchemaSevenDiagnosis (0.10s)
+regression-normal-0.log:2409:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=SELECT * FROM public.monitor_schedules
+regression-normal-0.log:2410:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=SELECT * FROM public.monitor_runs
+regression-normal-0.log:2411:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=UPDATE public.monitor_schedules SET next_due_at=NULL
+regression-normal-0.log:2412:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=DELETE FROM public.monitor_runs
+regression-normal-0.log:2413:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=SELECT scheduler_private.authorize(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,60)
+regression-normal-0.log:2414:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=SELECT scheduler_private.claim(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)
+regression-normal-0.log:2415:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=INSERT INTO public.http_monitors(id) VALUES(uuidv7())
+regression-normal-0.log:2419: --- PASS: TestLegacyPatchColumnPrivilegesAcrossMigration (0.17s)
+regression-normal-0.log:2425: --- PASS: TestSchedulerLegacyDatabaseWriterAcrossMigration (0.14s)
+regression-normal-0.log:2429: --- PASS: TestExecutionAuthorizationScheduleFailureRollsBackIntent (0.21s)
+regression-normal-0.log:2438: --- PASS: TestSchedulerMigrationRetiresAllLegacyTags (0.23s)
+regression-normal-0.log:2463: --- PASS: TestSchedulerMigrationRollback (0.38s)
+regression-normal-0.log:2470: --- PASS: TestSchemaSevenFixtureMatchesReviewedHistoricalWriter (0.00s)
+regression-normal-0.log:2474: --- PASS: TestSchedulerPersistenceScopeLineageAndShape (0.15s)
+regression-normal-0.log:2478: --- PASS: TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities (0.13s)
+regression-normal-0.log:2482: --- PASS: TestSchedulerStartRequiresPreparedSupervisorAndConsumesTokens (0.12s)
+regression-normal-0.log:2490: --- PASS: TestSchedulerPauseBeforeStartAndWhileWaiting (0.12s)
+regression-normal-0.log:2496: --- PASS: TestSchedulerSupervisorOwnsOneInputCapability (0.12s)
+regression-normal-0.log:2506: --- PASS: TestSessionStoreAndUpgrade (0.31s)
+regression-normal-0.log:2510: --- PASS: TestSessionCreationRechecksConcurrentUpdate (0.10s)
+regression-normal-0.log:2514: --- PASS: TestCreationLockSerializesDisableAndConcurrentRevocation (0.10s)
+regression-normal-0.log:2523: --- PASS: TestWorkspaceCreationLockOrdering (0.09s)
+regression-normal-0.log:2534: --- PASS: TestWorkspaceExpiryAndCleanupBoundaries (0.71s)
+regression-normal-0.log:2545: --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges (0.09s)
+regression-normal-0.log:2562: --- PASS: TestWorkspaceTransactionFaultsAndUnknownCommit (0.10s)
+regression-normal-0.log:2577: --- PASS: TestWorkspaceHTTPAuthenticationAndTenantIsolation (0.64s)
+regression-normal-0.log:2583: --- PASS: TestWorkspaceHTTPDatabaseFailuresAndRecovery (2.19s)
+regression-normal-0.log:2592: --- PASS: TestWorkspaceListSnapshotAndCursorChanges (0.28s)
+regression-normal-0.log:2607: --- PASS: TestWorkspaceMigrationAndConstraints (0.32s)
+regression-normal-0.log:2611: --- PASS: TestWorkspaceTenantQueriesAndConcurrentCreation (0.23s)
+regression-normal-1.log:5: --- PASS: TestCheckpointOneRealExpiryExplicitRenewal (60.52s)
+regression-normal-2.log:23: --- PASS: TestCheckpointTwoUnstartedRealLeaseExpiry (45.23s)

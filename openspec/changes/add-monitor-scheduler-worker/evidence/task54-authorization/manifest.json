@@ -1,0 +1,93 @@
+{
+  "schema": "devpilot-task54-authorization-provenance-v1",
+  "reviewed_implementation_head": "e3a3d03b2a319cfe3c8c09f00327b7ae273f8eb1",
+  "source": {
+    "kind": "original local Codex Desktop session log, not compacted replacement history or guardian transcript",
+    "path": "/Users/sansea/.codex/sessions/2026/10/22/rollout-2026-10-22T14-39-40-01a1571b-9759-7f22-957a-cc243a16a505_01a16256-3967-7770-8c1f-30c176009d2f.jsonl",
+    "session_id": "01a1571b-9759-7f22-957a-cc243a16a505",
+    "source_prefix_through_line": 1345,
+    "source_prefix_sha256": "a82b4c5d95cd87194fd33a04be149e8070070f3ae960ed0a089d95d9a78007ad"
+  },
+  "extraction": "Four unmodified original JSONL records, in source order, including their original LF bytes. Other session messages and session metadata are excluded.",
+  "records": [
+    {
+      "excerpt_line": 1,
+      "source_line": 1329,
+      "timestamp": "2026-10-22T08:29:06.785Z",
+      "type": "response_item",
+      "payload_type": "function_call",
+      "raw_line_sha256": "862ac305d780d4441b18127552f3ac41ba000fbad6c74644f5e20756932978fe"
+    },
+    {
+      "excerpt_line": 2,
+      "source_line": 1330,
+      "timestamp": "2026-10-22T08:29:06.789Z",
+      "type": "event_msg",
+      "payload_type": "item_completed",
+      "raw_line_sha256": "06de2c4fbdb7d9a67167db79375e881170bc980293e7752fe01cef9cfd9f34dc"
+    },
+    {
+      "excerpt_line": 3,
+      "source_line": 1344,
+      "timestamp": "2026-10-22T08:31:23.321Z",
+      "type": "response_item",
+      "payload_type": "message",
+      "raw_line_sha256": "74a022c2c68c98b64671a19df2f31ba69a09272a57e2d99445fe92b91e95c793"
+    },
+    {
+      "excerpt_line": 4,
+      "source_line": 1345,
+      "timestamp": "2026-10-22T08:31:23.322Z",
+      "type": "event_msg",
+      "payload_type": "item_completed",
+      "raw_line_sha256": "0bcc16f149909e823a474b51ad8f93b7099285c1afea817a035e8b5a03ce7daa"
+    }
+  ],
+  "file_sha256": {
+    "original-records.jsonl": "75d1ce6ba0612348cca14348fdaa4afdde16b75b8d900b925712387c3927615a"
+  },
+  "request": {
+    "call_id": "call_05046c585a5b4bf38297c2b0e73a348d",
+    "function_call_id": "fc_0a75366756917963016ad9c94bbf48819186f1fcaacaaf95cf",
+    "timestamp_utc": "2026-10-22T08:29:06.785Z",
+    "timestamp_asia_shanghai": "2026-10-22T16:29:06.785+08:00"
+  },
+  "approval": {
+    "message_id": "msg_01a162bc-80b9-7300-8ef8-b142a19bed0b",
+    "turn_id": "01a162bc-8096-70a0-85b1-b0af36e59570",
+    "ui_message_id": "01a162bc-80b9-7300-8ef8-b15465edbafa",
+    "question_item_id": "[\"request_user_input_async\",\"call_05046c585a5b4bf38297c2b0e73a348d\",0]",
+    "timestamp_utc": "2026-10-22T08:31:23.321Z",
+    "timestamp_asia_shanghai": "2026-10-22T16:31:23.321+08:00",
+    "answer": "批准仅上述3项能力及信任边界"
+  },
+  "verified_correspondence": {
+    "same_call_id_and_question_index": true,
+    "exact_question_text_matches_request": true,
+    "explicit_user_answer_not_default_option": true
+  },
+  "approved_capabilities": [
+    {
+      "signature": "scheduler_private.quarantine_physical(uuid,uuid,uuid,uuid,uuid,bigint)",
+      "returns": "jsonb",
+      "runtime_grantee": "devpilot_scheduler_controller"
+    },
+    {
+      "signature": "scheduler_private.accept_termination(uuid,uuid,uuid,uuid,uuid,bytea)",
+      "returns": "jsonb",
+      "runtime_grantee": "devpilot_scheduler_supervisor"
+    },
+    {
+      "signature": "scheduler_private.reconcile_termination(uuid,uuid,uuid,uuid,uuid,uuid,bytea)",
+      "returns": "jsonb",
+      "runtime_grantee": "devpilot_scheduler_supervisor"
+    }
+  ],
+  "trust_boundary": "Trusted independent Supervisor adapter verifies pinned Ed25519 signature and matching committed network/PIDFD/retirement evidence before opening a DB transaction. PL/pgSQL does not verify Ed25519; DB trusts bound Supervisor SQL identity and checks frozen key ID, full lineage and one-time consumption ledger.",
+  "limitations": [
+    "A local session-log excerpt and hashes establish provenance and byte integrity for review; they are not an independently signed approval or external identity authentication.",
+    "function_call_output accepted=true acknowledges question delivery, not permission. It is not used as approval evidence.",
+    "No earlier Checkpoint authorization, guardian approval, assistant claim or later compacted transcript is used as the original approval.",
+    "No additional function, role/table/column/secret privilege, production execution or subsequent task is approved by this record."
+  ]
+}

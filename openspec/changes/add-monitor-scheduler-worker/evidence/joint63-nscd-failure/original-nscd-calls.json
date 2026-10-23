@@ -1,0 +1,90 @@
+{
+  "trace_path": "/private/tmp/devpilot-joint63-repair-matrix/normal-allow-https/run-0-probe.trace",
+  "trace_sha256": "4d0dca2e1eec8543a5d19c78ba8481714d48c34be0bae2b3b3b90ac20908d942",
+  "calls": [
+    {
+      "line": 72,
+      "text": "10    connect(3, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (No such file or directory)"
+    },
+    {
+      "line": 74,
+      "text": "10    connect(3, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (No such file or directory)"
+    }
+  ],
+  "process_snapshot": {
+    "event": "process_snapshot",
+    "pids": [
+      {
+        "pid": 1,
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "0",
+          "TracerPid": "0",
+          "Uid": "0\t0\t0\t0",
+          "Gid": "0\t0\t0\t0",
+          "CapEff": "00000000000001e0",
+          "CapPrm": "00000000000001e0",
+          "CapBnd": "00000000000001e0",
+          "NoNewPrivs": "1"
+        },
+        "wchan": "0",
+        "stat": "1 (python3) R 0 1 1 0 -1 4194560 3164 0 0 0 2 1 0 0 20 0 1 0 58847672 28844032 4382 18446744073709551615 4194304 10284528 281474740615936 0 0 0 0 16781312 2 0 0 0 17 1 0 0 0 0 0 10354056 10930608 443469824 281474740616635 281474740629243 281474740629243 281474740629479 0\n"
+      },
+      {
+        "pid": 7,
+        "status": {
+          "Name": "strace",
+          "State": "S (sleeping)",
+          "PPid": "1",
+          "TracerPid": "0",
+          "Uid": "65534\t65534\t65534\t65534",
+          "Gid": "65534\t65534\t65534\t65534",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "CapBnd": "0000000000000000",
+          "NoNewPrivs": "1"
+        },
+        "wchan": "0",
+        "stat": "7 (strace) S 1 1 1 0 -1 4194560 757 25 0 0 0 2 0 0 20 0 1 0 58847677 4280320 745 18446744073709551615 1 1 0 0 0 0 8192 3166215 8192 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
+      },
+      {
+        "pid": 10,
+        "status": {
+          "Name": "python3",
+          "State": "S (sleeping)",
+          "PPid": "7",
+          "TracerPid": "7",
+          "Uid": "65534\t65534\t65534\t65534",
+          "Gid": "65534\t65534\t65534\t65534",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "CapBnd": "0000000000000000",
+          "NoNewPrivs": "1"
+        },
+        "wchan": "0",
+        "stat": "10 (python3) S 7 1 1 0 -1 4194560 1467 0 0 0 1 1 0 0 20 0 1 0 58847677 16949248 2840 18446744073709551615 1 1 0 0 0 0 0 16781312 2 0 0 0 17 7 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
+      },
+      {
+        "pid": 11,
+        "status": {
+          "Name": "schedulerprobef",
+          "State": "S (sleeping)",
+          "PPid": "10",
+          "TracerPid": "7",
+          "Uid": "65534\t65534\t65534\t65534",
+          "Gid": "65534\t65534\t65534\t65534",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "CapBnd": "0000000000000000",
+          "NoNewPrivs": "1"
+        },
+        "wchan": "0",
+        "stat": "11 (schedulerprobef) S 10 1 1 0 -1 4194560 228 0 58 0 0 1 0 0 20 0 6 0 58847681 1260175360 2523 18446744073709551615 1 1 0 0 0 0 0 0 2143420159 0 0 0 17 5 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
+      }
+    ],
+    "at_ns": 1792724877914497552
+  },
+  "python_stack_captured_in_original_run": false,
+  "native_libc_stack_captured": false
+}

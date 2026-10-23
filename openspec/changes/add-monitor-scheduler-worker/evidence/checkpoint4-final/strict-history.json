@@ -1,0 +1,20 @@
+{
+  "command": [
+    "openspec",
+    "validate",
+    "--all",
+    "--strict"
+  ],
+  "started_at": "2026-10-21T07:49:46.054998+00:00",
+  "elapsed_seconds": 0.3474106670473702,
+  "exit_code": 1,
+  "head": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
+  "dirty": false,
+  "source_inventory_sha256": "215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528",
+  "binaries": {},
+  "log_sha256": "fef4737504c8a9567664c2e4925fa8db19971473867e035eb2f8dff3ca9bd3d1",
+  "source_inventory_ref": "source-inventories/215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528.json",
+  "original_receipt_ref": "raw-receipts/strict-history.json.gz",
+  "original_receipt_sha256": "88be7f371ba38edcb37e154dd71712ecfd2e4e12cb27dc5ce05b14ba882d1d93",
+  "log_ref": "strict-history.log"
+}

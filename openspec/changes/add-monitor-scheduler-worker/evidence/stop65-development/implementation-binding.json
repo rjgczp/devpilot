@@ -1,0 +1,27 @@
+{
+  "implementation_commit": "ddcaa3f1f0b41e76c6eb932ea01585576d24b9af",
+  "review_base": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+  "tested_development_head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+  "tested_dirty": true,
+  "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+  "files_sha256": {
+    ".github/workflows/go-ci.yml": "41f32a7dbbc3d2d1158eed67668be90419c7b07adf6c5e177554cc66ba7e67b6",
+    "cmd/networksupervisorfixture/main_linux.go": "8469b2919960c1dfa1402631319b6d44a8cb7c47f96d015d4ce4f04ad876af8e",
+    "internal/supervisorfixture/policy_linux_test.go": "444654ab25780147b5073bc7201a0183212e1277e84c79a837eb1d053a09367a",
+    "internal/supervisorfixture/receipt_linux.go": "8f78a542c989f843a43758891e0d3cb0f76b3048fa3e5a07621d4d1499934425",
+    "internal/supervisorfixture/receipt_linux_test.go": "e0ab6c18bb2e3e0e653be959e278976aedc39cb44a54955d1d4889ccc20c6f07",
+    "internal/supervisorfixture/stop_linux.go": "046e1335b84b3516ca9aca0bbe8138d5a9214e0d3ffc93687d944d0047bf5e97",
+    "tests/integration/scheduler_network_policy_test.go": "5b216e0d9c51f599191e95b63788ca9288b7f2d7988a86f95ecc6c47d51d064c",
+    "tests/integration/scheduler_physical_stop_test.go": "ba7c70c142bbbbf55b5ac4f86c5d2767f0be9a6c94eee39aaf054e4ea731f227",
+    "tests/scheduler/README.md": "2b5f56474e1e50b6d1e4f4dc66b31d985d8bdb121d8e9bae034ac401e18b0458",
+    "tests/scheduler/build-stop65.sh": "5629d61fc8c2060e938f379865390e1e3a43ebe3e1c6229b1eb516b8b076502a",
+    "tests/scheduler/network_fixture.py": "f9393401a0787f0b92f935520e1a1ae06e1b6cf2459a84ec7c5270c05c283643",
+    "tests/scheduler/network_receiver.py": "63d1d0fc3e1d6ae10bd4af310a8a4d60a3bdd15f076a3f482f2aacfb717d2b2d",
+    "tests/scheduler/run-stop65.py": "b609173ab0951441e2286061d91fab242385e774c71d8e13231a1bf50d724d76",
+    "tests/scheduler/stop65.md": "45af0873337e5eb63961e4a02ec955a2a7d014548af67a62847a9462b3f7422e",
+    "tests/scheduler/termination_actor.py": "147027c224ac19982521146fbd2fa75175141b52f54724665b81d646a1c1f46d",
+    "tests/scheduler/termination_fixture.py": "5371844fb779e49668e5330b3b8598f9ccf2d4c8d1042163072eae63c98c1d25",
+    "tests/scheduler/termination_init.py": "b995143b256e0e82b622e77f400f2bec2d09980ebc2ea974509fb2ff7aa5fa68"
+  },
+  "final_ci": "Actual delivered HEAD Push/PR receipts required; not substituted by development results"
+}
