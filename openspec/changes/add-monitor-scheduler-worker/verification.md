@@ -387,6 +387,8 @@ CI保留现有verify/integration/execution-security、原147项PG normal/race分
 
 本批源于产品对3489a41的独立审查及仅5.4授权；随后用户明确回复“批准仅上述3项能力及信任边界”。仅新增Controller的quarantine_physical和Supervisor的accept_termination/reconcile_termination三项SECURITY DEFINER/EXECUTE，精确签名、GRANT及外部密码学验证/数据库可信Supervisor身份边界见docs/monitor-scheduler-task54-capabilities.md。无其它角色属性、成员关系、表列/秘密权限扩展，Migration1–7不变。未把既有其它Checkpoint授权当本次许可。
 
+审批溯源补录（仅证据，不改已审实现）：原始申请call_id为`call_05046c585a5b4bf38297c2b0e73a348d`，时间`2026-10-22T08:29:06.785Z`；原始role=user批准消息`msg_01a162bc-80b9-7300-8ef8-b142a19bed0b`，时间`2026-10-22T08:31:23.321Z`（北京时间16:31:23.321），明确答复“批准仅上述3项能力及信任边界”。原始questionItemId精确关联该call的第0题，引用的问题正文与申请逐字一致。原始会话文件、第1329/1330/1344/1345行的四条未改写记录、逐行SHA256及截至1345行的来源前缀hash，见[evidence/task54-authorization/README.md](evidence/task54-authorization/README.md)和其manifest.json。该记录明确包含三个函数、对应Controller/Supervisor角色，以及事务前由独立适配器验证Ed25519/物理证据、数据库信任绑定Supervisor SQL身份的边界。不以工具`accepted=true`、旧Checkpoint许可、助手自述或压缩历史替代用户批准。本地日志/摘要可供复核，但不是外部签章或独立组织身份认证；不代替独立审查者的最终放行。
+
 Migration8在准备时冻结可信登记公钥摘要；不可变原namespace/incarnation/v/g/epoch/fence绑定资源账。独立Supervisor先fsync提交真实网络/pidfd/reap/退役证明，再签并持久化回执；Go适配器验证固定公钥Ed25519、完整十项谱系和全部证明哈希/物理不变量后才获取DB连接。PL/pgSQL不验证Ed25519、不检查Linux；它只信任经session_user/incarnation绑定的独立Supervisor SQL身份，并核对原key pin/Run身份、严格4096-byte回执和唯一nonce/digest。没有把Worker自报、verified布尔或TTL当作回收许可。该可信Supervisor身份被攻破的风险不由本fixture解决。
 
 按D6回收子序W→P→M→Activation→Schedule→Run→global/W/P/M→全部排序origin/IP保留代次→Reservation→control；不获取User/Session/Membership，等待后新SPI和一次DB时钟复验。消费与物理释放、并发计数递减在同一PG事务完成。两代目标key均释放，但不退Start/target令牌、冷却、安全保留或运行记录容量；不写attempt/HTTP结果/当前观察/next_due，不改变配置、Activation或Owner强tag。旧started物理回收后仍可被原部分唯一索引阻止后续同MonitorClaim，留待结果/unknown协议收尾，不通过修改索引提前实施第7组。

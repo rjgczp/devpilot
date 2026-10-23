@@ -219,3 +219,22 @@ The human reply to this exact request was: “批准仅上述3项能力及信任
 This approves only the three signatures and grants above, including the
 Supervisor-side Ed25519/proof verification and database attestation boundary.
 It does not approve additional functions, result-system work or production use.
+
+Original source now available for review:
+[authorization provenance and raw excerpt](../openspec/changes/add-monitor-scheduler-worker/evidence/task54-authorization/README.md).
+The original request is session `01a1571b-9759-7f22-957a-cc243a16a505`,
+call `call_05046c585a5b4bf38297c2b0e73a348d`, at
+`2026-10-22T08:29:06.785Z`; the explicit role=user reply is message
+`msg_01a162bc-80b9-7300-8ef8-b142a19bed0b` at
+`2026-10-22T08:31:23.321Z` (16:31:23.321 Asia/Shanghai).
+Its questionItemId references that call and question0, and its quoted question
+matches the original request exactly. The evidence includes four unchanged
+source records, source line coordinates, individual SHA256 hashes and a
+source-prefix hash. It uses neither a previous Checkpoint approval nor
+`accepted=true` (question-delivery acknowledgement) as permission.
+
+This closes the missing provenance reference by making the original records
+reviewable. Local log/hash checks are not an externally signed approval or an
+independent authentication of the human's organizational role. This addendum
+changes no function, grant, implementation or task acceptance boundary; the
+exact initial SIGCONT timeout cause remains unproven as recorded in verification.
