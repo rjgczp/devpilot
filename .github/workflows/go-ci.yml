@@ -197,11 +197,15 @@ jobs:
             python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/execution-meta" --name snapshot-race \
               --binary "$RUNNER_TEMP/execution-tools/execution.test" -- \
               go test -race -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v -timeout=120s
-      - name: Build task6.4,6.5 and5.4 fixture-only tooling
+      - name: Build task6.3,6.4,6.5 and5.4 fixture-only tooling
         run: |
           docker build -t devpilot-scheduler-fixture -f tests/scheduler/Dockerfile .
-          RELEASE54_TOOLS="$RUNNER_TEMP/network64-tools" \
-            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-release54.sh
+          JOINT63_TOOLS="$RUNNER_TEMP/network64-tools" \
+            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-joint63.sh
+      - name: Verify all23 separate Budget fixtures with guarded PG18 normal/race
+        run: |
+          python3 tests/scheduler/run-budget.py --binary "$RUNNER_TEMP/network64-tools/budget-pg.test" --mode normal --name normal --evidence "$RUNNER_TEMP/budget-evidence/normal"
+          python3 tests/scheduler/run-budget.py --binary "$RUNNER_TEMP/network64-tools/budget-pg-race.test" --mode race --name race --evidence "$RUNNER_TEMP/budget-evidence/race"
       - name: Verify independent task6.4 dual-stack network policies and PG18 normal/race
         run: |
           python3 tests/scheduler/run-network64.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/network64-evidence"
@@ -211,6 +215,9 @@ jobs:
       - name: Verify task5.4 committed physical receipts and atomic PG18 release normal/race
         run: |
           python3 tests/scheduler/run-release54.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/release54-evidence"
+      - name: Verify task6.3 original kernel joint execution and tracer-fault quarantine normal/race
+        run: |
+          python3 tests/scheduler/run-joint63.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/joint63-evidence"
       - name: Upload separate execution evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -224,7 +231,9 @@ jobs:
             ${{ runner.temp }}/execution-pg-race/
             ${{ runner.temp }}/execution-tools/build.txt
             ${{ runner.temp }}/network64-build/
+            ${{ runner.temp }}/budget-evidence/
             ${{ runner.temp }}/network64-evidence/
             ${{ runner.temp }}/stop65-evidence/
             ${{ runner.temp }}/release54-evidence/
+            ${{ runner.temp }}/joint63-evidence/
           if-no-files-found: error

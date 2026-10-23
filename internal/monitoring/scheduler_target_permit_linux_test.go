@@ -57,3 +57,21 @@ func TestSchedulerPermitBridgeBindsFrozenInput(t *testing.T) {
 		t.Fatal("copy restored same run permission")
 	}
 }
+
+func TestSchedulerExecutionCapabilityBurnsBeforeAnyNetwork(t *testing.T) {
+	const id = "10000000-0000-0000-0000-000000000001"
+	snapshot := testSnapshot(1)
+	input := SchedulerInput{snapshot: snapshot, lineage: handoff.Lineage{WorkspaceID: snapshot.scope.WorkspaceID, ProjectID: snapshot.scope.ProjectID, MonitorID: snapshot.scope.MonitorID, RunID: id, ConfigurationVersion: "7", ActivationGeneration: "2", SchedulerEpoch: "3", FencingToken: "4", NamespaceIncarnation: id, SupervisorIncarnation: id}, deadline: time.Now().Add(10 * time.Second), permitAttempt: &atomic.Bool{}, executeAttempt: &atomic.Bool{}}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	// Cancellation reaches the original engine before admission/DNS/dial. This
+	// unit verifies the burn bit only; it is not PG/Linux physical-stop evidence.
+	result, err := input.ExecuteFixture(ctx, targetpermit.NewClient(nil, nil))
+	if result != nil || err == nil {
+		t.Fatal("canceled invocation observed a target")
+	}
+	copy := input
+	if result, err = copy.ExecuteFixture(context.Background(), targetpermit.NewClient(nil, nil)); result != nil || err != ErrTargetPermit {
+		t.Fatal("copy restored execution capability")
+	}
+}

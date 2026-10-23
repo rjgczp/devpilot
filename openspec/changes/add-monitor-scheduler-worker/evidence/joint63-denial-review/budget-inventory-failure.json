@@ -1,0 +1,17 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "/private/tmp/devpilot-joint63-denial-budget.py"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 0.157574209,
+  "provenance": "functions.exec exec_command original tool result",
+  "tool_chunk_id": "4f2a23",
+  "record_py_wrapper": false,
+  "stdout": "",
+  "stderr_file": "budget-inventory.original.stderr",
+  "runtime_test_bodies_started": 0,
+  "listing_output_was_not_persisted": true,
+  "stopped_after_failure": true
+}

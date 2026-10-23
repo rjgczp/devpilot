@@ -126,7 +126,7 @@ class Harness:
             self.exec(self.receiver, 'ip', '-6', 'addr', 'add', ip+'/128', 'dev', 'lo', 'nodad')
         self.exec(self.receiver, 'ip', 'neigh', 'flush', 'all')
         proc = subprocess.Popen(['docker', 'exec', '-i', self.receiver, 'python3', '-u', '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=open(self.dest/'receiver.stderr', 'wb'))
-        proc.stdin.write((HERE/'network_receiver.py').read_bytes())
+        proc.stdin.write(self.receiver_source())
         proc.stdin.close()
         self.processes.append(proc)
         self.receiver_proc = proc
@@ -231,7 +231,7 @@ class Harness:
                     if b==b'\n':break
                     if len(line)>1048576:raise RuntimeError('unbounded PG driver output')
                 if not line:break
-                log.append(bytes(line))
+                log.append(self.driver_log_line(bytes(line)))
                 if not line.startswith(b'NETWORK64 '):continue
                 request=json.loads(line[len(b'NETWORK64 '):])
                 op=request['op']
@@ -257,6 +257,12 @@ class Harness:
             result=subprocess.run(['docker','exec',cid,'psql','-U','devpilot_fixture','-d','devpilot_registration_test','-At','-c',sql],capture_output=True)
             (self.dest/'postgres-final-ledger.log').write_bytes(result.stdout+result.stderr)
 
+
+    def receiver_source(self):
+        return (HERE/'network_receiver.py').read_bytes()
+
+    def driver_log_line(self,line):
+        return line
 
     def pg_operation(self,instance,op,payload,selected,mode):
         raise RuntimeError('unknown driver operation')

@@ -1,14 +1,20 @@
 # Verification — add-monitor-scheduler-worker
 
+## Current status — supplemental orchestration repaired; local acceptance complete (2026-10-23)
+
+当前清单仍28/47，6.3保持未勾选，等待冻结提交的Push/PR CI与独立完成复审。本批只修复构建/测试编排，没有修改运行代码、安全断言、数据库权限或生产执行边界。原46/46联合矩阵、6项拒绝传输回归及历史安全验收已有实际证据；本轮遗漏的纯Budget23项normal+23项Race、历史Schema6 Snapshot4项normal+4项Race均已真实执行通过，无skip。
+
+上轮实际失败是临时Python planner把terminationfixture入口误要求存在于jointfixture二进制的清单断言，并非Go编译报错；原始命令、stderr、缺失原listing的局限及Build Tags已永久保留。本轮将纯Budget独立编译并核对固定23项清单，不合并互不相同的fixture。下面历史停止记录按发生时状态保留，由文末本轮补充验收记录更新；历史CI不冒充待冻结SHA的结果。
+
 ## Authorization and baseline
 
 2026-10-20 用户正式授权两轮独立评审后的方案A全部47项Apply任务，确认全部产品决策；允许代码、独立Linux/PG18 fixture测试、证据和验收后的实现PR。生产真实互联网执行、生产Migration/部署、合并和Archive未授权。无需重复确认已批准的暂停/24h授权/弃用常量/全体g+1等决定。
 
 实施开始于main `1d3b8266e494061beccc3ccdf47694ba4b0339c5`；HEAD/main/origin/main及实时远端main一致，工作区只有已批准规划目录未跟踪。PR10实时核实MERGED，merge `85402ab7877e67062e2d48b24e9ad9c31b721461`；十个归档与17份主规格保持。新分支 `codex/add-monitor-scheduler-worker`。完整planning/Migration1–7 SHA256、归档名单及工具版本见 `evidence/baseline.json`；基线提交就是证据所对应的已审SHA，不冒称后续代码已验收。
 
-## Current checkpoint
+## Historical checkpoint6.5 delivery
 
-当前 **累计27/47，新增6.5独立fixture物理终止验收；5.4、6.3保持未勾选**。产品负责人独立审查33fb5edde369a30f9bfb902d5e3fdd3525a46586并核实Push/PR成功后，明确仅授权6.5。6.5实现提交ddcaa3f1f0b41e76c6eb932ea01585576d24b9af；另经单独授权的共享HTTP超限响应最小修复为73def21d5f6a06c9a7edd37847c2831b577740a8（原PR失败及回归见文末）。最终以同时包含两者的冻结交付HEAD真实Actions为准，开发态dirty结果不冒称最终SHA验收。本批完成独立紧停、已建立TLS流切断、pidfd终止/回收同Run主进程及孤儿、完整谱系Ed25519回执/重放拒绝、丢失监督器及节点恢复的失败关闭和运维说明。没有DB回执提交/槽释放能力，未扩大数据库函数/角色/EXECUTE/表列权限，Migration1–8不变。真实HTTP内核Probe联合执行及物理容量回收仍待分别独立复审。PR11保持Open，生产执行硬关闭，不合并/Archive/部署。
+当时 **累计27/47，新增6.5独立fixture物理终止验收；5.4、6.3保持未勾选**。产品负责人独立审查33fb5edde369a30f9bfb902d5e3fdd3525a46586并核实Push/PR成功后，明确仅授权6.5。6.5实现提交ddcaa3f1f0b41e76c6eb932ea01585576d24b9af；另经单独授权的共享HTTP超限响应最小修复为73def21d5f6a06c9a7edd37847c2831b577740a8（原PR失败及回归见文末）。最终以同时包含两者的冻结交付HEAD真实Actions为准，开发态dirty结果不冒称最终SHA验收。本批完成独立紧停、已建立TLS流切断、pidfd终止/回收同Run主进程及孤儿、完整谱系Ed25519回执/重放拒绝、丢失监督器及节点恢复的失败关闭和运维说明。没有DB回执提交/槽释放能力，未扩大数据库函数/角色/EXECUTE/表列权限，Migration1–8不变。真实HTTP内核Probe联合执行及物理容量回收仍待分别独立复审。PR11保持Open，生产执行硬关闭，不合并/Archive/部署。
 
 独立可销毁PG容器 `devpilot-scheduler-apply-pg18` 为PG18.6；不复用项目已有容器。Docker internal bridge禁止上游且本机端口发布不可用，因此在其控制网络中运行CGO=0 Linux测试二进制；每个破坏性套件先通过现有`internal/testdb.Open`再调用Goose3.26.0。工具/镜像/二进制哈希见 `evidence/toolchain.json` 及各命令receipt。
 
@@ -33,9 +39,9 @@ schema7历史fixture来自已审核基线`internal/monitor/activation_store.go`�
 
 tasks仅在对应验收通过后勾选。每项登记Requirement/Scenario、实现文件、测试名/完整命令/退出码、证据路径与提交SHA；初步检查receipt显式保留dirty，不冒称最终提交。1.1/1.2的授权及基线见`evidence/baseline.json`；1.4工具预检见上述实际正负控制。其余任务正在实施或待验收，未按代码存在就勾选。
 
-## Acceptance status
+## Historical acceptance status
 
-- 当前26/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3及第6组6.1–6.2、6.4。其余21项保持未勾选，包含5.4、6.3、6.5及第7–10组。
+- 当时26/47项已验收：Checkpoint1的1.1–1.4、2.1–2.5、3.1–3.5，Checkpoint2的4.1–4.6，第5组5.1–5.3及第6组6.1–6.2、6.4。其余21项保持未勾选，包含5.4、6.3、6.5及第7–10组。
 - Migration8仅执行于新建guarded PG18；Migration1–7保持原字节，未对生产执行。
 - 两Owner/两Worker/真实用户PATCH的双向锁图和Claim未知提交已实测；真实3周期、完整Supervisor物理终止、网络unknown/完整容量与故障仍未完成；原76项已在本轮冻结SHA的原隔离内核fixture复验通过，不代表新Scheduler拓扑验收。
 - 冻结实现691c993的全量Go unit/race、vet、完整PG18 normal/integration-race及隔离execution-security已在实际Push/PR CI通过。PR11保持Open；完整方案A、独立Supervisor及后续任务仍未验收。
@@ -398,3 +404,351 @@ Migration8在准备时冻结可信登记公钥摘要；不可变原namespace/inc
 开发失败、原始命令/退出码/源码与二进制/日志hash见evidence/release54-development/。初始本地构建路径/src与真实挂载不一致导致Goose收集目录失败，未跑迁移；修正构建路径后实际迁移通过。下一轮SIGCONT-only管理确认在原3s超时，网络已撤销但无pidfd/退役回执，DB保持quarantined/global32及目标槽，不将容器清理记为释放。一个PID1信号假设被独立反例否定；后续无网络单进程select诊断复现暂停期间的等待行为，显式控制消息唤醒。原失败缺恢复后的syscall/wait状态，精确原因仍保留未证明风险。改为既有显式绑定Run的stop协议，不延长3s/2s/35s/45s，不增加权限/skip/自动重试；normal/race通过不抹除首次超时。
 
 本批只勾选5.4，累计28/47；6.3与第7–10组仍未完成。运维步骤、未知ACK/监督器失联时保持blocked、禁止手改资源账/重建key/替代旧Run、手工恢复边界见tests/scheduler/release54.md。生产执行硬关闭，未合并/Archive/部署。开发态实际HEAD/dirty与实现字节绑定不能替代交付SHA；完整unit/race/vet、147项PG normal/race、原76+5、6.4及6.5与本批5.4的最终结果须由冻结HEAD实际Push/PR CI和独立Artifact哈希核验后另报，不预填绿色。Change strict已通过；全库仍仅历史四规格七条描述长度警告，未改无关主规格。
+
+## Task6.3 full joint acceptance — stopped on physical-stop instrumentation failure
+
+本轮实施前已实际确认856cbbd45aa19297e4694f7b90b2b44261049b42的Push39885375219及PR39885379575均completed/success，verify/integration/execution-security六项全部成功。使用最新批准范围仅推进6.3，未新增数据库函数/EXECUTE、角色、表列/秘密权限，Migration1–8字节未变。新Go fixture桥复用原engine/DNS/IP/TLS/HTTP/Admission；普通发布入口未修改。当前改动是未提交、未推送的review draft，不能称为已冻结或已验收的实现。
+
+本轮真实Linux/PG18联合验收未通过：首个挂载分类断言在Probe输入之前失败（Docker Mounts为两个只读bind，tmpfs另列）；修正后在原3s管理等待超时，完整A/AAAA已到独立resolver、零目标TCP/GET。一次无网络匿名管道诊断证明strace保留写端会阻止协议EOF；未删EOF检查或延长期限。调整追踪器到匿名管道分配之前后，原执行器真实DNS→目标预算Commit→双层规则确认→literal TLS/SNI验证→一次GET/内存200已发生，但追踪器同时跟踪PID1，既有stop helper向自身tracer发送SIGSTOP后形成控制依赖。实际/proc与docker top：PID1为tracing-stop/TracerPid10，strace10为stopped，UID65534/caps0的Go Probe11仍在；trace尾为PID1 pidfd_send_signal(SIGSTOP)。因此没有完整PIDFD退出/reap/退役证明、没有签名终止回执，没有执行accept_termination或返槽。原6.5/5.4实现未改，失败属于本轮尚未通过的新追踪拓扑，不掩盖为“测试通过”。
+
+真实PG18.6受守护cluster保持global in_use=1/active_count=1及origin/IP槽，Run仍started，HTTP status/success/failure/result_commit_id/physical_release_confirmed_at均NULL，Reservation仍reserved且receipt/released_at=NULL；无残余Worker/Supervisor业务事务或锁等待。Go失败清理已删除原Controller身份，后续保守quarantine操作在UUID身份前置检查即拒绝，未执行SQL、不重建角色/incarnation；精确状态是reserved/held，不能伪称已成功转quarantined。单次仅用原KILL能力清理停止态tracer后，容器待处理终止完成；该动作及后续独占fixture清理仅为测试拆除，不作物理回执、不释放数据库槽或伪造HTTP完成。已保存拆除前未返槽账并核验剩余标签容器为零。
+
+详见[6.3阻塞分析](../../../tests/scheduler/joint63-blocker.md)。当前任务仍28/47，6.3未勾选；未继续负向场景/race/IPv6联合验收或以旧76/6.4/6.5/5.4/API审计冒充新draft通过。本轮新失败和既有5.4 SIGCONT首次管理超时分别保留；此前SIGCONT原始恢复syscall/wait根因仍未确定，不因新诊断或单次GET成功删除风险。已停止受影响的验收与新增功能开发，等待独立复审追踪与停止拓扑。生产硬关闭、PR11 Open；未合并、Archive、部署或推进第7组。
+
+
+## Task6.3 tracing-only repair — second failure, stopped
+
+
+
+**Stopped again; uncommitted; task6.3 unchecked;28/47.** The product explicitly
+required stopping and retaining the draft on another acceptance failure. No
+further runtime tests, fixes, commits or pushes followed this failure.
+
+Compared with the original `pending-review.diff`, the repair restores the
+accepted6.5 topology: Python Supervisor PID1 is untraced; its UID65534/caps0
+child tracer traces only an unprivileged bootstrap, Probe and descendants.
+Anonymous envelope/permit pipes are allocated inside that tracee after tracer
+creation so the tracer cannot retain their writers. The original6.5 stop/reap
+helpers, pidfd exit requirements and2s/3s/35s/45s budgets are unchanged. New
+bounded observations record real /proc states, pidfd signal and waitpid events;
+they do not substitute for the original termination proof. See
+`tracing-repair.diff` and `topology-comparison.json` in the review bundle.
+
+The old PID1/tracer dependency is directly supported by the saved tracing-stop,
+TracerPid10, stopped tracer and incomplete pidfd_send_signal syscall. The exact
+kernel wait stack/syscall completion was not captured; this remains a limit.
+The separate earlier5.4 SIGCONT/management timeout remains unexplained and its
+original evidence/risk is retained.
+
+
+实际源码清单9008c5c7e580cc80f9875463479155a269bc30ac0fff70a2bf46ce61a88bd704，构建/vet/选定离线unit normal/race exit0；真实隔离Linux/PG18矩阵首项normal/allow-https exit1，13.824s，计划46项仅执行1项且失败，余45项未执行。PID1本例TracerPid0；真实DNS/TLS/SNI/Header-only GET、3个PIDFD退出/reap、独立网络撤销及签名物理回执有原始证据，但严格syscall审计发现Python中继PID10额外两次AF_UNIX /var/run/nscd/socket连接（ENOENT），总4次connect而非预期2次，未放宽断言。具体NSS用户态调用栈尚未捕获，不宣称确定性根因。
+
+本例与原失败区别：物理回执已真实签发并保存，离线Ed25519核验exit0，但审计失败在交付数据库之前；未消费回执、未返槽。真实PG最终reservation=quarantined/global in_use=1，释放时间/回执ID/HTTP status/success/failure/result_commit_id均NULL；HTTP200仅存在私有内存，不冒充第7组结果。既有在途TLS紧停、故障注入、76+5、API零目标和PG/6.4/6.5/5.4全量normal/race未在该draft完成重验，不拿旧CI替代。
+
+详见[更新的阻塞分析](../../../tests/scheduler/joint63-blocker.md)与[evidence/joint63-repair-failure/README.md](evidence/joint63-repair-failure/README.md)。原失败包joint63-negative及5.4 SIGCONT未知根因风险完整保留。原始命令、退出码、源码/二进制/镜像、proc/TracerPid、signal/pidfd/wait、接收端、规则/路由、签名和PG账分别保存在校验包。未提交/未推送，不生成新的实现SHA；baseline Push39885375219/PR39885379575仍success，只代表856cbbd，不代表本draft。PR11 Open；生产硬关闭，无新增权限/迁移变更、无第7组开发；等待独立复审。
+
+
+## Task6.3 NSCD-only diagnosis/repair — ninth-case failure, stopped
+
+
+## Authorized NSCD-only diagnosis and repair — stopped on ninth case (2026-10-23)
+
+Status remains **28/47;6.3 unchecked**. User authorized only diagnosis/minimal
+repair of the two NSCD connects and a from-the-first-case complete rerun, with
+**any failure stopping**. No further functional edits or runtime tests followed
+the ninth-case failure. All code remains uncommitted/unpushed on reviewed HEAD
+`856cbbd45aa19297e4694f7b90b2b44261049b42`.
+
+### Original calls and deterministic attribution
+
+The preserved original `run-0-probe.trace` lines72/74 show PID/TID10, the Python
+relay (PPid7, TracerPid7; its Go child11 is created later), making exactly two:
+`connect(3,{sa_family=AF_UNIX,sun_path="/var/run/nscd/socket"},110)=-1 ENOENT`.
+The original trace has no native/Python call stack; that historical capture
+limit remains. Its exact bytes and /proc snapshot are in
+`original-nscd-calls.json` and the unchanged previous negative evidence archive.
+
+New deterministic controls use the same immutable fixture image
+`sha256:60a78b61cd1378bdb343af6bf6321f383a33f64737c54852a2d462cdfc1df15c`,
+Python3.13.5, glibc2.41, UID65534/caps0/no_new_privs, network none, read-only
+root, clean LANG/LC_ALL/TZ environment with no HOME. Actual strace captures all
+network syscalls and operation markers. Results:
+
+| Real Linux control | Observed connections |
+| --- | --- |
+| Original default interpreter startup plus actual relay imports | Two AF_UNIX NSCD ENOENT calls, before the first relay-body marker |
+| Same interpreter/imports with `-S` | Zero socket and zero connect syscalls |
+| `-S`, then explicit `site.main()` with an observing pwd wrapper | Two calls strictly between NSS_BEGIN/NSS_END; actual Python stack: site.main → addusersitepackages → getusersitepackages → getuserbase → _getuserbase/joinuser → posixpath.expanduser → pwd.getpwuid(65534) |
+| `-S`, then direct ctypes call to the runtime libc.getpwuid | Two calls strictly between LIBC_GETPWUID_BEGIN/END, both AF_UNIX NSCD ENOENT |
+
+This identifies the unnecessary Python site user-base/passwd query, with
+underlying glibc NSS behavior, rather than guessing from a socket path. Original
+native C frames and which internal glibc helper made each attempt were not
+captured; no claim about those unobserved frames is made. The wrappers are only
+in the separate diagnostic positive control, never in Probe acceptance code.
+Those controls intentionally attempt absent NSCD in network-none isolation;
+they are not newly allowed Probe destinations or audit exceptions.
+
+### Minimal repair and unchanged boundaries
+
+Only the fixture relay interpreter adds `-S`; its source asserts
+`sys.flags.no_site==1` and no imported site module. It needs only the standard
+library and no user site packages. No arbitrary HOME, custom resolver, DNS stub,
+TLS bypass, libc interception or relaxed audit is used. New
+`check-nscd-source.py` checks the actual launch and actual relay import list,
+runs all four real controls and requires zero socket/connect for the repaired
+startup. The matrix invokes it before creating any target fixture. It is not a
+Mock of PG/Linux/termination.
+
+The accepted repair topology remains: PID1 is untraced; its caps0 child tracer
+controls only bootstrap/Probe descendants. Single-use pipes are created after
+tracer fork. Original connect audit, PIDFD/reap/receipt assertions and resource
+limits are unchanged. Migration1–8, database functions/roles/EXECUTE/ACL, Go
+HTTP/DNS/IP/literal dial/TLS/SNI kernel and old network audit whitelist are byte-checked against the
+reviewed baseline, together with the protected6.4/6.5/5.4 files listed in
+unchanged-boundaries.json. The shared network_fixture.py retains its earlier
+unaccepted6.3 adapter changes, but is unchanged by this NSCD-only repair. No group7 or
+HTTP result persistence was introduced. The scoped repair diff is
+`nscd-only.diff`; the full existing6.3 draft remains separately reviewable.
+
+### Actual rerun, including new blocking failure
+
+All build and matrix receipts bind the same dirty source inventory SHA256
+`e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae`, HEAD856cbbd.
+This is not a commit SHA or a claim of frozen release acceptance. Linux Go1.24.3
+build/vet and the selected offline unit normal/race commands exit0 (11.537s).
+The four-control NSCD source regression exits0. Exact commands, tool/image/file
+hashes and exits are in raw receipts.
+
+`python3 -B tests/scheduler/run-joint63.py --tools
+/private/tmp/devpilot-joint63-nscd-tools --evidence
+/private/tmp/devpilot-joint63-nscd-matrix` exits1 after124.328s. Matrix order is
+unchanged, from its first case: **8 passed,1 failed,37 not run**, zero race cases.
+Full PG18 integration/integration-race, original76+5, API zero-target and separate
+6.4/6.5/5.4 normal/race suites were not started after the required stop. Old CI
+is not substituted for these missing reruns.
+
+Passing real PG18/Linux normal cases: allow-https, tls-stop, tracer-stopped,
+tracer-crashed, supervisor-killed, stop-ack-lost, journal-collision, allow-http.
+The four confirmable stop cases have complete trace/proof/signature and atomic
+PG capacity return; the HTTPS trace is exactly two connects (one real TCP DNS
+session with A/AAAA and one literal target), correct TLS/SNI/cert, Header-only
+GET and no credentials. The in-flight TLS stop case has actual receiver closure
+and independent network/pidfd/reap/retirement proof. HTTP result columns remain
+NULL; safe physical return does not complete the Run or manufacture a result.
+The four deliberately unconfirmed fault cases have no signed receipt, PG
+reservation quarantined, global in_use1 and no release/HTTP result. These eight
+cases are partial new evidence, not complete6.3 or schemeA acceptance.
+
+The ninth `normal/permit-missing` fails in host test log redaction:
+`joint_fixture.py:82`, `base64.b64decode(v)` raises TypeError on NoneType.
+Source inspection shows the denied `jointHandle` returns nil []byte, sent by
+`broker.exchange("reply",map[string][]byte{"frame":reply})`; JSON null becomes
+None. The redactor blindly assumes every launch/replay/reply value is a base64
+string. The failing raw reply line was not persisted because redaction throws
+before log append; the exact error and this source path are retained, not a
+claim of a separately captured raw payload or a completed denial handshake.
+No redactor fix, reinterpretation of null, audit relaxation or retry was applied.
+
+At failure, the independent receiver witnesses only resolver TCP53 with A/AAAA,
+zero target80/443 accepts and zero GET. No final child strace was retrieved, so
+this failed case is **not** claimed as a complete zero-target-syscall proof.
+No installed target permit/rules, receipt or capacity release was recorded. Actual PG18
+ledger: Run started; reservation **reserved/held**, global in_use1, release/
+receipt/physical confirmation/HTTP fields NULL. The failure happened before the
+explicit quarantine step; it must not be described as committed quarantined.
+Cleanup is teardown only, never a termination receipt or DB return. Read-only
+post-failure docker inventory confirms zero leftover labeled fixture containers.
+
+### Remaining review gate and preserved history
+
+Current source is intentionally uncommitted; no push/new CI. PR11 staysOpen,
+production execution hard closed. Existing Push39885375219 and PR39885379575
+success apply only to baseline856cbbd, not this dirty draft. Do not check6.3.
+Next independent decision is whether to authorize a strictly typed denied-frame
+log/transport correction; it is not silently included in the NSCD repair.
+
+Original PID1/tracer failure, the second NSCD failure, and the separate earlier
+5.4 SIGCONT/management timeout (still without proven exact recovery stack) are
+retained unchanged. New evidence is separate at
+`evidence/joint63-nscd-failure/`; its archive has actual commands, original-call
+excerpt, deterministic stack/operation controls, all nine case logs, /proc/
+trace/pidfd/wait, network/receiver/signature evidence, PG final ledgers and hashes.
+It contains no private signing key. No commit/push/merge/archive/deployment or
+production target execution occurred.
+
+
+## Task6.3 explicit denial fixture repair — complete matrix, incomplete full verification
+
+
+## Authorized permit-missing fixture repair — matrix passed, supplementary validation stopped (2026-10-23)
+
+Current status: **28/47;6.3 remains unchecked; no commit/push**. Only fixture/test
+transport and acknowledgement assertions changed this round. The original HTTP
+kernel, Target Permit Client/Server, DB functions/grants, Migration1–8, DNS/IP/
+literal dial/TLS/SNI, complete connect audit, `-S` NSS controls and untraced PID1
+supervision topology are unchanged from the preceding draft.
+
+### Exact cause of the previous ninth-case error
+
+The preserved traceback ends at `joint_fixture.py:82`: the log redactor attempts
+`base64.b64decode(v)` on `payload.frame`, whose Python value is None. That value
+is not a successful permission or a physical termination receipt. The real Go
+Target Permit Server closes its pipe without writing on denial; Client treats
+EOF as ErrDenied. The fixture's `jointHandle` verifies zero returned bytes and
+returns nil []byte. Its `broker.exchange("reply",map[string][]byte{"frame":reply})`
+JSON-encodes nil as an explicit `{"frame":null}`. Both the fixture redactor and
+its Python relay incorrectly assumed a successful base64 frame for every reply.
+This is a fixture transport/control-flow defect, not an invalid success message
+from the unchanged security kernel.
+
+The old failed raw reply line was not persisted because redaction threw before
+append. It cannot be retrospectively claimed as a captured original wire. The
+old error/source are preserved, and an expected negative diagnostic executes
+the exact preserved old redactor on the reconstructed null message, reproducing
+the same TypeError. New real normal and race `permit-missing` PG driver logs now
+save the actual anonymous IPC bytes:
+`NETWORK64 {"op":"reply","payload":{"frame":null}}`.
+
+### Narrow repair and deterministic regression
+
+The host fixture strictly validates the required `frame` key. Only an explicit
+null dispatches the distinct `permit-denied` command; missing keys, extra fields,
+wrong types, empty strings, corrupt or truncated allow frames are rejected. The
+relay accepts that denial command only without a frame, closes its existing
+single-use anonymous writer and writes **zero bytes**. It never substitutes an
+empty string, creates a Confirmation, installs temporary rules or reopens a
+writer. Success still requires a full2048-byte frame and original Go validation.
+Start envelope4096 and receipt1024 remain mandatory, non-null, strictly decoded
+and redacted. The Go fixture now checks separate reply_denied/reply_delivered
+ACKs and, for permit-missing, zero installer calls and no target permit ID in PG.
+These ACKs report IPC disposition, never a grant or a physical stop receipt.
+
+Six deterministic transport unit tests use real anonymous pipes and execute
+the actual embedded relay function. They check exact null-message retention,
+zero-byte EOF, descriptor closure/single consumption, invalid success inputs,
+required Start fields and secret/capability redaction. They are not a substitute
+for the Linux/PG18 matrix and do not manufacture signed permission data.
+
+### Actual same-source acceptance completed before the stop
+
+All listed runtime receipts bind HEAD856cbbd45aa19297e4694f7b90b2b44261049b42,
+dirty=true, source inventory SHA256
+`c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf`.
+This is a frozen uncommitted source inventory, not a new implementation commit.
+No runtime code changed while these tests ran. Subsequent edits only document
+the stop/evidence. Actual commands, exits, file/binary/image hashes and raw logs
+are in the review bundle; current GitHub CI is not inferred from local results.
+
+| Acceptance actually run | Result |
+| --- | --- |
+| Fixture build/vet + selected Go normal/race, six transport regressions, NSCD controls | exit0 |
+| Complete unchanged joint matrix, from case1 | 46/46 exit0, normal23/race23,618.543s |
+| Original6.4 unit/race, dual-stack adversarial and PG normal/race | all five groups exit0,254.064s |
+| Original6.5 Linux physical stop and PG normal/race | all three groups exit0,85.303s |
+| Original5.4 physical receipt release normal/race | both exit0,110.927s |
+| Complete Go default/fixture unit/race, vet/gofmt and original bounded fuzz | exit0,61.738s |
+| Original network/execution/CI classifier unit suites | exit0 |
+| Exact unchanged147-test PG18 manifest, seven groups, normal |147/147 exit0,181.326s |
+| Same manifest integration-race |147/147 exit0,232.062s |
+| Original76+5 isolated kernel scenarios |81/81 expected outcomes,exit0; the four deliberate bypass controls retain audit1/child0 |
+| Original config/Activation/authorization/status API audit and CGO contract |exit0; real child0/audit0,approved_attempts25/blocked_attempts0; positive control retains child0/audit1 |
+
+In normal/race permit-missing, full trace shows exactly one resolver connect and
+zero target connect syscalls; independent receiver has zero target accepts/GET.
+No target budget permit or temporary target rules are installed. Probe returns
+result=null (not HTTP failure). Real network revocation, pidfd/reap/retirement,
+pinned-key signed proof and single PG consumption return capacity, while every
+Run HTTP/result column remains NULL. Successful HTTPS cases retain real DNS,
+literal dial, certificate/SNI/Header-only GET and complete independent stop/
+release. Unconfirmed faults retain quarantine/global1 without signatures or
+release. See joint46-summary.json and raw per-case locks/ledger/process evidence.
+
+### New supplementary orchestration failure and mandatory stop
+
+After the completed suites, a temporary outer Budget coverage planner failed
+its first inventory assertion: it wrongly required joint-pg.test to contain all
+four specialized test entry points, including TestBudgetPhysicalStopPG. That
+function has the independent `terminationfixture` build tag. The joint binary
+correctly uses `networkfixture,releasefixture,jointfixture` without that tag;
+physical-stop-pg.test is separately built with terminationfixture and has already
+passed normal/race in the6.5 suite above. Static build-info and symbol inspection
+confirm the mismatch. This is my added planner's wrong inventory assumption,
+not a failing executed DB/network case or a reason to add tags/skip assertions.
+
+Actual command `python3 -B /private/tmp/devpilot-joint63-denial-budget.py` exited1
+at line13 `assert set(special)<=set(names)` (0.157574209s). It did not start any
+supplementary Budget test body or create a PG container. The successful listing
+stdout was not saved before the assertion; do not pretend the later static
+symbol list is its original runtime output. This command was not wrapped by
+record.py: its original functions tool chunk4f2a23 stderr/exit/elapsed are copied
+verbatim with that provenance, and the exact temporary script is preserved.
+No follow-up fix, retry, inventory exception or further runtime validation ran.
+
+Consequently the remaining23 pure Budget cases per mode and the four historical
+Schema6/7 Snapshot tests normal/race have **not** been completed in this round.
+The latter include the live PG/network Snapshot case. No old CI/archive is used
+as a substitute, and 46/46 plus147/147 do not justify a complete-history claim.
+The newly added supplemental planner is outside the implementation source tree;
+its failure does not invalidate the preceding actual passes, but it stops the
+completion application under the user's explicit any-failure rule.
+
+### Review state and evidence retention
+
+Task6.3 is not checked and no completion application is made. No commit or push,
+PR11 remainsOpen, production execution hard closed, no group7 implementation,
+no DB permission/migration change or merge/archive/deploy. The original three
+negative archives remain byte-identical, including previous PID1/tracer, NSCD,
+ninth-case failure, and unresolved earlier5.4 SIGCONT risk. Original native stack
+limits are retained; a later pass does not retroactively prove those causes.
+
+Review directory `/private/tmp/devpilot-joint63-denial-review` contains the
+narrow denial-only diff, full pending draft, raw/error/provenance, actual46-case
+summary, all completed suite evidence, immutable hashes and binary tag proof.
+Large raw traces are kept in a local checksummed archive, not pushed as new CI
+Artifacts. Small permanent review records live in evidence/joint63-denial-review/.
+Next independent review must decide how to correct the supplementary coverage
+planner and complete remaining verification; neither is silently advanced now.
+
+## Task6.3 fourth review — supplemental build and execution orchestration
+
+授权仅为补充验收构建/测试编排；独立审核前未扩大6.3功能。相对原真实46矩阵源码清单`c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf`，全部cmd/internal/migrations/tests/integration及运行fixture字节不变。新增/调整仅`build-budget.sh`、`run-budget.py`、固定`budget-tests.json`、`build-joint63.sh`、CI编排与审计文档；精确等价性见`evidence/joint63-orchestration/runtime-equivalence.json`。实际本轮测试源码清单`48194204397f18b9616ba5b58ba8da7640cd12128ff3893735ff17f88b110cdb`，receipt明确HEAD856cbbd、dirty，不伪造已提交SHA。
+
+### Precise failure and minimum repair
+
+原命令`python3 -B /private/tmp/devpilot-joint63-denial-budget.py`先成功执行`joint-pg.test -test.list ^TestBudget`，然后在`assert set(special)<=set(names)`失败。联合二进制合法标签不含`terminationfixture`，独立`physical-stop-pg.test`才含该入口，原Go构建正常。此前原listing没有保存，后续静态符号清单不能充作原stdout。旧脚本/traceback/退出码1/工具chunk4f2a23和准确标签留在`joint63-denial-review`，没有捏造编译错误。
+
+| 独立二进制 | 合法Build Tags（除Linux隐式条件） | 对应执行 |
+| --- | --- | --- |
+| budget-pg.test / budget-pg-race.test | integration,schedulerfixture,budgetfixture | 原23项纯Budget全量normal/race |
+| network64-pg.test / -race | 前三项+networkfixture | 6.4原runner |
+| physical-stop-pg.test / -race | 前四项+terminationfixture | 6.5原runner |
+| release-pg.test / -race | 前四项+releasefixture | 5.4原runner |
+| joint-pg.test / -race | 前四项+releasefixture,jointfixture | 6.3全部23模式×normal/race |
+| snapshot-pg.test / -race | integration,executionsnapshot | 独立Schema6历史Snapshot4项×normal/race |
+
+没有把terminationfixture塞入联合二进制；未改旧测试断言。新runner要求实际编译清单与23项固定manifest集合精确相同、无重复、每项执行/通过一次、无SKIP，按原120s单进程预算运行，真实45s/60s等待保留。每项新建`devpilot-budget-disposable` PG18，原testdb守护不变；保存pg_locks/pg_blocking_pids/账目及postgres日志后只销毁自己有唯一标签的测试库，未以删除容器冒充物理返槽，也未UPDATE物理证明通过Down。
+
+### Actual missing verification completed
+
+| 实测 | 实际结果 | 原始证据 |
+| --- | --- | --- |
+| 无网络Linux Go1.24.3合法标签构建、vet | exit0 | joint63-orchestration/build/budget.* |
+| 纯Budget normal全部23项 | 23/23 exit0，129.679s | budget-normal/normal-coverage.json及receipts/budget-normal.* |
+| 同23项Race | 23/23 exit0，154.584s | budget-race/race-coverage.json及receipts/budget-race.* |
+| 独立Goose3.26.0 up-to6、四项Snapshot normal | 4/4 exit0，含真实接收端/版本隔离 | snapshot-linux/normal/{schema6,tests}.* |
+| 新建另一Schema6库、四项Snapshot Race | 4/4 exit0 | snapshot-linux/race/{schema6,tests}.* |
+| 本Change strict | exit0 | receipts/change-strict.* |
+| 全库strict | exit1，原四份历史规格七项>500字符警告 | receipts/repository-strict.* |
+
+命令为`python3 tests/scheduler/run-budget.py --binary <tools>/budget-pg{,-race}.test --mode normal|race --name <mode> --evidence <fresh>`；精确完整argv、源/二进制SHA与退出码见receipt，不以编译/Mock替代运行。Snapshot实际`-test.run ^TestSystemSnapshot -test.count=1 -test.v -test.timeout=120s`，normal/race各自己的空PG18，经受限guard预备到6而非8，四项旧断言字节未变。可信Linux测试控制器持Docker CLI/socket用于原child编排，Probe仍原无上游网络/挂载，无DB/Cookie/DockerSocket；CI继续原生host控制器。首次本地host控制面连接编排因Docker internal-network没有端口映射而断言失败，尚未迁移/执行测试，脚本、inspect与完整错误保留在本轮archive；改用与自己PG共享的控制网络namespace，不添加公网路由。
+
+新增构建脚本只由fixture builder/CI显式调用；所有Go入口沿用schedulerfixture/Linux或integration等测试标签，普通发布构建不包含临时builder或可执行Probe。全diff审查确认Migration1–8、原DNS/IP/TLS/HTTP内核及独立Supervisor、数据库角色/函数ACL、API零目标审计白名单字节不变。当前产品实现没有第7组Result Commit，所有联合Run的HTTP/结果持久列仍NULL，物理返槽不等于HTTP完成。
+
+### Same-source evidence and independent review boundary
+
+先前46/46、额外6项、原147项PG18 normal/race、原76+5网络与API零目标、6.4/6.5/5.4真实物理终止/返槽证据均在`joint63-denial-review`清单可校验归档。本轮补充原始归档`/private/tmp/devpilot-joint63-orchestration-evidence.tar.gz`，SHA256 `3c433fc596a1854e8e5f0c44b5dcd3a96cb06a3f707d10383138e6f33fc85055`；逐文件哈希和完整命令见`evidence/joint63-orchestration/manifest.json`。大型trace不重复提交Git；冻结SHA的实际GitHub Actions将重新构建并全量执行，上传含原始PG/网络/进程/签名/返槽/审计的Artifacts，完成后以实际链接和结论报告，不提前写成成功。
+
+Requirement/Scenario索引：`http-monitor-execution/Worker handoff only narrows...`→6.3 original-kernel joint46（许可后literal拨号、TLS/SNI、Start/input未知关闭）；`monitor-worker-security/Shared public target budgets...`→纯Budget23×2及joint缺许可/未知Commit；`Physical resource release requires independent termination proof`→6.5/5.4原runner+joint已建立TLS停止/可信签名/PG返槽；`Acceptance separately verifies database network fault and production boundaries`→旧81网络、Snapshot4×2、API零目标与普通发布依赖门禁。精确测试case/二进制hash/源码hash/receiver/firewall/pg_locks证据见各runner manifest及实际CI Artifacts。
+
+原PID1/tracer依赖、NSCD连接、permit-missing拒绝控制流、清单断言及本次本地编排失败均不删除；三份旧负面archive哈希不变。此前5.4 SIGCONT/工具管理确认超时内部根因未确定，仍为风险；一次或本次全部通过不能反证无竞态。历史部署角色权限缺少真实清单的限制仍保留，不猜测生产GRANT。生产执行硬关闭，无公网许可，无第7组，无合并/Archive/部署。清单仍28/47，等待冻结提交实际CI和独立审核后申请勾选6.3。

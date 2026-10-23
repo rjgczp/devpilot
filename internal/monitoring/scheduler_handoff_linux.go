@@ -16,14 +16,14 @@ import (
 	"github.com/rjgczp/devpilot/internal/monitoring/targetpermit"
 )
 
-// SchedulerInput keeps the original kernel's private Snapshot; there is no
-// network execution method. A future independently reviewed target-permit
-// bridge must reuse the private engine, never replace its DNS/TLS/HTTP client.
+// SchedulerInput keeps the original kernel private Snapshot. The fixture-only
+// execution method uses that exact engine after the independent sandbox seals.
 type SchedulerInput struct {
-	snapshot      Snapshot
-	lineage       handoff.Lineage
-	deadline      time.Time
-	permitAttempt *atomic.Bool
+	snapshot       Snapshot
+	lineage        handoff.Lineage
+	deadline       time.Time
+	permitAttempt  *atomic.Bool
+	executeAttempt *atomic.Bool
 }
 
 func (SchedulerInput) Format(f fmt.State, _ rune) {
@@ -44,11 +44,10 @@ func ReceiveSchedulerInput(receiver *handoff.Receiver, input *os.File) (Schedule
 	if !s.valid() {
 		return SchedulerInput{}, handoff.ErrInput
 	}
-	return SchedulerInput{snapshot: s, lineage: e.Lineage, deadline: e.PermitDeadline, permitAttempt: &atomic.Bool{}}, nil
+	return SchedulerInput{snapshot: s, lineage: e.Lineage, deadline: e.PermitDeadline, permitAttempt: &atomic.Bool{}, executeAttempt: &atomic.Bool{}}, nil
 }
 
-// targetHook is private and does not create an executable Probe. A later
-// independently protected runner must use this with the original engine.
+// targetHook is private and used only by the independently protected runner.
 // Copies of a received input share one attempt. Missing pipes/default nil deny.
 func (s SchedulerInput) targetHook(client *targetpermit.Client) targetPermitHook {
 	return func(ctx context.Context, c targetCandidate) error {

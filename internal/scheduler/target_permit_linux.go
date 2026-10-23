@@ -15,7 +15,7 @@ import (
 )
 
 // TargetSupervisor belongs to an independent trusted management transport.
-// There is deliberately no implementation until namespace/firewall acceptance.
+// The fixture allocator implements this after independent namespace/firewall checks.
 // A Worker self-report or a DB reservation is NOT a Supervisor confirmation.
 type TargetSupervisor interface {
 	InstallTarget(context.Context, targetpermit.Request, TargetPermit) (targetpermit.Confirmation, error)

@@ -43,7 +43,7 @@ func (r Request) Valid() bool {
 }
 
 // Confirmation is a trusted Supervisor protocol reply, NOT a signature or
-// evidence that rules actually exist. No concrete installer is provided yet.
+// evidence that rules actually exist. The independent fixture installer verifies them.
 // It must arrive on the separate trusted management channel, never from Probe.
 type Confirmation struct {
 	Request  Request   `json:"request"`
@@ -217,4 +217,19 @@ func (s *Server) Serve(ctx context.Context, requestReader, replyWriter *os.File,
 		return ErrDenied
 	}
 	return write(ctx, replyWriter, r.Deadline, a)
+}
+
+// InheritedPipe accepts only the two dedicated anonymous permission descriptors.
+func InheritedPipe(fd int) (*os.File, error) {
+	if fd < 5 || fd > 6 || unix.SetNonblock(fd, true) != nil {
+		return nil, ErrDenied
+	}
+	f := os.NewFile(uintptr(fd), "private-permit")
+	if !anonymous(f) {
+		if f != nil {
+			_ = f.Close()
+		}
+		return nil, ErrDenied
+	}
+	return f, nil
 }
