@@ -1,0 +1,422 @@
+{
+  "run_id": 40261994278,
+  "jobs": {
+    "jobs": [
+      {
+        "id": 121376153410,
+        "name": "integration",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 40261994278,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Initialize containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Record frozen checkout",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run actions/setup-go@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Install pinned native Goose CLI",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Verify complete PostgreSQL 18 integration in exact serial groups",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Verify complete PostgreSQL integration with race detector in exact serial groups",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Build Monitor network audit tools",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Calibrate probe and audit real Monitor endpoints",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Upload Monitor network audit evidence",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Post Run actions/setup-go@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21
+          },
+          {
+            "name": "Stop containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23
+          }
+        ]
+      },
+      {
+        "id": 121376153594,
+        "name": "execution-security",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 40261994278,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Initialize containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Record frozen checkout",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run actions/setup-go@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Install pinned Goose",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Validate internal DNS and address policy with bounded fuzz",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Independently verify real probe networking and egress isolation",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Prepare separate guarded historical schema6 with pinned native Goose",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Build credential-free Linux probe for PG controller",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Verify PG18 role snapshot and live network version isolation",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Verify snapshot controller under Race Detector",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Build task7.1,6.3,6.4,6.5 and5.4 fixture-only tooling",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Verify all23 separate Budget fixtures with guarded PG18 normal/race",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Verify independent task6.4 dual-stack network policies and PG18 normal/race",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          },
+          {
+            "name": "Verify task6.5 independent physical stop and recovery with PG18 normal/race",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16
+          },
+          {
+            "name": "Verify task5.4 committed physical receipts and atomic PG18 release normal/race",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 17
+          },
+          {
+            "name": "Verify task6.3 original kernel joint execution and tracer-fault quarantine normal/race",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18
+          },
+          {
+            "name": "Verify task7.1 minimal result with real physical proof and PG18 normal/race",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19
+          },
+          {
+            "name": "Upload separate execution evidence",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20
+          },
+          {
+            "name": "Post Run actions/setup-go@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 38
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 39
+          },
+          {
+            "name": "Stop containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 40
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 41
+          }
+        ]
+      },
+      {
+        "id": 121376153656,
+        "name": "verify",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 40261994278,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Record frozen checkout",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run actions/setup-go@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Check gofmt",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Test network classifier and audit build contract",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Test independent execution classifier",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Check complete integration grouping contract",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run go vet",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Run race tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Upload verify evidence",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Post Run actions/setup-go@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25
+          }
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "artifacts": [
+      {
+        "id": 12625872349,
+        "name": "execution-security-evidence",
+        "size_in_bytes": 14331842,
+        "url": "https://api.github.com/repos/rjgczp/devpilot/actions/artifacts/12625872349",
+        "archive_download_url": "https://api.github.com/repos/rjgczp/devpilot/actions/artifacts/12625872349/zip",
+        "expired": false,
+        "created_at": "2026-10-26T03:34:09Z",
+        "expires_at": "2027-01-24T03:01:35Z",
+        "updated_at": "2026-10-26T03:34:09Z",
+        "digest": "sha256:94abc4dead9ea05f7ecf4d1c28843c8ab63cf8d7179d7fb7c3714ea2c998330d",
+        "workflow_run": {
+          "id": 40261994278,
+          "repository_id": 1416378447,
+          "head_repository_id": 1416378447,
+          "head_branch": "codex/add-monitor-scheduler-worker",
+          "head_sha": "f30dcddbecc250e7d7747f6d50c852eedef7d38b"
+        }
+      },
+      {
+        "id": 12624771628,
+        "name": "verify-evidence",
+        "size_in_bytes": 177614,
+        "url": "https://api.github.com/repos/rjgczp/devpilot/actions/artifacts/12624771628",
+        "archive_download_url": "https://api.github.com/repos/rjgczp/devpilot/actions/artifacts/12624771628/zip",
+        "expired": false,
+        "created_at": "2026-10-26T03:02:38Z",
+        "expires_at": "2027-01-24T03:01:35Z",
+        "updated_at": "2026-10-26T03:02:38Z",
+        "digest": "sha256:79636269f95d8776d801b119d31bd44b22f2ed04d17d7e454db16edeeafcb4d3",
+        "workflow_run": {
+          "id": 40261994278,
+          "repository_id": 1416378447,
+          "head_repository_id": 1416378447,
+          "head_branch": "codex/add-monitor-scheduler-worker",
+          "head_sha": "f30dcddbecc250e7d7747f6d50c852eedef7d38b"
+        }
+      },
+      {
+        "id": 12624708583,
+        "name": "integration-and-monitor-network-evidence",
+        "size_in_bytes": 1505385,
+        "url": "https://api.github.com/repos/rjgczp/devpilot/actions/artifacts/12624708583",
+        "archive_download_url": "https://api.github.com/repos/rjgczp/devpilot/actions/artifacts/12624708583/zip",
+        "expired": false,
+        "created_at": "2026-10-26T03:11:32Z",
+        "expires_at": "2027-01-24T03:01:35Z",
+        "updated_at": "2026-10-26T03:11:32Z",
+        "digest": "sha256:3fa0541498964ae8e02afd23bb461bd7621dcb13716748049fcdead0ee323a5c",
+        "workflow_run": {
+          "id": 40261994278,
+          "repository_id": 1416378447,
+          "head_repository_id": 1416378447,
+          "head_branch": "codex/add-monitor-scheduler-worker",
+          "head_sha": "f30dcddbecc250e7d7747f6d50c852eedef7d38b"
+        }
+      }
+    ]
+  }
+}

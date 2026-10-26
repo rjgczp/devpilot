@@ -1,10 +1,16 @@
 # Verification — add-monitor-scheduler-worker
 
-## Current status — task6.3 independently accepted; task7.1 implementation under acceptance (2026-10-26)
+## Current status — task7.1 implementation accepted for isolated fixture (2026-10-26)
 
-当前 **29/47**。产品负责人在本会话“DevPilot AI 第十一阶段 PR #11 独立验收结论”明确批准任务6.3完成，范围仅隔离Linux/PG18 fixture，审核HEAD为`65316cc41e7e4a1186e8ce3a7d2d53a937e6380d`。tasks.md已依此勾选6.3；正式批准摘录、任务索引、同SHA真实CI及Artifact源绑定审计见`evidence/task63-accepted/`。
+当前 **30/47**。6.3已按产品负责人对`65316cc41e7e4a1186e8ce3a7d2d53a937e6380d`的独立批准勾选；本轮仅新增7.1最小结果持久化，实际完整验收后勾选7.1。**7.2及后续任务未实施，等待独立审查。**
 
-Push39924189519及PR39924195122全部三作业success；46/46联合矩阵、6回归、Budget23×2、Snapshot4×2、PG147×2、原81网络及6.4/6.5/5.4均已通过，原始日志和归档哈希保留。本轮随后仅授权7.1最小结果持久化，7.1尚未验收、不勾选；7.2幂等/当前投影及后续任务未授权。本会话已单独批准Worker-only `persist_minimal_result`17参数窄EXECUTE及其信任边界，准确授权出处见`docs/monitor-scheduler-task71-capability.md`；不扩大其他权限。7.1实现正在真实验收，未勾选。
+冻结实现SHA **`f30dcddbecc250e7d7747f6d50c852eedef7d38b`**，Push[40261990493](https://github.com/rjgczp/devpilot/actions/runs/40261990493)及PR[40261994278](https://github.com/rjgczp/devpilot/actions/runs/40261994278)各三个作业全部success。两边安全ZIP完整SHA256核实一致；每边134份security、20份integration、3份verify实际命令记录绑定同一干净HEAD与源码哈希`2ccc19d594c0f1105e44337167c17a221cce7ba803451139872ec1e02aea671e`。
+
+每边实际通过24/24新PG18/Linux结果矩阵、原46联合、Budget23×2、Snapshot4×2、PG147×2、原81网络、6拒绝回归及6.4/6.5/5.4；API审计25approved/0blocked。完整48份最终Run事实、原始证据、源码/日志/二进制绑定和Artifact索引见[`evidence/task71-final/`](evidence/task71-final/README.md)，Requirement/Scenario/Test映射见`docs/monitor-scheduler-task71-verification.md`。后续仅文档提交记录此验收，不能将旧SHA结果冒称新SHA实测；最终当前HEAD的Push/PR须单独核实。
+
+仅增加已由本会话`call_965917754402442daac6333bf80e0312`单独批准的17参数Worker-only窄EXECUTE；Role/表列/秘密权限不扩大，Migration1–7字节不变。HTTP结果需已有可信物理释放记录；预检/许可/物理停止控制事实不伪造HTTP失败、不返槽。D5时间下界及大偏差拒绝实测，资源/速率/冷却/指针不变。内部UUID仅满足原CHECK，不实现7.2幂等/对账/当前观察写入或下一周期。
+
+首次pgx测试协程连接交接Race已修复且原始失败保留；首次历史到期用例55P03的精确根因仍未确定，单独获准的日志顺序修复及实际normal/race保留，不因后续通过宣称不存在并发风险。此前PID1/tracer、NSCD、permit-missing及5.4 SIGCONT/管理确认超时的原始失败/风险继续保留。全库strict仍为四份历史规格七项描述长度警告，本Change strict通过，未修改无关规格。生产执行硬关闭，PR11保持Open，不合并、Archive或部署。
 
 ## Authorization and baseline
 

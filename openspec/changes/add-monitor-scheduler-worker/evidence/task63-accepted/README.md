@@ -18,3 +18,6 @@ this later approval and tasks.md supersede only that acceptance status.
 All earlier negative evidence and unresolved timeout/stack limits remain.
 Approval is not production permission or authorization for7.2. Current progress
 is29/47,7.1 remains unchecked until its own actual acceptance.
+
+Historical approval-stage progress above was29/47. Later task7.1 actual acceptance
+is recorded separately in `../task71-final/` and brings the current list to30/47.

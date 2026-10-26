@@ -1,0 +1,30 @@
+{
+  "head": "f30dcddbecc250e7d7747f6d50c852eedef7d38b",
+  "source_inventory_sha256": "2ccc19d594c0f1105e44337167c17a221cce7ba803451139872ec1e02aea671e",
+  "kind": "integration",
+  "successful_source_bound_receipts": 20,
+  "receipts": [
+    "monitor-network-evidence/api-audit.json",
+    "ci-context/checkout.json",
+    "integration-evidence/race/real-unstarted-lease-45s.json",
+    "integration-evidence/race/core-01.json",
+    "integration-evidence/race/real-authorization-60s.json",
+    "integration-evidence/race/core-03.json",
+    "integration-evidence/race/other-packages.json",
+    "integration-evidence/race/core-02.json",
+    "integration-evidence/race/inventory.json",
+    "integration-evidence/race/core-05.json",
+    "integration-evidence/race/core-04.json",
+    "integration-evidence/normal/real-unstarted-lease-45s.json",
+    "integration-evidence/normal/core-01.json",
+    "integration-evidence/normal/real-authorization-60s.json",
+    "integration-evidence/normal/core-03.json",
+    "integration-evidence/normal/other-packages.json",
+    "integration-evidence/normal/core-02.json",
+    "integration-evidence/normal/inventory.json",
+    "integration-evidence/normal/core-05.json",
+    "integration-evidence/normal/core-04.json"
+  ],
+  "pg_tests_each_mode": 147,
+  "api_boundary": "approved_attempts=25 blocked_attempts=0"
+}
