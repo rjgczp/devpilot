@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "clusters": 22,
+  "normal": 11,
+  "race": 11,
+  "local_dirty": true,
+  "base_head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+  "source_inventory_sha256": "593f0c7cc49537d7cd9b01bed54fa1b837b95348d767a42535e9d01d4b62e502",
+  "full_raw_location": "/private/tmp/devpilot-result71",
+  "frozen_ci_pending": true,
+  "task71_checked": false
+}

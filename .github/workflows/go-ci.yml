@@ -197,11 +197,11 @@ jobs:
             python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/execution-meta" --name snapshot-race \
               --binary "$RUNNER_TEMP/execution-tools/execution.test" -- \
               go test -race -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v -timeout=120s
-      - name: Build task6.3,6.4,6.5 and5.4 fixture-only tooling
+      - name: Build task7.1,6.3,6.4,6.5 and5.4 fixture-only tooling
         run: |
           docker build -t devpilot-scheduler-fixture -f tests/scheduler/Dockerfile .
-          JOINT63_TOOLS="$RUNNER_TEMP/network64-tools" \
-            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-joint63.sh
+          RESULT71_TOOLS="$RUNNER_TEMP/network64-tools" \
+            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-result71.sh
       - name: Verify all23 separate Budget fixtures with guarded PG18 normal/race
         run: |
           python3 tests/scheduler/run-budget.py --binary "$RUNNER_TEMP/network64-tools/budget-pg.test" --mode normal --name normal --evidence "$RUNNER_TEMP/budget-evidence/normal"
@@ -218,6 +218,9 @@ jobs:
       - name: Verify task6.3 original kernel joint execution and tracer-fault quarantine normal/race
         run: |
           python3 tests/scheduler/run-joint63.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/joint63-evidence"
+      - name: Verify task7.1 minimal result with real physical proof and PG18 normal/race
+        run: |
+          python3 tests/scheduler/run-result71.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/result71-evidence"
       - name: Upload separate execution evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -236,4 +239,5 @@ jobs:
             ${{ runner.temp }}/stop65-evidence/
             ${{ runner.temp }}/release54-evidence/
             ${{ runner.temp }}/joint63-evidence/
+            ${{ runner.temp }}/result71-evidence/
           if-no-files-found: error

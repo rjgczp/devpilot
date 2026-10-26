@@ -1306,6 +1306,90 @@ ALTER FUNCTION scheduler_private.reconcile_termination(uuid,uuid,uuid,uuid,uuid,
 REVOKE ALL ON FUNCTION scheduler_private.reconcile_termination(uuid,uuid,uuid,uuid,uuid,uuid,bytea) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION scheduler_private.reconcile_termination(uuid,uuid,uuid,uuid,uuid,uuid,bytea) TO devpilot_scheduler_supervisor;
 
+-- Task7.1: one bounded report, not a retry/observation/scheduling protocol.
+-- Physical accounting remains exclusively with the independent Supervisor.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.persist_minimal_result(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_v bigint,p_g bigint,p_epoch bigint,p_fence bigint,p_namespace uuid,p_supervisor uuid,p_kind text,p_duration_ms integer,p_http_status integer,p_success boolean,p_failure_code text,p_stop_reason text)
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; gate_now timestamptz; keys jsonb; k record;
+BEGIN
+ PERFORM scheduler_private.system_identity('worker',p_incarnation);
+ IF p_kind IS NULL OR p_kind NOT IN ('network','preflight','permit_denied','physical_stop_unconfirmed')
+ OR p_v IS NULL OR p_g IS NULL OR p_epoch IS NULL OR p_fence IS NULL OR LEAST(p_v,p_g,p_epoch,p_fence)<1 THEN
+  RAISE EXCEPTION 'invalid minimal result' USING ERRCODE='22023'; END IF;
+ IF p_kind='network' THEN
+  IF p_stop_reason IS NOT NULL OR p_duration_ms IS NULL OR p_duration_ms NOT BETWEEN 0 AND 30000 OR p_success IS NULL
+  OR (p_http_status IS NOT NULL AND p_http_status NOT BETWEEN 200 AND 599)
+  OR (p_success AND (p_http_status IS NULL OR p_failure_code IS NOT NULL))
+  OR (NOT p_success AND (p_failure_code IS NULL OR p_failure_code NOT IN ('dns_failed','blocked_target','connect_failed','tls_failed','timeout','canceled','response_limit','protocol_error','unexpected_status')))
+  OR (NOT p_success AND ((p_failure_code='unexpected_status') IS DISTINCT FROM (p_http_status IS NOT NULL))) THEN
+   RAISE EXCEPTION 'invalid minimal result' USING ERRCODE='22023'; END IF;
+ ELSE
+  IF p_duration_ms IS NOT NULL OR p_http_status IS NOT NULL OR p_success IS NOT NULL OR p_failure_code IS NOT NULL OR p_stop_reason IS NULL
+  OR (p_kind='preflight' AND p_stop_reason NOT IN ('invalid_configuration','resource_limited','authorization_revoked','authorization_expired','emergency_stop','retention_capacity'))
+  OR (p_kind='permit_denied' AND p_stop_reason NOT IN ('egress_unavailable','commit_unknown','lease_expired','authorization_revoked','authorization_expired','resource_limited','emergency_stop'))
+  OR (p_kind='physical_stop_unconfirmed' AND p_stop_reason NOT IN ('worker_lost','egress_unavailable','commit_unknown','emergency_stop')) THEN
+   RAISE EXCEPTION 'invalid minimal result' USING ERRCODE='22023'; END IF;
+ END IF;
+ -- Recovery takes no User/Membership/Session lock and never reauthorizes a GET.
+ PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
+ SELECT * INTO r FROM public.monitor_runs WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ -- Existing rows only: persistence may neither create nor refund a budget key.
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='global' AND budget_key='global' FOR UPDATE;
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='workspace' AND budget_key=p_wid::text FOR UPDATE;
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='project' AND budget_key=p_wid::text||'/'||p_pid::text FOR UPDATE;
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='monitor' AND budget_key=p_wid::text||'/'||p_pid::text||'/'||p_mid::text FOR UPDATE;
+ SELECT target_keys INTO keys FROM public.scheduler_reservations WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ FOR k IN SELECT kind,budget_key FROM (
+  SELECT 'origin'::text kind,x->>'origin_key' budget_key FROM jsonb_array_elements(keys) x
+  UNION SELECT 'ip',x->>'ip_key' FROM jsonb_array_elements(keys) x
+ ) z ORDER BY CASE kind WHEN 'origin' THEN 0 ELSE 1 END,budget_key LOOP
+  PERFORM 1 FROM public.scheduler_budget_state WHERE kind=k.kind AND budget_key=k.budget_key FOR UPDATE;
+ END LOOP;
+ SELECT * INTO q FROM public.scheduler_reservations WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM scheduler_private.lock_control(p_incarnation);
+ PERFORM scheduler_private.system_identity('worker',p_incarnation);
+ -- Fresh SPI statement after all waits: use actual database time once for DML.
+ SELECT clock_timestamp() INTO gate_now;
+ PERFORM 1 FROM public.monitor_runs x JOIN public.monitor_schedules s USING(workspace_id,project_id,monitor_id)
+ JOIN public.scheduler_control c ON c.kind='worker' AND c.login_name=session_user AND c.incarnation=p_incarnation
+ WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run
+ AND ROW(x.configuration_version,x.activation_generation,x.scheduler_epoch,x.fencing_token)=ROW(p_v,p_g,p_epoch,p_fence)
+ AND x.lease_owner=session_user AND x.worker_incarnation=p_incarnation AND x.lease_until>gate_now
+ AND x.attempt_state IN ('leased','started') AND x.stop_reason IS NULL AND x.result_commit_id IS NULL
+ AND s.last_attempt_run_id=x.run_id AND s.last_fencing_token=x.fencing_token
+ AND c.expires_at>gate_now AND NOT c.emergency_stop AND gate_now>=x.claimed_at
+ AND gate_now<=transaction_timestamp()+interval '2 seconds';
+ IF NOT FOUND OR q.namespace_incarnation IS DISTINCT FROM p_namespace OR q.supervisor_incarnation IS DISTINCT FROM p_supervisor THEN
+  RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ IF p_kind='network' THEN
+  IF r.attempt_state<>'started' OR q.input_consumed_at IS NULL OR q.input_consumed_at<r.started_at
+  OR q.reservation_state<>'released' OR q.release_basis<>'supervisor' OR q.termination_receipt IS NULL
+  OR q.termination_receipt_id IS NULL OR q.stop_key_id IS NULL OR q.termination_network_digest IS NULL
+  OR q.termination_process_digest IS NULL OR q.termination_retire_digest IS NULL OR p_namespace IS NULL OR p_supervisor IS NULL
+  OR r.physical_release_confirmed_at IS NULL OR r.physical_release_confirmed_at IS DISTINCT FROM q.released_at
+  OR q.released_at>gate_now THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+  UPDATE public.monitor_runs SET attempt_state='completed',finished_at=gate_now,result_commit_id=gen_random_uuid(),duration_ms=p_duration_ms,
+   http_status=p_http_status,success=p_success,failure_code=p_failure_code
+  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ ELSE
+  IF (p_kind='preflight' AND (q.input_consumed_at IS NOT NULL OR q.target_permit_id IS NOT NULL))
+  OR (p_kind='permit_denied' AND (r.attempt_state<>'started' OR q.input_consumed_at IS NULL))
+  OR (p_kind='physical_stop_unconfirmed' AND (r.attempt_state<>'started' OR r.physical_release_confirmed_at IS NOT NULL OR q.reservation_state='released')) THEN
+   RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+  UPDATE public.monitor_runs SET stop_reason=p_stop_reason WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ END IF;
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=GREATEST(last_gate_at,gate_now)
+ WHERE kind='worker' AND login_name=session_user AND incarnation=p_incarnation;
+ RETURN jsonb_build_object('run_id',p_run,'state',CASE WHEN p_kind='network' THEN 'completed' ELSE 'control_recorded' END);
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.persist_minimal_result(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text,integer,integer,boolean,text,text) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.persist_minimal_result(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text,integer,integer,boolean,text,text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.persist_minimal_result(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text,integer,integer,boolean,text,text) TO devpilot_scheduler_worker;
+
 -- +goose Down
 LOCK TABLE public.http_monitors IN SHARE ROW EXCLUSIVE MODE;
 LOCK TABLE public.monitor_activation_states IN ACCESS EXCLUSIVE MODE;

@@ -1,0 +1,12 @@
+{
+  "event": "pull_request",
+  "artifact_id": 12488848177,
+  "artifact_digest": "a536484f6aef76856c4576373d287b87e2d050ff9b2c640778a902c6992acda1",
+  "exact_pg_tests": {
+    "normal": 147,
+    "race": 147
+  },
+  "source_bound_receipts": 20,
+  "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+  "source_inventory_sha256": "7b338f2df3dc56827e8837843fdebde09a3a462d5fc5da780afdb209daa48ee3"
+}

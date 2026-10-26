@@ -108,6 +108,14 @@ func jointHandle(t *testing.T, frame []byte, handle func(context.Context, target
 	}
 	return bytes
 }
+
+// Optional test-only observer. Nil in every original joint63 binary/run. The
+// resultfixture tests attach assertions only after the historical assertions;
+// no production hook or altered Supervisor/Probe behavior is introduced.
+var jointResultPatch func(*testing.T, memberFixture, monitor.Public)
+
+var jointResultCheck func(*testing.T, string, *pgxpool.Pool, scheduler.Store, handoff.Lineage, *monitoring.Result)
+
 func TestBudgetJointKernelPG(t *testing.T) {
 	db := budgetDB(t)
 	ctx := context.Background()
@@ -175,6 +183,11 @@ func TestBudgetJointKernelPG(t *testing.T) {
 		t.Fatal("namespace identity")
 	}
 	line := handoff.Lineage{WorkspaceID: h.w, ProjectID: h.p, MonitorID: h.m, RunID: h.r, ConfigurationVersion: h.v, ActivationGeneration: h.g, SchedulerEpoch: h.e, FencingToken: lease.FencingToken, NamespaceIncarnation: ns, SupervisorIncarnation: si}
+	if jointResultCheck != nil {
+		unprepared := line
+		unprepared.NamespaceIncarnation, unprepared.SupervisorIncarnation = "", ""
+		jointResultCheck(t, "claimed", db, store, unprepared, nil)
+	}
 	ready := broker.exchange("prepare", line)
 	if len(ready.Ready) != 2 {
 		t.Fatal("independent rules not prepared")
@@ -345,6 +358,9 @@ func TestBudgetJointKernelPG(t *testing.T) {
 	}
 	// Quarantine commits while the original Controller identity is live and
 	// before every independent stop/ACK/journal fault. It never returns capacity.
+	if jointResultCheck != nil {
+		jointResultCheck(t, "before-stop", db, store, line, next.Result)
+	}
 	quarantine()
 	stopped := broker.exchange("finish", nil)
 	if unconfirmed {
@@ -353,6 +369,9 @@ func TestBudgetJointKernelPG(t *testing.T) {
 		}
 		if queryInt(t, db, `SELECT in_use FROM scheduler_budget_state WHERE kind='global'`) != 1 || queryInt(t, db, `SELECT count(*) FROM scheduler_reservations WHERE run_id=$1 AND reservation_state='quarantined' AND released_at IS NULL AND termination_receipt IS NULL`, h.r) != 1 || queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE run_id=$1 AND attempt_state='started' AND physical_release_confirmed_at IS NULL AND http_status IS NULL AND success IS NULL AND failure_code IS NULL`, h.r) != 1 {
 			t.Fatal("unconfirmed stop lost quarantine or fabricated HTTP outcome")
+		}
+		if jointResultCheck != nil {
+			jointResultCheck(t, "unconfirmed", db, store, line, nil)
 		}
 		t.Log("actual injected physical/ACK/journal fault: no receipt, no physical capacity return, no network retry", scenario)
 		return
@@ -373,4 +392,10 @@ func TestBudgetJointKernelPG(t *testing.T) {
 	}
 	assertNoDBDuringInput(t, db, w, s)
 	t.Log("real original kernel / DNS / permit / Linux isolation / independent stop / PG single settlement; no persistent HTTP result", scenario)
+	if jointResultPatch != nil {
+		jointResultPatch(t, f, m)
+	}
+	if jointResultCheck != nil {
+		jointResultCheck(t, "released", db, store, line, next.Result)
+	}
 }

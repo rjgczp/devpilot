@@ -1,0 +1,25 @@
+{
+  "event": "push",
+  "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+  "source_inventory_sha256": "7b338f2df3dc56827e8837843fdebde09a3a462d5fc5da780afdb209daa48ee3",
+  "artifact_id": 12489133296,
+  "artifact_digest": "cb91a3a156dd77910fd62a0714d215ed04c649c8519ae802e5966d3176eb745b",
+  "artifact_url": "https://github.com/rjgczp/devpilot/actions/runs/39924189519/artifacts/12489133296",
+  "source_bound_successful_receipts": 110,
+  "budget": {
+    "normal": 23,
+    "race": 23
+  },
+  "joint_matrix": 46,
+  "denial_regressions": 6,
+  "historical_snapshots": {
+    "snapshot-normal.log": 4,
+    "snapshot-race.log": 4
+  },
+  "original_network_scenarios": 81,
+  "retained_safety_suites": [
+    "network64",
+    "stop65",
+    "release54"
+  ]
+}

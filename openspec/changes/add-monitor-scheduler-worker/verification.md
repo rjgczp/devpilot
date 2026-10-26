@@ -1,10 +1,10 @@
 # Verification — add-monitor-scheduler-worker
 
-## Current status — supplemental orchestration repaired; local acceptance complete (2026-10-23)
+## Current status — task6.3 independently accepted; task7.1 implementation under acceptance (2026-10-26)
 
-当前清单仍28/47，6.3保持未勾选，等待冻结提交的Push/PR CI与独立完成复审。本批只修复构建/测试编排，没有修改运行代码、安全断言、数据库权限或生产执行边界。原46/46联合矩阵、6项拒绝传输回归及历史安全验收已有实际证据；本轮遗漏的纯Budget23项normal+23项Race、历史Schema6 Snapshot4项normal+4项Race均已真实执行通过，无skip。
+当前 **29/47**。产品负责人在本会话“DevPilot AI 第十一阶段 PR #11 独立验收结论”明确批准任务6.3完成，范围仅隔离Linux/PG18 fixture，审核HEAD为`65316cc41e7e4a1186e8ce3a7d2d53a937e6380d`。tasks.md已依此勾选6.3；正式批准摘录、任务索引、同SHA真实CI及Artifact源绑定审计见`evidence/task63-accepted/`。
 
-上轮实际失败是临时Python planner把terminationfixture入口误要求存在于jointfixture二进制的清单断言，并非Go编译报错；原始命令、stderr、缺失原listing的局限及Build Tags已永久保留。本轮将纯Budget独立编译并核对固定23项清单，不合并互不相同的fixture。下面历史停止记录按发生时状态保留，由文末本轮补充验收记录更新；历史CI不冒充待冻结SHA的结果。
+Push39924189519及PR39924195122全部三作业success；46/46联合矩阵、6回归、Budget23×2、Snapshot4×2、PG147×2、原81网络及6.4/6.5/5.4均已通过，原始日志和归档哈希保留。本轮随后仅授权7.1最小结果持久化，7.1尚未验收、不勾选；7.2幂等/当前投影及后续任务未授权。本会话已单独批准Worker-only `persist_minimal_result`17参数窄EXECUTE及其信任边界，准确授权出处见`docs/monitor-scheduler-task71-capability.md`；不扩大其他权限。7.1实现正在真实验收，未勾选。
 
 ## Authorization and baseline
 
@@ -752,3 +752,19 @@ planner and complete remaining verification; neither is silently advanced now.
 Requirement/Scenario索引：`http-monitor-execution/Worker handoff only narrows...`→6.3 original-kernel joint46（许可后literal拨号、TLS/SNI、Start/input未知关闭）；`monitor-worker-security/Shared public target budgets...`→纯Budget23×2及joint缺许可/未知Commit；`Physical resource release requires independent termination proof`→6.5/5.4原runner+joint已建立TLS停止/可信签名/PG返槽；`Acceptance separately verifies database network fault and production boundaries`→旧81网络、Snapshot4×2、API零目标与普通发布依赖门禁。精确测试case/二进制hash/源码hash/receiver/firewall/pg_locks证据见各runner manifest及实际CI Artifacts。
 
 原PID1/tracer依赖、NSCD连接、permit-missing拒绝控制流、清单断言及本次本地编排失败均不删除；三份旧负面archive哈希不变。此前5.4 SIGCONT/工具管理确认超时内部根因未确定，仍为风险；一次或本次全部通过不能反证无竞态。历史部署角色权限缺少真实清单的限制仍保留，不猜测生产GRANT。生产执行硬关闭，无公网许可，无第7组，无合并/Archive/部署。清单仍28/47，等待冻结提交实际CI和独立审核后申请勾选6.3。
+
+## Task6.3 final independent approval and task index
+
+批准来自本轮直接role=user消息“正式批准任务6.3完成（仅隔离Linux/PG18 fixture范围）”，不是之前的原则通过或本地自我验收。审核SHA65316cc对应的Push和PR链接、实际三作业结论、原始Artifacts ID/digest与同一源码清单的110条安全命令receipt/每次CI，都保存在`evidence/task63-accepted/acceptance-index.json`及`ci/`投影。此处保存的是审计副本而非重跑；不重复已经批准且有证据的6.3验收。旧PID1/tracer、NSCD、拒绝传输、编排失败和未确定SIGCONT/管理确认超时风险继续原样保留。
+
+任务索引：6.3→`http-monitor-execution/Worker handoff only narrows...`与`monitor-worker-security/Acceptance separately verifies...`→原46模式及6拒绝回归、81内核、6.4/6.5/5.4→审核提交65316cc→实际Push39924189519/PR39924195122→本轮明确独立批准→任务勾选。批准使进度28→29/47；不能解释为方案A或第7组完成。生产执行仍硬关闭，PR11不合并/Archive/部署。
+
+## Task7.1 implementation / frozen acceptance pending (2026-10-26)
+
+Only separately approved Worker function `persist_minimal_result`17arguments is added to unmergedM8. Every preexistingM8 statement including Down is unchanged; Migration1–7 byte hashes remain exact. Go adapter and separate test binary are fixture-only. HTTP observations require already accepted physical stop; controls write only fixed stop_reason and never release slots/fabricate HTTP results. Unknown Commit burns the sending capability with no retry/reconcile. No7.2 projection/idempotency/next-cycle implementation. Existing status query is unchanged and naturally sees completed rows, as explicitly disclosed in the approved permission request.
+
+Local preflight22/22 actual PG18/Linux cells (11normal+11race), ordinary Linux vet/unit/race and original6.4 full regression passed, with exact dirty source and binary hashes in `evidence/task71-preflight/`. These are not yet final SHA CI. Requirement/Scenario/Test mapping: `docs/monitor-scheduler-task71-verification.md`. Separate capability approval: `docs/monitor-scheduler-task71-capability.md`, original reply `call_965917754402442daac6333bf80e0312`: “批准仅这一项窄 EXECUTE及所列信任边界”.
+
+First local race matrix failed and stopped: new test helper notified its parent before deferred pgx Rollback completed; parent returned the same connection to the pool while rollback still used it. Raw race stacks, SQL logs, commands/hashes and builder same-inode copy errors remain byte-preserved in `evidence/task71-negative/`. Fix only transfers connection ownership through rollback/release before notifying. The full22matrix was then rerun from first cell. Prior PID1/tracer, NSCD, permit-missing negative evidence and unresolved5.4 management/SIGCONT timeout risks remain.
+
+7.1 remains unchecked, progress29/47 until actual frozen Push/PR CI completes all historical and new checks. No merge, Archive, deployment, production execution or7.2 authority.

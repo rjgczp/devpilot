@@ -1,0 +1,207 @@
+{
+  "acceptance-repaired--result.json.gz": {
+    "original": "acceptance-repaired/result.json",
+    "sha256": "a57fc7bc1faae12873b8cdf72604c02cc5a90ad5d8277ddac409c59fc85d1da6",
+    "bytes": 2874
+  },
+  "acceptance-repaired--plan.json.gz": {
+    "original": "acceptance-repaired/plan.json",
+    "sha256": "365789867906b3800aac5e1e9ce1f29b325a3d302fd9142acaa52c6f10ee1b68",
+    "bytes": 846
+  },
+  "build-final--linux-build.json.gz": {
+    "original": "build-final/linux-build.json",
+    "sha256": "b625f5de4e2fafbbac675393dc341c3489ed72d6b21936e92f78937c308f1b34",
+    "bytes": 224137
+  },
+  "go-regression--unit-vet-race.json.gz": {
+    "original": "go-regression/unit-vet-race.json",
+    "sha256": "706ff40b04a767eef28c6dfd8f770256269f8d81756b0cec06e7ffcfa0239d23",
+    "bytes": 223979
+  },
+  "network64-regression--result.json.gz": {
+    "original": "network64-regression/result.json",
+    "sha256": "fc6199308b4be8c78448e32e94b967cd52c58fb1549bee9fa82aded650060302",
+    "bytes": 2649
+  },
+  "migration1-7.json.gz": {
+    "original": "migration1-7.json",
+    "sha256": "2539f7bae5d450e47fc45150b0bea39eaf6303c18a8b6212b287b66f43d43ad8",
+    "bytes": 1262
+  },
+  "openspec-all.json.gz": {
+    "original": "openspec-all.json",
+    "sha256": "2a534a45cc3470eeba3084d1d5e9be6f7444626157e8cd7c0e082c57c3c0170f",
+    "bytes": 4780
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-allow-https--pg-driver.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-allow-https/pg-driver.log",
+    "sha256": "22e6d0e74b33f603400f649d36dcb794036623a0535baed20b95b2dabf9e224b",
+    "bytes": 16685
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-allow-https--postgres-final-ledger.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-allow-https/postgres-final-ledger.log",
+    "sha256": "64e272a3685e4a483e51cf2e8f4a88227f94e4425c46e30b789c0613f266f5a4",
+    "bytes": 12150
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-allow-https--postgres.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-allow-https/postgres.log",
+    "sha256": "57f8915ff820fb6fa4c8b6957b15f12a39b8330ad09e2a56d1fa5da63ff22b7e",
+    "bytes": 18111
+  },
+  "acceptance-repaired--receipts--normal-TestResultMinimalPG-allow-https.json.gz": {
+    "original": "acceptance-repaired/receipts/normal-TestResultMinimalPG-allow-https.json",
+    "sha256": "35adc233dab3490dfe35e9f15760d35a305fa07e2342987e366bca2a88a09d9d",
+    "bytes": 224474
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-allow-https--joint-kernel-witness.json.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-allow-https/joint-kernel-witness.json",
+    "sha256": "7623abce6a359230200b3a5b2aa8feecd46cdf6382f7578be1e80f39afffb4d6",
+    "bytes": 217
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-allow-https--committed-stop-bundle.json.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-allow-https/committed-stop-bundle.json",
+    "sha256": "ab3814201769ca602b5baafd8827a505f7d4dc05837a14167730be333316a3ab",
+    "bytes": 3482
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-permit-missing--pg-driver.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-permit-missing/pg-driver.log",
+    "sha256": "0e4605c52fc80c34723bc4aec0a7f3e9229374ec00ad2d804addf36a527f0470",
+    "bytes": 8784
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-permit-missing--postgres-final-ledger.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-permit-missing/postgres-final-ledger.log",
+    "sha256": "1df6d45192b6a0ebc8cb8834a936345a4c0761dd23e6f4779d4b08903e03b832",
+    "bytes": 11685
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-permit-missing--postgres.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-permit-missing/postgres.log",
+    "sha256": "3dd686fcab6b5acad40673bdcbbe00eb6c038fc33a0ed9a4f32d48d05988d31a",
+    "bytes": 5013
+  },
+  "acceptance-repaired--receipts--normal-TestResultMinimalPG-permit-missing.json.gz": {
+    "original": "acceptance-repaired/receipts/normal-TestResultMinimalPG-permit-missing.json",
+    "sha256": "1c342aac1c6d370a324884302b0f1a5335933c0d81104821bc107b34bd5159a6",
+    "bytes": 224480
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-permit-missing--joint-kernel-witness.json.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-permit-missing/joint-kernel-witness.json",
+    "sha256": "16f2e0d5616b204a585f7c18b0aeb83bc938f3995f228d458c4330ecdac575ad",
+    "bytes": 220
+  },
+  "acceptance-repaired--normal-TestResultMinimalPG-permit-missing--committed-stop-bundle.json.gz": {
+    "original": "acceptance-repaired/normal-TestResultMinimalPG-permit-missing/committed-stop-bundle.json",
+    "sha256": "e7cec33bc7dfb523f2da78ef31f99de9dba05cb192c145dbf5b872d87c7a89c0",
+    "bytes": 3482
+  },
+  "acceptance-repaired--race-TestResultMinimalPG-supervisor-killed--pg-driver.log.gz": {
+    "original": "acceptance-repaired/race-TestResultMinimalPG-supervisor-killed/pg-driver.log",
+    "sha256": "68df4f0f876cc6b9e53e15fa2aca2941b00976d09cbd37e91f59c3335afa5250",
+    "bytes": 9642
+  },
+  "acceptance-repaired--race-TestResultMinimalPG-supervisor-killed--postgres-final-ledger.log.gz": {
+    "original": "acceptance-repaired/race-TestResultMinimalPG-supervisor-killed/postgres-final-ledger.log",
+    "sha256": "2b7e8d9f50cd6f0deaebb853adcae8c2401d8b630209e2ac43a297c2353cc149",
+    "bytes": 11742
+  },
+  "acceptance-repaired--race-TestResultMinimalPG-supervisor-killed--postgres.log.gz": {
+    "original": "acceptance-repaired/race-TestResultMinimalPG-supervisor-killed/postgres.log",
+    "sha256": "86a9b86e653a49f0324c615cd59bc4a74dd8a9d88dd95fd533e5009fffe289e7",
+    "bytes": 4649
+  },
+  "acceptance-repaired--receipts--race-TestResultMinimalPG-supervisor-killed.json.gz": {
+    "original": "acceptance-repaired/receipts/race-TestResultMinimalPG-supervisor-killed.json",
+    "sha256": "82f0f06629fa7b9d5a39febf28791a2b11b17cece3f85872d4bf49bfe035fbce",
+    "bytes": 224492
+  },
+  "acceptance-repaired--race-TestResultActualLeaseExpiryPG-allow-https--pg-driver.log.gz": {
+    "original": "acceptance-repaired/race-TestResultActualLeaseExpiryPG-allow-https/pg-driver.log",
+    "sha256": "10bf7a3cebccb23eace5344b513556a99099bf179d78a771cc0b4dbfc6133e5c",
+    "bytes": 17057
+  },
+  "acceptance-repaired--race-TestResultActualLeaseExpiryPG-allow-https--postgres-final-ledger.log.gz": {
+    "original": "acceptance-repaired/race-TestResultActualLeaseExpiryPG-allow-https/postgres-final-ledger.log",
+    "sha256": "1404366e2ff8b10b2748baf754ff10cf72db3c0672ef051f1066d5b4be74ee1a",
+    "bytes": 12079
+  },
+  "acceptance-repaired--race-TestResultActualLeaseExpiryPG-allow-https--postgres.log.gz": {
+    "original": "acceptance-repaired/race-TestResultActualLeaseExpiryPG-allow-https/postgres.log",
+    "sha256": "0160e7dae0fc94c90cc1ff6a9b1d44233bfa05468f3f207c6b9dc1f039051109",
+    "bytes": 5553
+  },
+  "acceptance-repaired--receipts--race-TestResultActualLeaseExpiryPG-allow-https.json.gz": {
+    "original": "acceptance-repaired/receipts/race-TestResultActualLeaseExpiryPG-allow-https.json",
+    "sha256": "30a48832af58eab053970058fa808bd1527b1f2f5b438737e5142392cf4d8442",
+    "bytes": 224500
+  },
+  "acceptance-repaired--race-TestResultActualLeaseExpiryPG-allow-https--joint-kernel-witness.json.gz": {
+    "original": "acceptance-repaired/race-TestResultActualLeaseExpiryPG-allow-https/joint-kernel-witness.json",
+    "sha256": "71d251930df0ffea1e7b3e0dc522b2a6efc5633d148cf8eb3eb600d0273fa22f",
+    "bytes": 217
+  },
+  "acceptance-repaired--race-TestResultActualLeaseExpiryPG-allow-https--committed-stop-bundle.json.gz": {
+    "original": "acceptance-repaired/race-TestResultActualLeaseExpiryPG-allow-https/committed-stop-bundle.json",
+    "sha256": "6ea11e711c25400cbcdbbb4844773f60f5cb8e4fe3c10566054ceb976a1a0189",
+    "bytes": 3482
+  },
+  "acceptance-repaired--normal-TestResultAfterOwnerPatchPG-allow-https--pg-driver.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultAfterOwnerPatchPG-allow-https/pg-driver.log",
+    "sha256": "722482e9a7d5aefdfd6acab38f333c6da66f74560117fd0240c4eec8e42f7e02",
+    "bytes": 16844
+  },
+  "acceptance-repaired--normal-TestResultAfterOwnerPatchPG-allow-https--postgres-final-ledger.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultAfterOwnerPatchPG-allow-https/postgres-final-ledger.log",
+    "sha256": "2615cfa06c37d2b74dd0965bd14ed2ff1f3020203bd6e940b78f3ee3a270f2b2",
+    "bytes": 12144
+  },
+  "acceptance-repaired--normal-TestResultAfterOwnerPatchPG-allow-https--postgres.log.gz": {
+    "original": "acceptance-repaired/normal-TestResultAfterOwnerPatchPG-allow-https/postgres.log",
+    "sha256": "ccc829c07b9b813670992ee88b4f41a22a9c5cbbc350977af52a2311b67d5a4e",
+    "bytes": 18111
+  },
+  "acceptance-repaired--receipts--normal-TestResultAfterOwnerPatchPG-allow-https.json.gz": {
+    "original": "acceptance-repaired/receipts/normal-TestResultAfterOwnerPatchPG-allow-https.json",
+    "sha256": "dbfc42cd09890ed275411cb6fe7eb5dd1e1d64aae1a964f9f1785e1277ce0713",
+    "bytes": 224489
+  },
+  "acceptance-repaired--normal-TestResultAfterOwnerPatchPG-allow-https--joint-kernel-witness.json.gz": {
+    "original": "acceptance-repaired/normal-TestResultAfterOwnerPatchPG-allow-https/joint-kernel-witness.json",
+    "sha256": "f39ff4baa33645ff412c493fbe898e7f2a582a33348d897bd88d8620d3109119",
+    "bytes": 217
+  },
+  "acceptance-repaired--normal-TestResultAfterOwnerPatchPG-allow-https--committed-stop-bundle.json.gz": {
+    "original": "acceptance-repaired/normal-TestResultAfterOwnerPatchPG-allow-https/committed-stop-bundle.json",
+    "sha256": "f91656adc67c91f2029c2a249e18f2c4699d34ad6f37b89bc0076ab011d3f950",
+    "bytes": 3482
+  },
+  "acceptance-repaired--race-TestResultUnknownCommitPG-allow-https--pg-driver.log.gz": {
+    "original": "acceptance-repaired/race-TestResultUnknownCommitPG-allow-https/pg-driver.log",
+    "sha256": "dc52e9f3daa8b1040677065d74c0222f123e966750107b88df76a17df31732c8",
+    "bytes": 10509
+  },
+  "acceptance-repaired--race-TestResultUnknownCommitPG-allow-https--postgres-final-ledger.log.gz": {
+    "original": "acceptance-repaired/race-TestResultUnknownCommitPG-allow-https/postgres-final-ledger.log",
+    "sha256": "b8a28c2bb308bed7142427ee49730da3f0ecf7d498a1d290efc77cd051e10875",
+    "bytes": 12149
+  },
+  "acceptance-repaired--race-TestResultUnknownCommitPG-allow-https--postgres.log.gz": {
+    "original": "acceptance-repaired/race-TestResultUnknownCommitPG-allow-https/postgres.log",
+    "sha256": "32e0c705adbafc32a9aeba926319d908fa645174d00815bd6fb3bd76adf94534",
+    "bytes": 5631
+  },
+  "acceptance-repaired--receipts--race-TestResultUnknownCommitPG-allow-https.json.gz": {
+    "original": "acceptance-repaired/receipts/race-TestResultUnknownCommitPG-allow-https.json",
+    "sha256": "5ff030a6439e9ad5ad8b4f5a04b649c4ceb56e89f02521bada5a51c66fc90fb0",
+    "bytes": 224491
+  },
+  "acceptance-repaired--race-TestResultUnknownCommitPG-allow-https--joint-kernel-witness.json.gz": {
+    "original": "acceptance-repaired/race-TestResultUnknownCommitPG-allow-https/joint-kernel-witness.json",
+    "sha256": "0fc8e977a6567d6b0ca739937e0f3bf90a4db2a79b2489fe92a6226e6a50eebf",
+    "bytes": 217
+  },
+  "acceptance-repaired--race-TestResultUnknownCommitPG-allow-https--committed-stop-bundle.json.gz": {
+    "original": "acceptance-repaired/race-TestResultUnknownCommitPG-allow-https/committed-stop-bundle.json",
+    "sha256": "88843637fa931e875f2ea13519292bcc59b7fb47b4313a4fd4fc78c50e69b380",
+    "bytes": 3482
+  }
+}
