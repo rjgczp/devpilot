@@ -1311,7 +1311,7 @@ GRANT EXECUTE ON FUNCTION scheduler_private.reconcile_termination(uuid,uuid,uuid
 -- +goose StatementBegin
 CREATE FUNCTION scheduler_private.persist_minimal_result(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_v bigint,p_g bigint,p_epoch bigint,p_fence bigint,p_namespace uuid,p_supervisor uuid,p_kind text,p_duration_ms integer,p_http_status integer,p_success boolean,p_failure_code text,p_stop_reason text)
 RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
-DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; gate_now timestamptz; keys jsonb; k record;
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; gate_now timestamptz; observed_now timestamptz; keys jsonb; k record;
 BEGIN
  PERFORM scheduler_private.system_identity('worker',p_incarnation);
  IF p_kind IS NULL OR p_kind NOT IN ('network','preflight','permit_denied','physical_stop_unconfirmed')
@@ -1351,8 +1351,12 @@ BEGIN
  IF NOT FOUND THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
  PERFORM scheduler_private.lock_control(p_incarnation);
  PERFORM scheduler_private.system_identity('worker',p_incarnation);
- -- Fresh SPI statement after all waits: use actual database time once for DML.
- SELECT clock_timestamp() INTO gate_now;
+ -- Fresh SPI after all waits. One observed DB clock, bounded by durable
+ -- timestamps as D5 requires; a backward jump cannot renew an old Lease.
+ SELECT clock_timestamp() INTO observed_now;
+ SELECT GREATEST(observed_now,r.claimed_at,r.started_at,q.released_at,c.last_gate_at) INTO gate_now
+ FROM public.scheduler_control c WHERE c.kind='worker' AND c.login_name=session_user AND c.incarnation=p_incarnation;
+ IF gate_now>observed_now+interval '2 seconds' THEN RAISE EXCEPTION 'clock_untrusted' USING ERRCODE='P0001'; END IF;
  PERFORM 1 FROM public.monitor_runs x JOIN public.monitor_schedules s USING(workspace_id,project_id,monitor_id)
  JOIN public.scheduler_control c ON c.kind='worker' AND c.login_name=session_user AND c.incarnation=p_incarnation
  WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.run_id=p_run

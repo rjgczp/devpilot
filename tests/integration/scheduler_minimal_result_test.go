@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rjgczp/devpilot/internal/monitor"
 	"github.com/rjgczp/devpilot/internal/monitoring"
@@ -236,6 +237,28 @@ func runMinimal(t *testing.T, mode string) {
 			minimalObserve(t, db, l)
 			return
 		}
+		if mode == "clock" {
+			t.Run("stored-finish-time-uses-durable-clock-floor", func(t *testing.T) {
+				var floor time.Time
+				if e := db.QueryRow(context.Background(), `UPDATE scheduler_control SET last_gate_at=clock_timestamp()+interval '1 second' WHERE incarnation=$1 RETURNING last_gate_at`, s.Incarnation).Scan(&floor); e != nil {
+					t.Fatal(e)
+				}
+				v, e := scheduler.NetworkResult(l, r)
+				if e != nil {
+					t.Fatal(e)
+				}
+				if e = s.PersistMinimalResult(context.Background(), v); e != nil {
+					t.Fatal(e)
+				}
+				var finish time.Time
+				if e = db.QueryRow(context.Background(), `SELECT finished_at FROM monitor_runs WHERE run_id=$1`, l.RunID).Scan(&finish); e != nil || finish.Before(floor) {
+					t.Fatal("result time moved behind durable marker", e)
+				}
+				t.Log("durable clock lower bound", floor, "stored finish", finish)
+				minimalObserve(t, db, l)
+			})
+			return
+		}
 		if mode == "terminal" {
 			// Fixture state construction only, after real accepted physical proof. It
 			// does not implement recovery or pretend an admin UPDATE is stop evidence.
@@ -331,6 +354,41 @@ func runMinimal(t *testing.T, mode string) {
 				a := append([]any(nil), args...)
 				a[c.i] = c.v
 				minimalCall(t, s, a, false, "22023")
+			}
+		})
+		t.Run("durable-clock-floor-rejects-backward-time", func(t *testing.T) {
+			// Only the private fixture's existing Worker clock marker is varied. This
+			// neither alters the host clock, Lease, physical proof nor any resource.
+			ctx := context.Background()
+			var saved time.Time
+			if e := db.QueryRow(ctx, `SELECT last_gate_at FROM scheduler_control WHERE incarnation=$1`, s.Incarnation).Scan(&saved); e != nil {
+				t.Fatal(e)
+			}
+			for _, span := range []string{"1 second", "10 seconds"} {
+				if _, e := db.Exec(ctx, `UPDATE scheduler_control SET last_gate_at=clock_timestamp()+$2::interval WHERE incarnation=$1`, s.Incarnation, span); e != nil {
+					t.Fatal(e)
+				}
+				tx, e := s.DB.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted})
+				if e != nil {
+					t.Fatal(e)
+				}
+				var raw []byte
+				e = tx.QueryRow(ctx, minimalSQL, args...).Scan(&raw)
+				if span == "10 seconds" {
+					var pe *pgconn.PgError
+					if !errors.As(e, &pe) || pe.Code != "P0001" || pe.Message != "clock_untrusted" {
+						t.Fatal("clock gate", e)
+					}
+				} else {
+					budgetSQLState(t, e, "00000")
+
+				}
+				if e = tx.Rollback(ctx); e != nil {
+					t.Fatal(e)
+				}
+			}
+			if _, e := db.Exec(ctx, `UPDATE scheduler_control SET last_gate_at=$2 WHERE incarnation=$1`, s.Incarnation, saved); e != nil {
+				t.Fatal(e)
 			}
 		})
 		t.Run("all-original-fixed-failure-codes-nullability-rollback", func(t *testing.T) {
@@ -486,3 +544,5 @@ func TestResultPreflightPG(t *testing.T) {
 	}
 	minimalObserve(t, db, l)
 }
+
+func TestResultClockFloorPG(t *testing.T) { runMinimal(t, "clock") }

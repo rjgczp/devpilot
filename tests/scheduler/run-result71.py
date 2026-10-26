@@ -2,10 +2,10 @@
 """Task7.1 real PG18/physical proof, normal and race; first failure stops."""
 import argparse,json,subprocess,sys
 from pathlib import Path
-PLAN=[('TestResultMinimalPG',c) for c in ['allow-https','tls-invalid','rebinding','permit-missing','supervisor-killed']]+[('TestResultUnknownCommitPG','allow-https'),('TestResultActualLeaseExpiryPG','allow-https'),('TestResultAfterOwnerPatchPG','allow-https'),('TestResultTerminalUnknownPG','allow-https'),('TestResultControlRacePG','allow-https'),('TestResultPreflightPG','preflight-only')]
+PLAN=[('TestResultMinimalPG',c) for c in ['allow-https','tls-invalid','rebinding','permit-missing','supervisor-killed']]+[('TestResultUnknownCommitPG','allow-https'),('TestResultActualLeaseExpiryPG','allow-https'),('TestResultAfterOwnerPatchPG','allow-https'),('TestResultTerminalUnknownPG','allow-https'),('TestResultControlRacePG','allow-https'),('TestResultPreflightPG','preflight-only'),('TestResultClockFloorPG','allow-https')]
 def main():
  p=argparse.ArgumentParser();p.add_argument('--tools',type=Path,required=True);p.add_argument('--evidence',type=Path,required=True);a=p.parse_args();assert a.tools.is_absolute() and a.evidence.is_absolute();a.evidence.mkdir(parents=True,exist_ok=False);repo=Path(__file__).resolve().parents[2];runs=[]
- (a.evidence/'plan.json').write_text(json.dumps(dict(tests=PLAN,modes=['normal','race'],clusters=22,skip=False,retry=False),indent=2)+'\n')
+ (a.evidence/'plan.json').write_text(json.dumps(dict(tests=PLAN,modes=['normal','race'],clusters=24,skip=False,retry=False),indent=2)+'\n')
  for mode in ['normal','race']:
   binary=a.tools/('result-pg-race.test' if mode=='race' else 'result-pg.test')
   info=subprocess.check_output(['go','version','-m',str(binary)],text=True);assert 'go1.24.3' in info and 'GOOS=linux' in info and 'resultfixture' in info;assert ('-race=true' in info)==(mode=='race')
