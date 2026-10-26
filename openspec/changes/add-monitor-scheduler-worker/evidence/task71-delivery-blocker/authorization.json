@@ -1,0 +1,16 @@
+{
+  "source": "direct human user reply in current Codex conversation",
+  "question_item_id": "[\"request_user_input_async\",\"call_c110ff45c95e484f99d0627d8fb83161\",0]",
+  "exact_reply": "授权最小fixture修复及回归",
+  "scope": "Only TestBudgetGlobalRateConcurrentStarts fixture: nine separate READ COMMITTED single-statement autocommit connections; capture lock snapshot while blocked and log only after barrier Commit.",
+  "unchanged": [
+    "8 accepted / 1 refused",
+    "accepted span <125ms",
+    "250ms lock timeout",
+    "2s transaction budget",
+    "production explicit Start Commit/lost-ACK protocol",
+    "all role/table/column/EXECUTE permissions",
+    "no Probe/target TCP from this database-only test"
+  ],
+  "limitations": "Observed original 199.096ms timeline and exact token refill math do not conclusively establish why transaction898 held its lock for151ms. Passing the corrected fixture cannot disprove every concurrency problem."
+}

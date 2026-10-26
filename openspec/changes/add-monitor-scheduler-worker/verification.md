@@ -1,6 +1,14 @@
 # Verification — add-monitor-scheduler-worker
 
-## Current status — task7.1 implementation accepted for isolated fixture (2026-10-26)
+## Latest delivery gate — separately approved Budget fixture repair (2026-10-26)
+
+已提交HEAD`ef689e82c11d04e695ca10fb9b55d079f7db7492`的Push[40278790796](https://github.com/rjgczp/devpilot/actions/runs/40278790796)旧Budget race失败；其独立PR[40278797102](https://github.com/rjgczp/devpilot/actions/runs/40278797102)随后三个作业成功。不能将Push失败抹去或将该SHA报告为两边全绿。原始命令、源码/二进制/日志hash、锁图、最终资源账和修复前diff永久保留于`evidence/task71-delivery-blocker/`。
+
+`TestBudgetGlobalRateConcurrentStarts`原结果9成功/0拒绝，数据库跨度199.096ms，严格要求125ms内8成功/1拒绝。8/s补充后余量恰好592768microtokens，与实账一致；本样本未证明预算超发，但原burst前提未达成。等待事务898的151ms间隙有PG日志，具体调度/Commit停顿原因未确定。
+
+产品负责人本会话`call_c110ff45c95e484f99d0627d8fb83161`明确回复“授权最小fixture修复及回归”。仅此旧5.2用例改为九个独立PG连接单语句自动提交，并将等待中采得的原锁图延后至屏障Commit后输出。生产Start显式Commit/丢ACK、8成功/1拒绝、span<125ms、250ms锁及2s事务预算全部保持；没有SQL、GRANT或生产代码变更。定向真实PG18 normal/race退出0，窗口39.876ms/40.396ms，无Probe/目标TCP。原始授权、命令、源码与二进制hash及锁图见上述证据目录。完整Budget已实际通过normal23/23、race23/23，所有实际命令/退出码/源码及二进制hash、PG日志和账本见`regression-summary.json`与`budget-normal/`、`budget-race/`。本地证据明确记录dirty父提交及源码清单hash；最终冻结SHA的Push/PR仍须单独实际通过，局部通过不证明所有并发问题消失。未进入7.2。
+
+## Current status — task7.1 implemented and tested; independent review pending (2026-10-26)
 
 当前 **30/47**。6.3已按产品负责人对`65316cc41e7e4a1186e8ce3a7d2d53a937e6380d`的独立批准勾选；本轮仅新增7.1最小结果持久化，实际完整验收后勾选7.1。**7.2及后续任务未实施，等待独立审查。**
 

@@ -382,6 +382,32 @@ func budgetWidePool(t *testing.T, p *pgxpool.Pool) *pgxpool.Pool {
 	t.Cleanup(wide.Close)
 	return wide
 }
+
+// This one rate-burst fixture observes server transaction admission. Each
+// independent connection still commits a real READ COMMITTED transaction;
+// autocommit removes a client scheduling pause between function return and
+// Commit from the125ms burst prerequisite. Production Start/Commit and its ACK
+// tests remain explicit and unchanged. No Probe is launched by this fixture.
+func budgetBurstAutocommit(t *testing.T, p *pgxpool.Pool, sql string, args ...any) (int, <-chan error) {
+	t.Helper()
+	c, err := p.Acquire(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	pid := int(c.Conn().PgConn().PID())
+	result := make(chan error, 1)
+	go func() {
+		err := func() error {
+			defer c.Release()
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			defer cancel()
+			var ignored []byte
+			return c.QueryRow(ctx, sql, args...).Scan(&ignored)
+		}()
+		result <- err
+	}()
+	return pid, result
+}
 func TestBudgetGlobalRateConcurrentStarts(t *testing.T) {
 	db := budgetDB(t)
 	hs := budgetFixtures(t, db, 9)
@@ -415,15 +441,16 @@ func TestBudgetGlobalRateConcurrentStarts(t *testing.T) {
 		if j%2 == 1 {
 			w, inc = w2, i2
 		}
-		pid, ch := budgetAsync(t, w, `SELECT scheduler_private.start_run($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::uuid,1)`, inc, h.w, h.p, h.m, h.u, h.b, h.r)
+		pid, ch := budgetBurstAutocommit(t, w, `SELECT scheduler_private.start_run($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::uuid,1)`, inc, h.w, h.p, h.m, h.u, h.b, h.r)
 		waitActivationBlock(t, db, pid)
 		cs = append(cs, ch)
 		pids = append(pids, pid)
 	}
-	schedulerLockReceipt(t, db, "nine-starts-global-burst8", pids...)
+	locks := schedulerLockSnapshot(t, db, "nine-starts-global-burst8", pids...)
 	if err = barrier.Commit(context.Background()); err != nil {
 		t.Fatal(err)
 	}
+	t.Log(string(locks))
 	passed, refused := 0, 0
 	for _, ch := range cs {
 		err := <-ch

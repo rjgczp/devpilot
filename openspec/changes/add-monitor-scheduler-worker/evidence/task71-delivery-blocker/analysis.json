@@ -1,0 +1,53 @@
+{
+  "head": "ef689e82c11d04e695ca10fb9b55d079f7db7492",
+  "source_inventory_sha256": "f12b87d110472674555075defc7b2e46489b403fca6d6bf52626cfa23c899e67",
+  "run_id": 40278790796,
+  "job_id": 121427220523,
+  "artifact_id": 12632200133,
+  "artifact_sha256": "596d64a6f7ff96f7a9580900b36f16210cc059a34fc0894b893ccc7dbcd73fec",
+  "test": "TestBudgetGlobalRateConcurrentStarts",
+  "mode": "race",
+  "exit_code": 1,
+  "actual_passed": 9,
+  "actual_refused": 0,
+  "expected_passed": 8,
+  "expected_refused": 1,
+  "actual_start_span_seconds": 0.199096,
+  "required_burst_window_seconds": 0.125,
+  "start_times": [
+    "2026-10-26T06:22:29.479001+00:00",
+    "2026-10-26T06:22:29.484159+00:00",
+    "2026-10-26T06:22:29.635118+00:00",
+    "2026-10-26T06:22:29.642420+00:00",
+    "2026-10-26T06:22:29.649463+00:00",
+    "2026-10-26T06:22:29.657191+00:00",
+    "2026-10-26T06:22:29.664299+00:00",
+    "2026-10-26T06:22:29.671168+00:00",
+    "2026-10-26T06:22:29.678097+00:00"
+  ],
+  "global_ledger": {
+    "kind": "global",
+    "in_use": 9,
+    "tokens": 592768,
+    "key_count": 28,
+    "budget_key": "global",
+    "keep_until": "2026-10-26T07:22:29.678097+00:00",
+    "not_before": null,
+    "active_count": 9,
+    "last_refill_at": "2026-10-26T06:22:29.678097+00:00",
+    "schedule_count": 9,
+    "terminal_count": 9
+  },
+  "refill_microtokens": 1592768,
+  "computed_remaining_microtokens": 592768,
+  "observed_remaining_microtokens": 592768,
+  "start_intercommit_gap_seconds": 0.150959,
+  "notes": [
+    "Exact cause of the151ms transaction/commit gap is not established.",
+    "No negative token count or capacity overspend is proven in this sample.",
+    "This is a failed strict burst-window test; no assertion/limit was changed.",
+    "No scheduler SQL, production code or grants changed.",
+    "No rerun or CI retry was requested."
+  ],
+  "proposed_patch_applied": false
+}
