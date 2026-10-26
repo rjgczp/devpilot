@@ -163,11 +163,14 @@ func TestCheckpointOneStartExpiryAfterFinalWait(t *testing.T) {
 	}
 	pid, done := checkpointStartAsync(t, w, inc, h)
 	waitActivationBlock(t, db, pid)
-	schedulerLockReceipt(t, db, "Start final control wait across expiry", pid)
+	locks := schedulerLockSnapshot(t, db, "Start final control wait across expiry", pid)
 	waitWorkspaceTime(t, db, expiry)
 	if err = tx.Commit(ctx); err != nil {
 		t.Fatal(err)
 	}
+	// Emit the original, while-blocked snapshot after releasing the barrier;
+	// verbose output must not prolong the measured250ms database lock wait.
+	t.Log(string(locks))
 	checkpointInvalidCandidate(t, <-done)
 	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE monitor_id=$1 AND attempt_state='leased' AND started_at IS NULL`, m.ID) != 1 {
 		t.Fatal("expired Start mutated run")

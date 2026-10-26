@@ -59,6 +59,10 @@ func startSchedulerClaim(t *testing.T, pool *pgxpool.Pool, inc string, h schedul
 }
 func schedulerLockReceipt(t *testing.T, db *pgxpool.Pool, label string, pids ...int) {
 	t.Helper()
+	t.Log(string(schedulerLockSnapshot(t, db, label, pids...)))
+}
+func schedulerLockSnapshot(t *testing.T, db *pgxpool.Pool, label string, pids ...int) []byte {
+	t.Helper()
 	var raw []byte
 	if err := db.QueryRow(context.Background(), `SELECT jsonb_build_object('event',$1::text,'database_time',clock_timestamp(),'backends',(SELECT jsonb_agg(jsonb_build_object('pid',a.pid,'state',a.state,'wait_event',a.wait_event,'xact_start',a.xact_start,'blocking_pids',pg_blocking_pids(a.pid),'locks',(SELECT jsonb_agg(jsonb_build_object('type',l.locktype,'relation',l.relation::regclass::text,'mode',l.mode,'granted',l.granted,'transactionid',l.transactionid::text)) FROM pg_locks l WHERE l.pid=a.pid))) FROM pg_stat_activity a WHERE a.pid=ANY($2::integer[])))`, label, pids).Scan(&raw); err != nil {
 		t.Fatal(err)
@@ -67,7 +71,7 @@ func schedulerLockReceipt(t *testing.T, db *pgxpool.Pool, label string, pids ...
 	if json.Unmarshal(raw, &v) != nil {
 		t.Fatal("invalid receipt")
 	}
-	t.Log(string(raw))
+	return raw
 }
 func awaitSchedulerClaim(t *testing.T, ch <-chan schedulerClaimResult, wantSuccess bool) []byte {
 	t.Helper()

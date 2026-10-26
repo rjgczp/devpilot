@@ -1,0 +1,6 @@
+{
+  "source": "current human asynchronous reply",
+  "question_call_id": "call_5e506edea0de4ce78bd5d4912f08b166",
+  "exact_reply": "授权最小测试编排修复及回归",
+  "scope": "capture original lock snapshot while blocked; emit it after barrier Commit; no deadline, lock limit, transaction budget, original assertions or production protocol changes"
+}
