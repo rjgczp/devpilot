@@ -1,0 +1,5 @@
+ok  	github.com/rjgczp/devpilot/internal/scheduler	0.005s
+ok  	github.com/rjgczp/devpilot/internal/scheduler	1.027s
+# github.com/rjgczp/devpilot/tests/integration
+# [github.com/rjgczp/devpilot/tests/integration]
+vet: tests/integration/scheduler_recovery_kernel_test.go:20:2: "github.com/jackc/pgx/v5/pgxpool" imported and not used

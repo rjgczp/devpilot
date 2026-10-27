@@ -1,5 +1,24 @@
 # Verification — add-monitor-scheduler-worker
 
+## Task7.3 delivery candidate — local technical acceptance, frozen CI pending (2026-10-27)
+
+本轮仅7.3，当前32/47；独立审查待签署，下一项7.4未实施。用户对call_377fc6b7f666486fa1546ea9dc9660dc明确批准“仅这一项窄 EXECUTE及所列信任边界”，只新增Controller-only recover_started12参数；精确签名、原始授权及信任边界见docs/monitor-scheduler-task73-capability.md。Migration8除这一个新函数及精确owner/revoke/grant外原文逐字节保留，原99条权限/角色/owner语句不变；Migration1–7字节不变，旧网络写入0A000收敛、普通发布构建和生产硬关闭均保留。
+
+实现父序/等待后新SPI和DB时间的started→unknown，永久拒绝迟到结果；仅已证明无target许可且输入单次消费、已有真实完整Supervisor释放证明的首次明确拒绝分类canceled。commit_unknown等不确定性不能变成明确未发送。unknown/物理回执/资源账分离，函数绝不返槽或生成HTTP结果/网络能力；可信返槽后只安排一个新的未来Run身份，丢ACK/真实Rollback重试不生成第二个身份。当前v/g/epoch/授权/Owner/stop/readiness/disk门控与未来Claim/Start的原父序分别校验。
+
+实际本地开发验收42次：18例normal/race36次，加CommitACK未来身份及新增两个拒绝分支normal/race6次；覆盖40个独立模式用例、42个Run、30次独立接收端真实Header-only HTTPS GET。含真实PG暂停分区、45秒租约存活、60秒授权到期及60秒未来新周期，两种真实Result/Recovery锁队列及SQLSTATE，真实签名/PIDFD/孤儿回收/网络退役证明与单独Supervisor安全返槽。只读审计逐项验证Ed25519签名、完整谱系、DB回执摘要、原始manifest/receiver/connect、unknown NULL结果和quarantine。原始命令/exit/源码及二进制hash见evidence/task73-local/；完整raw在其index外部目录；Requirement/Scenario映射及保守恢复手册见docs/monitor-scheduler-task73-verification.md。
+
+本地早期为多个dirty开发快照，不能冒称同一冻结SHA；最终完整40例及所有历史回归须由实际冻结HEAD的Push/PR CI验收，当前尚待执行。最终CI/Artifact SHA256与原始证据核验在交付的外部审查包列出，不以旧e767或本地结果代替。新三项开发失败(未使用import、误选旧harness、周期前缀破坏固定证据路径)原始日志及零提前返槽实账永久保留evidence/task73-negative/；失败harness事后重建并与原回执源码SHA256精确匹配，未冒充当时副本。此前PID1/tracer、NSCD、permit-missing、构建、Budget/55P03及SIGCONT/管理确认超时等负面证据/未确定根因均不删除。无证明的no-input/Supervisor故障保持quarantine，不能猜测性释放；本批不新增替代证明机制，不声明完成完整连续调度/三周期或7.4+。
+
+普通Go unit/race/vet、Linux fixture unit/race/vet、gofmt、Change strict及diff-check已通过；全库strict仍原4份历史规格/7长度警告，未修改无关规格。只做隔离方案A，PR11保持Open，不合并、Archive或部署。以下pending段落保留为各时点历史，不覆盖此段。
+
+## Latest entry — Task7.3 authorized, capability separately approved (2026-10-27)
+
+用户在本会话明确要求“进入7.3的实施”。这授权仅进入7.3，不声称存在额外独立7.2签署，也不进入7.4及以后。当前本地/远端分支与PR11实际HEAD均为e767a5ad961a47cd323768aaafdd99ca83b55bbe，开始时工作区干净，main/origin/main仍1d3b8266e494061beccc3ccdf47694ba4b0339c5；PR11 Open、未合并、auto_merge=null。该SHA的Push40445253481及PR40445257655实际全部成功、6份Artifact摘要及每组184份命令回执已在上一轮外部审查包核验；不能冒称本轮7.3已实测。
+
+现有expire_unstarted拒绝started，quarantine_physical不改attempt，accept_termination只返槽，7.2 Commit/Reconcile不做unknown生命周期或下一周期。按用户此前“新增SECURITY DEFINER/精确EXECUTE单独批准”的明确门禁，仅准备一项Controller-only recover_started12参数申请，详见docs/monitor-scheduler-task73-capability.md，包含精确签名、最小GRANT差异、锁序/信任边界及真实验收清单。产品负责人对本会话call_377fc6b7f666486fa1546ea9dc9660dc明确回复“批准仅这一项窄 EXECUTE及所列信任边界”。批准时仅上述两份文档变更，无SQL/Go/权限/测试改动。现开始此单项实现；新验收尚未运行，7.3保持未勾选，31/47。 历史风险/负面证据和旧网络写入0A000收敛保持；生产硬关闭，不合并、Archive或部署。
+
+
 ## Latest scoped work — 7.2 legacy network convergence (2026-10-27)
 
 基线`2f00bf7db2634c6d0c2a69a28da511a879417e02`的Push40434702540与PR40434707539已实际成功；此前7.2的16例和7.1的24例属于该提交，不作为本次新源码验收。当前仍31/47、7.3未开始、7.2独立审核待签署。

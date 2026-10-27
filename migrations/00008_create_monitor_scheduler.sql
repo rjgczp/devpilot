@@ -1500,6 +1500,109 @@ ALTER FUNCTION scheduler_private.reconcile_result(uuid,uuid,uuid,uuid,uuid,bigin
 REVOKE ALL ON FUNCTION scheduler_private.reconcile_result(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,uuid) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION scheduler_private.reconcile_result(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,uuid) TO devpilot_scheduler_worker;
 
+-- Task7.3 separately approved Controller recovery. No execution/physical-release
+-- authority: only the existing trusted Supervisor can return any resource.
+-- +goose StatementBegin
+CREATE FUNCTION scheduler_private.recover_started(p_incarnation uuid,p_wid uuid,p_pid uuid,p_mid uuid,p_run uuid,p_v bigint,p_g bigint,p_epoch bigint,p_fence bigint,p_namespace uuid,p_supervisor uuid,p_reason text)
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r public.monitor_runs%ROWTYPE; q public.scheduler_reservations%ROWTYPE; s public.monitor_schedules%ROWTYPE;
+ keys jsonb; k record; observed_now timestamptz; gate_now timestamptz; previous xid8; released boolean; state text;
+ next_id uuid; future_due timestamptz; seconds integer;
+BEGIN
+ PERFORM scheduler_private.system_identity('controller',p_incarnation);
+ IF p_namespace IS NULL OR p_supervisor IS NULL OR p_v IS NULL OR p_g IS NULL OR p_epoch IS NULL OR p_fence IS NULL
+ OR LEAST(p_v,p_g,p_epoch,p_fence)<1 OR p_reason IS NULL
+ OR p_reason NOT IN ('lease_expired','worker_lost','commit_unknown','emergency_stop','egress_unavailable') THEN
+  RAISE EXCEPTION 'invalid recovery identity' USING ERRCODE='22023'; END IF;
+ -- D6 recovery suborder: no late User/Session/Membership locks. Scheduling a
+ -- future identity grants no network authority; Claim/Start recheck the Owner.
+ PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
+ SELECT * INTO r FROM public.monitor_runs WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ IF NOT FOUND OR ROW(r.configuration_version,r.activation_generation,r.scheduler_epoch,r.fencing_token)
+ IS DISTINCT FROM ROW(p_v,p_g,p_epoch,p_fence) THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ -- Existing budget rows only; no creation, refill, decrement or refund.
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='global' AND budget_key='global' FOR UPDATE;
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='workspace' AND budget_key=p_wid::text FOR UPDATE;
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='project' AND budget_key=p_wid::text||'/'||p_pid::text FOR UPDATE;
+ PERFORM 1 FROM public.scheduler_budget_state WHERE kind='monitor' AND budget_key=p_wid::text||'/'||p_pid::text||'/'||p_mid::text FOR UPDATE;
+ SELECT target_keys INTO keys FROM public.scheduler_reservations WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ FOR k IN SELECT kind,budget_key FROM (
+  SELECT 'origin'::text kind,x->>'origin_key' budget_key FROM jsonb_array_elements(keys) x
+  UNION SELECT 'ip',x->>'ip_key' FROM jsonb_array_elements(keys) x
+ ) z ORDER BY CASE kind WHEN 'origin' THEN 0 ELSE 1 END,budget_key LOOP
+  PERFORM 1 FROM public.scheduler_budget_state WHERE kind=k.kind AND budget_key=k.budget_key FOR UPDATE;
+ END LOOP;
+ SELECT * INTO q FROM public.scheduler_reservations WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ PERFORM 1 FROM public.scheduler_control WHERE control_id='deployment' FOR SHARE;
+ SELECT last_transaction INTO previous FROM public.scheduler_control WHERE kind='controller' AND login_name=session_user AND incarnation=p_incarnation FOR UPDATE;
+ IF NOT FOUND OR previous=pg_current_xact_id() THEN RAISE EXCEPTION 'one operation per transaction required' USING ERRCODE='25000'; END IF;
+ -- New SPI statement/snapshot and observed DB time AFTER all protection waits.
+ SELECT clock_timestamp() INTO observed_now;
+ SELECT * INTO s FROM public.monitor_schedules WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid;
+ SELECT GREATEST(observed_now,r.claimed_at,r.started_at,r.finished_at,q.released_at,s.updated_at,c.last_gate_at) INTO gate_now
+ FROM public.scheduler_control c WHERE c.kind='controller' AND c.login_name=session_user AND c.incarnation=p_incarnation;
+ PERFORM scheduler_private.system_identity('controller',p_incarnation);
+ IF gate_now>observed_now+interval '2 seconds' OR gate_now>transaction_timestamp()+interval '2 seconds'
+ OR NOT EXISTS(SELECT 1 FROM public.scheduler_control c WHERE c.kind='controller' AND c.login_name=session_user AND c.incarnation=p_incarnation AND c.expires_at>gate_now AND NOT c.emergency_stop)
+ OR q.namespace_incarnation IS DISTINCT FROM p_namespace OR q.supervisor_incarnation IS DISTINCT FROM p_supervisor
+ OR q.target_keys IS DISTINCT FROM keys OR r.started_at IS NULL OR r.attempt_state NOT IN ('started','unknown','canceled','completed') THEN
+  RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ -- A valid, already committed observation wins; do not reclassify or schedule it.
+ IF r.attempt_state='completed' THEN RETURN jsonb_build_object('run_id',p_run,'attempt_state','completed','released',r.physical_release_confirmed_at IS NOT NULL,'next_run_id',NULL,'next_due_at',NULL); END IF;
+ released:=q.reservation_state='released' AND q.release_basis='supervisor' AND q.termination_receipt IS NOT NULL
+ AND q.termination_receipt_id IS NOT NULL AND q.stop_key_id IS NOT NULL AND q.termination_network_digest IS NOT NULL
+ AND q.termination_process_digest IS NOT NULL AND q.termination_retire_digest IS NOT NULL
+ AND r.physical_release_confirmed_at IS NOT NULL AND r.physical_release_confirmed_at=q.released_at AND q.released_at<=gate_now;
+ IF NOT released AND (q.reservation_state NOT IN ('reserved','quarantined') OR r.physical_release_confirmed_at IS NOT NULL) THEN
+  RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+ state:=r.attempt_state;
+ IF state='started' THEN
+  IF p_reason='lease_expired' AND r.lease_until>gate_now THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
+  state:='unknown';
+  -- No caller no-send boolean. Monotonic reservation history, consumed input,
+  -- restricted install-after-commit protocol AND trusted complete physical proof
+  -- are required. ACK uncertainty never takes this known-denial branch.
+  IF p_reason='egress_unavailable' AND (r.stop_reason IS NULL OR r.stop_reason IN ('egress_unavailable','resource_limited','authorization_revoked','authorization_expired','emergency_stop')) AND released AND q.input_consumed_at IS NOT NULL
+  AND q.target_permit_id IS NULL AND q.target_permit_committed_at IS NULL AND q.permit_installed_at IS NULL
+  AND q.origin_key IS NULL AND q.ip_key IS NULL AND q.target_keys='[]' THEN state:='canceled'; END IF;
+  UPDATE public.monitor_runs SET attempt_state=state,finished_at=gate_now,stop_reason=COALESCE(stop_reason,p_reason)
+  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
+ END IF;
+ IF NOT released THEN
+  UPDATE public.scheduler_reservations SET reservation_state='quarantined'
+  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run AND reservation_state='reserved';
+  UPDATE public.monitor_schedules SET blocked_reason='quarantined',updated_at=GREATEST(updated_at,gate_now)
+  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND scheduler_epoch=p_epoch AND last_attempt_run_id=p_run AND next_run_id=p_run AND blocked_reason IS DISTINCT FROM 'quarantined';
+ ELSE
+  SELECT m.interval_seconds INTO seconds FROM public.http_monitors m WHERE m.workspace_id=p_wid AND m.project_id=p_pid AND m.id=p_mid;
+  future_due:=GREATEST(gate_now+seconds*interval '1 second',s.last_started_at+seconds*interval '1 second',s.next_start_not_before);
+  -- Fresh snapshot rechecks current scope/version/authorization and readiness.
+  -- Old Owner loss does not prevent quarantine/physical audit, only future work.
+  UPDATE public.monitor_schedules x SET next_run_id=uuidv7(),next_due_at=future_due,blocked_reason=NULL,updated_at=GREATEST(x.updated_at,gate_now)
+  FROM public.http_monitors m,public.monitor_activation_states a,public.scheduler_control d
+  WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.next_run_id=p_run
+  AND x.last_attempt_run_id=p_run AND x.last_fencing_token=p_fence AND x.scheduler_epoch=p_epoch
+  AND m.workspace_id=p_wid AND m.project_id=p_pid AND m.id=p_mid AND m.version=p_v
+  AND a.workspace_id=p_wid AND a.project_id=p_pid AND a.monitor_id=p_mid
+  AND a.desired_state='enabled' AND a.activation_generation=p_g AND a.activation_configuration_version=p_v
+  AND x.authorized_configuration_version=p_v AND x.authorized_activation_generation=p_g AND x.consent_protocol=1 AND x.expires_at>gate_now
+  AND EXISTS(SELECT 1 FROM public.workspace_members b JOIN public.users u ON u.id=b.user_id WHERE b.workspace_id=p_wid AND b.role='owner' AND u.status='active')
+  AND d.control_id='deployment' AND d.gate='fixture' AND NOT d.emergency_stop AND d.expires_at>gate_now AND d.disk_used_bytes<d.disk_budget_bytes*0.8
+  AND NOT EXISTS(SELECT 1 FROM public.scheduler_control h WHERE h.kind='http' AND h.routable AND (h.projection_protocol IS DISTINCT FROM 'intent-v2' OR NOT h.status_ready OR h.expires_at IS NULL OR h.expires_at<=gate_now));
+ END IF;
+ SELECT x.next_run_id,x.next_due_at INTO next_id,future_due FROM public.monitor_schedules x
+ WHERE x.workspace_id=p_wid AND x.project_id=p_pid AND x.monitor_id=p_mid AND x.scheduler_epoch=p_epoch
+ AND x.last_attempt_run_id=p_run AND x.last_fencing_token=p_fence AND x.next_run_id<>p_run AND x.next_due_at IS NOT NULL;
+ UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=GREATEST(last_gate_at,gate_now)
+ WHERE kind='controller' AND login_name=session_user AND incarnation=p_incarnation;
+ RETURN jsonb_build_object('run_id',p_run,'attempt_state',state,'released',released,'next_run_id',next_id,'next_due_at',future_due);
+END $$;
+-- +goose StatementEnd
+ALTER FUNCTION scheduler_private.recover_started(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.recover_started(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.recover_started(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text) TO devpilot_scheduler_controller;
+
 -- +goose Down
 LOCK TABLE public.http_monitors IN SHARE ROW EXCLUSIVE MODE;
 LOCK TABLE public.monitor_activation_states IN ACCESS EXCLUSIVE MODE;

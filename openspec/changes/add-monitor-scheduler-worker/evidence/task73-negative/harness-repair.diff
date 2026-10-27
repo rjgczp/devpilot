@@ -1,0 +1,48 @@
+--- failed-harness
++++ repaired-harness
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env python3
+ """Task7.3 known-Run recovery; accepted original kernel and physical stop chain."""
+-import argparse,json,time,threading
++import argparse,json,time,threading,shutil
+ from pathlib import Path
+ from joint_fixture import JointHarness
+ class RecoveryHarness(JointHarness):
+@@ -10,15 +10,15 @@
+  def pg_prepare(self,instance,payload):
+   self.active=instance if self.cycle==0 else self.instance(self.cycle)
+   return super().pg_prepare(self.active,payload)
+- def record(self,name,value):
+-  # Separate each physical incarnation's raw records; final receiver stream is
+-  # additionally retained in full, never overwritten by a later cycle.
+-  return super().record('cycle'+str(getattr(self,'cycle',0))+'-'+name,value)
++ def archive_cycle(self):
++  dest=self.dest/('cycle'+str(self.cycle));dest.mkdir(exist_ok=False)
++  for source in list(self.dest.iterdir()):
++   if source.is_file():shutil.copy2(source,dest/source.name)
+  def events(self,kind='get'):
+   self.receive_events();return [x for x in self.receiver_events[self.event_offset:] if x['kind']==kind]
+  def pg_operation(self,instance,op,payload,selected,mode):
+   if op=='next-cycle':
+-   self.receive_events();self.event_offset=len(self.receiver_events);self.cycle+=1;self.life=None;self.request_seen=False
++   self.receive_events();self.archive_cycle();self.event_offset=len(self.receiver_events);self.cycle+=1;self.life=None;self.request_seen=False
+    return dict(event='fresh_cycle')
+   if op=='partition':
+    name=self.prefix+'-pg';self.run(['docker','pause',name])
+@@ -38,7 +38,7 @@
+    raw=self.exec(self.life.name,'ps','-e','-o','pid,ppid,stat,comm').decode();assert 'strace' in raw and 'python3' in raw
+    self.record('zombie-after-real-lease',dict(processes=raw,at=time.time_ns(),receipt=False));return dict(event='still_live_quarantine')
+   if op=='finish' and self.recovery_test=='TestRecoveryZombiePG':
+-   network=self.life.revoke();self.record('zombie-independent-network-revoke',network)
++   network=self.life.revoke(require_live=False);self.record('zombie-independent-network-revoke',network)
+    self.run(['docker','kill','--signal','CONT',self.life.name])
+    assert not (self.authority.path/(self.life.identity['run_id']+'.receipt')).exists()
+    self.record('zombie-no-complete-proof',dict(receipt=False,capacity_released=False))
+@@ -46,6 +46,7 @@
+   return super().pg_operation(self.active or instance,op,payload,selected,mode)
+  def pg_completion(self,mode,status):
+   self.receive_events();self.record('all-cycles-receiver-events',self.receiver_events)
++  if self.cycle:self.archive_cycle()
+   return dict(test=self.recovery_test,case=self.case,mode=mode,cycles=self.cycle+1,exit_code=status,production_execution=False)
+ def main():
+  p=argparse.ArgumentParser();p.add_argument('--evidence',type=Path,required=True);p.add_argument('--supervisor',type=Path,required=True);p.add_argument('--probe',type=Path,required=True);p.add_argument('--pg-binary',type=Path,required=True);p.add_argument('--mode',choices=['normal','race'],required=True);p.add_argument('--case',required=True);p.add_argument('--test',required=True);a=p.parse_args()

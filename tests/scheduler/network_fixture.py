@@ -237,8 +237,7 @@ class Harness:
                 op=request['op']
                 if op=='catalog':answer=self.public_catalog(selected)
                 elif op=='prepare':
-                    instance.identity=request['payload']
-                    answer=dict(ready=instance.boot())
+                    answer=self.pg_prepare(instance,request['payload'])
                 elif op=='install':
                     confirmation=instance.install(data=request['payload'])
                     answer=dict(confirmation=confirmation)
@@ -257,6 +256,10 @@ class Harness:
             result=subprocess.run(['docker','exec',cid,'psql','-U','devpilot_fixture','-d','devpilot_registration_test','-At','-c',sql],capture_output=True)
             (self.dest/'postgres-final-ledger.log').write_bytes(result.stdout+result.stderr)
 
+
+    def pg_prepare(self,instance,payload):
+        instance.identity=payload
+        return dict(ready=instance.boot())
 
     def receiver_source(self):
         return (HERE/'network_receiver.py').read_bytes()

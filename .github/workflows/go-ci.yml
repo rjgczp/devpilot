@@ -198,11 +198,11 @@ jobs:
             python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/execution-meta" --name snapshot-race \
               --binary "$RUNNER_TEMP/execution-tools/execution.test" -- \
               go test -race -tags=integration,executionsnapshot ./internal/monitoring -run '^TestSystemSnapshot' -count=1 -v -timeout=120s
-      - name: Build task7.1,6.3,6.4,6.5 and5.4 fixture-only tooling
+      - name: Build task7.3 recovery and prior fixture-only tooling
         run: |
           docker build -t devpilot-scheduler-fixture -f tests/scheduler/Dockerfile .
           RESULT71_TOOLS="$RUNNER_TEMP/network64-tools" \
-            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-result71.sh
+            python3 tests/scheduler/record.py --evidence "$RUNNER_TEMP/network64-build" --name build -- sh tests/scheduler/build-recovery73.sh
       - name: Verify all23 separate Budget fixtures with guarded PG18 normal/race
         run: |
           python3 tests/scheduler/run-budget.py --binary "$RUNNER_TEMP/network64-tools/budget-pg.test" --mode normal --name normal --evidence "$RUNNER_TEMP/budget-evidence/normal"
@@ -235,6 +235,9 @@ jobs:
       - name: Verify task7.2 fixed result identity and projection isolation with PG18 normal/race
         run: |
           python3 tests/scheduler/run-result72.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/result72-evidence"
+      - name: Verify task7.3 unknown quarantine and future recovery normal/race
+        run: |
+          python3 tests/scheduler/run-recovery73.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/recovery73-evidence"
       - name: Upload separate execution evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -257,4 +260,5 @@ jobs:
             ${{ runner.temp }}/legacy71-evidence/
             ${{ runner.temp }}/result71-evidence/
             ${{ runner.temp }}/result72-evidence/
+            ${{ runner.temp }}/recovery73-evidence/
           if-no-files-found: error
