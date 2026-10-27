@@ -1,5 +1,24 @@
 # Task7.2 review and evidence index
 
+## Latest convergence acceptance (2026-10-27)
+
+User explicitly authorized the proposed retirement of legacy network semantics after source review at2f00bf7db2634c6d0c2a69a28da511a879417e02 found a direct SQL bypass of the new fixed-ID protocol. Scope/authorization/fixture transition: `monitor-scheduler-task72-capabilities.md`, final section. This is a BREAKING internal protocol narrowing; signature/ACL and control-only semantics stay intact. No new permission, production capability or7.3 work.
+
+Frozen implementation58a7b834b11325dbf0b7ff97f630d670498f2908 (clean), source inventory8f41eaab3fcde55a4400d9aacb5ff2752ea58f1e2b31616fcb3d7beea961e4d8: current fixed-ID/legacy-refusal18/18, current control6/6 and immutable historical component24/24 all actually passed, normal/race, no retries/skips. All18 current joint receivers show one Header-only HTTPS GET, original kernel/Target Permit, complete physical stop and trusted DB release. Read-only raw evidence audit confirms every Run lineage and PIDFD exit. Local receipts and minimal raw witnesses: `openspec/changes/add-monitor-scheduler-worker/evidence/task72-convergence/`; full local raw paths in its index. Ordinary Go unit/race/vet, Linux fixture unit/race/vet, gofmt, Change strict and diff-check passed. Migration1–7 match main byte-for-byte; full-library strict exit1 remains the same4 historical specs/7 length warnings.
+
+| Current requirement/scenario | Regression / real evidence |
+| --- | --- |
+| D6 fixed Result Commit; monitor-runs fenced/reconciled result | TestResultLegacyNetworkDisabledPG normal/race: genuine original Run and physical proof, same Worker direct old17SQL yields exact0A000; Go guard refuses before DB; complete Run/control/resource/projection snapshot unchanged; new fixed-ID commit/reconcile then succeeds without another GET |
+| Control failures never become target HTTP failure | Original TestResultMinimalPG permit-missing/supervisor-killed and TestResultPreflightPG, current6cells normal/race, assertions unchanged |
+| Unmodified old7.1 minimum-result contract | Exact c1c9fe4b24efb2a4bc18de0ef4d75c9fe0f1014c binaries/migrations/test helpers/harness in a separate guarded legacy-protocol schema8,24cells; inner receipts identify c1, not current code |
+| Go network boundary is fixed-ID only | ResultWriter exposes typed control + Commit/Reconcile; TestLegacyNetworkWriterRefusesBeforeDatabase uses no DB and verifies the permanent legacy refusal does not consume the legitimate report |
+| New implementation provenance vs historical component |59 actual command receipts bound to their component SHA/source/log/binary hashes:35 current (one documented full-library strict exit1) and24 historical exit0; source checkout contains old archived failures and is explicitly excluded from the newly executed receipt set |
+
+Final delivery is a docs/evidence-only descendant of58a7b83. Actual Push/PR CI on that final SHA remains mandatory and will bind the current source again; do not relabel local58a7b83 or historicalc1 tests as the final SHA. CI retains147PG tests/mode,23Budget/mode,4Snapshot/mode, original76+5network tests,6.3/6.4/6.5/5.4 and exact API zero-target audit. A separate review package records actual final Actions results/artifact hashes after completion. Independent7.2/convergence approval remains pending; progress31/47, next7.3 not started. Historical negative evidence and unresolved root causes below are retained. No merge/archive/deployment/production execution.
+
+The sections below record the earlier initial7.2 implementation; their16-case counts and pre-convergence17arg network behavior are historical, not the current protocol.
+
+
 ## Authority and baseline
 
 2026-10-27 the product owner accepted the7.1 technical review while explicitly retaining unresolved risks/negative evidence, and authorized only7.2. Separately, reply to call_d4ac3330cb3b4efaa42058b4153f9fec approved exactly the two Worker EXECUTE capabilities and trust boundary in monitor-scheduler-task72-capabilities.md. No external independent7.2 signature is inferred.

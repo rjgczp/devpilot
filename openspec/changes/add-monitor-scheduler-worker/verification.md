@@ -8,7 +8,7 @@
 
 历史7.1原断言固定于c1c9fe4b24efb2a4bc18de0ef4d75c9fe0f1014c，在独立legacy-result-protocol Schema8、原历史二进制/迁移/fixture中正常及race24例重新执行；当前Schema8控制分支6例、新7.2含旧SQL拒绝18例独立计数。历史component与当前orchestrator的SHA/源码及二进制hash分别记录，不将旧SHA测试标为新实现成功。原7.1测试文件逐字节保留。具体授权、映射、退役/重建规则见docs/monitor-scheduler-task72-capabilities.md。
 
-**状态：本次收敛尚待实测/冻结CI，未宣称通过。** 全部命令、退出码、真实PG18/物理证明和最终CI将在evidence/task72-convergence/及外部审查包补齐。已有负面证据（tracer/PID1、NSCD、permit-missing、构建失败、7.1并发/55P03/Budget、7.2首次23505）完整保留，管理/SIGCONT及首次超时原因未确定的风险不删除。生产执行硬关闭，不合并、Archive、部署或进入7.3。以下旧“current/pending”段落保留为各时点历史，不覆盖此段最新状态。
+**状态：冻结实现58a7b834b11325dbf0b7ff97f630d670498f2908的本地真实验收全部完成：当前18/18、控制6/6、独立历史24/24，normal/race全0，无重试/跳过。** 18项当前原始接收端/完整PIDFD/物理回执/DB返槽均逐例核验，每项一次GET；命令/源码/日志/二进制绑定、原始精简证据及manifest见evidence/task72-convergence/，完整raw在其index列出的外部目录。普通Go unit/race/vet、Linuxfixture unit/race/vet、gofmt、Change strict、diff-check与Migration1–7字节核验通过；全库strict仍原4份/7长度警告。最终文档/证据交付SHA的Push/PR CI尚待实际运行，实际结果及Artifact校验将列于外部审查包，不以58a7本地或历史c1冒充最终SHA成功。已有负面证据（tracer/PID1、NSCD、permit-missing、构建失败、7.1并发/55P03/Budget、7.2首次23505）完整保留，管理/SIGCONT及首次超时原因未确定的风险不删除。生产执行硬关闭，不合并、Archive、部署或进入7.3。以下旧“current/pending”段落保留为各时点历史，不覆盖此段最新状态。
 
 
 ## Current delivery candidate — Task7.2 real fixture acceptance, frozen CI pending (2026-10-27)

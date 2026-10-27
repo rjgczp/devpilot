@@ -1,0 +1,346 @@
+{
+  "implementation_sha": "58a7b834b11325dbf0b7ff97f630d670498f2908",
+  "implementation_clean": true,
+  "current_source_inventory_sha256": "8f41eaab3fcde55a4400d9aacb5ff2752ea58f1e2b31616fcb3d7beea961e4d8",
+  "current_result72": {
+    "runs": [
+      {
+        "mode": "normal",
+        "test": "TestResultCommitValidationPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultCommitACKPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultCommitRacePG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultCommitPatchPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultCommitPausePG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultCommitRenewPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultCommitRollbackPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultCommitAuthorityPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultLegacyNetworkDisabledPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultCommitValidationPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultCommitACKPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultCommitRacePG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultCommitPatchPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultCommitPausePG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultCommitRenewPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultCommitRollbackPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultCommitAuthorityPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultLegacyNetworkDisabledPG",
+        "case": "allow-https",
+        "exit_code": 0
+      }
+    ],
+    "complete": true,
+    "production_execution": false
+  },
+  "current_control": {
+    "runs": [
+      {
+        "mode": "normal",
+        "test": "TestResultMinimalPG",
+        "case": "permit-missing",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultMinimalPG",
+        "case": "supervisor-killed",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultPreflightPG",
+        "case": "preflight-only",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultMinimalPG",
+        "case": "permit-missing",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultMinimalPG",
+        "case": "supervisor-killed",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultPreflightPG",
+        "case": "preflight-only",
+        "exit_code": 0
+      }
+    ],
+    "complete": true,
+    "production_execution": false
+  },
+  "historical_result71": {
+    "runs": [
+      {
+        "mode": "normal",
+        "test": "TestResultMinimalPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultMinimalPG",
+        "case": "tls-invalid",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultMinimalPG",
+        "case": "rebinding",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultMinimalPG",
+        "case": "permit-missing",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultMinimalPG",
+        "case": "supervisor-killed",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultUnknownCommitPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultActualLeaseExpiryPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultAfterOwnerPatchPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultTerminalUnknownPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultControlRacePG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultPreflightPG",
+        "case": "preflight-only",
+        "exit_code": 0
+      },
+      {
+        "mode": "normal",
+        "test": "TestResultClockFloorPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultMinimalPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultMinimalPG",
+        "case": "tls-invalid",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultMinimalPG",
+        "case": "rebinding",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultMinimalPG",
+        "case": "permit-missing",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultMinimalPG",
+        "case": "supervisor-killed",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultUnknownCommitPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultActualLeaseExpiryPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultAfterOwnerPatchPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultTerminalUnknownPG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultControlRacePG",
+        "case": "allow-https",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultPreflightPG",
+        "case": "preflight-only",
+        "exit_code": 0
+      },
+      {
+        "mode": "race",
+        "test": "TestResultClockFloorPG",
+        "case": "allow-https",
+        "exit_code": 0
+      }
+    ],
+    "complete": true,
+    "production_execution": false
+  },
+  "historical_component_sha": "c1c9fe4b24efb2a4bc18de0ef4d75c9fe0f1014c",
+  "historical_tree": "c4692453874cc3227f041b26b9653c9d232d24a4",
+  "historical_full_source_sha256": "ed8e4e9b73639cfd210e8abe6a144baa2f1b7346cb7cd33f52c7841071e869c7",
+  "historical_receipt_source_sha256": "9d2aa5bccdd64fd3c22bd1b0248c248e7e8fe9f66496994df87913097e8f7aaa",
+  "historical_binaries": {
+    "budget-pg-race.test": "079a16b0b88f38d47ec2d1dce374bdd5240201276e4e839c46840f084a1f835a",
+    "budget-pg.test": "81e6d2f5925d39226071a7a86ae6c4db1c8dc897f5f3e5d1e1050b89eb39e74f",
+    "goose": "984d6157e10754e08f569cde6271660d586f7499e846f2c7dc6776860084fa2f",
+    "joint-pg-race.test": "8a6d3937bc2e0dcce651ea9821b96e8a000b7305710d35155dfd5c802aaf2c09",
+    "joint-pg.test": "f3206af1337546f2d811a4cb1face4d97e744d16b35c6e63dbb5fa11dba9f3c7",
+    "network64-pg-race.test": "fc9844bb0112c7a387a16c877e53397f7989a0c5e6c84a5d5b1653bde0fb3b51",
+    "network64-pg.test": "60d03ca99e41050afc716a69f17ebea8eb4bd616eaacb1f38c96bb02495a5a17",
+    "networksupervisorfixture": "a10896d65695985a06ac4a0fd12e9681f622ba2e903e801fb290d25f5eed7c3e",
+    "physical-stop-pg-race.test": "aeffad4be455f68329b2397354ffb43a0ff5bc8a467badcd71001902c8341d13",
+    "physical-stop-pg.test": "96088810cbd881af16e6fa04913bdaf2dc7d4baf85528902fca00f0026a4b627",
+    "release-pg-race.test": "cd297fbca0ab6becfb360a6712e7b9b68c5fb1843aabcdfaf4b2caf44c133ad6",
+    "release-pg.test": "8bcb167fb3a6b9cdbdc6603531958f5d73b00f39b469360d74788ef4f5d016f6",
+    "result-pg-race.test": "e2dceebcb8a44779d546630733300c5c956b25e1ab37e967500d6ea4aada61b5",
+    "result-pg.test": "e6cd94c6745a32f9384bbbd1c98baa8cbd5cb8640cf1abb891185ba6938a6de2",
+    "schedulerprobefixture": "f9393fae94b3601bd474a7e52736ac3e8f5589d1b8332cb02e7fd526285634ff",
+    "supervisorfixture-race.test": "cc7e8321d9a44032c4ef35a3d50a68bb0c4217c1948818dcf617b55ec64a473c",
+    "supervisorfixture.test": "baeee3a45a9f0246ec539ddad7d7943aae4b3f64e68fbf06c83e426c7984f319"
+  },
+  "historical_assertions_sha256": "1ad62b367f57f82d93b565be732558a84abaa9408449a2594195a2ba1bba30a0",
+  "historical_assertions_modified": false,
+  "role_or_execute_expansion": false,
+  "large_raw_evidence": "/private/tmp/devpilot-result72-convergence",
+  "push_pr_ci": "pending final delivery SHA",
+  "independent_72_review": "pending",
+  "task_progress": "31/47",
+  "next_task": "7.3 not started",
+  "production_execution": false,
+  "known_library_strict_exit": 1,
+  "known_library_strict_issues": "4 historical specs / 7 length warnings",
+  "audit_scope_note": "Read-only receipt auditor initially scanned legacy-source/openspec historical archived failures as new run receipts and rejected archived checkpoint1 pg-full.json (b2fdbbdd, dirty). No runtime test failed. Auditor input is corrected to exclude the immutable source checkout subtree while retaining every newly executed legacy-evidence/matrix/receipts record. No test or safety assertion changed. Original traceback is retained in the tool transcript.\n"
+}
