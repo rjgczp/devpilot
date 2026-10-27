@@ -2,6 +2,8 @@
 
 ## Task7.3 delivery candidate — local technical acceptance, frozen CI pending (2026-10-27)
 
+交付复核补强：首候选5b4d22bc4351c9620f421449343f05d836ff96ee的Push40467141311/PR40467147152在尚未完成时主动取消，因新增“另一真实Workspace的合法三元组+原Run”及错误Controller incarnation拒绝断言，不是失败后跳过。该候选verify成功及Artifact校验只属于5b4d，不作为最终全绿。仅新增测试/证据，无生产SQL/Go或权限变更；定向真实PG18 normal/race2/2成功，source ddbd3475dae7dc3cd2bc62ea168f07cbdeee9685617113a92cd8c7d616b59257。最新本地累计44次、仍40个独立模式用例；新的冻结HEAD须完整重新验证Push/PR，不将取消的运行标记成功。
+
 本轮仅7.3，当前32/47；独立审查待签署，下一项7.4未实施。用户对call_377fc6b7f666486fa1546ea9dc9660dc明确批准“仅这一项窄 EXECUTE及所列信任边界”，只新增Controller-only recover_started12参数；精确签名、原始授权及信任边界见docs/monitor-scheduler-task73-capability.md。Migration8除这一个新函数及精确owner/revoke/grant外原文逐字节保留，原99条权限/角色/owner语句不变；Migration1–7字节不变，旧网络写入0A000收敛、普通发布构建和生产硬关闭均保留。
 
 实现父序/等待后新SPI和DB时间的started→unknown，永久拒绝迟到结果；仅已证明无target许可且输入单次消费、已有真实完整Supervisor释放证明的首次明确拒绝分类canceled。commit_unknown等不确定性不能变成明确未发送。unknown/物理回执/资源账分离，函数绝不返槽或生成HTTP结果/网络能力；可信返槽后只安排一个新的未来Run身份，丢ACK/真实Rollback重试不生成第二个身份。当前v/g/epoch/授权/Owner/stop/readiness/disk门控与未来Claim/Start的原父序分别校验。

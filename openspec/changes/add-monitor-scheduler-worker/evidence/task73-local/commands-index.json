@@ -1,7 +1,7 @@
 {
   "development_snapshots": true,
   "not_frozen_ci": true,
-  "executed": 42,
+  "executed": 44,
   "distinct_cases": 40,
   "rows": [
     {
@@ -1387,6 +1387,72 @@
         "/private/tmp/devpilot-result73/tools-final/recovery-pg-race.test": "9aa8ed73115235dbdbeebfffa32ec6cade3690755047cefe7722792f3fc6e0a1",
         "/private/tmp/devpilot-result73/tools-final/schedulerprobefixture": "aaf1518d8806da2e5d7105c308d77eeee915c5685b65da760bdeef6964029830",
         "/private/tmp/devpilot-result73/tools-final/networksupervisorfixture": "b02e3c9b08dbcb2608ecf5e4a967761427b47976d6d08cde0f222d28231eaf9c",
+        "/private/tmp/devpilot-result73/tools-final/goose": "984d6157e10754e08f569cde6271660d586f7499e846f2c7dc6776860084fa2f"
+      }
+    },
+    {
+      "path": "/private/tmp/devpilot-result73/real-scope/receipts/normal-TestRecoveryValidationPG-allow-https.json",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/recovery_fixture.py",
+        "--evidence",
+        "/private/tmp/devpilot-result73/real-scope/normal-TestRecoveryValidationPG-allow-https",
+        "--supervisor",
+        "/private/tmp/devpilot-result73/tools-final/networksupervisorfixture",
+        "--probe",
+        "/private/tmp/devpilot-result73/tools-final/schedulerprobefixture",
+        "--pg-binary",
+        "/private/tmp/devpilot-result73/tools-final/recovery-pg.test",
+        "--mode",
+        "normal",
+        "--case",
+        "allow-https",
+        "--test",
+        "TestRecoveryValidationPG"
+      ],
+      "exit_code": 0,
+      "head": "5b4d22bc4351c9620f421449343f05d836ff96ee",
+      "dirty": true,
+      "source_inventory_sha256": "ddbd3475dae7dc3cd2bc62ea168f07cbdeee9685617113a92cd8c7d616b59257",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "binaries": {
+        "/private/tmp/devpilot-result73/tools-final/recovery-pg.test": "90b5daeddf648574b005808a9ff655f2d4aae5838760fff0b1087e5737e59d11",
+        "/private/tmp/devpilot-result73/tools-final/schedulerprobefixture": "327f09c5eb7e36b858f0a59f9a0028b5d65cfebda824cd75b8e5c3ee34a713ce",
+        "/private/tmp/devpilot-result73/tools-final/networksupervisorfixture": "6a6aa459f934bdea3a089b5131e73ce753706abc9ce9b0685aacda5a0b52a153",
+        "/private/tmp/devpilot-result73/tools-final/goose": "984d6157e10754e08f569cde6271660d586f7499e846f2c7dc6776860084fa2f"
+      }
+    },
+    {
+      "path": "/private/tmp/devpilot-result73/real-scope/receipts/race-TestRecoveryValidationPG-allow-https.json",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/recovery_fixture.py",
+        "--evidence",
+        "/private/tmp/devpilot-result73/real-scope/race-TestRecoveryValidationPG-allow-https",
+        "--supervisor",
+        "/private/tmp/devpilot-result73/tools-final/networksupervisorfixture",
+        "--probe",
+        "/private/tmp/devpilot-result73/tools-final/schedulerprobefixture",
+        "--pg-binary",
+        "/private/tmp/devpilot-result73/tools-final/recovery-pg-race.test",
+        "--mode",
+        "race",
+        "--case",
+        "allow-https",
+        "--test",
+        "TestRecoveryValidationPG"
+      ],
+      "exit_code": 0,
+      "head": "5b4d22bc4351c9620f421449343f05d836ff96ee",
+      "dirty": true,
+      "source_inventory_sha256": "ddbd3475dae7dc3cd2bc62ea168f07cbdeee9685617113a92cd8c7d616b59257",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "binaries": {
+        "/private/tmp/devpilot-result73/tools-final/recovery-pg-race.test": "4d0d737d1711f73159b96b722b9d46019a84d7409f636d92327b8d1152c5fa08",
+        "/private/tmp/devpilot-result73/tools-final/schedulerprobefixture": "327f09c5eb7e36b858f0a59f9a0028b5d65cfebda824cd75b8e5c3ee34a713ce",
+        "/private/tmp/devpilot-result73/tools-final/networksupervisorfixture": "6a6aa459f934bdea3a089b5131e73ce753706abc9ce9b0685aacda5a0b52a153",
         "/private/tmp/devpilot-result73/tools-final/goose": "984d6157e10754e08f569cde6271660d586f7499e846f2c7dc6776860084fa2f"
       }
     }

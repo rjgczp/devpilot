@@ -266,6 +266,18 @@ func runRecovery(t *testing.T, mode string) {
 			commitCall(t, w, commitArgs(w, l, observed), true, "P0001")
 		}
 		if mode == "validation" {
+			// Both parent chains really exist. A valid other tenant must not make this
+			// original Run writable through its equally valid but different triple.
+			var other monitor.Public
+			if !t.Run("other-tenant", func(t *testing.T) { _, other = monitorFixture(t, db) }) {
+				return
+			}
+			a := recoveryArgs(controller.Incarnation, l, reason)
+			a[1], a[2], a[3] = other.WorkspaceID, other.ProjectID, other.ID
+			var denied []byte
+			budgetSQLState(t, cp.QueryRow(ctx, recoverSQL, a...).Scan(&denied), "P0001")
+			a = recoveryArgs("77777777-7777-4777-8777-777777777777", l, reason)
+			budgetSQLState(t, cp.QueryRow(ctx, recoverSQL, a...).Scan(&denied), "42501")
 			for i := 1; i < 11; i++ {
 				a := recoveryArgs(controller.Incarnation, l, reason)
 				if i >= 5 && i <= 8 {
