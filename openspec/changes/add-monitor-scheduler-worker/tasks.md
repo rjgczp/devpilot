@@ -52,7 +52,7 @@
 ## 7. 结果、unknown与最小状态投影
 
 - [x] 7.1 实现完整谱系/原固定网络failure_code及独立stop_reason最小结果持久化；敏感sentinel与SQL字段检查覆盖URL/DNS/Header/Body/raw error/凭据不入库，预检/许可拒绝不伪造目标失败。
-- [ ] 7.2 实现run fence门控与当前v/g/epoch投影门控分离、Result固定commit_id幂等对账；PG真实丢ACK/旧fence/暂停后旧结果/重新授权同version场景证明只留旧审计、不覆盖当前观察、不重做网络。
+- [x] 7.2 实现run fence门控与当前v/g/epoch投影门控分离、Result固定commit_id幂等对账；PG真实丢ACK/旧fence/暂停后旧结果/重新授权同version场景证明只留旧审计、不覆盖当前观察、不重做网络。
 - [ ] 7.3 实现started→unknown及迟到结果拒绝，未获target permit且可证明未发送时仅canceled；强杀/分区/Commit未知实测证明unknown不退leased、不补发，物理回收后下个正常周期可以继续。
 - [ ] 7.4 实现唯一权威execution-status实时Owner/Member读取、同语句意图/授权/调度/attempt正交投影及最近记录各最多1条；HTTP/PG测试覆盖失权/混合scope、unknown不被旧success掩盖、版本不符null、无URL/actor/lease详情/固定错误/预算，OpenAPI及客户端明确不能从Activation迁移提示推断运行。
 - [ ] 7.5 按D11.3做真实PG18/HTTP跨接口矩阵：disabled、authorized_waiting、due、running、blocked、unknown、配置失效、期限过期及completed；无并发窗口验证固定迁移对与权威观察不矛盾，屏障覆盖两读间v/g变化须刷新、Pause/PATCH后旧在途仍可见、unknown物理回收前后in_flight变化；保持零目标审计。

@@ -221,6 +221,9 @@ jobs:
       - name: Verify task7.1 minimal result with real physical proof and PG18 normal/race
         run: |
           python3 tests/scheduler/run-result71.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/result71-evidence"
+      - name: Verify task7.2 fixed result identity and projection isolation with PG18 normal/race
+        run: |
+          python3 tests/scheduler/run-result72.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/result72-evidence"
       - name: Upload separate execution evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -240,4 +243,5 @@ jobs:
             ${{ runner.temp }}/release54-evidence/
             ${{ runner.temp }}/joint63-evidence/
             ${{ runner.temp }}/result71-evidence/
+            ${{ runner.temp }}/result72-evidence/
           if-no-files-found: error

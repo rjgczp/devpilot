@@ -1,0 +1,532 @@
+[
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/plan.json",
+    "saved": "plan.json.gz",
+    "raw_sha256": "7546b2ab5639d5e4fecc41b6159c024f39bba8207c31848bfc9db0523a6cc428"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/result.json",
+    "saved": "result.json.gz",
+    "raw_sha256": "87ac385b7853acc940e0d360950296e16d7a14a5c84e0aaf47f84358f391ba01"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/normal-TestResultCommitValidationPG-allow-https.json",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--receipt.json.gz",
+    "raw_sha256": "1941bab0b9301d7c51095f9308464cce53b3772620c1ddebaa68b57f17a43d90"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitValidationPG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "89b3e0840723260b8ebb0baf3504a62a5b3e8006291790eb81b88e2000ef4f81"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitValidationPG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "e7270f49eae49e11964f8933182a7ef2902e902708fda5fd89d85c6213e2fb56"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitValidationPG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "40de91cd0416d1a4befe316ecc3efa0dda68291cedca22e071fa0ecfb76786db"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitValidationPG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "80588c3f3bc49d8749fdbfc60df3da7dd97df5dd27a1ecadb226adf52ceeffe7"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitValidationPG-allow-https/run-0-supervision-events.json",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "237da0acaaf52f611cc3d0ae54552ca783e4553cfc8edea5687e2a675af70a51"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/normal-TestResultCommitACKPG-allow-https.json",
+    "saved": "normal-TestResultCommitACKPG-allow-https--receipt.json.gz",
+    "raw_sha256": "1790e1583247d88c8ba214d6c28aa96111cc3047d022046a0e0ba95d2b9a18e2"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitACKPG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitACKPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "1e7cf516e6d19e172e648777cb57fa85113361694d25b567db53a9eb91bdf9e4"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitACKPG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitACKPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "91ad01344ab4c3a0c892d79a2afa568d3cfc4eab84f767c857738517b47d3a9f"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitACKPG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitACKPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "10ae1151c6c0ae5bd2917bc49d92f2d8a0769f87c3d2e91f217cbd3edd3299ba"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitACKPG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitACKPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "7b5881b53e6a4e61eec76f35dd41c2d623952150600449eb6f2d17e0ba301ddc"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitACKPG-allow-https/run-0-supervision-events.json",
+    "saved": "normal-TestResultCommitACKPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "ceadc354e0953ec33a3ceca835472825f61b95725d35439ae0eb807eee5985c1"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/normal-TestResultCommitRacePG-allow-https.json",
+    "saved": "normal-TestResultCommitRacePG-allow-https--receipt.json.gz",
+    "raw_sha256": "8e39c4fee565978e6af17c9aad2ea3f0f4486fdd11449c25c4ac4ee4d58d9120"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRacePG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitRacePG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "ecae0edb1c59f1e01cdffc6f4ba90e6c8929d18736ca3bc42f68dbc5ec45e6b7"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRacePG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitRacePG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "6c4eea0f9d65c3230129a32c80cd4e1edf409cad5890c2bb6fc964e8d9e821a5"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRacePG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitRacePG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "83a6c175d6bdf07375b7838d3bbb2c5fe9e2f71acd0b8bab1a873737596e4786"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRacePG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitRacePG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "45caea86160e65461c34aa9f22475f3823841c54b787320351f410ca1623d281"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRacePG-allow-https/run-0-supervision-events.json",
+    "saved": "normal-TestResultCommitRacePG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "af1d84a9ce3ff073d74a7d1dc3698ee55263d9a7fcd755b986a4076bf522bd3f"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/normal-TestResultCommitPatchPG-allow-https.json",
+    "saved": "normal-TestResultCommitPatchPG-allow-https--receipt.json.gz",
+    "raw_sha256": "01ce5a3dc6d50f857b8aa4e2b78463a9af9ef4b7d451d749c4ccf434a36e58bc"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPatchPG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitPatchPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "a90f4f920f4684867a5b1fc23ac1fb59af572e4baabdd5ee5f34b3af16debfa3"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPatchPG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitPatchPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "8ba53a1610a7e187a1855c448899b4dee06100b2d77511026e6b0f46ea50a5e8"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPatchPG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitPatchPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "bcb800295078688f67d7f0a873193ee1008d4ba2be6ef958b804e7873ab4762f"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPatchPG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitPatchPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "167ece51a58d4de7c14cfab4be8e1ebb9b12f51833d9304569df2bab15aa3352"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPatchPG-allow-https/run-0-supervision-events.json",
+    "saved": "normal-TestResultCommitPatchPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "0e44a9e93a3ffaf1b2902dd999457a68c20667e9be4b9bdb0cba1772f26022fe"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/normal-TestResultCommitPausePG-allow-https.json",
+    "saved": "normal-TestResultCommitPausePG-allow-https--receipt.json.gz",
+    "raw_sha256": "516017d8609d0c57d5d63ddba34fd8f909f3d8ecc1b7a16bdad71ee5c133c626"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPausePG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitPausePG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "80768f39dab1c5c3e1588ae35d8beafa26bf05c225eeae8f88a7948095b1a786"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPausePG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitPausePG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "d113328197331b7deef779a9465c148e7d4b4a0d262432cb646b5869ffa3cdad"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPausePG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitPausePG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "054590f7ec292f1813532b2fecf57f72d8ae376b4c8aad954fa539a6a7809a61"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPausePG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitPausePG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "991030162bd3ac2592e86088b374efd54f3c0446723b87253a9f9450d1a8437c"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitPausePG-allow-https/run-0-supervision-events.json",
+    "saved": "normal-TestResultCommitPausePG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "95590743328e181eb8b5f6764fea5a2fea673d212eb7324dda830b380baad88d"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/normal-TestResultCommitRenewPG-allow-https.json",
+    "saved": "normal-TestResultCommitRenewPG-allow-https--receipt.json.gz",
+    "raw_sha256": "879d327ccb5a466feb6f9cd6a3f315dcc05a0beaa5271524cae3464915261ef5"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRenewPG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitRenewPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "5185353a6d0cc085820c36e3d674a80bc3a1e3ae88e04d0b341b2878e134c285"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRenewPG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitRenewPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "d029041e484c4c3aaff9c25132bb9bc5ed74eb7cc041cbd1296a7d3a2445cb19"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRenewPG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitRenewPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "cd70e54c6b0e7ced331333315303842490225c0d8bc51953daf822b2cb511612"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRenewPG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitRenewPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "d89b43868cdd1ea08023797ce81b587b90b3af411bba45da2df168310c8bbca5"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRenewPG-allow-https/run-0-supervision-events.json",
+    "saved": "normal-TestResultCommitRenewPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "6d4b1472425d9126077965a61645e560353e42a4d103210e6f3796896aafe509"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/normal-TestResultCommitRollbackPG-allow-https.json",
+    "saved": "normal-TestResultCommitRollbackPG-allow-https--receipt.json.gz",
+    "raw_sha256": "745a0788e808d7b018520a8ffd9fd3515b013651faeecf8fbb79bd009dfc17aa"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRollbackPG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitRollbackPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "c35a8877f024a708fcc17ff270e13264d8ee11f37cf97c4f9df582e276a4b293"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRollbackPG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitRollbackPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "a378348b9787a1e2c29c4850384b8e6759437f21f3bb1e9b1e613f4002cbaca0"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRollbackPG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitRollbackPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "ffe6e8393ceedd0f02c92fbd28ef10ba2b7263416d0cfa7f16227132bb818847"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRollbackPG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitRollbackPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "c497b714f12352279a79ddbfc61d18235d8007f478c3eeb4ea3b70ad5439544c"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitRollbackPG-allow-https/run-0-supervision-events.json",
+    "saved": "normal-TestResultCommitRollbackPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "04ba7b38b8e2c2c5ddaecbce553e207a38dc1277808d57d33997070498b64fb1"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/normal-TestResultCommitAuthorityPG-allow-https.json",
+    "saved": "normal-TestResultCommitAuthorityPG-allow-https--receipt.json.gz",
+    "raw_sha256": "30342bf8fad745b6d0d7ca2b7f1f91c70d5156d88c79bbd41a6dc3b99cc8d472"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitAuthorityPG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitAuthorityPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "11232adbbb75bd8c2c1e879061fda29b4b4ac523146f18c6384f8711daae1a95"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitAuthorityPG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitAuthorityPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "dc6d073394901b1ad59413c0b167dd654c529263bc019e3b6d633d83ae20c694"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitAuthorityPG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitAuthorityPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "62c8b9917846ebddb0f86213220c8596e306fdaba3dc0d0229126d7a9c9c80b9"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitAuthorityPG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitAuthorityPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "84cf0b7e78cbef0f7f9dd1deb790d197c3a1124459af1fea06243731b1dec630"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/normal-TestResultCommitAuthorityPG-allow-https/run-0-supervision-events.json",
+    "saved": "normal-TestResultCommitAuthorityPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "7cf2aa2eff75d719358dc3e10ad0ff258499d07ad1bd24b02c52d2ac76ce6130"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/race-TestResultCommitValidationPG-allow-https.json",
+    "saved": "race-TestResultCommitValidationPG-allow-https--receipt.json.gz",
+    "raw_sha256": "9b32623c4c88935f14308e2e8e0f5351bd06f762b5cc94644b39ab6b0e072115"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitValidationPG-allow-https/pg-driver.log",
+    "saved": "race-TestResultCommitValidationPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "3271d18b5fb714858e80bbfd2aa6056605c4f1d80943c664f91a28ff959b7615"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitValidationPG-allow-https/postgres-final-ledger.log",
+    "saved": "race-TestResultCommitValidationPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "21f31d1abc8f6c8c809d19b1ca41f72f323825f127797a5a6105ce5731bcfd3d"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitValidationPG-allow-https/joint-kernel-witness.json",
+    "saved": "race-TestResultCommitValidationPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "1391e59d8303e4b64c6e61b141600607b4b7d4adb09c09261bb57fb6e3f27fd1"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitValidationPG-allow-https/committed-stop-bundle.json",
+    "saved": "race-TestResultCommitValidationPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "2af1d590110ce5625694c90414e50ae1cd3a05abb154e2997fb46fccaec257bc"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitValidationPG-allow-https/run-0-supervision-events.json",
+    "saved": "race-TestResultCommitValidationPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "19549d4241a0f2c5aa3079c85b0a0e98313064212c3949494b54ec70100f7c6b"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/race-TestResultCommitACKPG-allow-https.json",
+    "saved": "race-TestResultCommitACKPG-allow-https--receipt.json.gz",
+    "raw_sha256": "b7b4af95922d3d8b0338510164234375afa05d7a27cc8cd95e0eea6a712c540a"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitACKPG-allow-https/pg-driver.log",
+    "saved": "race-TestResultCommitACKPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "99001468c9f9e6a16881f5742ba3415d3df9338c539695c9c317328ff53b3841"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitACKPG-allow-https/postgres-final-ledger.log",
+    "saved": "race-TestResultCommitACKPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "c933800b369c3f29b426d0cda227bc840b21ec09ad21aa1c69bea81ce2451ed0"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitACKPG-allow-https/joint-kernel-witness.json",
+    "saved": "race-TestResultCommitACKPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "55310ec7878a8ff671a6aaa3b382a77dd4a05c4efb49974e75566ca17cb79662"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitACKPG-allow-https/committed-stop-bundle.json",
+    "saved": "race-TestResultCommitACKPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "a8063ed1314de62214a64d1c8650077dd9a28b5936afcad72b9eb9c7393e5277"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitACKPG-allow-https/run-0-supervision-events.json",
+    "saved": "race-TestResultCommitACKPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "3cd7aba65c78eb5ac6fe437d6793e5c82ffd59dea166dc928682278095b6789e"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/race-TestResultCommitRacePG-allow-https.json",
+    "saved": "race-TestResultCommitRacePG-allow-https--receipt.json.gz",
+    "raw_sha256": "02e10fc236b0a26c2d606421f6e651ffc51adc548869fddc1967f8025cc1976d"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRacePG-allow-https/pg-driver.log",
+    "saved": "race-TestResultCommitRacePG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "6e75c14fd9857a4ee5498db172c4de05fe5be7a36ff5a8793a4e02ee65d8dd49"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRacePG-allow-https/postgres-final-ledger.log",
+    "saved": "race-TestResultCommitRacePG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "35b855f2ec402ebe185c71a4e4f30e5e1dc317146fe375f60e11802081ba4ebe"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRacePG-allow-https/joint-kernel-witness.json",
+    "saved": "race-TestResultCommitRacePG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "d010b646bb7fa3366cd7dba820d43fc7197fdf31a65e91ee34493d4354b36af1"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRacePG-allow-https/committed-stop-bundle.json",
+    "saved": "race-TestResultCommitRacePG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "f7ea563097392a0b37c59e616af2bccd19590b482b3de752e87d5a2b5d2a7cc0"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRacePG-allow-https/run-0-supervision-events.json",
+    "saved": "race-TestResultCommitRacePG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "fba8c090cb036c8642dbb12e8749d77618ed8d48c7a37607dba164967af01258"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/race-TestResultCommitPatchPG-allow-https.json",
+    "saved": "race-TestResultCommitPatchPG-allow-https--receipt.json.gz",
+    "raw_sha256": "4f61f4091a5f37870d99c5478e827dff9741786fb2a85cc85d79cd4f919e8f3b"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPatchPG-allow-https/pg-driver.log",
+    "saved": "race-TestResultCommitPatchPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "99b9d6b9451548895e9a1062d660c951612c9a0bc18758c0d37a6cbb77d4d4f0"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPatchPG-allow-https/postgres-final-ledger.log",
+    "saved": "race-TestResultCommitPatchPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "d0f6689d710eb059d486ce0cb7351d1cf266b61312b20d205525a13fd17f47ad"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPatchPG-allow-https/joint-kernel-witness.json",
+    "saved": "race-TestResultCommitPatchPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "d1318fa54ae9b0de5c9e132a1f6e741fe3d2cbe57ade456339b0b0fe13fe22d5"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPatchPG-allow-https/committed-stop-bundle.json",
+    "saved": "race-TestResultCommitPatchPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "147a8d073fa8eba7854981ca15769fe3473a21e9a421ca06fc1315b70a75f151"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPatchPG-allow-https/run-0-supervision-events.json",
+    "saved": "race-TestResultCommitPatchPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "befb4a2a4555c3fb336dde8bc738b551afaa361c6c29c42ec6941bed21848900"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/race-TestResultCommitPausePG-allow-https.json",
+    "saved": "race-TestResultCommitPausePG-allow-https--receipt.json.gz",
+    "raw_sha256": "f1f2ff8e78cb496ce3367fb75f0de99d1a82b82d428742a0e361dedf23fdc137"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPausePG-allow-https/pg-driver.log",
+    "saved": "race-TestResultCommitPausePG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "3a3380d39b78a54ee6586d4cd8452999d6db158cd5ff223b0b83b45d0f4b9d04"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPausePG-allow-https/postgres-final-ledger.log",
+    "saved": "race-TestResultCommitPausePG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "1c11633e56b29e7735f5d17c981137f57dc481990fd4af4c3794ed1fef5972c7"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPausePG-allow-https/joint-kernel-witness.json",
+    "saved": "race-TestResultCommitPausePG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "0c3cfb30b889836c344041f13435edacaa7b5dc493e9ce3d6922ed3992d78f15"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPausePG-allow-https/committed-stop-bundle.json",
+    "saved": "race-TestResultCommitPausePG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "f5aecd555706790bdede259ebb76fe4c32478a1996852f5a78e0a54ac1b22741"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitPausePG-allow-https/run-0-supervision-events.json",
+    "saved": "race-TestResultCommitPausePG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "f9f6b3232dbf928f7f6df72891cb326c93d25b283dee3c1e3bdc705f15f06b3a"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/race-TestResultCommitRenewPG-allow-https.json",
+    "saved": "race-TestResultCommitRenewPG-allow-https--receipt.json.gz",
+    "raw_sha256": "41d65d7360127a51963e63221d87191f0f695ff792ab17b85a03da41cb4cd5ae"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRenewPG-allow-https/pg-driver.log",
+    "saved": "race-TestResultCommitRenewPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "49dd1e1d966a9e3cb9c6b3830715c4565683b46e75ffd679f2ec0e5300fc7bab"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRenewPG-allow-https/postgres-final-ledger.log",
+    "saved": "race-TestResultCommitRenewPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "848e582088f23f14ddc2b05dafe03a92d80ddd7c6e7015c659c022b6e7cbde83"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRenewPG-allow-https/joint-kernel-witness.json",
+    "saved": "race-TestResultCommitRenewPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "cbdb25fa09985f3f8e694cad3ed8ec36bcebfb90040763ffd0642df7e0bd49ef"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRenewPG-allow-https/committed-stop-bundle.json",
+    "saved": "race-TestResultCommitRenewPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "386fc20d3b39442f4f82277ade3c589a72dbc4ed4c72073ddb1e9f08fa3f622f"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRenewPG-allow-https/run-0-supervision-events.json",
+    "saved": "race-TestResultCommitRenewPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "447af031458dd2a782652414cc5e938857f794825b8a40792b3aaae607b6f7dc"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/race-TestResultCommitRollbackPG-allow-https.json",
+    "saved": "race-TestResultCommitRollbackPG-allow-https--receipt.json.gz",
+    "raw_sha256": "77ada2574a81397dd9f60babd9218a4d9792421915e74ae2c82e1bb12815b4be"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRollbackPG-allow-https/pg-driver.log",
+    "saved": "race-TestResultCommitRollbackPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "6b61a85625746922f3d2784cbbbef3c200f9d943c3af209f2fcbaa82b277f295"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRollbackPG-allow-https/postgres-final-ledger.log",
+    "saved": "race-TestResultCommitRollbackPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "a76736359f0449be6c7d2e6732339059a08b01c7cf79dd6a90ba785e800d3163"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRollbackPG-allow-https/joint-kernel-witness.json",
+    "saved": "race-TestResultCommitRollbackPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "e8a72657cb6ca5f4af745334c2b169d4c9719d934834ede2430dd48020c3f0cc"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRollbackPG-allow-https/committed-stop-bundle.json",
+    "saved": "race-TestResultCommitRollbackPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "4313cff6746d12cadbcbc9147498c310eb7891ad0d2f56b427fe71fcf2ccacd0"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitRollbackPG-allow-https/run-0-supervision-events.json",
+    "saved": "race-TestResultCommitRollbackPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "19cdcb5c2f7b60244749ec80cc3042a7017762704c2315c66f1de09870daf3cd"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/receipts/race-TestResultCommitAuthorityPG-allow-https.json",
+    "saved": "race-TestResultCommitAuthorityPG-allow-https--receipt.json.gz",
+    "raw_sha256": "a3b95955c3c3af9a79907fd70d630d77ac98a5051cb3e894b6ae2d3b68a84e55"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitAuthorityPG-allow-https/pg-driver.log",
+    "saved": "race-TestResultCommitAuthorityPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "82429befcabcc089d222041fcded2929489cbecc500858d6b5e564a1b08af88c"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitAuthorityPG-allow-https/postgres-final-ledger.log",
+    "saved": "race-TestResultCommitAuthorityPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "310d9cd93f878adae19ec054a8e10c9fa2ee805d20b9ce6dad289d7a1ec1a092"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitAuthorityPG-allow-https/joint-kernel-witness.json",
+    "saved": "race-TestResultCommitAuthorityPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "f0287b2f212169de97303d205f40073e4fd6be93b4d74eb850c35907f1126f5d"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitAuthorityPG-allow-https/committed-stop-bundle.json",
+    "saved": "race-TestResultCommitAuthorityPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "9f63c0589e21db82f2c2c45ab6a141dbcc6a0bcc971dfbf66ba443cefbc37be0"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/acceptance-repaired/race-TestResultCommitAuthorityPG-allow-https/run-0-supervision-events.json",
+    "saved": "race-TestResultCommitAuthorityPG-allow-https--run-0-supervision-events.json.gz",
+    "raw_sha256": "cea69743abebbcb0913c9f5b2009b7d0ce924bc0cffab8292d06a133efbc193e"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/build/build.json",
+    "saved": "build--build.json.gz",
+    "raw_sha256": "0b551986c6fff0da9918489b98ecd09d18c85a398c6cc299e4a37f9048ae4ccd"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/build/build.log",
+    "saved": "build--build.log.gz",
+    "raw_sha256": "a737c79f186964ec64ef0228c72d7cd88ed83522125e698f4c97653b0cb7a520"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/build-stable/build.json",
+    "saved": "build-stable--build.json.gz",
+    "raw_sha256": "676cc5fc671cd11ffb231600b614514284b6c6f2c2840b347b616d5234df34b9"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/build-stable/build.log",
+    "saved": "build-stable--build.log.gz",
+    "raw_sha256": "cf4f9d7ff327e820e9788a9546b1016c8f8fb85d51c51bc0d87f00b198f519ef"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/build-expanded/build.json",
+    "saved": "build-expanded--build.json.gz",
+    "raw_sha256": "4c7615e3163e6c5b3de09f380f8337ec7c99a9364bfe07e2af2c6029f6248374"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/build-expanded/build.log",
+    "saved": "build-expanded--build.log.gz",
+    "raw_sha256": "2cc4100709b5bfda338621c8aed679141a41843d35cb3e287cd236b8dc6b09ec"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/build-repaired/build.json",
+    "saved": "build-repaired--build.json.gz",
+    "raw_sha256": "e8be458302abc12ff1bb84965f549bfe45e59e44cd8466172df50aa42bc28b41"
+  },
+  {
+    "source": "/private/tmp/devpilot-result72/build-repaired/build.log",
+    "saved": "build-repaired--build.log.gz",
+    "raw_sha256": "e9b68c759371d17149e65e3372a89f43fbd99951aeaf9c475da24c384fc4b94f"
+  }
+]

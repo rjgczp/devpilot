@@ -1,0 +1,82 @@
+[
+  {
+    "case": "normal-TestResultCommitValidationPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "8691d22f16d243ed5594e28cd6eef257ecbad761db27fc7def9fa4d7ef95e3a1"
+  },
+  {
+    "case": "normal-TestResultCommitACKPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "29b1f3a016a4e845346f69d0a75aeecb9b22601cd9865a7fee0afe35abc3d420"
+  },
+  {
+    "case": "normal-TestResultCommitRacePG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "9e996c776ade24fb7ce02a5c1ccd4c5f14ff6b169eaba9a6fa1e472d11f11fdc"
+  },
+  {
+    "case": "normal-TestResultCommitPatchPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "371d76ff8aefeaa3bc7c9aa889836fccca21c66ffbd3c7ea680945f758b2a5d6"
+  },
+  {
+    "case": "normal-TestResultCommitPausePG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "998a1da92687777e4bfd199a53c9f4e39d7e162cf4f7da3a06610c89b42236f1"
+  },
+  {
+    "case": "normal-TestResultCommitRenewPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "b59673bcf5327401006bb8282d7e95b2f8e3fd04e74578fc80937ed32e54cc9b"
+  },
+  {
+    "case": "normal-TestResultCommitRollbackPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "f4d494d697278a5ad0895f337fe8c9604b67c38930358e4a36d3d6bbc1683d52"
+  },
+  {
+    "case": "normal-TestResultCommitAuthorityPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "a63d36188ca6eee62ed788312e6c9a0bd07e7400db8fabb62723194e34b9941c"
+  },
+  {
+    "case": "race-TestResultCommitValidationPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "f2e81865dcf1ab38b29bf2842334f0b1c1ceee9bd15d481b494aa5ccdc98ef3f"
+  },
+  {
+    "case": "race-TestResultCommitACKPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "d4b9fb5e8e3830a47a9ce1cacd5861cb77c6250f6b66b4274bf2714c1351c3fc"
+  },
+  {
+    "case": "race-TestResultCommitRacePG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "077b2963f1a69281d2f93e98ba69846aa864661ab2a076fcf87a916996f9733d"
+  },
+  {
+    "case": "race-TestResultCommitPatchPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "1c65699ae14ef591eab822414438a6f5e232086f3428e527b98f35e849ac4c68"
+  },
+  {
+    "case": "race-TestResultCommitPausePG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "c72d52024a361766045ae69cb39079255784a79a480be97bd3e8ef4b080dfe27"
+  },
+  {
+    "case": "race-TestResultCommitRenewPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "424bcb6225b1fa76e21e1838d3fba9a075ce04c56dfb674d66ceebcf743c1782"
+  },
+  {
+    "case": "race-TestResultCommitRollbackPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "2db8dc6e69898422a6164cfbe7df8ce48ba27acadcea8fa4bfa4499870a2a46d"
+  },
+  {
+    "case": "race-TestResultCommitAuthorityPG-allow-https",
+    "get_count": 1,
+    "receiver_sha256": "fbac33774de0093c6265edcc734974a9355281576a2a1a4e2d9c447dafcbb9dc"
+  }
+]

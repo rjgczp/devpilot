@@ -1,5 +1,25 @@
 # Verification — add-monitor-scheduler-worker
 
+## Current delivery candidate — Task7.2 real fixture acceptance, frozen CI pending (2026-10-27)
+
+当前 **31/47**：7.1已由产品负责人接受技术审查并保留风险；7.2本地真实验收16/16（normal8、race8）后勾选，独立7.2审查仍待进行。下一未完成项7.3，未实施。冻结提交的Push/PR尚须实际完成，不能把下面本地dirty证据或旧c1/f30CI冒称新SHA通过；最终审查包须记录实际Actions SHA/状态。
+
+本轮基线c1c9fe4b24efb2a4bc18de0ef4d75c9fe0f1014c。仅新增经call_d4ac3330cb3b4efaa42058b4153f9fec明确批准的commit_result16参数/reconcile_result12参数Worker-only EXECUTE。没有新增角色属性、表列/秘密权限或其它EXECUTE，Migration1–7逐字节核对不变。实现固定UUID、同ID相同nullable payload幂等确认、冲突拒绝与只读对账；首次写入仍要求原Run Lease/Fence/完整谱系及独立可信物理释放记录。当前观察指针另验最新v/g/epoch，旧Run只留审计；不返槽、不补发GET、不推进周期。
+
+真实PG18/Linux用例覆盖首次提交/重复、真实Commit成功丢ACK、真实Rollback仍向调用者返回未知、旧Fence/混合真实Workspace/Worker失权、Owner Pause/PATCH、同version续授权、同ID并发和原/外Worker并发。normal/race每例均保留原完整HTTPS/Target Permit/物理停止/签名回执与数据库安全返槽，接收端保持一次GET。local source inventory9a231fce4721d8aea37efabe3144402146417d59f37f2f99efc77f998a117f9d、命令/退出码/二进制哈希见evidence/task72-local/；Requirement/Scenario映射及边界见docs/monitor-scheduler-task72-verification.md。
+
+首次扩展矩阵因新增fixture重复固定邮箱而失败，真实23505原始日志、物理证明及当时未持久化HTTP结果的状态永久保留于evidence/task72-negative/；仅用具名子测试隔离第二套账号，未改旧helper或安全断言。后续通过不删除此前Budget、权限/管理超时、SIGCONT等风险。首次构建过程中测试文件仍有编辑，不作为最终二进制绑定；build-repaired与完整16例使用同一稳定源码。全量unit/race/vet和Linuxfixture unit/race/vet已实际通过；本地Change strict通过，最终同SHA CI仍待核验。
+
+仅隔离方案A；普通发布构建无执行入口、生产网络硬关闭。PR11保持Open，不合并、Archive、部署；不进入7.3。
+
+## Current gate — Task 7.1 accepted; Task 7.2 authorized, capability review pending (2026-10-27)
+
+本会话产品负责人原文：“我确认接受 7.1 当前技术审查结果，保留尚未解决的风险与负面证据。授权在已批准的方案 A 范围内继续实施 Task 7.2，包括固定 commit_id、Result 幂等对账与当前 v/g/epoch 投影隔离。”该消息关闭进入7.2的审查门禁；不宣称风险清零或另有不存在的外部签名。此前2026-10-26及下文pending状态是当时历史记录，保留不删除。
+
+当前基线为本地及刷新远端一致的`c1c9fe4b24efb2a4bc18de0ef4d75c9fe0f1014c`，30/47，7.2未勾选。该SHA Push40283356347与PR40283363389的verify/integration/execution-security均已实际成功；最终源码inventory为`9d2aa5bccdd64fd3c22bd1b0248c248e7e8fe9f66496994df87913097e8f7aaa`。早期task71-final仍对应f30dcdd，不能混用SHA。Budget首次失败、55P03及管理超时的不确定根因和全部负面证据继续保留。
+
+本轮仅获准7.2隔离PG18/Linux开发与测试。现有17参数结果入口没有caller commit_id或对账权限；精确两个窄函数申请见`docs/monitor-scheduler-task72-capabilities.md`。申请尚未批准，未修改SQL/Go/权限或运行新测试，不提前声明7.2实现。不得启动7.3、开放生产执行、合并、Archive或部署。
+
 ## Latest delivery gate — separately approved Budget fixture repair (2026-10-26)
 
 已提交HEAD`ef689e82c11d04e695ca10fb9b55d079f7db7492`的Push[40278790796](https://github.com/rjgczp/devpilot/actions/runs/40278790796)旧Budget race失败；其独立PR[40278797102](https://github.com/rjgczp/devpilot/actions/runs/40278797102)随后三个作业成功。不能将Push失败抹去或将该SHA报告为两边全绿。原始命令、源码/二进制/日志hash、锁图、最终资源账和修复前diff永久保留于`evidence/task71-delivery-blocker/`。

@@ -112,6 +112,8 @@ func jointHandle(t *testing.T, frame []byte, handle func(context.Context, target
 // Optional test-only observer. Nil in every original joint63 binary/run. The
 // resultfixture tests attach assertions only after the historical assertions;
 // no production hook or altered Supervisor/Probe behavior is introduced.
+var jointResultSetup func(*testing.T, *pgxpool.Pool, monitor.Public)
+
 var jointResultPatch func(*testing.T, memberFixture, monitor.Public)
 
 var jointResultCheck func(*testing.T, string, *pgxpool.Pool, scheduler.Store, handoff.Lineage, *monitoring.Result)
@@ -148,6 +150,9 @@ func TestBudgetJointKernelPG(t *testing.T) {
 		t.Fatal(e)
 	}
 	h := budgetHint(t, db, f, m)
+	if jointResultSetup != nil {
+		jointResultSetup(t, db, m)
+	}
 	_, e = db.Exec(ctx, `UPDATE scheduler_control SET stop_public_key=$1 WHERE kind='supervisor' AND incarnation=$2`, []byte(catalog.PublicKey), si)
 	if e != nil {
 		t.Fatal(e)

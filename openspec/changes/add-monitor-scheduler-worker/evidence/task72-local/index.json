@@ -1,0 +1,12 @@
+{
+  "parent_head": "c1c9fe4b24efb2a4bc18de0ef4d75c9fe0f1014c",
+  "dirty": true,
+  "source_inventory_sha256": "9a231fce4721d8aea37efabe3144402146417d59f37f2f99efc77f998a117f9d",
+  "normal": 8,
+  "race": 8,
+  "exit_code": 0,
+  "full_matrix_complete": true,
+  "frozen_ci": "must be independently verified on actual resulting commit; this local dirty matrix is not a clean-SHA CI claim",
+  "negative": "../task72-negative/",
+  "production_execution": false
+}
