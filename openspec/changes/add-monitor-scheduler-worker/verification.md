@@ -1,5 +1,16 @@
 # Verification — add-monitor-scheduler-worker
 
+## Latest scoped work — 7.2 legacy network convergence (2026-10-27)
+
+基线`2f00bf7db2634c6d0c2a69a28da511a879417e02`的Push40434702540与PR40434707539已实际成功；此前7.2的16例和7.1的24例属于该提交，不作为本次新源码验收。当前仍31/47、7.3未开始、7.2独立审核待签署。
+
+用户在要求证明旧网络路径隔离后，对提出的兼容收敛方案明确回复“按你的方案实施”。本轮只退休现有17参数函数的network语义（BREAKING fixture协议），SQL在业务锁/DML之前固定0A000拒绝，Go在开事务前拒绝；新ResultWriter仅暴露typed control与固定ID Commit/Reconcile。原control分支和ACL/角色/秘密权限均不扩张。该变更不以静态调用图冒充数据库隔离证明。
+
+历史7.1原断言固定于c1c9fe4b24efb2a4bc18de0ef4d75c9fe0f1014c，在独立legacy-result-protocol Schema8、原历史二进制/迁移/fixture中正常及race24例重新执行；当前Schema8控制分支6例、新7.2含旧SQL拒绝18例独立计数。历史component与当前orchestrator的SHA/源码及二进制hash分别记录，不将旧SHA测试标为新实现成功。原7.1测试文件逐字节保留。具体授权、映射、退役/重建规则见docs/monitor-scheduler-task72-capabilities.md。
+
+**状态：本次收敛尚待实测/冻结CI，未宣称通过。** 全部命令、退出码、真实PG18/物理证明和最终CI将在evidence/task72-convergence/及外部审查包补齐。已有负面证据（tracer/PID1、NSCD、permit-missing、构建失败、7.1并发/55P03/Budget、7.2首次23505）完整保留，管理/SIGCONT及首次超时原因未确定的风险不删除。生产执行硬关闭，不合并、Archive、部署或进入7.3。以下旧“current/pending”段落保留为各时点历史，不覆盖此段最新状态。
+
+
 ## Current delivery candidate — Task7.2 real fixture acceptance, frozen CI pending (2026-10-27)
 
 当前 **31/47**：7.1已由产品负责人接受技术审查并保留风险；7.2本地真实验收16/16（normal8、race8）后勾选，独立7.2审查仍待进行。下一未完成项7.3，未实施。冻结提交的Push/PR尚须实际完成，不能把下面本地dirty证据或旧c1/f30CI冒称新SHA通过；最终审查包须记录实际Actions SHA/状态。

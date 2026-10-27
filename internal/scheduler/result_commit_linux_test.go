@@ -3,6 +3,7 @@
 package scheduler
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
@@ -40,5 +41,25 @@ func TestResultCommitIdentityImmutableAndRedacted(t *testing.T) {
 	}
 	if _, e = NewResultCommit(MinimalResult{}); e != ErrResult {
 		t.Fatal("empty result accepted")
+	}
+}
+
+// A deprecated Go call fails before opening a DB transaction, without consuming
+// the observation needed by the fixed-ID path. The DB refusal is tested in PG18.
+func TestLegacyNetworkWriterRefusesBeforeDatabase(t *testing.T) {
+	l, r := resultExample()
+	v, err := NetworkResult(l, r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = (Store{}).PersistMinimalResult(context.Background(), v); err != ErrLegacyNetworkResult {
+		t.Fatal(err)
+	}
+	if _, err = NewResultCommit(v); err != nil {
+		t.Fatal("refusal consumed observation", err)
+	}
+	var writer ResultWriter = Store{}
+	if err = writer.PersistControlResult(context.Background(), ControlOutcome{}); err != ErrResult {
+		t.Fatal(err)
 	}
 }

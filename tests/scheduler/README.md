@@ -64,3 +64,29 @@ all Run children, signed full-lineage receipts and failure quarantine. It does
 not release database capacity or complete5.4/6.3.
 
 Task5.4 physical quarantine/receipt settlement and conservative recovery: [release54.md](release54.md). Separate capability approval and cryptographic/SQL trust boundary: [capabilities](../../docs/monitor-scheduler-task54-capabilities.md). Task6.3 remains incomplete.
+
+### Task7.2 legacy network protocol retirement
+
+Current schema8 retains `persist_minimal_result` for control stop reasons only;
+network calls fail permanently with `0A000 legacy_network_result_disabled`.
+New fixture code depends on `scheduler.ResultWriter`: typed control outcomes,
+fixed-ID CommitResult and ReconcileResult. No result API calls the Probe.
+The SQL gate also rejects direct calls by an otherwise fully authorized Worker.
+See `docs/monitor-scheduler-task72-capabilities.md` for the authorized BREAKING
+fixture transition and the no-replay, independent-physical-stop requirements.
+
+`run-result71.py` now runs the current control branches (3 normal +3 race).
+`run-result72.py` runs 9 normal +9 race, including genuine physical proof followed
+by rejection of the old network SQL and success of the fixed-ID path (one GET).
+Historical network assertions are not edited or silently skipped:
+`run-legacy-result71.py prepare/build/run` checks out exact historical commit
+`c1c9fe4b24efb2a4bc18de0ef4d75c9fe0f1014c` outside this checkout, builds that
+component and executes its original 24-cell matrix with its own schema8 migration
+and test harness. Goose is pinned3.26.0; Linux fixture build tags are unchanged.
+Every Run gets a fresh guarded PG18 and no-upstream namespace. The history's
+inner receipts identify c1c9fe4; current outer receipts identify orchestration.
+`*-source.json` and `binaries.json` permit checking both, without claiming old
+component results establish current implementation behavior. Never pair those
+historical binaries with current migrations. CI fails if the pin is unavailable,
+source is dirty, any test fails, or historical count is not24; no retries/skips.
+This tooling is under tests only, never a release/production migration path.

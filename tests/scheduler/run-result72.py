@@ -2,10 +2,10 @@
 """Task7.2 real PG18/physical proof, normal and race; first failure stops."""
 import argparse,json,subprocess,sys
 from pathlib import Path
-PLAN=[(t,'allow-https') for t in ['TestResultCommitValidationPG','TestResultCommitACKPG','TestResultCommitRacePG','TestResultCommitPatchPG','TestResultCommitPausePG','TestResultCommitRenewPG','TestResultCommitRollbackPG','TestResultCommitAuthorityPG']]
+PLAN=[(t,'allow-https') for t in ['TestResultCommitValidationPG','TestResultCommitACKPG','TestResultCommitRacePG','TestResultCommitPatchPG','TestResultCommitPausePG','TestResultCommitRenewPG','TestResultCommitRollbackPG','TestResultCommitAuthorityPG','TestResultLegacyNetworkDisabledPG']]
 def main():
  p=argparse.ArgumentParser();p.add_argument('--tools',type=Path,required=True);p.add_argument('--evidence',type=Path,required=True);a=p.parse_args();assert a.tools.is_absolute() and a.evidence.is_absolute();a.evidence.mkdir(parents=True,exist_ok=False);repo=Path(__file__).resolve().parents[2];runs=[]
- (a.evidence/'plan.json').write_text(json.dumps(dict(tests=PLAN,modes=['normal','race'],clusters=16,skip=False,retry=False),indent=2)+'\n')
+ (a.evidence/'plan.json').write_text(json.dumps(dict(tests=PLAN,modes=['normal','race'],clusters=len(PLAN)*2,skip=False,retry=False),indent=2)+'\n')
  for mode in ['normal','race']:
   binary=a.tools/('result-pg-race.test' if mode=='race' else 'result-pg.test')
   info=subprocess.check_output(['go','version','-m',str(binary)],text=True);assert 'go1.24.3' in info and 'GOOS=linux' in info and 'resultfixture' in info;assert ('-race=true' in info)==(mode=='race')

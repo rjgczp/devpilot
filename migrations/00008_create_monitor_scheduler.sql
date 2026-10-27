@@ -1317,20 +1317,15 @@ BEGIN
  IF p_kind IS NULL OR p_kind NOT IN ('network','preflight','permit_denied','physical_stop_unconfirmed')
  OR p_v IS NULL OR p_g IS NULL OR p_epoch IS NULL OR p_fence IS NULL OR LEAST(p_v,p_g,p_epoch,p_fence)<1 THEN
   RAISE EXCEPTION 'invalid minimal result' USING ERRCODE='22023'; END IF;
+ -- The legacy network writer cannot supply a stable caller commit identity.
+ -- Reject before business locks or DML, including direct SQL by the Worker.
  IF p_kind='network' THEN
-  IF p_stop_reason IS NOT NULL OR p_duration_ms IS NULL OR p_duration_ms NOT BETWEEN 0 AND 30000 OR p_success IS NULL
-  OR (p_http_status IS NOT NULL AND p_http_status NOT BETWEEN 200 AND 599)
-  OR (p_success AND (p_http_status IS NULL OR p_failure_code IS NOT NULL))
-  OR (NOT p_success AND (p_failure_code IS NULL OR p_failure_code NOT IN ('dns_failed','blocked_target','connect_failed','tls_failed','timeout','canceled','response_limit','protocol_error','unexpected_status')))
-  OR (NOT p_success AND ((p_failure_code='unexpected_status') IS DISTINCT FROM (p_http_status IS NOT NULL))) THEN
-   RAISE EXCEPTION 'invalid minimal result' USING ERRCODE='22023'; END IF;
- ELSE
+  RAISE EXCEPTION 'legacy_network_result_disabled' USING ERRCODE='0A000'; END IF;
   IF p_duration_ms IS NOT NULL OR p_http_status IS NOT NULL OR p_success IS NOT NULL OR p_failure_code IS NOT NULL OR p_stop_reason IS NULL
   OR (p_kind='preflight' AND p_stop_reason NOT IN ('invalid_configuration','resource_limited','authorization_revoked','authorization_expired','emergency_stop','retention_capacity'))
   OR (p_kind='permit_denied' AND p_stop_reason NOT IN ('egress_unavailable','commit_unknown','lease_expired','authorization_revoked','authorization_expired','resource_limited','emergency_stop'))
   OR (p_kind='physical_stop_unconfirmed' AND p_stop_reason NOT IN ('worker_lost','egress_unavailable','commit_unknown','emergency_stop')) THEN
    RAISE EXCEPTION 'invalid minimal result' USING ERRCODE='22023'; END IF;
- END IF;
  -- Recovery takes no User/Membership/Session lock and never reauthorizes a GET.
  PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
  SELECT * INTO r FROM public.monitor_runs WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run FOR UPDATE;
@@ -1368,26 +1363,14 @@ BEGIN
  AND gate_now<=transaction_timestamp()+interval '2 seconds';
  IF NOT FOUND OR q.namespace_incarnation IS DISTINCT FROM p_namespace OR q.supervisor_incarnation IS DISTINCT FROM p_supervisor THEN
   RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
- IF p_kind='network' THEN
-  IF r.attempt_state<>'started' OR q.input_consumed_at IS NULL OR q.input_consumed_at<r.started_at
-  OR q.reservation_state<>'released' OR q.release_basis<>'supervisor' OR q.termination_receipt IS NULL
-  OR q.termination_receipt_id IS NULL OR q.stop_key_id IS NULL OR q.termination_network_digest IS NULL
-  OR q.termination_process_digest IS NULL OR q.termination_retire_digest IS NULL OR p_namespace IS NULL OR p_supervisor IS NULL
-  OR r.physical_release_confirmed_at IS NULL OR r.physical_release_confirmed_at IS DISTINCT FROM q.released_at
-  OR q.released_at>gate_now THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
-  UPDATE public.monitor_runs SET attempt_state='completed',finished_at=gate_now,result_commit_id=gen_random_uuid(),duration_ms=p_duration_ms,
-   http_status=p_http_status,success=p_success,failure_code=p_failure_code
-  WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
- ELSE
   IF (p_kind='preflight' AND (q.input_consumed_at IS NOT NULL OR q.target_permit_id IS NOT NULL))
   OR (p_kind='permit_denied' AND (r.attempt_state<>'started' OR q.input_consumed_at IS NULL))
   OR (p_kind='physical_stop_unconfirmed' AND (r.attempt_state<>'started' OR r.physical_release_confirmed_at IS NOT NULL OR q.reservation_state='released')) THEN
    RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
   UPDATE public.monitor_runs SET stop_reason=p_stop_reason WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
- END IF;
  UPDATE public.scheduler_control SET last_transaction=pg_current_xact_id(),last_gate_at=GREATEST(last_gate_at,gate_now)
  WHERE kind='worker' AND login_name=session_user AND incarnation=p_incarnation;
- RETURN jsonb_build_object('run_id',p_run,'state',CASE WHEN p_kind='network' THEN 'completed' ELSE 'control_recorded' END);
+ RETURN jsonb_build_object('run_id',p_run,'state','control_recorded');
 END $$;
 -- +goose StatementEnd
 ALTER FUNCTION scheduler_private.persist_minimal_result(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text,integer,integer,boolean,text,text) OWNER TO devpilot_scheduler_owner;

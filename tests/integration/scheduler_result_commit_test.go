@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rjgczp/devpilot/internal/monitor"
 	"github.com/rjgczp/devpilot/internal/monitoring"
@@ -89,6 +90,44 @@ func runCommit(t *testing.T, mode string) {
 		v, e := scheduler.NetworkResult(l, r)
 		if e != nil {
 			t.Fatal(e)
+		}
+		if mode == "legacy-disabled" {
+			// All former network prerequisites are real and satisfied here:
+			// original HTTPS GET + trusted independent physical release. A
+			// direct call bypasses the Go guard using this same Worker login.
+			if queryInt(t, db, `SELECT count(*) FROM monitor_runs r JOIN scheduler_reservations q USING(workspace_id,project_id,monitor_id,run_id)
+             WHERE r.run_id=$1 AND r.attempt_state='started' AND r.lease_until>clock_timestamp()
+             AND r.lease_owner='scheduler_claim_worker1' AND r.physical_release_confirmed_at=q.released_at
+             AND q.reservation_state='released' AND q.release_basis='supervisor'
+             AND q.input_consumed_at IS NOT NULL AND q.termination_receipt IS NOT NULL
+             AND q.termination_receipt_id IS NOT NULL AND q.stop_key_id IS NOT NULL
+             AND q.termination_network_digest IS NOT NULL AND q.termination_process_digest IS NOT NULL
+             AND q.termination_retire_digest IS NOT NULL AND q.namespace_incarnation=$2 AND q.supervisor_incarnation=$3`, l.RunID, l.NamespaceIncarnation, l.SupervisorIncarnation) != 1 {
+				t.Fatal("legacy proof preconditions absent")
+			}
+			snapshot := func() string {
+				var raw []byte
+				if err := db.QueryRow(ctx, `SELECT jsonb_build_object('run',to_jsonb(r),'control',(SELECT jsonb_agg(to_jsonb(c) ORDER BY kind,login_name) FROM scheduler_control c)) FROM monitor_runs r WHERE run_id=$1`, l.RunID).Scan(&raw); err != nil {
+					t.Fatal(err)
+				}
+				return string(raw) + minimalLedger(t, db)
+			}
+			before := snapshot()
+			var raw []byte
+			err := s.DB.QueryRow(ctx, minimalSQL, minimalArgs(s, l, r)...).Scan(&raw)
+			budgetSQLState(t, err, "0A000")
+			var pe *pgconn.PgError
+			if !errors.As(err, &pe) || pe.Message != "legacy_network_result_disabled" {
+				t.Fatal("wrong protocol refusal", err)
+			}
+			t.Log("legacy-direct-SQL", pe.Code, pe.Message)
+			if err = s.PersistMinimalResult(ctx, v); !errors.Is(err, scheduler.ErrLegacyNetworkResult) {
+				t.Fatal("Go legacy network call", err)
+			}
+			if snapshot() != before {
+				t.Fatal("legacy refusal mutated Run/control/physical/budget/projection ledger")
+			}
+			minimalObserve(t, db, l)
 		}
 		c, e := scheduler.NewResultCommit(v)
 		if e != nil {
@@ -290,3 +329,5 @@ func TestResultCommitRenewPG(t *testing.T)      { runCommit(t, "renew") }
 
 func TestResultCommitRollbackPG(t *testing.T)  { runCommit(t, "rollback") }
 func TestResultCommitAuthorityPG(t *testing.T) { runCommit(t, "authority") }
+
+func TestResultLegacyNetworkDisabledPG(t *testing.T) { runCommit(t, "legacy-disabled") }

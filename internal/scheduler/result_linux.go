@@ -18,6 +18,30 @@ import (
 
 var ErrResult = errors.New("invalid or consumed minimal result")
 
+// ErrLegacyNetworkResult is a permanent protocol refusal, never retry advice.
+var ErrLegacyNetworkResult = errors.New("legacy network result disabled; fixed commit identity required")
+
+// ControlOutcome cannot be built from a network observation outside this package.
+// New fixture Workers use ResultWriter, whose network path requires ResultCommit.
+type ControlOutcome struct{ value MinimalResult }
+
+type ResultWriter interface {
+	PersistControlResult(context.Context, ControlOutcome) error
+	CommitResult(context.Context, ResultCommit) error
+	ReconcileResult(context.Context, ResultCommit) (bool, error)
+}
+
+var _ ResultWriter = Store{}
+
+func NewControlOutcome(line handoff.Lineage, phase, reason string) (ControlOutcome, error) {
+	v, err := ControlResult(line, phase, reason)
+	return ControlOutcome{value: v}, err
+}
+
+func (s Store) PersistControlResult(ctx context.Context, outcome ControlOutcome) error {
+	return s.PersistMinimalResult(ctx, outcome.value)
+}
+
 // MinimalResult owns only a copied, validated observation. It contains no URL,
 // raw error or retry identifier. Copies share the same one-submission fuse.
 // This is not a proof that a remote server produced an observation: the trusted
@@ -106,11 +130,15 @@ func ControlResult(line handoff.Lineage, phase, reason string) (MinimalResult, e
 	return MinimalResult{&minimalResult{line: line, kind: phase, stop: &reason}}, nil
 }
 
-// PersistMinimalResult attempts a single transaction. Even an unknown Commit
+// PersistMinimalResult retains only legacy control outcomes. Network callers
+// must use ResultWriter.CommitResult with a fixed identity. Even an unknown Commit
 // burns the process-local submission. No retry, reconciliation, target call,
 // projection, physical release or next scheduling cycle exists here.
 func (s Store) PersistMinimalResult(ctx context.Context, outcome MinimalResult) error {
 	v := outcome.value
+	if v != nil && v.kind == "network" {
+		return ErrLegacyNetworkResult
+	}
 	if v == nil || !v.used.CompareAndSwap(false, true) {
 		return ErrResult
 	}
@@ -138,9 +166,6 @@ func (s Store) PersistMinimalResult(ctx context.Context, outcome MinimalResult) 
 		State string `json:"state"`
 	}
 	want := "control_recorded"
-	if v.kind == "network" {
-		want = "completed"
-	}
 	if len(raw) > 256 || json.Unmarshal(raw, &reply) != nil || reply.RunID != v.line.RunID || reply.State != want {
 		return ErrUnavailable
 	}
