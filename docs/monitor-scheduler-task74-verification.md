@@ -79,3 +79,23 @@ PR11保持Open，生产执行硬关闭，不合并、不Archive、不部署。
 提交材料检查补记：原始PG日志包含尾随空白，首次暂存diff检查报错后命令仍产生
 本地提交adc1d70，尚未推送。以普通后续提交用哈希索引引用原件，保留原始归档
 字节，不改写日志、不修改实现/断言、不强推；最终净diff再次严格检查。
+
+## 冻结99497c3首次CI失败及单独授权的历史fixture修复
+
+Push40656977308的integration在历史
+`TestActivationExpiryAfterEveryProtectiveWait/updatefalse-activation`达到120s，
+栈停在无界PID接收；该时刻没有仍在运行的写者goroutine。原始触发原因未确定，
+不能据路径推定为Runner偶发问题。同SHA的PR40656985730 integration151 normal/
+151race通过仅为对照，不抵销Push失败。原日志、栈、Artifact ZIP哈希、状态快照
+及原始命令保存在`evidence/task74-activation-fixture/`指向的不可改写归档。
+
+产品独立批准`call_ee313bbc2a494a2e9bef6eb5b5ee4e38`后，仅修改该测试：
+强ETag预读移到原150ms窗口前；写者仍执行原ActivationUpdate及等待后实时复验；
+PID屏障同时观察PID、写者提前返回和原6s context。全部权限断言、真实等待、
+120s进程预算不变，无生产代码、权限或安全网络边界修改。
+
+实际重新编译normal/race二进制，在新的network-none、受testdb守护的可销毁
+PG18中各运行此一测试一次（每模式16子用例），exit0。具体argv、时间、
+原始日志/二进制/源码哈希在normal.json/race.json；这些是dirty99497c3开发回执，
+不冒充未来冻结SHA。新提交的完整Push/PR CI结果须另行核对。
+首次缺失PID的内部触发原因仍未确定；定向通过不证明不存在调度或并发风险。

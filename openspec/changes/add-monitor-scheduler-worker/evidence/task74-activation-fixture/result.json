@@ -1,0 +1,28 @@
+{
+  "actual_parent": "99497c3b27e2882ff3763e42ffffe425785270ef",
+  "dirty": true,
+  "tests": [
+    {
+      "mode": "normal",
+      "top_level_tests": 1,
+      "subcases": 16,
+      "exit_code": 0,
+      "elapsed_seconds": 3.1693994999805,
+      "log_sha256": "c06137e0ff3e5340d81788ad4230621d962a1f1b9208cac8a484c208fc1adb83",
+      "source_inventory_sha256": "d7a332ef0289065bacc6a98dce63eab2f1767519ec96be4ca971b72053c4135c",
+      "code_sha256": "294e47dccd79a188efe9264711422a24f5464bb05cf988f456a9273ee93a2758"
+    },
+    {
+      "mode": "race",
+      "top_level_tests": 1,
+      "subcases": 16,
+      "exit_code": 0,
+      "elapsed_seconds": 4.204895834001945,
+      "log_sha256": "a5115b11cd09e9722883a3fbc1cd58fc6889a9f820eac070546c99f593be7a26",
+      "source_inventory_sha256": "d7a332ef0289065bacc6a98dce63eab2f1767519ec96be4ca971b72053c4135c",
+      "code_sha256": "294e47dccd79a188efe9264711422a24f5464bb05cf988f456a9273ee93a2758"
+    }
+  ],
+  "no_production_changes": true,
+  "first_missing_pid_trigger": "not conclusively established"
+}

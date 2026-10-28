@@ -1,5 +1,24 @@
 # Verification — add-monitor-scheduler-worker
 
+## Task7.4 CI delivery — separately approved historical fixture repair
+
+The first frozen99497c3 Push40656977308 failed historical Activation expiry
+fixture at120s on an unbounded PID channel; its original early-return trigger
+is not established. Same-SHA PR40656985730 integration passed151 normal/race,
+which does not replace the failed Push. Security jobs were still running at
+the recorded observation. Original logs, artifacts/digests and exact approval:
+[evidence/task74-activation-fixture/README.md](evidence/task74-activation-fixture/README.md).
+
+The human separately approved only the prepared minimal fixture repair and
+directed PG18 normal/race. It moves strong-ETag setup before the unchanged150ms
+expiry and bounds PID notification by the existing6s context/early result; all
+permission assertions and120s process limit remain unchanged. The one test with
+16subcases passed once normal and once race in fresh protected network-none PG18.
+Actual dirty-parent receipts/source hashes are retained. No production change,
+new grant, weakened timeout/assertion/network boundary or Task7.5. The new frozen
+commit requires actual Push/PR CI; no claim of success or independent approval
+until observed. Historical IPv6 and original missing-PID trigger remain risks.
+
 ## Task7.4 implemented and local acceptance passed — frozen CI pending
 
 This batch is explicitly authorized after product acceptance of Task7.3's
