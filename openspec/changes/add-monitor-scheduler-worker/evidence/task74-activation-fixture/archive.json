@@ -1,0 +1,6 @@
+{
+  "path": "/private/tmp/devpilot-status74-activation-fixture-original.tar.gz",
+  "sha256": "0467997e0349d6a0e474c5dba018f4bb57bbd80f37ceea642326281df5adbaf0",
+  "bytes": 274158,
+  "contents": "Unmodified original CI failure log/stack/metadata and directed real PG18 normal/race logs, receipts, source inventories, commands and database logs"
+}

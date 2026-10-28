@@ -1,0 +1,12 @@
+{
+  "head": "e767a5ad961a47cd323768aaafdd99ca83b55bbe",
+  "legacy_acl_count": 99,
+  "exact_added": [
+    "ALTER FUNCTION scheduler_private.recover_started(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text) OWNER TO devpilot_scheduler_owner;",
+    "REVOKE ALL ON FUNCTION scheduler_private.recover_started(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text) FROM PUBLIC;",
+    "GRANT EXECUTE ON FUNCTION scheduler_private.recover_started(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,text) TO devpilot_scheduler_controller;"
+  ],
+  "migrations_1_7_unchanged": true,
+  "fixture_only": true,
+  "new_function_sha256": "c73c16704f370418d6ecef3b14da6a73b2d2b162b3ac8d992662f5bee9d30679"
+}

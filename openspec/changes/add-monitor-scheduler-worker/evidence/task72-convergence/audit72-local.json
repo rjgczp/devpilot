@@ -1,0 +1,207 @@
+{
+  "result72": 18,
+  "mode_counts": {
+    "normal": 9,
+    "race": 9
+  },
+  "rows": [
+    {
+      "case": "normal-TestResultCommitValidationPG-allow-https",
+      "run_id": "01a17b5f-0154-73b6-a6f0-16c866fbef0e",
+      "result_commit_id": "33333333-3333-4333-8333-333333333333",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "344131a3b16d3f48bf0a975a63166d73c82fb7274c8ee6279323c8d26f6646c4"
+    },
+    {
+      "case": "normal-TestResultCommitACKPG-allow-https",
+      "run_id": "01a17b5f-361a-7242-8107-d595c7782e29",
+      "result_commit_id": "d167d221-20a5-4f2a-ac3c-de117ee80c91",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "e626cbc3968ec649194b0d95c7330bb398bbeb8f92ba7ed6f78feaf114ab16a3"
+    },
+    {
+      "case": "normal-TestResultCommitRacePG-allow-https",
+      "run_id": "01a17b5f-6a77-7b9d-bd1e-d441d2baa2db",
+      "result_commit_id": "11501fef-3ab5-430d-b9bc-840ed0d3ded3",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "6c225ad837a0b3ab1eef1346df4c312af655fd40c9751c0b9114fc6dc03dc6e7"
+    },
+    {
+      "case": "normal-TestResultCommitPatchPG-allow-https",
+      "run_id": "01a17b5f-a2b0-73f5-b0c4-3ca5c91ed183",
+      "result_commit_id": "3b5b5625-54d7-4ca1-829d-99b45e18a9ce",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "5b079f6be4814e2d942f367f8fcc0b8a1053b5f85a9bc37bd4aff85b2fa348b2"
+    },
+    {
+      "case": "normal-TestResultCommitPausePG-allow-https",
+      "run_id": "01a17b5f-d802-7a71-834f-d099173bd586",
+      "result_commit_id": "65804dc5-f40f-40a5-a9fd-4743fecd6a51",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "d08e177e79985acf4e346b9c0df5be88f202d4a2b23fef0253edaea1bf2f6af4"
+    },
+    {
+      "case": "normal-TestResultCommitRenewPG-allow-https",
+      "run_id": "01a17b60-0e55-74b1-a9ad-cc57b5d4d8b1",
+      "result_commit_id": "ab26b2e5-5c19-49de-aacf-93ab19b3c771",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "0132f7262833cceb8deb6b9b3dfd418aa7a02f56805d8191e166ae52c8206c72"
+    },
+    {
+      "case": "normal-TestResultCommitRollbackPG-allow-https",
+      "run_id": "01a17b61-30c8-7835-a4d1-874be8c79d0f",
+      "result_commit_id": "9c178ada-4f70-4359-a6f5-deb9062c1883",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "c59987e54cbba93b26e6c2eefb198a3f401e4013c87fcd5b19343580e49d2583"
+    },
+    {
+      "case": "normal-TestResultCommitAuthorityPG-allow-https",
+      "run_id": "01a17b61-6995-72c9-b7c4-b94ea1c6432b",
+      "result_commit_id": "32112add-e3ec-4621-a520-7a95bde5bd54",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "f80b48c05c53e38278b931e887ddcacf4575fa1d63ec883c9988a02952bc623b"
+    },
+    {
+      "case": "normal-TestResultLegacyNetworkDisabledPG-allow-https",
+      "run_id": "01a17b61-a328-75f4-a58d-b7ce09266640",
+      "result_commit_id": "0b617534-36c8-4327-b911-ec72ae5cd5e9",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "6734afe750f1b07cc23be31f0fed0d0d5b895b13bf75b8949f90a40ac30a572e"
+    },
+    {
+      "case": "race-TestResultCommitValidationPG-allow-https",
+      "run_id": "01a17b61-de83-7ae8-97db-818c01570c25",
+      "result_commit_id": "33333333-3333-4333-8333-333333333333",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "8b0342491528da4e0f6d19cf3041e80d3f67ca230e861a0b5719d17fd8b16d96"
+    },
+    {
+      "case": "race-TestResultCommitACKPG-allow-https",
+      "run_id": "01a17b62-1b0e-7126-b701-42f36ab61122",
+      "result_commit_id": "b5243b28-a618-4777-8212-62f27fd47c40",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "dacb139aac551d5a1b702322105a2ff562029272e74d1c5ee0e22f594cfb237f"
+    },
+    {
+      "case": "race-TestResultCommitRacePG-allow-https",
+      "run_id": "01a17b62-5579-7a29-a772-3854bc556159",
+      "result_commit_id": "1cf95cf7-fe2e-490f-8105-147299469e15",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "96f7792417e7c137d7c62fa157d46b34798668202df8ecd861767f7f7988a6c7"
+    },
+    {
+      "case": "race-TestResultCommitPatchPG-allow-https",
+      "run_id": "01a17b62-9110-7f2d-b341-e4a6c304e9c7",
+      "result_commit_id": "7f9b56fb-7c39-4857-b678-5f41e86e03b2",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "3c7feadc8d95286a5347e9d5b7b84625f22e7520b114d25beed8cb12144df4ea"
+    },
+    {
+      "case": "race-TestResultCommitPausePG-allow-https",
+      "run_id": "01a17b62-cce7-7e09-994e-1ec2e16d37fa",
+      "result_commit_id": "a538cbdf-79ab-412f-a5ff-a9a217144767",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "076cdd1d9a9f8bd49272cfc447255e620e1aec0a29de785456dab7ab6c557f07"
+    },
+    {
+      "case": "race-TestResultCommitRenewPG-allow-https",
+      "run_id": "01a17b63-0a5f-7c10-8969-a86f1ebef5e4",
+      "result_commit_id": "29c78374-0cc1-4361-855b-0b7202df327c",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "146fec9459d4c395571656317577c3d39376c74121aaf9eb76d7280ddd4f6ade"
+    },
+    {
+      "case": "race-TestResultCommitRollbackPG-allow-https",
+      "run_id": "01a17b64-3089-72d0-8897-fc1c29073930",
+      "result_commit_id": "940e2f78-5324-430e-986d-5347b9878331",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "d6d646c6d079760c17445935bc2986416ec3d46cf2311e0a0ffabe1464ed3784"
+    },
+    {
+      "case": "race-TestResultCommitAuthorityPG-allow-https",
+      "run_id": "01a17b64-6b89-7e62-b1b8-72b34e095a43",
+      "result_commit_id": "8762cafc-dbcf-4e3d-be9b-2d8c625d3e08",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "d88b7912e7688a426ce43df09e45932e39d69b84eddd96682fcb9a15f6d28feb"
+    },
+    {
+      "case": "race-TestResultLegacyNetworkDisabledPG-allow-https",
+      "run_id": "01a17b64-a624-70ad-8b34-efe959e6531f",
+      "result_commit_id": "2c06fe15-0dae-4090-a5fa-b6ee09f59923",
+      "full_lineage_matches": true,
+      "pidfd_exits": 3,
+      "physical_release_confirmed": true,
+      "http_status": 200,
+      "final_receiver_gets": 1,
+      "raw_run_sha256": "9b9f59c2470888b19910f4fd1f412fcc382bcee4d5556c7ef63483472366407a"
+    }
+  ]
+}

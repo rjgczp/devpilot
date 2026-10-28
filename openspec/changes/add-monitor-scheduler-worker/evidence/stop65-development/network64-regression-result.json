@@ -1,0 +1,94 @@
+{
+  "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+  "runs": [
+    {
+      "name": "supervisorfixture-test",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "-v",
+        "/private/tmp/devpilot-stop65-final-tools/supervisorfixture.test:/suite:ro",
+        "--entrypoint",
+        "/suite",
+        "devpilot-scheduler-fixture",
+        "-test.v",
+        "-test.timeout=30s"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "supervisorfixture-race-test",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "-v",
+        "/private/tmp/devpilot-stop65-final-tools/supervisorfixture-race.test:/suite:ro",
+        "--entrypoint",
+        "/suite",
+        "devpilot-scheduler-fixture",
+        "-test.v",
+        "-test.timeout=30s"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "network-adversarial",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/network_fixture.py",
+        "--evidence",
+        "/private/tmp/devpilot-stop65-network64-regression/network",
+        "--supervisor",
+        "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "pg-normal",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/network_fixture.py",
+        "--evidence",
+        "/private/tmp/devpilot-stop65-network64-regression/pg-normal",
+        "--supervisor",
+        "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture",
+        "--pg-binary",
+        "/private/tmp/devpilot-stop65-final-tools/network64-pg.test",
+        "--mode",
+        "normal"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "pg-race",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/network_fixture.py",
+        "--evidence",
+        "/private/tmp/devpilot-stop65-network64-regression/pg-race",
+        "--supervisor",
+        "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture",
+        "--pg-binary",
+        "/private/tmp/devpilot-stop65-final-tools/network64-pg-race.test",
+        "--mode",
+        "race"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "complete": true,
+  "task": "6.4",
+  "physical_stop_accepted": false,
+  "quarantine_release_accepted": false,
+  "task63_joint_accepted": false
+}

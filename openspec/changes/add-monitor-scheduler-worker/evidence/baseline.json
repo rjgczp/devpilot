@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-20",
+  "initial_branch": "main",
+  "implementation_branch": "codex/add-monitor-scheduler-worker",
+  "refs": {
+    "HEAD": "1d3b8266e494061beccc3ccdf47694ba4b0339c5",
+    "main": "1d3b8266e494061beccc3ccdf47694ba4b0339c5",
+    "origin/main": "1d3b8266e494061beccc3ccdf47694ba4b0339c5"
+  },
+  "initial_status": "Only approved untracked openspec/changes/add-monitor-scheduler-worker; no tracked modifications",
+  "remote_main_verified": "1d3b8266e494061beccc3ccdf47694ba4b0339c5",
+  "pr10": {
+    "state": "MERGED",
+    "merge_sha": "85402ab7877e67062e2d48b24e9ad9c31b721461",
+    "merged_at": "2026-10-20T01:50:55Z"
+  },
+  "archives": [
+    "2026-10-13-bootstrap-go-backend",
+    "2026-10-14-add-user-registration",
+    "2026-10-15-add-user-login",
+    "2026-10-15-add-workspace-foundation",
+    "2026-10-15-add-workspace-members",
+    "2026-10-16-add-project-management",
+    "2026-10-16-add-workspace-invitations",
+    "2026-10-19-add-http-monitor",
+    "2026-10-19-add-monitoring-engine",
+    "2026-10-20-add-monitor-activation-scheduler"
+  ],
+  "planning_sha256": {
+    "design.md": "98c5bacbb96d87fb36e84a5811e24df7689d8122cc741f6f9a5fa6da11026333",
+    "proposal.md": "4abec743162952b0a599a2e6eec6d968baaa0a71fd51a7aa9d95c9b676baebca",
+    "specs/http-monitor-execution/spec.md": "309368a5219a064b810a2821bd301e2d542c36f4d7b8e5d203a22c426440012b",
+    "specs/http-monitor-management/spec.md": "0393f5884c57e117526a0ca817dfb4041d8be05278758307a9ac9757cf23fb12",
+    "specs/http-monitor-persistence/spec.md": "1fecb5db41e719fe020ebe52db821dd6773c5be1af7fe7b0a020039643c10e7b",
+    "specs/monitor-activation/spec.md": "ac1d1c35dc0f372c747dfdd12085310bab0264b5f2b6a7b4d1f8d5981019bddf",
+    "specs/monitor-runs/spec.md": "67ad476c56680c174cde3a7db6a7ef466a988a766d5072d455858a5976fe8aa9",
+    "specs/monitor-scheduling/spec.md": "4909b38052a4af1a636c9e78f3be86ab1d0514ba7f62e78b48f5f11ac846c91d",
+    "specs/monitor-worker-security/spec.md": "eb97f7e6549e273e92a26f9086ade49bb4ccacbee750a799fb6766e40f09bf07",
+    "tasks.md": "3dca9effcd0e4a34a87859cb1ab35c0ba3d774f2d34f47f239a0621fe453946a"
+  },
+  "migration_sha256": {
+    "migrations/00001_create_users.sql": "e09f6476b25ce0a60cbd6607486a9b4208f2c3413957c83e54110e0e661b5490",
+    "migrations/00002_create_sessions.sql": "27ce132375459ea1e061aac1e2c00de1010c9dc8f94c21489e7c24243f02c96a",
+    "migrations/00003_create_workspaces.sql": "327651e7727c512d80062792bab0ea874f1f63320b98ca6b0491dd8e6f94223d",
+    "migrations/00004_create_workspace_invitations.sql": "0374475bb78a985a9baf3de72055032bcc08e6f18512b850442a59940f20fdfb",
+    "migrations/00005_create_projects.sql": "4715106905a92991c7f1dcb2da08afb7fd93217716bfa83eb4a33bb8145ac519",
+    "migrations/00006_create_http_monitors.sql": "26ac26c66da96b0f16076342f0f11258bb6ea92be5f71a6b015c97a3075ee4e2",
+    "migrations/00007_create_monitor_activation_states.sql": "713c39b60a3ede8156c1163404a6883cea00b6c8979b94b36a96047a5532cfaa"
+  },
+  "go": "go1.24.3 darwin/arm64",
+  "goose": "v3.26.0; /private/tmp/devpilot-tools/goose",
+  "docker": "29.4.1 linux/arm64; Linux6.12.76-linuxkit",
+  "deployment": "compose PostgreSQL only; production probe hard closed",
+  "authorization": {
+    "source": "Human user message: DevPilot AI 第十一阶段 OpenSpec Apply 正式开发与安全验收授权",
+    "reviews": "Two independent design reviews completed, A and all twenty product decisions explicitly approved by user",
+    "scope": "All 47 tasks, fixture-only Linux/PG18 implementation and verification; implementation PR after acceptance",
+    "prohibited": "No production migration/deployment/public probe/merge/archive"
+  }
+}

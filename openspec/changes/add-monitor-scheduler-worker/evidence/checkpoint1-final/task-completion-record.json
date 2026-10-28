@@ -1,0 +1,114 @@
+[
+  {
+    "task": "1.3",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 9,
+    "before": {
+      "total": 47,
+      "complete": 7,
+      "remaining": 40
+    },
+    "after": {
+      "total": 47,
+      "complete": 8,
+      "remaining": 39
+    },
+    "acceptance_sha": "d781d7560904ee81c4939d9520604ff2240766a4"
+  },
+  {
+    "task": "2.3",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 16,
+    "before": {
+      "total": 47,
+      "complete": 8,
+      "remaining": 39
+    },
+    "after": {
+      "total": 47,
+      "complete": 9,
+      "remaining": 38
+    },
+    "acceptance_sha": "d781d7560904ee81c4939d9520604ff2240766a4"
+  },
+  {
+    "task": "2.4",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 17,
+    "before": {
+      "total": 47,
+      "complete": 9,
+      "remaining": 38
+    },
+    "after": {
+      "total": 47,
+      "complete": 10,
+      "remaining": 37
+    },
+    "acceptance_sha": "d781d7560904ee81c4939d9520604ff2240766a4"
+  },
+  {
+    "task": "2.5",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 18,
+    "before": {
+      "total": 47,
+      "complete": 10,
+      "remaining": 37
+    },
+    "after": {
+      "total": 47,
+      "complete": 11,
+      "remaining": 36
+    },
+    "acceptance_sha": "d781d7560904ee81c4939d9520604ff2240766a4"
+  },
+  {
+    "task": "3.3",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 24,
+    "before": {
+      "total": 47,
+      "complete": 11,
+      "remaining": 36
+    },
+    "after": {
+      "total": 47,
+      "complete": 12,
+      "remaining": 35
+    },
+    "acceptance_sha": "d781d7560904ee81c4939d9520604ff2240766a4"
+  },
+  {
+    "task": "3.4",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 25,
+    "before": {
+      "total": 47,
+      "complete": 12,
+      "remaining": 35
+    },
+    "after": {
+      "total": 47,
+      "complete": 13,
+      "remaining": 34
+    },
+    "acceptance_sha": "d781d7560904ee81c4939d9520604ff2240766a4"
+  },
+  {
+    "task": "3.5",
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "line": 26,
+    "before": {
+      "total": 47,
+      "complete": 13,
+      "remaining": 34
+    },
+    "after": {
+      "total": 47,
+      "complete": 14,
+      "remaining": 33
+    },
+    "acceptance_sha": "d781d7560904ee81c4939d9520604ff2240766a4"
+  }
+]

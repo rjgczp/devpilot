@@ -1,0 +1,26 @@
+{
+  "command": [
+    "env",
+    "GOCACHE=/private/tmp/devpilot-scheduler-go-cache",
+    "GOOS=linux",
+    "GOARCH=arm64",
+    "CGO_ENABLED=0",
+    "sh",
+    "-c",
+    "go test -c -tags=integration -o /private/tmp/devpilot-scheduler-tools/cp1-normal.test ./tests/integration && go test -c -tags=integration,networkaudit -o /private/tmp/devpilot-scheduler-tools/cp1-audit.test ./tests/integration"
+  ],
+  "started_at": "2026-10-20T08:32:25.576296+00:00",
+  "elapsed_seconds": 1.5682507919846103,
+  "exit_code": 0,
+  "head": "851137d65d746687e4b0cb0e151e36c2f0fb96da",
+  "dirty": false,
+  "source_inventory_sha256": "95e34d71179c1b3026cd45e616eb37529e329e86b68161da7eb17e38852b111b",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp1-normal.test": "27ace64a490302e0ca42e879ab7566cdb320e377853c4f378b51684bca486547",
+    "/private/tmp/devpilot-scheduler-tools/cp1-audit.test": "43630d8e4c352e54d725b16c00e7756eb3ca1b03cbb6ad08e1370e6b1249d578"
+  },
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_inventory_ref": "source-inventories/95e34d71179c1b3026cd45e616eb37529e329e86b68161da7eb17e38852b111b.json",
+  "original_receipt_ref": "raw-receipts/frozen-build-normal.json.gz",
+  "original_receipt_sha256": "1b885c07c6659c3af4384a21106df192b900b0291bd675792a41f09df0dbee4c"
+}

@@ -1,0 +1,15 @@
+{
+  "started_at": 1792468649.799385,
+  "finished_at": 1792468653.526613,
+  "image": "sha256:60a78b61cd1378bdb343af6bf6321f383a33f64737c54852a2d462cdfc1df15c",
+  "tests": 2,
+  "distinct_concurrent_namespaces": true,
+  "missing_dependency_fails": true,
+  "files": {
+    "missing-dependency.json": "f71f22f09c2c4620ee934e654c08bbacfdb4b626e17e136e4d3bf62336b636bc",
+    "missing-ipv6.json": "082d4604660099cffba563af42fee6483b5b5c3c8152dfc9fbd3a9f005e1c592",
+    "missing-net-admin.json": "5761813d6df03f337262af2a1b9e80c79b55352871b0013000c6b0f96021132b",
+    "preflight-0.json": "076de043c025b93405bf1541ff3ff613411743314e71dbdd50c13694a5c19e48",
+    "preflight-1.json": "9c929ef3546bf557584415910464425a22646f7eb7a394085a625f033bd536a6"
+  }
+}

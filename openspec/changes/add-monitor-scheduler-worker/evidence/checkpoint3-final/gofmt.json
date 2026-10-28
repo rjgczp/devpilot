@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "-c",
+    "import pathlib,subprocess; files=[str(p) for p in pathlib.Path(\".\").rglob(\"*.go\") if \".git\" not in p.parts]; result=subprocess.check_output([\"gofmt\",\"-l\",*files],text=True); print(result,end=\"\"); assert not result"
+  ],
+  "started_at": "2026-10-21T06:44:09.185110+00:00",
+  "elapsed_seconds": 0.08556708303513005,
+  "exit_code": 0,
+  "head": "e05959ec7aa0e4e80981bcd59ea0d6ee4c823815",
+  "dirty": false,
+  "source_inventory_sha256": "615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96",
+  "binaries": {},
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_inventory_ref": "source-inventories/615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96.json",
+  "original_receipt_ref": "raw-receipts/gofmt.json.gz",
+  "original_receipt_sha256": "6fec12e00d8ec5a2cd9d02e4d423262827c9f2a7f133306af30a1a9dd1b1a767",
+  "log_ref": "gofmt.log"
+}

@@ -1,0 +1,36 @@
+{
+  "attempts": [
+    [
+      "127.0.0.53",
+      53
+    ],
+    [
+      "2606:4700:4700::1111",
+      80
+    ]
+  ],
+  "violations": [],
+  "dns_attempts": 1,
+  "target_attempts": 1,
+  "case": "ipv6",
+  "command": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "256",
+    "-e",
+    "trace=process,connect,sendto,sendmsg,sendmmsg",
+    "-o",
+    "/evidence/ipv6.trace",
+    "python3",
+    "-I",
+    "-S",
+    "/runner/drop_probe.py",
+    "ipv6"
+  ],
+  "child_exit": 0,
+  "audit_exit": 0,
+  "duration": 0.049740249989554286
+}

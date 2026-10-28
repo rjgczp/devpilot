@@ -1,0 +1,23 @@
+{
+  "tested_implementation_sha": "3774a75eb7d3e733b174530d71816ed319d9f084",
+  "test": "TestSchedulerSupervisorOwnsOneInputCapability",
+  "requested_attempts": 1,
+  "executed_attempts": 1,
+  "exit_code": 0,
+  "prior_failure_location": "exec_command automatic permission approval review deadline, before process creation; previous database test was not executed",
+  "current_timeout_location": null,
+  "cause_assessment": "Previous recorded tool errors establish an approval-review timeout rather than a PostgreSQL/Supervisor timeout. Reviewer service latency or unavailability is plausible but not independently established. This successful run cannot establish absence of concurrency defects.",
+  "lock_sampling": {
+    "samples": 6,
+    "backend_samples": 2,
+    "sampled_users": [
+      "devpilot_fixture"
+    ],
+    "sampled_lock_waits": [],
+    "limitations": "50ms requested sampling interval plus Docker exec/psql startup; short-lived Supervisor backend not sampled. No observation of waiting is not proof of no waiting."
+  },
+  "supervisor_logs": "postgres-supervisor.log contains database permission and replay rejections, including backend 2923; no Linux Supervisor or Probe was started by this DB-only test, so no physical Supervisor log exists.",
+  "security_configuration": "Original container ID, images, internal network, privileges and runtime timeout settings unchanged. Read-only observer uses the pre-existing fixture administrator, adds no privileges, and changes no server settings.",
+  "acceptance_progress": "4/47 unchanged; no checkpoint advancement; no plan A completion claim",
+  "remaining_review": "All broader concurrency, strict post-wait expiry assertion, physical Supervisor, probe, quarantine, real cycles and remaining tasks remain unverified by this run."
+}

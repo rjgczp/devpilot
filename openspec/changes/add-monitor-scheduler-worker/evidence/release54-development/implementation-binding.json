@@ -1,0 +1,19 @@
+{
+  "implementation_commit": "30870fc2d713c8865e9921fe6d6e5bcec8c35e0d",
+  "actual_development_head": "3489a41aa588bff5171347c91a36c6915a81fe45",
+  "dirty": true,
+  "tested_source_inventory_sha256": "3829b59ae0e4bb81dc9f03fa83cfac42f6b420db1c4a92dd2462303bfca61116",
+  "runtime_files_sha256": {
+    ".github/workflows/go-ci.yml": "e2d1e89d12bac07805f4a258915c3c4b0d8bfef00b17a3f113f851197dcef45d",
+    "migrations/00008_create_monitor_scheduler.sql": "af3b8ea3d366f114879d5f7ff4cf338c70e17ce20e1ba224693085a3d8fce1c2",
+    "internal/supervisorfixture/settlement_linux.go": "8370f0eb3affef6ec341bbe0fcade99cbec60afa05850660858b99030ef0bf84",
+    "internal/supervisorfixture/settlement_linux_test.go": "d6b54ee5e74984ea4b5847e6433d92234efdfeaceb7e26c0a756ff2595c3bf27",
+    "tests/integration/scheduler_physical_release_test.go": "7539850b71de621e545e6f643aa411acdd3cbdf209e230a23b3c976a39f40075",
+    "tests/scheduler/network_fixture.py": "3f8c3c7a563197ed4662c6ca274dd8760f59f907808e7a7b0a49fbde9b0347c0",
+    "tests/scheduler/termination_fixture.py": "ac6e0890ca67f8341ad150e98ae3c8e981f6ceab122d6e7449e7f9f3d13091f6",
+    "tests/scheduler/termination_init.py": "59e21f6925e247a5875a08a270fdae0ee2b2874f82ad8424fcc745c33d528a0f",
+    "tests/scheduler/build-release54.sh": "535f255219ac6f78bf0cb57aa31707268d2da5d0fa857e689ea47f75209e7092",
+    "tests/scheduler/release_fixture.py": "69df1f76aef66bc969fa9f74c337f71e05b8a8ebb730ef844e27bf8e1e407824",
+    "tests/scheduler/run-release54.py": "46542506f6735584aefd0afe5358133eddd54fecf5e04f4222da1ffdd96298a3"
+  }
+}

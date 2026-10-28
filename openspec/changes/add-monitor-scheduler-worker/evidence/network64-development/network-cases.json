@@ -1,0 +1,123 @@
+[
+  {
+    "case": "dual-stack-default-deny",
+    "attempts": 20,
+    "receiver_accepts": 0
+  },
+  {
+    "case": "one-physical-target-connection",
+    "second_receiver_accepts": 0
+  },
+  {
+    "case": "per-run-veth-and-permit-isolation",
+    "distinct_namespaces": true
+  },
+  {
+    "case": "independent-guard-after-local-table-loss",
+    "forbidden_accepts": 0
+  },
+  {
+    "case": "supervisor-loss-kernel-expiry",
+    "receiver_accepts_after_expiry": 0
+  },
+  {
+    "case": "wrong-run",
+    "rejected": true,
+    "stage": "fixture_network_binding"
+  },
+  {
+    "case": "wrong-scope",
+    "rejected": true,
+    "stage": "fixture_network_binding"
+  },
+  {
+    "case": "wrong-fence",
+    "rejected": true,
+    "stage": "fixture_network_binding"
+  },
+  {
+    "case": "wrong-host",
+    "rejected": true,
+    "stage": "fixture_network_binding"
+  },
+  {
+    "case": "wrong-ip",
+    "rejected": true,
+    "stage": "fixture_network_binding"
+  },
+  {
+    "case": "expired-request",
+    "rejected": true,
+    "stage": "fixture_network_binding"
+  },
+  {
+    "case": "extend-hard-cutoff",
+    "rejected": true,
+    "stage": "fixture_network_binding"
+  },
+  {
+    "case": "uncommitted-proof",
+    "rejected": true,
+    "stage": "fixture_network_binding"
+  },
+  {
+    "case": "rule-loss-rejects-install",
+    "rejected": true,
+    "stage": "fixture_network_rules"
+  },
+  {
+    "case": "same-run-second-permit",
+    "rejected": true,
+    "stage": "fixture_network_consumed"
+  },
+  {
+    "case": "restart-and-table-loss-cannot-renew",
+    "rejected": true
+  },
+  {
+    "case": "gateway-table-loss-rejects-install",
+    "rejected": true,
+    "stage": "fixture_network_rules"
+  },
+  {
+    "case": "unexpected-default-route",
+    "rejected": true,
+    "stage": "fixture_network_topology"
+  },
+  {
+    "case": "supervisor-loss-before-install",
+    "receiver_accepts": 0
+  },
+  {
+    "case": "post-dnat-deny-ip",
+    "receiver_accepts": 0
+  },
+  {
+    "case": "post-dnat-deny-ip6",
+    "receiver_accepts": 0
+  },
+  {
+    "case": "future-commit-proof",
+    "rejected": true,
+    "stage": "fixture_network_future_commit_proof"
+  },
+  {
+    "case": "policy-route-drift",
+    "rejected": true,
+    "stage": "fixture_network_topology"
+  },
+  {
+    "case": "resolver-also-expires-without-supervisor",
+    "receiver_dns_after_expiry": 0
+  },
+  {
+    "case": "expiry-drift",
+    "rejected": true,
+    "stage": "fixture_network_rules"
+  },
+  {
+    "case": "no-physical-release-proof",
+    "physical_release_claimed": false,
+    "requires_task65": true
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "docker",
+    "logs",
+    "--since",
+    "2026-10-20T08:20:00Z",
+    "--timestamps",
+    "devpilot-scheduler-apply-pg18"
+  ],
+  "exit_code": 0,
+  "uncompressed_bytes": 572511,
+  "uncompressed_sha256": "0e7835e546f8dccf4becc9a98742d1a20c63573e2d6120d78092811541b25ecc",
+  "collected_at": "2026-10-21T01:26:04.132420+00:00"
+}

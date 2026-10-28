@@ -1,0 +1,222 @@
+[
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/README.md",
+    "bytes": 5519,
+    "sha256": "58f0af075b183d38c9f638c41f8dcd7b464e6949b101dea345239aee94db3a56"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/boundary.json",
+    "bytes": 484,
+    "sha256": "9e7d4783231823525d5e09d1c02d8bb39d3719e82dfbb270d563b3bd1adb369f"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-command.json",
+    "bytes": 226519,
+    "sha256": "1a05a8d7d52be29173bedc9a048924a711a09838bf3c19cbb4db8b84840f4717"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-command.log",
+    "bytes": 2554,
+    "sha256": "6661d73b7e6c770db7a50aee6df03cde43759a4e6a53b2f2c9a55154a437d46f"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/cases.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/commands.json",
+    "bytes": 25077,
+    "sha256": "81d7b097502962aef46da00757c9535b39a2dd6e5c1e40541cb90ed5ba966f34"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/joint63-result.json",
+    "bytes": 73,
+    "sha256": "a906e18897765b5d98de912a2e0c3fd1ef319997733e2fca6e5432dc31e3a892"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/manifest.json",
+    "bytes": 1145,
+    "sha256": "91f69fe5ae6108cc0ad1112265074cbc4e11f1c6311e4e4280e47844e961887a"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/receipt-public-key.json",
+    "bytes": 212,
+    "sha256": "77e9f2f8abe06d654dfb90ff1638e5b7d678d19cebab346daa3719a867c53f29"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/receiver-container.json",
+    "bytes": 8298,
+    "sha256": "f90c9f0d581d5869150fdb5c6d828d34695b25001b97c5e9f55ff27f31bbdf3e"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/receiver-events.json",
+    "bytes": 81,
+    "sha256": "3cb1113ed9762b4e7d90fbf21119491a154f8a0ad2dd2b26c51e5739fe2c37c3"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/receiver.stderr",
+    "bytes": 17,
+    "sha256": "41efca96946b9c6f5fbe16ba9b43e70c4396fe28030633bda45ddc9005075e14"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/run-0-container.json",
+    "bytes": 8295,
+    "sha256": "9f5c6302f82ca24d1b8486554edf273019938a858aa238ea41c09d594a0c00ee"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/run-0-guard-container.json",
+    "bytes": 8374,
+    "sha256": "0ecad88b01a2ad3eced702507a48bf12a61d1788025dc82d14be74bb291d864a"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/failed-fixture/timeline.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/joint63-incomplete-result.json",
+    "bytes": 12631,
+    "sha256": "b5ed3033c84057dff790448c50a33371221acd549d6c10bb6c32758e1048ec2d"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/joint63-plan.json",
+    "bytes": 621,
+    "sha256": "1b7548c108a10a550f5ccb11115529c1cd867bc03c41f6fc4b6199b78fc69a32"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/manifest.json",
+    "bytes": 1724,
+    "sha256": "8d24ec6c7255ec3012ebdf7a41ade1e69bee5e527398c2fc7772376345ab0561"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-ci-blocker/pr-security-artifact.json",
+    "bytes": 799,
+    "sha256": "24c2b8908277e5cf1e9b66609d76dc9319b72432c9369eb8956e487ce8f81f51"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/README.md",
+    "bytes": 4313,
+    "sha256": "d7192167d243d96989311fd07d86399b0eccc6ee057da4610e174a22806719f9"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/baseline.json",
+    "bytes": 191,
+    "sha256": "7d0e5ca08d357c5594b98f9809420b5bc93b42d1c493685c3ef44af3b9ee4174"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/boundary-audit.json",
+    "bytes": 1000,
+    "sha256": "12ed2cec9396bf711a48e70b5c211abcb567ff8544526f45f9a460c88a739f1a"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/change-strict.json",
+    "bytes": 225547,
+    "sha256": "2267011b5b14ce67945a26c1310158b298bce27b8e7ac67b56760d5602f42e84"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/change-strict.log",
+    "bytes": 47,
+    "sha256": "261d7318727283688fe61814d964d68b4d730cfe8b9f55ead352a3dc9dcfcc4b"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/diff-check.json",
+    "bytes": 225504,
+    "sha256": "17b9d285f6a38db391dc8e4eb81ef58b7c02feb4c43a6f2a8570c56edae385eb"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/diff-check.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/directed-audit.json",
+    "bytes": 7806,
+    "sha256": "d89a00f5235a39e8b9570429f531f3a080e9cf6c0ac22c03f0af2a0c299fe55b"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/directed-command-index.json",
+    "bytes": 28732,
+    "sha256": "43933b6c8040feed68185d771bb0e38e9b7ad4cc0a495c7ccb93efaf15ea6c2e"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/frozen-candidate.json",
+    "bytes": 591,
+    "sha256": "cf012fbd404dc9f06993bf15c9f42e7e021ec8a0d90bdec7c30f01f208fed73e"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/push-pr-comparison.json",
+    "bytes": 15295,
+    "sha256": "59e2844554b89469f18724a61d5b6121033e7d2984898999493dc2602e9ec10d"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-review2/reused-tool-provenance.json",
+    "bytes": 527,
+    "sha256": "179e32aed2d332d70a075bf9276d56cd58f91adaeffeea6b31c4869bf20db76b"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/README.md",
+    "bytes": 883,
+    "sha256": "3bb2ce80a68428532a09ebd1b6d19341f7163a7fe179611f76ab2ce7629c0f7a"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/harness-repair.diff",
+    "bytes": 3195,
+    "sha256": "af14301348791941252e830e5fd1179dbbabe34149786771c79e9b4ba42f48c3"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/manifest.json",
+    "bytes": 1205,
+    "sha256": "54abffb0d302462f28c31e1255446cead59a809bc0431086be1d1595a045fa2a"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/pg-driver.log",
+    "bytes": 3105,
+    "sha256": "7d01e6bc52c625aac9ea962c63724e8723c2359471bd7af2612e4a29971c78ed"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/postgres-final-ledger.log",
+    "bytes": 12294,
+    "sha256": "13c818d90fce4e466226eb63a52f7907c80b614c32168d2b7a3fa25a639907f4"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/postgres.log",
+    "bytes": 3446,
+    "sha256": "a2c7a7d80f211b2b9a7d39de471cee9e01124e71e91105bb9f22e4eeac7376af"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/prefix-failure.json",
+    "bytes": 226503,
+    "sha256": "87123c472d86e15402173714522baf063a49fc63b92d61a9129856f95f160da1"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/prefix-failure.log",
+    "bytes": 2236,
+    "sha256": "9fe1b3361ca9f80df33bbaf8807151c8f428e4d4660d5107470be66b7ddf6d88"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/reconstructed-failed-harness.py.txt",
+    "bytes": 3811,
+    "sha256": "52966cceb72731ee0c980ebb7e7b958c7d83607a85a0523041d4e9f41713a35c"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/unused-import-build.json",
+    "bytes": 225946,
+    "sha256": "64f5eaaa4141402e29209d0a95176c87c65ed865aedcc4c0bdefd652a26725ee"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/unused-import-build.log",
+    "bytes": 331,
+    "sha256": "67ba8f7136811fd86ce643170dde5d0ecdc1e0ba10fd90ddc91cf6986ef2e432"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/wrong-harness-normal-TestRecoveryUnknownPG-allow-https.json",
+    "bytes": 226478,
+    "sha256": "0191a0925fd59dc7e80536c8e9360248a3da83e5fe83da02165e8497cc321a33"
+  },
+  {
+    "path": "openspec/changes/add-monitor-scheduler-worker/evidence/task73-negative/wrong-harness-normal-TestRecoveryUnknownPG-allow-https.log",
+    "bytes": 1246,
+    "sha256": "fc56fb3b77dbed2334a6c18c6f677c51aef8622ec284b380e544b9885d28b9b7"
+  }
+]

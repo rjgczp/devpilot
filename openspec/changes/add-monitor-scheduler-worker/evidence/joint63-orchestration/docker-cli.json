@@ -1,0 +1,65 @@
+{
+  "image": {
+    "Id": "sha256:851f91d241214e7c6db86513b270d58776379aacc5eb9c4a87e5b47115e3065c",
+    "RepoTags": [
+      "docker:27.5.1-cli"
+    ],
+    "RepoDigests": [
+      "docker@sha256:851f91d241214e7c6db86513b270d58776379aacc5eb9c4a87e5b47115e3065c"
+    ],
+    "Comment": "buildkit.dockerfile.v0",
+    "Created": "2025-02-12T12:04:16Z",
+    "Config": {
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "DOCKER_VERSION=27.5.1",
+        "DOCKER_BUILDX_VERSION=0.20.1",
+        "DOCKER_COMPOSE_VERSION=2.33.0",
+        "DOCKER_TLS_CERTDIR=/certs"
+      ],
+      "Entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "Cmd": [
+        "sh"
+      ],
+      "WorkingDir": "/"
+    },
+    "Architecture": "arm64",
+    "Variant": "v8",
+    "Os": "linux",
+    "Size": 67515242,
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:a16e98724c05975ee8c40d8fe389c3481373d34ab20a1cf52ea2accc43f71f4c",
+        "sha256:c9c1cde1c09def5f8fe2bcfa780ca855606fbcd88cbbaf627909a4a356b77223",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:91378f3c1ba6c1fe72e0ef60355389b4b6ddfad5714731d635b052847201bd74",
+        "sha256:4c65d6bfca276f236204c16dcd5b06e99f880baf0a77d17eb97be22af54d3d40",
+        "sha256:13c865f1cbaea450774679ac9301701607202f419c3ec49155045e4b764f65af",
+        "sha256:ece21a0af1ff1464e1065714364206443e416b351b9fbf00d182b15f5227ec26",
+        "sha256:296ddc5ca104728fc577b96e106579a35a180baf8641edad0551090d7299cd00",
+        "sha256:b04a28de8e599751b9f090c02ca9aab93330002f64f9428c9f1408efef25b45f",
+        "sha256:bfaee545c44f8daef09dd26bb0a0a9e88d16dfbb1bb9adc064c65da4ba4f7614"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "2026-10-23T08:14:43.476688126Z"
+    },
+    "Descriptor": {
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "digest": "sha256:851f91d241214e7c6db86513b270d58776379aacc5eb9c4a87e5b47115e3065c",
+      "size": 5149
+    },
+    "Identity": {
+      "Pull": [
+        {
+          "Repository": "docker.io/library/docker"
+        }
+      ]
+    }
+  },
+  "binary_sha256": "3e2d3307e386e59268ab1b17c195f5f224b7c616f06c553d22c0d10f90e5e618",
+  "purpose": "trusted Snapshot test controller only; never mounted into Probe"
+}

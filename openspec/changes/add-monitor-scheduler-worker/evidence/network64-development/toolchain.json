@@ -1,0 +1,29 @@
+{
+  "binaries": {
+    "networksupervisorfixture": {
+      "sha256": "3aafb8cb5e3c50891fc0622b53fd9819fa2bacc6e6f23a2b755be91f4d318855",
+      "build": "/private/tmp/devpilot-network64-tools/networksupervisorfixture: go1.24.3\n\tpath\tgithub.com/rjgczp/devpilot/cmd/networksupervisorfixture\n\tmod\tgithub.com/rjgczp/devpilot\tv0.0.0-20261022022108-343540f1f23a+dirty\t\n\tdep\tgolang.org/x/sys\tv0.41.0\th1:Ivj+2Cp/ylzLiEU89QhWblYnOE9zerudt9Ftecq2C6k=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-tags=schedulerfixture\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=343540f1f23a579e35f796b27eddb48776178ab6\n\tbuild\tvcs.time=2026-10-22T02:21:08Z\n\tbuild\tvcs.modified=true\n"
+    },
+    "supervisorfixture.test": {
+      "sha256": "0c5ccebb378b2afaa6fa964ea04bb8ed1ee861132c234f33dfab90a33375f824",
+      "build": "/private/tmp/devpilot-network64-tools/supervisorfixture.test: go1.24.3\n\tpath\tgithub.com/rjgczp/devpilot/internal/supervisorfixture.test\n\tmod\tgithub.com/rjgczp/devpilot\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-tags=schedulerfixture\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+    },
+    "supervisorfixture-race.test": {
+      "sha256": "4441884b8814c38a23af4eee67c66beee8b592085e32e4aba3a1b3cca09f9024",
+      "build": "/private/tmp/devpilot-network64-tools/supervisorfixture-race.test: go1.24.3\n\tpath\tgithub.com/rjgczp/devpilot/internal/supervisorfixture.test\n\tmod\tgithub.com/rjgczp/devpilot\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-race=true\n\tbuild\t-tags=schedulerfixture\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+    },
+    "network64-pg.test": {
+      "sha256": "2b60bfafdbef8495a7e0d799ac62ed85ca25ee83ad5212bd2a828c5bd4606b8b",
+      "build": "/private/tmp/devpilot-network64-tools/network64-pg.test: go1.24.3\n\tpath\tgithub.com/rjgczp/devpilot/tests/integration.test\n\tmod\tgithub.com/rjgczp/devpilot\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-tags=integration,schedulerfixture,budgetfixture,networkfixture\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+    },
+    "network64-pg-race.test": {
+      "sha256": "3e4be6b21da11b6adcc075de11b8b556d84e927e902ac67b4fa6a4727fc174f0",
+      "build": "/private/tmp/devpilot-network64-tools/network64-pg-race.test: go1.24.3\n\tpath\tgithub.com/rjgczp/devpilot/tests/integration.test\n\tmod\tgithub.com/rjgczp/devpilot\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-race=true\n\tbuild\t-tags=integration,schedulerfixture,budgetfixture,networkfixture\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+    },
+    "goose": {
+      "sha256": "b9d42a96017db430bec647240d706bc9ae57775c76fa65321a7d24e7e38bbe3a",
+      "build": "/private/tmp/devpilot-network64-tools/goose: go1.24.3\n\tpath\tgithub.com/pressly/goose/v3/cmd/goose\n\tmod\tgithub.com/pressly/goose/v3\tv3.26.0\th1:KJakav68jdH0WDvoAcj8+n61WqOIaPGgH0bJWS6jpmM=\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.7.5\th1:JHGfMnQY+IEtGM63d+NGMjoRpysB2JBwDr5fsngwmJs=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgithub.com/joho/godotenv\tv1.5.1\th1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=\n\tdep\tgithub.com/mfridman/interpolate\tv0.0.2\th1:pnuTK7MQIxxFz1Gr+rjSIx9u7qVjf5VOoM/u6BbAxPY=\n\tdep\tgithub.com/mfridman/xflag\tv0.1.0\th1:TWZrZwG1QklFX5S4j1vxfF1sZbZeZSGofMwPMLAF29M=\n\tdep\tgithub.com/sethvargo/go-retry\tv0.3.0\th1:EEt31A35QhrcRZtrYFDTBg91cqZVnFL2navjDrah2SE=\n\tdep\tgo.uber.org/multierr\tv1.11.0\th1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=\n\tdep\tgolang.org/x/crypto\tv0.40.0\th1:r4x+VvoG5Fm+eJcxMaY8CQM7Lb0l1lsmjGBQ6s8BfKM=\n\tdep\tgolang.org/x/sync\tv0.16.0\th1:ycBJEhp9p4vXvUZNszeOq0kGTPghopOL8q0fq3vstxw=\n\tdep\tgolang.org/x/text\tv0.27.0\th1:4fGWRpyh641NLlecmyl4LOe6yDdfaYNrGb2zdfo4JV4=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-tags=no_clickhouse,no_libsql,no_mssql,no_mysql,no_sqlite3,no_vertica,no_ydb\n\tbuild\tDefaultGODEBUG=gotestjsonbuildtext=1,multipathtcp=0,randseednop=0,rsa1024min=0,tlsmlkem=0,x509rsacrt=0,x509usepolicies=0\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+    }
+  },
+  "image_id": "sha256:60a78b61cd1378bdb343af6bf6321f383a33f64737c54852a2d462cdfc1df15c"
+}

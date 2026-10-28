@@ -81,7 +81,8 @@ try:
            'blocked-doc','blocked-v6doc','blocked-ula','dns-nxdomain','dns-servfail','dns-empty','dns-truncated',
            'dns-id','dns-question','dns-trailing','dns-timeout','inconsistent','aliases','addresses','records',
            'oversize','total','dname','nat-app','rebinding','repeat','capacity','concurrency','addresses-boundary','records-boundary',
-           'bypass-v4','bypass-v6','bypass-nat','bypass-public']
+           'bypass-v4','bypass-v6','bypass-nat','bypass-public',
+           'permit-missing','permit-denied','permit-disconnect','permit-unknown','permit-late']
     results=[]
     for case in cases:
         command=['strace','-f','-qq','-yy','-s','256','-e','trace=process,connect,sendto,sendmsg,sendmmsg','-o',str(out/(case+'.trace')),
@@ -98,10 +99,12 @@ try:
             assert audit_exit==1 and len(report['violations'])==1 and report['target_attempts']==1,report
         else:
             assert audit_exit==0,report
-            if case.startswith(('blocked-','dns-')) or case in ('mixed','mixed6','additional','reserved-alias','inconsistent','aliases','addresses','records','oversize','total','dname','nat-app','capacity'):
+            if case.startswith(('blocked-','dns-','permit-')) or case in ('mixed','mixed6','additional','reserved-alias','inconsistent','aliases','addresses','records','oversize','total','dname','nat-app','capacity'):
                 assert report['target_attempts']==0,report
             else:
                 assert report['target_attempts']>0,report
+        if case.startswith('permit-'):
+            assert report['dns_attempts']>0 and report['target_attempts']==0,report
         assert 'secret-sentinel' not in child.stdout,'normal test output leaked URL/body sentinel'
         results.append({k:report[k] for k in ('case','child_exit','audit_exit','dns_attempts','target_attempts','duration')})
         print(json.dumps(results[-1]),flush=True)

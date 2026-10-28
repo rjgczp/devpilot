@@ -1,0 +1,20 @@
+{
+  "id": 12719305073,
+  "node_id": "MDg6QXJ0aWZhY3QxMjcxOTMwNTA3Mw==",
+  "name": "execution-security-evidence",
+  "size_in_bytes": 8181118,
+  "url": "https://api.github.com/repos/rjgczp/devpilot/actions/artifacts/12719305073",
+  "archive_download_url": "https://api.github.com/repos/rjgczp/devpilot/actions/artifacts/12719305073/zip",
+  "expired": false,
+  "digest": "sha256:8d3a5acf0eaa53bec18a66fd84db872b4bf8cadce66fa55bdbed684e7468f970",
+  "created_at": "2026-10-27T08:02:07Z",
+  "updated_at": "2026-10-27T08:02:07Z",
+  "expires_at": "2027-01-25T07:41:52Z",
+  "workflow_run": {
+    "id": 40468671798,
+    "repository_id": 1416378447,
+    "head_repository_id": 1416378447,
+    "head_branch": "codex/add-monitor-scheduler-worker",
+    "head_sha": "f596a25553dcffb77a9e972d547d6e5a383c593d"
+  }
+}

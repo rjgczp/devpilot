@@ -1,0 +1,582 @@
+{
+  "push": {
+    "case": {
+      "exit_code": 0,
+      "case": "cross-run-envelope",
+      "mode": "normal"
+    },
+    "constructor_initial_inspect": {
+      "run-0-guard": {
+        "network_mode": "none",
+        "cap_add": [
+          "CAP_NET_ADMIN"
+        ],
+        "cap_drop": [
+          "ALL"
+        ],
+        "memory": 134217728,
+        "nano_cpus": 1000000000,
+        "pids_limit": 128,
+        "oom_initial": false,
+        "pid_initial": 298883,
+        "image": "sha256:13f4549ad812e1558687fa19f2afad14ad7dd40d3dd451c6342c7502ee3dac9a",
+        "created": "2026-10-27T07:59:01.946727387Z"
+      },
+      "run-0": {
+        "network_mode": "none",
+        "cap_add": [
+          "CAP_NET_ADMIN"
+        ],
+        "cap_drop": [
+          "ALL"
+        ],
+        "memory": 134217728,
+        "nano_cpus": 1000000000,
+        "pids_limit": 128,
+        "oom_initial": false,
+        "pid_initial": 298824,
+        "image": "sha256:13f4549ad812e1558687fa19f2afad14ad7dd40d3dd451c6342c7502ee3dac9a",
+        "created": "2026-10-27T07:59:01.848175667Z"
+      },
+      "receiver": {
+        "network_mode": "none",
+        "cap_add": [
+          "CAP_NET_ADMIN"
+        ],
+        "cap_drop": [
+          "ALL"
+        ],
+        "memory": 134217728,
+        "nano_cpus": 1000000000,
+        "pids_limit": 128,
+        "oom_initial": false,
+        "pid_initial": 298375,
+        "image": "sha256:13f4549ad812e1558687fa19f2afad14ad7dd40d3dd451c6342c7502ee3dac9a",
+        "created": "2026-10-27T07:59:01.212866065Z"
+      }
+    },
+    "command_count": 160,
+    "manifest_checks": [
+      {
+        "case": "normal-allow-https",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-tls-stop",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-tracer-stopped",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-tracer-crashed",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-supervisor-killed",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-stop-ack-lost",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-journal-collision",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-allow-http",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-permit-missing",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-permit-timeout",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-target-commit-unknown",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-supervisor-lost",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-rules-missing",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-old-fence",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-old-incarnation",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-cross-run",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-duplicate-envelope",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-cross-run-envelope",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-rebinding",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-ipv6-poison",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-tls-invalid",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-start-commit-unknown",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-input-commit-unknown",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-allow-https",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-tls-stop",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-tracer-stopped",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-tracer-crashed",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-supervisor-killed",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-stop-ack-lost",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-journal-collision",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-allow-http",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-permit-missing",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-permit-timeout",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-target-commit-unknown",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-supervisor-lost",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-rules-missing",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-old-fence",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-old-incarnation",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-cross-run",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-duplicate-envelope",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-cross-run-envelope",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-rebinding",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-ipv6-poison",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-tls-invalid",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-start-commit-unknown",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "race-input-commit-unknown",
+        "exit_code": 0,
+        "manifest_matches": true
+      }
+    ],
+    "preceding_case": {
+      "head": "f596a25553dcffb77a9e972d547d6e5a383c593d",
+      "exit_code": 0,
+      "started_at": "2026-10-27T07:58:50.788113+00:00",
+      "elapsed_seconds": 10.218263144000048
+    },
+    "current_receipt": {
+      "head": "f596a25553dcffb77a9e972d547d6e5a383c593d",
+      "dirty": false,
+      "source_inventory_sha256": "ddbd3475dae7dc3cd2bc62ea168f07cbdeee9685617113a92cd8c7d616b59257",
+      "exit_code": 0,
+      "elapsed_seconds": 8.866529427999922
+    },
+    "raw_case": "/private/tmp/devpilot-result73/ci-audit/final-artifacts/push/security/extracted/joint63-evidence/normal-cross-run-envelope",
+    "runner_region": "westus2",
+    "runner_id": 1000000273,
+    "runner_image_version": "20261012.334.1",
+    "iproute2_version": "6.15.0-1",
+    "nftables_version": "1.1.3-1",
+    "full_job_log_sha256": "ae5c353496b5f378c200782b8ee3586d54e1b61c73ac3b71a5814c0524950aa0",
+    "build_version_lines": [
+      "execution-security\tBuild task7.3 recovery and prior fixture-only tooling\t2026-10-27T07:44:09.3579138Z #5 1.989 Get:17 http://deb.debian.org/debian trixie/main amd64 iproute2 amd64 6.15.0-1 [1,089 kB]",
+      "execution-security\tBuild task7.3 recovery and prior fixture-only tooling\t2026-10-27T07:44:09.3582341Z #5 1.995 Get:21 http://deb.debian.org/debian trixie/main amd64 nftables amd64 1.1.3-1 [75.9 kB]",
+      "execution-security\tBuild task7.3 recovery and prior fixture-only tooling\t2026-10-27T07:44:13.0166101Z #6 writing image sha256:13f4549ad812e1558687fa19f2afad14ad7dd40d3dd451c6342c7502ee3dac9a done"
+    ],
+    "same_software_version_does_not_prove_same_image_or_kernel": true
+  },
+  "pr": {
+    "case": {
+      "exit_code": 1,
+      "case": "cross-run-envelope",
+      "mode": "normal"
+    },
+    "constructor_initial_inspect": {
+      "run-0-guard": {
+        "network_mode": "none",
+        "cap_add": [
+          "CAP_NET_ADMIN"
+        ],
+        "cap_drop": [
+          "ALL"
+        ],
+        "memory": 134217728,
+        "nano_cpus": 1000000000,
+        "pids_limit": 128,
+        "oom_initial": false,
+        "pid_initial": 299020,
+        "image": "sha256:338ad40a47d5722fd94be0aa10628696696c59c4e5ea5d81f64a2b28ced743f6",
+        "created": "2026-10-27T08:01:33.53202144Z"
+      },
+      "run-0": {
+        "network_mode": "none",
+        "cap_add": [
+          "CAP_NET_ADMIN"
+        ],
+        "cap_drop": [
+          "ALL"
+        ],
+        "memory": 134217728,
+        "nano_cpus": 1000000000,
+        "pids_limit": 128,
+        "oom_initial": false,
+        "pid_initial": 298959,
+        "image": "sha256:338ad40a47d5722fd94be0aa10628696696c59c4e5ea5d81f64a2b28ced743f6",
+        "created": "2026-10-27T08:01:33.420117078Z"
+      },
+      "receiver": {
+        "network_mode": "none",
+        "cap_add": [
+          "CAP_NET_ADMIN"
+        ],
+        "cap_drop": [
+          "ALL"
+        ],
+        "memory": 134217728,
+        "nano_cpus": 1000000000,
+        "pids_limit": 128,
+        "oom_initial": false,
+        "pid_initial": 298508,
+        "image": "sha256:338ad40a47d5722fd94be0aa10628696696c59c4e5ea5d81f64a2b28ced743f6",
+        "created": "2026-10-27T08:01:32.592860783Z"
+      }
+    },
+    "command_count": 68,
+    "manifest_checks": [
+      {
+        "case": "normal-allow-https",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-tls-stop",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-tracer-stopped",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-tracer-crashed",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-supervisor-killed",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-stop-ack-lost",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-journal-collision",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-allow-http",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-permit-missing",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-permit-timeout",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-target-commit-unknown",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-supervisor-lost",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-rules-missing",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-old-fence",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-old-incarnation",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-cross-run",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-duplicate-envelope",
+        "exit_code": 0,
+        "manifest_matches": true
+      },
+      {
+        "case": "normal-cross-run-envelope",
+        "exit_code": 1,
+        "manifest_matches": true
+      }
+    ],
+    "preceding_case": {
+      "head": "f596a25553dcffb77a9e972d547d6e5a383c593d",
+      "exit_code": 0,
+      "started_at": "2026-10-27T08:01:20.097399+00:00",
+      "elapsed_seconds": 12.217174905000093
+    },
+    "current_receipt": {
+      "head": "f596a25553dcffb77a9e972d547d6e5a383c593d",
+      "dirty": false,
+      "source_inventory_sha256": "ddbd3475dae7dc3cd2bc62ea168f07cbdeee9685617113a92cd8c7d616b59257",
+      "exit_code": 1,
+      "elapsed_seconds": 31.18199138199998
+    },
+    "raw_case": "/private/tmp/devpilot-result73/ci-audit/final-artifacts/pr/security/extracted/joint63-evidence/normal-cross-run-envelope",
+    "runner_region": "centralus",
+    "runner_id": 1000000276,
+    "runner_image_version": "20261012.334.1",
+    "iproute2_version": "6.15.0-1",
+    "nftables_version": "1.1.3-1",
+    "full_job_log_sha256": "48ca6ba8a3260d7801e2a0a43d09af5c5cbddfc21811616433fa62a2c115a30e",
+    "build_version_lines": [
+      "execution-security\tBuild task7.3 recovery and prior fixture-only tooling\t2026-10-27T07:44:28.1054196Z #5 2.649 Get:17 http://deb.debian.org/debian trixie/main amd64 iproute2 amd64 6.15.0-1 [1,089 kB]",
+      "execution-security\tBuild task7.3 recovery and prior fixture-only tooling\t2026-10-27T07:44:28.2606596Z #5 2.663 Get:21 http://deb.debian.org/debian trixie/main amd64 nftables amd64 1.1.3-1 [75.9 kB]",
+      "execution-security\tBuild task7.3 recovery and prior fixture-only tooling\t2026-10-27T07:44:33.0200450Z #6 writing image sha256:338ad40a47d5722fd94be0aa10628696696c59c4e5ea5d81f64a2b28ced743f6 done"
+    ],
+    "same_software_version_does_not_prove_same_image_or_kernel": true
+  },
+  "command_argument_differences_first_68": [
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50
+  ],
+  "same_command_68": true,
+  "first_67_command_args_equal": false,
+  "root_cause": "unresolved",
+  "retry_count": 0,
+  "observed_differences_are_mac_arguments": [
+    {
+      "command_number": 44,
+      "differences": [
+        [
+          "fe:9a:91:33:80:3a",
+          "fa:0f:86:d2:67:ab"
+        ]
+      ]
+    },
+    {
+      "command_number": 45,
+      "differences": [
+        [
+          "fe:9a:91:33:80:3a",
+          "fa:0f:86:d2:67:ab"
+        ]
+      ]
+    },
+    {
+      "command_number": 46,
+      "differences": [
+        [
+          "e2:fa:b2:d0:5f:57",
+          "de:9c:74:0a:c0:37"
+        ]
+      ]
+    },
+    {
+      "command_number": 47,
+      "differences": [
+        [
+          "e2:fa:b2:d0:5f:57",
+          "de:9c:74:0a:c0:37"
+        ]
+      ]
+    },
+    {
+      "command_number": 48,
+      "differences": [
+        [
+          "9e:98:96:dd:b6:23",
+          "72:52:ef:92:cd:a2"
+        ]
+      ]
+    },
+    {
+      "command_number": 49,
+      "differences": [
+        [
+          "9e:98:96:dd:b6:23",
+          "72:52:ef:92:cd:a2"
+        ]
+      ]
+    },
+    {
+      "command_number": 50,
+      "differences": [
+        [
+          "6a:53:dc:4f:ad:fd",
+          "92:77:db:50:0d:ca"
+        ]
+      ]
+    },
+    {
+      "command_number": 51,
+      "differences": [
+        [
+          "6a:53:dc:4f:ad:fd",
+          "92:77:db:50:0d:ca"
+        ]
+      ]
+    }
+  ]
+}

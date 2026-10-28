@@ -1,0 +1,13 @@
+{
+  "implementation_commit": "73def21d5f6a06c9a7edd37847c2831b577740a8",
+  "development_head": "87af881fae2358924102fbcb9fd891a310ec2266",
+  "development_dirty": true,
+  "source_inventory_sha256": "8db479acb1360ba915b09f0c093ad0396d138c16290b648cb3729e9910765243",
+  "files_sha256": {
+    "internal/monitor/handler.go": "e959ec4f351d6038f5a35cf5cf9ec4009f69b224ad0061a4cd5da4884f68174d",
+    "internal/monitor/body_limit_response_test.go": "e00b978b0d57f34034cc0629d297576c35fcafed337f73c9eaa119ebddfcda65"
+  },
+  "original_test_modified": false,
+  "limits_changed": false,
+  "final_ci": "Actual new frozen-HEAD Push and PR results required; old success cannot substitute"
+}

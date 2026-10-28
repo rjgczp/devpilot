@@ -1,0 +1,26 @@
+{
+  "head": "3774a75eb7d3e733b174530d71816ed319d9f084",
+  "pg_id": "db0774ff4cff96278db0eeab88ec0c2ed64f561a1c28d1671c200e4f31015103",
+  "pg_image": "sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336",
+  "privileged": false,
+  "cap_add": null,
+  "port_bindings": {},
+  "networks": [
+    "devpilot-scheduler-apply-control"
+  ],
+  "network_internal": true,
+  "fixture_image": "sha256:60a78b61cd1378bdb343af6bf6321f383a33f64737c54852a2d462cdfc1df15c",
+  "database": {
+    "database": "devpilot_registration_test",
+    "server_version_num": "180006",
+    "session_user": "devpilot_fixture",
+    "logging_collector": "off",
+    "log_min_error_statement": "error",
+    "lock_timeout": "0",
+    "statement_timeout": "0",
+    "transaction_timeout": "0",
+    "prepared_transactions": "0"
+  },
+  "other_active_backends": 0,
+  "applied_positive_migrations": 0
+}

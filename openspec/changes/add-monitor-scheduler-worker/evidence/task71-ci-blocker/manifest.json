@@ -1,0 +1,54 @@
+{
+  "manifest.json.gz": {
+    "original": "manifest.json",
+    "sha256": "e815b9213e726d3c56e11be21e5a1bff405cf7877c5ac874d3f7401953929385"
+  },
+  "push-integration-failed.log.gz.gz": {
+    "original": "push-integration-failed.log.gz",
+    "sha256": "8707d0d75e28fa0d0ec3f1543ae07eb18f6381f91cab1b4814fab51332a2ddd2"
+  },
+  "proposed-expiry-log-order.patch.gz": {
+    "original": "proposed-expiry-log-order.patch",
+    "sha256": "948619f899328c3c3f209c8c5b9f57a6c3e3a787391127f0896341f6914fc3e6"
+  },
+  "rebuild-directed.json.gz": {
+    "original": "rebuild-directed.json",
+    "sha256": "f2da110fae465bfecf63e08ed00b460d072e177ee74422ddad4ff0966f4ae226"
+  },
+  "directed-normal-race.json.gz": {
+    "original": "directed-normal-race.json",
+    "sha256": "da5ec99cdcaebd641eb838952f3c14c35e47504001208c5eee07d728616cb3f2"
+  },
+  "run-directed.py.gz": {
+    "original": "run-directed.py",
+    "sha256": "cf708b4171d968707c1923bfe44baa56598a298663eefda3fa4f6bcb82f44417"
+  },
+  "directed--normal--pg-driver.log.gz": {
+    "original": "directed/normal/pg-driver.log",
+    "sha256": "69eb7314f2197d633fee098c0d18f2cb9c1ea37e9ba72c01f85115718c4c358c"
+  },
+  "directed--race--pg-driver.log.gz": {
+    "original": "directed/race/pg-driver.log",
+    "sha256": "3c28680bb73d682d52d037c91a3c16a464b463e090004d5bdc1202755e6f4589"
+  },
+  "directed--normal--postgres.log.gz": {
+    "original": "directed/normal/postgres.log",
+    "sha256": "7423deb184e0a8c01cd146ffaf8a1cfac421b5aa7ee93a37420214982fa6954b"
+  },
+  "directed--race--postgres.log.gz": {
+    "original": "directed/race/postgres.log",
+    "sha256": "d2dad73fd423968f3550da42086b4ec960a80f905f7f57ada09bda00cf8f1e42"
+  },
+  "directed--normal--pg-driver-command.json.gz": {
+    "original": "directed/normal/pg-driver-command.json",
+    "sha256": "2ca90b5331b58df2fb0025d0e325913c746d03523077134287c6ac38b7132805"
+  },
+  "directed--race--pg-driver-command.json.gz": {
+    "original": "directed/race/pg-driver-command.json",
+    "sha256": "7abc13041cc3d317ccedcc457a88ff6f8fcdec2c2548eed45ea28a7d7eda4a0a"
+  },
+  "push-integration-artifact--integration-evidence--normal--result.json.gz": {
+    "original": "push-integration-artifact/integration-evidence/normal/result.json",
+    "sha256": "9ceb9dfada0ad9b6ee60d88d3aba9f1202a8294edba4b2e66deb65ac4785a856"
+  }
+}

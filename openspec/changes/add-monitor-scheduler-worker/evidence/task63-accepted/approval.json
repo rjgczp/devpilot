@@ -1,0 +1,11 @@
+{
+  "recorded_at": "2026-10-23T09:22:21.310523+00:00",
+  "source": "Direct human user message in this conversation: DevPilot AI 第十一阶段 PR #11 独立验收结论",
+  "quote": "正式批准任务6.3完成（仅隔离Linux/PG18 fixture范围）。",
+  "reviewed_head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+  "approved_task": "6.3",
+  "next_authorized_task": "7.1 only; no7.2; new database capabilities require separate approval",
+  "completed_tasks": 29,
+  "total_tasks": 47,
+  "production_execution": false
+}

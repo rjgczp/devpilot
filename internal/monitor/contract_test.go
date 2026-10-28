@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -25,6 +26,18 @@ func contractOK(doc, schema map[string]any, v any) bool {
 			}
 		}
 		return n == 1
+	}
+	if choices, ok := schema["enum"].([]any); ok {
+		match := false
+		for _, choice := range choices {
+			if reflect.DeepEqual(choice, v) {
+				match = true
+				break
+			}
+		}
+		if !match {
+			return false
+		}
 	}
 	if c, ok := schema["const"]; ok && c != v {
 		return false
@@ -66,8 +79,30 @@ func contractOK(doc, schema map[string]any, v any) bool {
 		if pattern, ok := schema["pattern"].(string); ok && !regexp.MustCompile(pattern).MatchString(x) {
 			return false
 		}
+	case bool:
+		typ := schema["type"]
+		if typ != "boolean" {
+			types, _ := typ.([]any)
+			found := false
+			for _, t := range types {
+				if t == "boolean" {
+					found = true
+				}
+			}
+			if !found {
+				return false
+			}
+		}
 	case float64:
-		if schema["type"] != "integer" || x != float64(int64(x)) {
+		integer := schema["type"] == "integer"
+		if types, ok := schema["type"].([]any); ok {
+			for _, t := range types {
+				if t == "integer" {
+					integer = true
+				}
+			}
+		}
+		if !integer || x != float64(int64(x)) {
 			return false
 		}
 		if min, ok := schema["minimum"].(float64); ok && x < min {

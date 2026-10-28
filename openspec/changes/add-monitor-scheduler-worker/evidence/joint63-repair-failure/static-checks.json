@@ -1,0 +1,24 @@
+{
+  "scope": "static review only after required runtime stop; no acceptance rerun",
+  "checks": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": ""
+    },
+    {
+      "command": [
+        "openspec",
+        "validate",
+        "add-monitor-scheduler-worker",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "stdout": "Change 'add-monitor-scheduler-worker' is valid\n"
+    }
+  ]
+}

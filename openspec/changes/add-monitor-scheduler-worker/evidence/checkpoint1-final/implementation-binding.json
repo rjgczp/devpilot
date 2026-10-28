@@ -1,0 +1,14 @@
+{
+  "tested_sha": "d781d7560904ee81c4939d9520604ff2240766a4",
+  "clean_at_all_final_runs": true,
+  "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+  "source_inventory_ref": "source-inventories/1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb.json",
+  "source_file_count": 1315,
+  "post_test_source_differences": [
+    "openspec/changes/add-monitor-scheduler-worker/tasks.md"
+  ],
+  "post_test_diff_reason": "Only approved task checkboxes after matching acceptance passed. verification/evidence documentation excluded from runtime source inventory. No implementation/test source differences.",
+  "migration1_7_unchanged": true,
+  "migration8_unchanged_from_reviewed_head": true,
+  "last_reviewed_sha": "bd729b232e6eb206e44ca0f7cb63e31d95f55d30"
+}

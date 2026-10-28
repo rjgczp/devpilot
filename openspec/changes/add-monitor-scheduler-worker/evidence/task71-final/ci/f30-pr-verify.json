@@ -1,0 +1,11 @@
+{
+  "head": "f30dcddbecc250e7d7747f6d50c852eedef7d38b",
+  "source_inventory_sha256": "2ccc19d594c0f1105e44337167c17a221cce7ba803451139872ec1e02aea671e",
+  "kind": "verify",
+  "successful_source_bound_receipts": 3,
+  "receipts": [
+    "verify-evidence/race.json",
+    "verify-evidence/unit.json",
+    "ci-context/checkout.json"
+  ]
+}

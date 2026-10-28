@@ -1,0 +1,805 @@
+{
+  "tests": 44,
+  "modes": {
+    "normal": 22,
+    "race": 22
+  },
+  "runs": 46,
+  "real_gets": 30,
+  "rows": [
+    {
+      "case": "normal-TestRecoveryAmbiguousDenialPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18037-ee9e-79b7-b996-66336a309efa",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryCommitACKPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18032-ed35-76ad-9532-fa9c3353d8b5",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryEmergencyPG-tls-stop",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18037-b609-7de0-99c7-f763a4cfab49",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryExpiryPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18036-ac3f-7028-bba7-faf63a2bd5e4",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryInputACKPG-input-commit-unknown",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": true,
+      "proofs": []
+    },
+    {
+      "case": "normal-TestRecoveryNextCyclePG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown",
+        "started"
+      ],
+      "get_count": 2,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18035-2bb2-782f-b21c-b7c8354194cb",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        },
+        {
+          "run_id": "01a18035-3f10-7459-98a5-c53d2ec31c69",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryNoPermitPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18031-fdfb-7561-b928-d09cec71c179",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryOwnerPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18033-bb5b-7642-9037-027732e1da59",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryPartitionPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18036-6d9d-71a5-b514-10234ecaef08",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryPatchPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18033-87cc-7497-a915-ea5140eb69fc",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryPausePG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18033-53a0-7f16-8c0e-f0e66611f5b4",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryQuotaDeniedPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18038-1f87-7668-88c7-fc69c3c8c049",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryRecordedDenialPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18038-50b9-7437-9389-20ee2b353207",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryRecoveryFirstPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18034-2288-76a7-9734-a11e3da85479",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryResultFirstPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "completed"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18033-ef33-7d71-a182-1f2448e87a36",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryStartACKPG-start-commit-unknown",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": true,
+      "proofs": []
+    },
+    {
+      "case": "normal-TestRecoveryStopOnlyPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18038-81f1-7881-803d-09c1a2f06638",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryTargetACKPG-target-commit-unknown",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18032-2e57-7e3f-a632-b1703154f07b",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryUnconfirmedPG-supervisor-killed",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": true,
+      "proofs": []
+    },
+    {
+      "case": "normal-TestRecoveryUnknownPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18031-cbc8-75b0-b768-c27adbfc0079",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryValidationPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18033-202c-713b-93d1-2110196733d6",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestRecoveryZombiePG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": true,
+      "proofs": []
+    },
+    {
+      "case": "race-TestRecoveryAmbiguousDenialPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803f-2e4f-752e-aa27-d27f3844ceef",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryCommitACKPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18039-f796-742f-81ad-434a493ca94c",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryEmergencyPG-tls-stop",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803e-f32d-79e9-9b1e-1c1012a8bd09",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryExpiryPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803d-e590-704e-9371-a1cc6d5c077c",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryInputACKPG-input-commit-unknown",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": true,
+      "proofs": []
+    },
+    {
+      "case": "race-TestRecoveryNextCyclePG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown",
+        "started"
+      ],
+      "get_count": 2,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803c-57f5-72de-a288-a6008ebdb9ba",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        },
+        {
+          "run_id": "01a1803c-6bb5-7730-9fbc-6d0df9321bd0",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryNoPermitPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18038-ef9c-79ce-9952-5635531087dd",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryOwnerPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803a-d783-7959-b4ba-4de1303728ec",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryPartitionPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803d-a1ad-7c67-996d-6043707892c8",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryPatchPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803a-a03c-7d17-9737-b092a98a768b",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryPausePG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803a-6817-7f61-ab4f-d2922d5aa0b6",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryQuotaDeniedPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803f-62b2-71d6-9e88-44d41084f60a",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryRecordedDenialPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803f-9776-7b0e-a42e-3c0e8eaf1786",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryRecoveryFirstPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803b-45fc-768c-97ee-d24e664af37d",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryResultFirstPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "completed"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803b-0ec7-757b-a98c-5730cd58be62",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryStartACKPG-start-commit-unknown",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": true,
+      "proofs": []
+    },
+    {
+      "case": "race-TestRecoveryStopOnlyPG-permit-missing",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803f-cc35-7bec-aba1-8615c02a1125",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryTargetACKPG-target-commit-unknown",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 0,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18039-253a-7271-ab77-4831c633d4ce",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryUnconfirmedPG-supervisor-killed",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": true,
+      "proofs": []
+    },
+    {
+      "case": "race-TestRecoveryUnknownPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18038-b84b-77fe-8550-e94837a113f5",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryValidationPG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a1803a-2fd5-754a-b05e-3d27ac94007c",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestRecoveryZombiePG-allow-https",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": false,
+      "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": true,
+      "proofs": []
+    }
+  ]
+}

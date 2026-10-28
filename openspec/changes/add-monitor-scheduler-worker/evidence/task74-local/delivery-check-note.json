@@ -1,0 +1,7 @@
+{
+  "initial_local_commit": "adc1d70",
+  "issue": "git diff --cached --check reported trailing whitespace in verbatim PostgreSQL operator log; command sequence nevertheless committed before exit was acted on",
+  "remedy": "Normal follow-up commit removes only the review copy of raw PostgreSQL log, adds hash reference; original full log remains unchanged in archive/local directory",
+  "implementation_changes": false,
+  "force_push": false
+}

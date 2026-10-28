@@ -1,0 +1,72 @@
+{
+  "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+  "artifacts": [
+    {
+      "event": "push",
+      "run_id": 40613022394,
+      "artifact_id": 12783034939,
+      "name": "verify-evidence",
+      "size": 179836,
+      "sha256": "sha256:c02647d0a9f80e384fd8f3c3d0adb2dcbe88720b63cd28dcc074ec17f2a9f651",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "path": "/private/tmp/devpilot-task73-a-ci-20261028/artifacts/push/verify/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40613022394/artifacts/12783034939"
+    },
+    {
+      "event": "pr",
+      "run_id": 40613027846,
+      "artifact_id": 12783394646,
+      "name": "verify-evidence",
+      "size": 179831,
+      "sha256": "sha256:c311092a9529b222b4fe9d8dbcdafa0ff579e4276ae483580f38e8265613ad2f",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "path": "/private/tmp/devpilot-task73-a-ci-20261028/artifacts/pr/verify/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40613027846/artifacts/12783394646"
+    },
+    {
+      "event": "push",
+      "run_id": 40613022394,
+      "artifact_id": 12784940443,
+      "name": "integration-and-monitor-network-evidence",
+      "size": 1519998,
+      "sha256": "sha256:58a7764eff32eb5ea2f5cf6dbf50c8c71f83266f422d76e9304eeac75222d0c7",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "path": "/private/tmp/devpilot-task73-a-ci-20261028/artifacts/push/integration/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40613022394/artifacts/12784940443"
+    },
+    {
+      "event": "pr",
+      "run_id": 40613027846,
+      "artifact_id": 12784586300,
+      "name": "integration-and-monitor-network-evidence",
+      "size": 1519546,
+      "sha256": "sha256:ed7023f342df4a9b4ec245e9e9ec257c17fe3ff33627e854d2c848a41e4e3080",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "path": "/private/tmp/devpilot-task73-a-ci-20261028/artifacts/pr/integration/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40613027846/artifacts/12784586300"
+    },
+    {
+      "event": "push",
+      "run_id": 40613022394,
+      "artifact_id": 12785762456,
+      "name": "execution-security-evidence",
+      "size": 23735332,
+      "sha256": "sha256:6689fa9bcf6180c255f1e4d3bd1086386d945142dfb3261e7a79dc64237199d3",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "path": "/private/tmp/devpilot-task73-a-ci-20261028/artifacts/push/security/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40613022394/artifacts/12785762456"
+    },
+    {
+      "event": "pr",
+      "run_id": 40613027846,
+      "artifact_id": 12785903209,
+      "name": "execution-security-evidence",
+      "size": 23749680,
+      "sha256": "sha256:dc077feba67706f0abb80d277a7a17bf439d12d73bdef9698adbf3fd1fa2f352",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "path": "/private/tmp/devpilot-task73-a-ci-20261028/artifacts/pr/security/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40613027846/artifacts/12785903209"
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,120 @@
+=== RUN   TestCredentialFreeInputProcess
+    input_linux_test.go:105: external pid=14 status=Name:	cp4-probe
+        Umask:	0022
+        State:	S (sleeping)
+        Tgid:	14
+        Ngid:	0
+        Pid:	14
+        PPid:	1
+        TracerPid:	0
+        Uid:	65534	65534	65534	65534
+        Gid:	65534	65534	65534	65534
+        FDSize:	256
+        Groups:	 
+        NStgid:	14
+        NSpid:	14
+        NSpgid:	1
+        NSsid:	1
+        Kthread:	0
+        VmPeak:	 1228516 kB
+        VmSize:	 1228516 kB
+        VmLck:	       0 kB
+        VmPin:	       0 kB
+        VmHWM:	    8112 kB
+        VmRSS:	    8112 kB
+        RssAnon:	    4444 kB
+        RssFile:	    3668 kB
+        RssShmem:	       0 kB
+        VmData:	   39936 kB
+        VmStk:	     132 kB
+        VmExe:	    1696 kB
+        VmLib:	       8 kB
+        VmPTE:	      80 kB
+        VmSwap:	       0 kB
+        HugetlbPages:	       0 kB
+        CoreDumping:	0
+        THP_enabled:	1
+        untag_mask:	0xffffffffffffff
+        Threads:	6
+        SigQ:	0/47785
+        SigPnd:	0000000000000000
+        ShdPnd:	0000000000000000
+        SigBlk:	0000000000000000
+        SigIgn:	0000000000000000
+        SigCgt:	fffffffd7fc1feff
+        CapInh:	0000000000000000
+        CapPrm:	0000000000000000
+        CapEff:	0000000000000000
+        CapBnd:	0000000000000000
+        CapAmb:	0000000000000000
+        NoNewPrivs:	1
+        Seccomp:	2
+        Seccomp_filters:	2
+        Speculation_Store_Bypass:	vulnerable
+        SpeculationIndirectBranch:	unknown
+        Cpus_allowed:	ff
+        Cpus_allowed_list:	0-7
+        Mems_allowed:	1
+        Mems_allowed_list:	0
+        voluntary_ctxt_switches:	43
+        nonvoluntary_ctxt_switches:	0
+    input_linux_test.go:105: external pid=14 limits=Limit                     Soft Limit           Hard Limit           Units     
+        Max cpu time              unlimited            unlimited            seconds   
+        Max file size             0                    0                    bytes     
+        Max data size             unlimited            unlimited            bytes     
+        Max stack size            8388608              unlimited            bytes     
+        Max core file size        0                    0                    bytes     
+        Max resident set          unlimited            unlimited            bytes     
+        Max processes             unlimited            unlimited            processes 
+        Max open files            256                  256                  files     
+        Max locked memory         unlimited            unlimited            bytes     
+        Max address space         unlimited            unlimited            bytes     
+        Max file locks            unlimited            unlimited            locks     
+        Max pending signals       47785                47785                signals   
+        Max msgqueue size         819200               819200               bytes     
+        Max nice priority         0                    0                    
+        Max realtime priority     0                    0                    
+        Max realtime timeout      unlimited            unlimited            us        
+    input_linux_test.go:105: external pid=14 cgroup=0::/
+    input_linux_test.go:111: child proof={"proof":{"inherited_fds_only":true,"uid":65534,"gid":65534,"capabilities_zero":true,"no_new_privileges":true,"seccomp_all_threads":true,"memory_max":134217728,"cpu_quota":100000,"cpu_period":100000,"pids_max":128,"fd_limit":256,"fd_exhaustion":true,"root_read_only":true,"environment_clean":true,"secrets_unavailable":true,"admin_denied":true,"sockets_denied":true},"consumed_once":true,"kernel_snapshot_valid":true}
+    input_linux_test.go:131: real restart with old readers rejected at EOF; no reconnect state or alternate input channel
+--- PASS: TestCredentialFreeInputProcess (0.08s)
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/truncated
+    input_linux_test.go:193: real child case=truncated exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/oversized
+    input_linux_test.go:193: real child case=oversized exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/forged
+    input_linux_test.go:193: real child case=forged exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/cross-run
+    input_linux_test.go:193: real child case=cross-run exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/cross-version
+    input_linux_test.go:193: real child case=cross-version exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/cross-scope
+    input_linux_test.go:193: real child case=cross-scope exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/cross-epoch
+    input_linux_test.go:193: real child case=cross-epoch exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/cross-fence
+    input_linux_test.go:193: real child case=cross-fence exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/cross-namespace
+    input_linux_test.go:193: real child case=cross-namespace exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/duplicate-frame
+    input_linux_test.go:193: real child case=duplicate-frame exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/bad-receipt
+    input_linux_test.go:193: real child case=bad-receipt exit=2 fixed diagnostic only
+=== RUN   TestInputProcessRejectsMalformedAndCrossRunReplay/noncanonical-json
+    input_linux_test.go:193: real child case=noncanonical-json exit=2 fixed diagnostic only
+--- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay (0.47s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/truncated (0.04s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/oversized (0.04s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/forged (0.03s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/cross-run (0.04s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/cross-version (0.04s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/cross-scope (0.03s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/cross-epoch (0.04s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/cross-fence (0.04s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/cross-namespace (0.04s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/duplicate-frame (0.05s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/bad-receipt (0.03s)
+    --- PASS: TestInputProcessRejectsMalformedAndCrossRunReplay/noncanonical-json (0.04s)
+PASS

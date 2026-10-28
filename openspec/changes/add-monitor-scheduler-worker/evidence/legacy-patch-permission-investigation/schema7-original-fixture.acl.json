@@ -1,0 +1,801 @@
+{
+  "role": {
+    "rolname": "checkpoint1_legacy",
+    "rolsuper": false,
+    "rolinherit": true,
+    "rolcanlogin": true,
+    "rolcreatedb": false,
+    "rolbypassrls": false,
+    "rolcreaterole": false,
+    "rolreplication": false
+  },
+  "tables": [
+    {
+      "acl": [
+        "devpilot_fixture=arwdDxtm/devpilot_fixture",
+        "checkpoint1_legacy=rw/devpilot_fixture"
+      ],
+      "rls": false,
+      "owner": "devpilot_fixture",
+      "table": "http_monitors",
+      "insert": false,
+      "select": true,
+      "update": true,
+      "columns": [
+        {
+          "acl": null,
+          "name": "id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "workspace_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "project_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "name",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "url",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "method",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "interval_seconds",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "timeout_seconds",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "expected_status",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_by_user_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "version",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "updated_at",
+          "insert": false,
+          "update": true
+        }
+      ]
+    },
+    {
+      "acl": [
+        "devpilot_fixture=arwdDxtm/devpilot_fixture",
+        "checkpoint1_legacy=rw/devpilot_fixture"
+      ],
+      "rls": false,
+      "owner": "devpilot_fixture",
+      "table": "monitor_activation_states",
+      "insert": false,
+      "select": true,
+      "update": true,
+      "columns": [
+        {
+          "acl": null,
+          "name": "workspace_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "project_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "monitor_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "desired_state",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "activation_configuration_version",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "activation_generation",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "next_due_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "next_enable_allowed_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "last_transition_kind",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "last_actor_user_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "updated_at",
+          "insert": false,
+          "update": true
+        }
+      ]
+    },
+    {
+      "acl": [
+        "devpilot_fixture=arwdDxtm/devpilot_fixture",
+        "checkpoint1_legacy=rw/devpilot_fixture"
+      ],
+      "rls": false,
+      "owner": "devpilot_fixture",
+      "table": "projects",
+      "insert": false,
+      "select": true,
+      "update": true,
+      "columns": [
+        {
+          "acl": null,
+          "name": "id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "workspace_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "name",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "description",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_by_user_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "updated_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "version",
+          "insert": false,
+          "update": true
+        }
+      ]
+    },
+    {
+      "acl": [
+        "devpilot_fixture=arwdDxtm/devpilot_fixture",
+        "checkpoint1_legacy=rw/devpilot_fixture"
+      ],
+      "rls": false,
+      "owner": "devpilot_fixture",
+      "table": "sessions",
+      "insert": false,
+      "select": true,
+      "update": true,
+      "columns": [
+        {
+          "acl": null,
+          "name": "id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "user_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "token_hash",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "expires_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "revoked_at",
+          "insert": false,
+          "update": true
+        }
+      ]
+    },
+    {
+      "acl": [
+        "devpilot_fixture=arwdDxtm/devpilot_fixture",
+        "checkpoint1_legacy=rw/devpilot_fixture"
+      ],
+      "rls": false,
+      "owner": "devpilot_fixture",
+      "table": "users",
+      "insert": false,
+      "select": true,
+      "update": true,
+      "columns": [
+        {
+          "acl": null,
+          "name": "id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "email",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "password_hash",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "status",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "email_verified_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "updated_at",
+          "insert": false,
+          "update": true
+        }
+      ]
+    },
+    {
+      "acl": null,
+      "rls": false,
+      "owner": "devpilot_fixture",
+      "table": "workspace_invitations",
+      "insert": false,
+      "select": false,
+      "update": false,
+      "columns": [
+        {
+          "acl": null,
+          "name": "id",
+          "insert": false,
+          "update": false
+        },
+        {
+          "acl": null,
+          "name": "workspace_id",
+          "insert": false,
+          "update": false
+        },
+        {
+          "acl": null,
+          "name": "invitee_user_id",
+          "insert": false,
+          "update": false
+        },
+        {
+          "acl": null,
+          "name": "created_by_user_id",
+          "insert": false,
+          "update": false
+        },
+        {
+          "acl": null,
+          "name": "status",
+          "insert": false,
+          "update": false
+        },
+        {
+          "acl": null,
+          "name": "created_at",
+          "insert": false,
+          "update": false
+        },
+        {
+          "acl": null,
+          "name": "updated_at",
+          "insert": false,
+          "update": false
+        },
+        {
+          "acl": null,
+          "name": "expires_at",
+          "insert": false,
+          "update": false
+        }
+      ]
+    },
+    {
+      "acl": [
+        "devpilot_fixture=arwdDxtm/devpilot_fixture",
+        "checkpoint1_legacy=rw/devpilot_fixture"
+      ],
+      "rls": false,
+      "owner": "devpilot_fixture",
+      "table": "workspace_members",
+      "insert": false,
+      "select": true,
+      "update": true,
+      "columns": [
+        {
+          "acl": null,
+          "name": "workspace_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "user_id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "role",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "membership_id",
+          "insert": false,
+          "update": true
+        }
+      ]
+    },
+    {
+      "acl": [
+        "devpilot_fixture=arwdDxtm/devpilot_fixture",
+        "checkpoint1_legacy=rw/devpilot_fixture"
+      ],
+      "rls": false,
+      "owner": "devpilot_fixture",
+      "table": "workspaces",
+      "insert": false,
+      "select": true,
+      "update": true,
+      "columns": [
+        {
+          "acl": null,
+          "name": "id",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "name",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "created_at",
+          "insert": false,
+          "update": true
+        },
+        {
+          "acl": null,
+          "name": "updated_at",
+          "insert": false,
+          "update": true
+        }
+      ]
+    }
+  ],
+  "schemas": [
+    {
+      "acl": [
+        "pg_database_owner=UC/pg_database_owner",
+        "=U/pg_database_owner",
+        "checkpoint1_legacy=U/pg_database_owner"
+      ],
+      "owner": "pg_database_owner",
+      "usage": true,
+      "create": false,
+      "schema": "public"
+    }
+  ],
+  "database": {
+    "acl": [
+      "=c/devpilot_fixture",
+      "devpilot_fixture=CTc/devpilot_fixture"
+    ],
+    "temp": false,
+    "owner": "devpilot_fixture",
+    "create": false
+  },
+  "defaults": [
+    "uuidv7()",
+    "'GET'::text",
+    "60",
+    "10",
+    "200",
+    "1",
+    "statement_timestamp()",
+    "statement_timestamp()"
+  ],
+  "triggers": [
+    {
+      "owner": "devpilot_fixture",
+      "table": "http_monitors",
+      "definer": false,
+      "function": "http_monitors_immutable_identity()",
+      "definition": "CREATE TRIGGER http_monitors_immutable_identity BEFORE UPDATE ON public.http_monitors FOR EACH ROW EXECUTE FUNCTION http_monitors_immutable_identity()"
+    },
+    {
+      "owner": "devpilot_fixture",
+      "table": "http_monitors",
+      "definer": false,
+      "function": "monitor_activation_initialize()",
+      "definition": "CREATE TRIGGER monitor_activation_initialize AFTER INSERT ON public.http_monitors FOR EACH ROW EXECUTE FUNCTION monitor_activation_initialize()"
+    },
+    {
+      "owner": "devpilot_fixture",
+      "table": "http_monitors",
+      "definer": false,
+      "function": "monitor_activation_invalidate()",
+      "definition": "CREATE TRIGGER monitor_activation_invalidate AFTER UPDATE ON public.http_monitors FOR EACH ROW EXECUTE FUNCTION monitor_activation_invalidate()"
+    },
+    {
+      "owner": "devpilot_fixture",
+      "table": "http_monitors",
+      "definer": false,
+      "function": "monitor_configuration_revision_guard()",
+      "definition": "CREATE TRIGGER monitor_configuration_revision_guard BEFORE UPDATE ON public.http_monitors FOR EACH ROW EXECUTE FUNCTION monitor_configuration_revision_guard()"
+    },
+    {
+      "owner": "devpilot_fixture",
+      "table": "monitor_activation_states",
+      "definer": false,
+      "function": "monitor_activation_guard()",
+      "definition": "CREATE TRIGGER monitor_activation_guard BEFORE DELETE OR UPDATE ON public.monitor_activation_states FOR EACH ROW EXECUTE FUNCTION monitor_activation_guard()"
+    },
+    {
+      "owner": "devpilot_fixture",
+      "table": "monitor_activation_states",
+      "definer": false,
+      "function": "monitor_activation_guard()",
+      "definition": "CREATE TRIGGER monitor_activation_no_truncate BEFORE TRUNCATE ON public.monitor_activation_states FOR EACH STATEMENT EXECUTE FUNCTION monitor_activation_guard()"
+    },
+    {
+      "owner": "devpilot_fixture",
+      "table": "projects",
+      "definer": false,
+      "function": "projects_immutable_identity()",
+      "definition": "CREATE TRIGGER projects_immutable_identity BEFORE UPDATE ON public.projects FOR EACH ROW EXECUTE FUNCTION projects_immutable_identity()"
+    }
+  ],
+  "functions": [
+    {
+      "acl": null,
+      "owner": "devpilot_fixture",
+      "definer": false,
+      "execute": true,
+      "function": "http_monitors_immutable_identity()",
+      "settings": null
+    },
+    {
+      "acl": null,
+      "owner": "devpilot_fixture",
+      "definer": false,
+      "execute": true,
+      "function": "monitor_activation_guard()",
+      "settings": null
+    },
+    {
+      "acl": null,
+      "owner": "devpilot_fixture",
+      "definer": false,
+      "execute": true,
+      "function": "monitor_activation_initialize()",
+      "settings": null
+    },
+    {
+      "acl": null,
+      "owner": "devpilot_fixture",
+      "definer": false,
+      "execute": true,
+      "function": "monitor_activation_invalidate()",
+      "settings": null
+    },
+    {
+      "acl": null,
+      "owner": "devpilot_fixture",
+      "definer": false,
+      "execute": true,
+      "function": "monitor_configuration_revision_guard()",
+      "settings": null
+    },
+    {
+      "acl": null,
+      "owner": "devpilot_fixture",
+      "definer": false,
+      "execute": true,
+      "function": "projects_immutable_identity()",
+      "settings": null
+    }
+  ],
+  "memberships": [],
+  "dependencies": [
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL created_at"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE RESTRICT"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL created_by_user_id"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL expected_status"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL id"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "CHECK ((interval_seconds = ANY (ARRAY[60, 300, 900, 1800, 3600])))"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL interval_seconds"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "CHECK ((method = 'GET'::text))"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL method"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "CHECK ((((char_length(name) >= 1) AND (char_length(name) <= 100)) AND (octet_length(name) <= 400) AND (name = btrim(name, ' \t\r\n'::text)) AND (name !~ '[\u0001-\u001f\u007f]'::text)))"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL name"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "PRIMARY KEY (id)"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "FOREIGN KEY (workspace_id, project_id) REFERENCES projects(workspace_id, id) ON DELETE RESTRICT"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL project_id"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "CHECK (((expected_status >= 200) AND (expected_status <= 599)))"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "UNIQUE (workspace_id, project_id, id)"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "CHECK ((updated_at >= created_at))"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "CHECK ((((timeout_seconds >= 1) AND (timeout_seconds <= 30)) AND (timeout_seconds < interval_seconds)))"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL timeout_seconds"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL updated_at"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "CHECK ((((octet_length(url) >= 1) AND (octet_length(url) <= 2048)) AND ((url COLLATE \"C\") ~ '^https?://[!-~]+$'::text)))"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL url"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "CHECK ((version > 0))"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL version"
+    },
+    {
+      "table": "http_monitors",
+      "constraint": "NOT NULL workspace_id"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "CHECK (((activation_configuration_version IS NULL) OR (activation_configuration_version > 0)))"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "CHECK ((activation_generation > 0))"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "NOT NULL activation_generation"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "CHECK ((updated_at >= created_at))"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "CHECK ((((desired_state = 'enabled'::text) AND (activation_configuration_version IS NOT NULL) AND (next_enable_allowed_at IS NOT NULL) AND (last_actor_user_id IS NOT NULL) AND (last_transition_kind = 'owner_enabled'::text)) OR ((desired_state = 'disabled'::text) AND (activation_configuration_version IS NULL) AND (((last_transition_kind = 'owner_paused'::text) AND (last_actor_user_id IS NOT NULL)) OR ((last_transition_kind = ANY (ARRAY['never_activated'::text, 'configuration_changed'::text])) AND (last_actor_user_id IS NULL))))))"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "NOT NULL created_at"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "NOT NULL desired_state"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "FOREIGN KEY (last_actor_user_id) REFERENCES users(id) ON DELETE RESTRICT"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "NOT NULL last_transition_kind"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "NOT NULL monitor_id"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "CHECK ((next_due_at IS NULL))"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "PRIMARY KEY (workspace_id, project_id, monitor_id)"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "NOT NULL project_id"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "NOT NULL updated_at"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "NOT NULL workspace_id"
+    },
+    {
+      "table": "monitor_activation_states",
+      "constraint": "FOREIGN KEY (workspace_id, project_id, monitor_id) REFERENCES http_monitors(workspace_id, project_id, id) ON DELETE RESTRICT"
+    }
+  ]
+}

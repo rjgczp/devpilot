@@ -1,0 +1,125 @@
+{
+  "tests": 6,
+  "modes": {
+    "normal": 3,
+    "race": 3
+  },
+  "runs": 6,
+  "real_gets": 6,
+  "rows": [
+    {
+      "case": "normal-TestExecutionStatusRealCompletedPG",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": true,
+      "source_inventory_sha256": "84a646e841be5ac2b7a34da7c7a01f62f8ae7cf54f4df4e578c1d4582739d6a3",
+      "states": [
+        "completed"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18186-2564-7272-a2d7-b0f6bd231131",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestExecutionStatusRealOldResultPG",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": true,
+      "source_inventory_sha256": "84a646e841be5ac2b7a34da7c7a01f62f8ae7cf54f4df4e578c1d4582739d6a3",
+      "states": [
+        "completed"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18186-5fe1-76bd-8275-1c8a91c794dc",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "normal-TestExecutionStatusRealUnknownPG",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": true,
+      "source_inventory_sha256": "84a646e841be5ac2b7a34da7c7a01f62f8ae7cf54f4df4e578c1d4582739d6a3",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18186-9e29-7729-a556-a558583b041c",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestExecutionStatusRealCompletedPG",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": true,
+      "source_inventory_sha256": "84a646e841be5ac2b7a34da7c7a01f62f8ae7cf54f4df4e578c1d4582739d6a3",
+      "states": [
+        "completed"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18186-e142-7373-add7-32a8c035e788",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestExecutionStatusRealOldResultPG",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": true,
+      "source_inventory_sha256": "84a646e841be5ac2b7a34da7c7a01f62f8ae7cf54f4df4e578c1d4582739d6a3",
+      "states": [
+        "completed"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18187-20f9-7be4-8766-80441d60ffc5",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    },
+    {
+      "case": "race-TestExecutionStatusRealUnknownPG",
+      "head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "dirty": true,
+      "source_inventory_sha256": "84a646e841be5ac2b7a34da7c7a01f62f8ae7cf54f4df4e578c1d4582739d6a3",
+      "states": [
+        "unknown"
+      ],
+      "get_count": 1,
+      "capacity_quarantined": false,
+      "proofs": [
+        {
+          "run_id": "01a18187-5e5b-7418-9203-9e54bee218c1",
+          "pidfd_exits": 3,
+          "signature_verified": true,
+          "receipt_matches_database": true
+        }
+      ]
+    }
+  ]
+}

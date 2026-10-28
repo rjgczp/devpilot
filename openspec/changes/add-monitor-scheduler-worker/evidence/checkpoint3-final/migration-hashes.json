@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "-c",
+    "import hashlib,pathlib,subprocess; files=sorted(pathlib.Path(\"migrations\").glob(\"*.sql\"))[:7]; assert len(files)==7; [(print(str(p),hashlib.sha256(p.read_bytes()).hexdigest()),p.read_bytes()==subprocess.check_output([\"git\",\"show\",\"655d9ee9429bc3032eec0ae95246a6f3994afc5c:\"+str(p)]) or (_ for _ in ()).throw(AssertionError(str(p)))) for p in files]"
+  ],
+  "started_at": "2026-10-21T06:44:09.412494+00:00",
+  "elapsed_seconds": 0.10788320802384987,
+  "exit_code": 0,
+  "head": "e05959ec7aa0e4e80981bcd59ea0d6ee4c823815",
+  "dirty": false,
+  "source_inventory_sha256": "615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96",
+  "binaries": {},
+  "log_sha256": "ef0fc3421afe579e4da2b7bc9edb651af1cc6a2bc1a0cb5b2ff463bafbfd2a2f",
+  "source_inventory_ref": "source-inventories/615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96.json",
+  "original_receipt_ref": "raw-receipts/migration-hashes.json.gz",
+  "original_receipt_sha256": "50e732d034b86f248143e1b1914c5cc665f7a70c33843c6e723ccd41898e023c",
+  "log_ref": "migration-hashes.log"
+}

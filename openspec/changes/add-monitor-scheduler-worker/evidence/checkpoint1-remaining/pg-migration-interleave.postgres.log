@@ -1,0 +1,37 @@
+2026-10-20T07:31:37.810723753Z 2026-10-20 07:31:37.810 UTC [3034] ERROR:  permission denied for table http_monitors
+2026-10-20T07:31:37.810748461Z 2026-10-20 07:31:37.810 UTC [3034] STATEMENT:  WITH live_identity AS MATERIALIZED (
+2026-10-20T07:31:37.810750170Z 	 SELECT u.id FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=$1 AND u.id=$2 AND u.status='active'
+2026-10-20T07:31:37.810751128Z 	 AND s.revoked_at IS NULL AND s.expires_at>statement_timestamp()
+2026-10-20T07:31:37.810751920Z 	), state AS MATERIALIZED (
+2026-10-20T07:31:37.810752670Z 	 SELECT i.id,a.workspace_id,a.role,p.id project_id,m.id monitor_id,m.version,
+2026-10-20T07:31:37.810753420Z 	 COALESCE($11::text,m.name) name,COALESCE($12::text,m.url) url,COALESCE($13::text,m.method) method,
+2026-10-20T07:31:37.810754170Z 	 COALESCE($14::integer,m.interval_seconds) interval_seconds,COALESCE($15::integer,m.timeout_seconds) timeout_seconds,
+2026-10-20T07:31:37.810754961Z 	 COALESCE($16::integer,m.expected_status) expected_status
+2026-10-20T07:31:37.810755670Z 	 FROM live_identity i LEFT JOIN workspace_members a ON a.workspace_id=$3::uuid AND a.user_id=i.id AND $6
+2026-10-20T07:31:37.810756420Z 	 LEFT JOIN projects p ON p.workspace_id=a.workspace_id AND p.id=$4::uuid
+2026-10-20T07:31:37.810757128Z 	 LEFT JOIN http_monitors m ON m.workspace_id=p.workspace_id AND m.project_id=p.id AND m.id=$5::uuid
+2026-10-20T07:31:37.810757878Z 	), decision AS MATERIALIZED (
+2026-10-20T07:31:37.810758545Z 	 SELECT *,CASE WHEN role IS NULL OR project_id IS NULL OR (NOT $7 AND monitor_id IS NULL) THEN 'not_found'
+2026-10-20T07:31:37.810759336Z 	 WHEN role<>'owner' THEN 'forbidden'
+2026-10-20T07:31:37.810760086Z 	 WHEN NOT $7 AND NOT $8 THEN 'required'
+2026-10-20T07:31:37.810771628Z 	 WHEN NOT $7 AND (monitor_id IS DISTINCT FROM $9::uuid OR version<>$10::bigint) THEN 'failed'
+2026-10-20T07:31:37.810773170Z 	 WHEN NOT $7 AND version=9223372036854775807 THEN 'internal'
+2026-10-20T07:31:37.810773753Z 	 WHEN NOT $17::boolean THEN 'internal'
+2026-10-20T07:31:37.810774336Z 	 WHEN method<>'GET' OR interval_seconds NOT IN(60,300,900,1800,3600) OR timeout_seconds NOT BETWEEN 1 AND 30
+2026-10-20T07:31:37.810775045Z 	 OR timeout_seconds>=interval_seconds OR expected_status NOT BETWEEN 200 AND 599 THEN 'internal'
+2026-10-20T07:31:37.810775670Z 	 ELSE 'ok' END result FROM state
+2026-10-20T07:31:37.810776253Z 	), inserted AS (
+2026-10-20T07:31:37.810776795Z 	 INSERT INTO http_monitors(workspace_id,project_id,name,url,method,interval_seconds,timeout_seconds,expected_status,created_by_user_id)
+2026-10-20T07:31:37.810777503Z 	 SELECT workspace_id,project_id,name,url,method,interval_seconds,timeout_seconds,expected_status,id FROM decision WHERE $7 AND result='ok'
+2026-10-20T07:31:37.810778170Z 	 RETURNING *
+2026-10-20T07:31:37.810778711Z 	), changed AS (
+2026-10-20T07:31:37.810779670Z 	 UPDATE http_monitors m SET name=d.name,url=d.url,method=d.method,interval_seconds=d.interval_seconds,
+2026-10-20T07:31:37.810780295Z 	 timeout_seconds=d.timeout_seconds,expected_status=d.expected_status,version=m.version+1,
+2026-10-20T07:31:37.810780920Z 	 updated_at=GREATEST(m.created_at,m.updated_at,statement_timestamp())
+2026-10-20T07:31:37.810781503Z 	 FROM decision d WHERE NOT $7 AND d.result='ok' AND m.workspace_id=$3::uuid AND m.project_id=$4::uuid AND m.id=$5::uuid
+2026-10-20T07:31:37.810782128Z 	 AND m.version=$10::bigint AND d.role='owner' AND d.workspace_id=m.workspace_id AND d.project_id=m.project_id AND d.monitor_id=m.id
+2026-10-20T07:31:37.810782795Z 	 RETURNING m.*
+2026-10-20T07:31:37.810783336Z 	), output AS (SELECT * FROM inserted UNION ALL SELECT * FROM changed)
+2026-10-20T07:31:37.810783878Z 	 SELECT d.result,CASE WHEN m.id IS NOT NULL THEN jsonb_build_object('id',m.id,'workspace_id',m.workspace_id,'project_id',m.project_id,
+2026-10-20T07:31:37.810784545Z 	 'name',m.name,'method',m.method,'interval_seconds',m.interval_seconds,'timeout_seconds',m.timeout_seconds,
+2026-10-20T07:31:37.810785211Z 	 'expected_status',m.expected_status,'version',m.version::text,'created_at',m.created_at,'updated_at',m.updated_at) || jsonb_build_object('url',m.url) END FROM decision d LEFT JOIN output m ON true

@@ -1,0 +1,6 @@
+{
+  "source": "Direct human user reply in this conversation",
+  "question_item": "call_ee313bbc2a494a2e9bef6eb5b5ee4e38",
+  "answer": "批准最小 fixture 修复及回归",
+  "scope": "Historical TestActivationExpiryAfterEveryProtectiveWait only: read strong ETag before original 150ms expiry window; select PID, early result or original 6s context. Keep permission assertions, real waits, 120s process limit. No production change."
+}

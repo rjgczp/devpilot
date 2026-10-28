@@ -1,0 +1,7 @@
+{
+  "all_projection_assertions_passed": true,
+  "failure": "Goose Down correctly refused synthetic unknown with NULL physical release",
+  "fix": "Delete only the explicitly synthetic admin projection row without a reservation or registered Worker; do not fabricate physical release timestamp or receipt, or return capacity",
+  "actual_physical_chain_changes": false,
+  "assertions_weakened": false
+}

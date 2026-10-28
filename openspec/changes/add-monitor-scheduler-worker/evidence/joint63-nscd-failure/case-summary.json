@@ -1,0 +1,292 @@
+{
+  "head": "856cbbd45aa19297e4694f7b90b2b44261049b42",
+  "dirty": true,
+  "tested_source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+  "planned_cases": 46,
+  "passed": 8,
+  "failed": 1,
+  "unexecuted": 37,
+  "race_cases_executed": 0,
+  "complete": false,
+  "cases": [
+    {
+      "mode": "normal",
+      "case": "allow-https",
+      "exit_code": 0,
+      "elapsed_seconds": 12.877597082988359,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 1,
+      "receiver_gets": 1,
+      "global_in_use": [
+        0
+      ],
+      "reservations": [
+        {
+          "reservation_state": "released",
+          "released_at": "2026-10-23T06:21:26.282333+00:00",
+          "termination_receipt_id": "80dc5382-8654-43ef-8545-9368f1187fb7"
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": "2026-10-23T06:21:26.282333+00:00",
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": true,
+      "trace_file": true
+    },
+    {
+      "mode": "normal",
+      "case": "tls-stop",
+      "exit_code": 0,
+      "elapsed_seconds": 14.169237416004762,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 1,
+      "receiver_gets": 1,
+      "global_in_use": [
+        0
+      ],
+      "reservations": [
+        {
+          "reservation_state": "released",
+          "released_at": "2026-10-23T06:21:40.668928+00:00",
+          "termination_receipt_id": "e668fa47-c691-4314-bedf-00c2665d4182"
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": "2026-10-23T06:21:40.668928+00:00",
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": true,
+      "trace_file": true
+    },
+    {
+      "mode": "normal",
+      "case": "tracer-stopped",
+      "exit_code": 0,
+      "elapsed_seconds": 14.045771041070111,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 1,
+      "receiver_gets": 1,
+      "global_in_use": [
+        0
+      ],
+      "reservations": [
+        {
+          "reservation_state": "released",
+          "released_at": "2026-10-23T06:21:54.763363+00:00",
+          "termination_receipt_id": "1a9dbdc6-2ab4-452d-8038-5619994939be"
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": "2026-10-23T06:21:54.763363+00:00",
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": true,
+      "trace_file": true
+    },
+    {
+      "mode": "normal",
+      "case": "tracer-crashed",
+      "exit_code": 0,
+      "elapsed_seconds": 14.031934874947183,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 1,
+      "receiver_gets": 1,
+      "global_in_use": [
+        1
+      ],
+      "reservations": [
+        {
+          "reservation_state": "quarantined",
+          "released_at": null,
+          "termination_receipt_id": null
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": null,
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": false,
+      "trace_file": false
+    },
+    {
+      "mode": "normal",
+      "case": "supervisor-killed",
+      "exit_code": 0,
+      "elapsed_seconds": 13.723343792022206,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 1,
+      "receiver_gets": 1,
+      "global_in_use": [
+        1
+      ],
+      "reservations": [
+        {
+          "reservation_state": "quarantined",
+          "released_at": null,
+          "termination_receipt_id": null
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": null,
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": false,
+      "trace_file": false
+    },
+    {
+      "mode": "normal",
+      "case": "stop-ack-lost",
+      "exit_code": 0,
+      "elapsed_seconds": 16.852012458024547,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 1,
+      "receiver_gets": 1,
+      "global_in_use": [
+        1
+      ],
+      "reservations": [
+        {
+          "reservation_state": "quarantined",
+          "released_at": null,
+          "termination_receipt_id": null
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": null,
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": false,
+      "trace_file": false
+    },
+    {
+      "mode": "normal",
+      "case": "journal-collision",
+      "exit_code": 0,
+      "elapsed_seconds": 13.818074832903221,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 1,
+      "receiver_gets": 1,
+      "global_in_use": [
+        1
+      ],
+      "reservations": [
+        {
+          "reservation_state": "quarantined",
+          "released_at": null,
+          "termination_receipt_id": null
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": null,
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": false,
+      "trace_file": true
+    },
+    {
+      "mode": "normal",
+      "case": "allow-http",
+      "exit_code": 0,
+      "elapsed_seconds": 12.41921533306595,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 1,
+      "receiver_gets": 1,
+      "global_in_use": [
+        0
+      ],
+      "reservations": [
+        {
+          "reservation_state": "released",
+          "released_at": "2026-10-23T06:23:06.523417+00:00",
+          "termination_receipt_id": "21f4c9b7-2e6c-46b5-9588-31f5aadc4f8d"
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": "2026-10-23T06:23:06.523417+00:00",
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": true,
+      "trace_file": true
+    },
+    {
+      "mode": "normal",
+      "case": "permit-missing",
+      "exit_code": 1,
+      "elapsed_seconds": 9.402314375038259,
+      "source_inventory_sha256": "e7ef2bb27d920355b3124834900d29f63f0795a6a063412b7b31724d1329c3ae",
+      "receiver_target_accepts": 0,
+      "receiver_gets": 0,
+      "global_in_use": [
+        1
+      ],
+      "reservations": [
+        {
+          "reservation_state": "reserved",
+          "released_at": null,
+          "termination_receipt_id": null
+        }
+      ],
+      "runs": [
+        {
+          "attempt_state": "started",
+          "physical_release_confirmed_at": null,
+          "http_status": null,
+          "success": null,
+          "failure_code": null,
+          "result_commit_id": null
+        }
+      ],
+      "signed_receipt_file": false,
+      "trace_file": false
+    }
+  ]
+}

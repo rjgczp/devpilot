@@ -29,7 +29,7 @@ func (s *activationStub) ActivationUpdate(ctx context.Context, _ session.Digest,
 	return s.value, s.err
 }
 func activationStubValue() Activation {
-	return Activation{WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", DesiredState: "disabled", ActivationGeneration: "1", LastTransitionKind: "never_activated", CreatedAt: time.Unix(0, 0).UTC(), UpdatedAt: time.Unix(0, 0).UTC(), ExecutionState: "blocked", BlockedReason: "scheduler_unavailable"}
+	return Activation{WorkspaceID: exampleID, ProjectID: exampleID, MonitorID: exampleID, ConfigurationVersion: "1", DesiredState: "disabled", ActivationGeneration: "1", LastTransitionKind: "never_activated", CreatedAt: time.Unix(0, 0).UTC(), UpdatedAt: time.Unix(0, 0).UTC(), ExecutionState: "not_reported", BlockedReason: "execution_status_required"}
 }
 func TestActivationStrictProtocol(t *testing.T) {
 	good := `{"desired_state":"enabled","configuration_version":"1"}`
@@ -91,6 +91,9 @@ func TestActivationTransport(t *testing.T) {
 				t.Fatal("unexpected DB calls")
 			}
 			if tc.status == 200 {
+				if w.Header().Get("DevPilot-Activation-Projection") != "intent-v2" {
+					t.Fatal("projection protocol")
+				}
 				if w.Header().Get("ETag") != ActivationETag(s.value) {
 					t.Fatal("tag")
 				}

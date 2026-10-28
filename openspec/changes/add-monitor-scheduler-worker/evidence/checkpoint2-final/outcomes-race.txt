@@ -1,0 +1,160 @@
+1514:     scheduler_checkpoint1_down_test.go:54: expected Down failure open-gate: 2026/10/21 02:19:56 goose run: ERROR 00008_create_monitor_scheduler.sql: failed to run SQL migration: failed to execute SQL query "DO $$ BEGIN\n IF EXISTS(SELECT 1 FROM public.monitor_runs WHERE physical_release_confirmed_at IS NULL)\n OR EXISTS(SELECT 1 FROM public.scheduler_control WHERE gate<>'closed') THEN\n  RAISE EXCEPTION 'independent physical stop and closed gate required';\n END IF;\nEND $$;": ERROR: independent physical stop and closed gate required (SQLSTATE P0001)
+1519:     scheduler_checkpoint1_down_test.go:54: expected Down failure unreleased-run: 2026/10/21 02:19:56 goose run: ERROR 00008_create_monitor_scheduler.sql: failed to run SQL migration: failed to execute SQL query "DO $$ BEGIN\n IF EXISTS(SELECT 1 FROM public.monitor_runs WHERE physical_release_confirmed_at IS NULL)\n OR EXISTS(SELECT 1 FROM public.scheduler_control WHERE gate<>'closed') THEN\n  RAISE EXCEPTION 'independent physical stop and closed gate required';\n END IF;\nEND $$;": ERROR: independent physical stop and closed gate required (SQLSTATE P0001)
+1524:     scheduler_checkpoint1_down_test.go:54: expected Down failure disabled-overflow: 2026/10/21 02:19:56 goose run: ERROR 00008_create_monitor_scheduler.sql: failed to run SQL migration: failed to execute SQL query "UPDATE public.monitor_activation_states SET desired_state='disabled',activation_configuration_version=NULL,\n activation_generation=activation_generation+1,last_transition_kind='configuration_changed',last_actor_user_id=NULL,\n updated_at=GREATEST(updated_at,statement_timestamp());": ERROR: bigint out of range (SQLSTATE 22003)
+1529:     scheduler_checkpoint1_down_test.go:54: expected Down failure enabled-overflow: 2026/10/21 02:19:56 goose run: ERROR 00008_create_monitor_scheduler.sql: failed to run SQL migration: failed to execute SQL query "UPDATE public.monitor_activation_states SET desired_state='disabled',activation_configuration_version=NULL,\n activation_generation=activation_generation+1,last_transition_kind='configuration_changed',last_actor_user_id=NULL,\n updated_at=GREATEST(updated_at,statement_timestamp());": ERROR: bigint out of range (SQLSTATE 22003)
+1540:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1544:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1548:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1552:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1556:     scheduler_checkpoint1_final_gates_test.go:116: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1574:     scheduler_checkpoint1_final_gates_test.go:171: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1613:     scheduler_checkpoint1_legacy_race_test.go:120: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1615:     scheduler_checkpoint1_legacy_race_test.go:120: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1617:     scheduler_checkpoint1_legacy_race_test.go:120: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1619:     scheduler_checkpoint1_legacy_race_test.go:137: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1684:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1685:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1686:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1687:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1688:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1689:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1690:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1691:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1692:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1693:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1694:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1695:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1696:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1697:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1698:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1699:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1700:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1701:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1702:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1703:     scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+1704:     scheduler_checkpoint1_roles_test.go:65: database rejected SQLSTATE=42501 constraint=
+1705:     scheduler_checkpoint1_roles_test.go:70: database rejected SQLSTATE=42501 constraint=
+1706:     scheduler_checkpoint1_roles_test.go:73: database rejected SQLSTATE=42501 constraint=
+1711:     scheduler_checkpoint1_test.go:38: database rejected SQLSTATE=23503 constraint=monitor_schedules_workspace_id_project_id_monitor_id_fkey
+1712:     scheduler_checkpoint1_test.go:44: database rejected SQLSTATE=23505 constraint=monitor_runs_outstanding_idx
+1713:     scheduler_checkpoint1_test.go:45: database rejected SQLSTATE=23503 constraint=scheduler_reservations_workspace_id_project_id_monitor_id__fkey
+1714:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+1715:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+1716:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+1717:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+1718:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+1719:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_reservations_check1
+1720:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_preparation_shape
+1721:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_preparation_shape
+1722:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_reservations_origin_key_check
+1723:     scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_target_permit_shape
+1724:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+1725:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+1726:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+1727:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+1728:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+1729:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+1730:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+1731:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+1732:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+1733:     scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check2
+1734:     scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+1735:     scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+1736:     scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+1737:     scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=monitor_schedules_check1
+1738:     scheduler_checkpoint1_test.go:61: database rejected SQLSTATE=23514 constraint=scheduler_control_check1
+1739:     scheduler_checkpoint1_test.go:62: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check
+1740:     scheduler_checkpoint1_test.go:63: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check1
+1741:     scheduler_checkpoint1_test.go:64: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check2
+1742:     scheduler_checkpoint1_test.go:72: database rejected SQLSTATE=23505 constraint=monitor_runs_outstanding_idx
+1743:     scheduler_checkpoint1_test.go:84: database rejected SQLSTATE=23505 constraint=monitor_runs_workspace_id_project_id_monitor_id_fencing_tok_key
+1757:     scheduler_checkpoint2_locks_test.go:107: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1759:     scheduler_checkpoint2_locks_test.go:115: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-1cad-799f-ad2a-ffd281b7f1ce", "claimed_at": "2026-10-21T02:19:59.040215+00:00", "monitor_id": "01a15c42-1caa-75d6-a1ed-98445e38b56f", "project_id": "01a15c42-1ca8-7ee2-8bec-8c37ce2ff376", "lease_until": "2026-10-21T02:20:44.040215+00:00", "workspace_id": "01a15c42-1ca3-7a48-8edb-f3adf9b64b35", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:19:59.042683Z
+1760:     scheduler_checkpoint2_locks_test.go:119: final configuration_version=1 scope=01a15c42-1ca3-7a48-8edb-f3adf9b64b35/01a15c42-1ca8-7ee2-8bec-8c37ce2ff376/01a15c42-1caa-75d6-a1ed-98445e38b56f
+1765:     scheduler_checkpoint2_locks_test.go:107: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1767:     scheduler_checkpoint2_locks_test.go:115: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-1d23-7107-a4c0-251a1df0d5d9", "claimed_at": "2026-10-21T02:19:59.159581+00:00", "monitor_id": "01a15c42-1d1f-7d6e-943f-1035ee6767b5", "project_id": "01a15c42-1d1e-78cf-b4c5-fd7a289923f7", "lease_until": "2026-10-21T02:20:44.159581+00:00", "workspace_id": "01a15c42-1d19-7b8b-83a0-8a39435997ed", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:19:59.161738Z
+1768:     scheduler_checkpoint2_locks_test.go:119: final configuration_version=1 scope=01a15c42-1d19-7b8b-83a0-8a39435997ed/01a15c42-1d1e-78cf-b4c5-fd7a289923f7/01a15c42-1d1f-7d6e-943f-1035ee6767b5
+1778:     scheduler_checkpoint2_locks_test.go:181: outcome database SQLSTATE=P0001 message=ERROR: candidate_invalid (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1779:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1780:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-1d92-7b52-859a-56f18c7eb6be/01a15c42-1d97-7334-bde0-01b008354a66/01a15c42-1d98-77b7-bfc4-411bb862d928
+1786:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-1e08-7ce8-8a54-af43721464b7", "claimed_at": "2026-10-21T02:19:59.385748+00:00", "monitor_id": "01a15c42-1e05-7d73-b19a-e2f3d69623bc", "project_id": "01a15c42-1e04-7838-95b1-eadae4e4cc8f", "lease_until": "2026-10-21T02:20:44.385748+00:00", "workspace_id": "01a15c42-1e00-715c-badc-68c0cafc3087", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:19:59.387889Z
+1787:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-1e00-715c-badc-68c0cafc3087/01a15c42-1e04-7838-95b1-eadae4e4cc8f/01a15c42-1e05-7d73-b19a-e2f3d69623bc
+1792:     scheduler_checkpoint2_locks_test.go:183: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1794:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1795:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-1e68-78d6-9c61-79397f889793/01a15c42-1e6d-71f6-b4d5-8aa7b70fc936/01a15c42-1e6e-772b-a470-2d6c49d036dc
+1801:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-1edc-7ce4-a2b6-9edafc718b87", "claimed_at": "2026-10-21T02:19:59.598744+00:00", "monitor_id": "01a15c42-1eda-7011-9cc5-7992e49fd965", "project_id": "01a15c42-1ed8-7764-9514-7a6e55687934", "lease_until": "2026-10-21T02:20:44.598744+00:00", "workspace_id": "01a15c42-1ed4-72c8-8f73-cbcd5ff17849", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:19:59.600844Z
+1802:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-1ed4-72c8-8f73-cbcd5ff17849/01a15c42-1ed8-7764-9514-7a6e55687934/01a15c42-1eda-7011-9cc5-7992e49fd965
+1807:     scheduler_checkpoint2_locks_test.go:183: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1809:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1810:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-1f43-7859-97a2-956bc9e5440c/01a15c42-1f48-744b-80d9-50df51aa8375/01a15c42-1f49-7d42-b541-a2a0a076e289
+1816:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-1fbd-73cf-a13b-86d4bdfc0794", "claimed_at": "2026-10-21T02:19:59.823749+00:00", "monitor_id": "01a15c42-1fba-711a-8af1-24a28606de66", "project_id": "01a15c42-1fb8-7b30-8f05-b9887d38e9f8", "lease_until": "2026-10-21T02:20:44.823749+00:00", "workspace_id": "01a15c42-1fb4-7682-95d4-474abe2839e0", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:19:59.825813Z
+1817:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-1fb4-7682-95d4-474abe2839e0/01a15c42-1fb8-7b30-8f05-b9887d38e9f8/01a15c42-1fba-711a-8af1-24a28606de66
+1822:     scheduler_checkpoint2_locks_test.go:183: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1824:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1825:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-2022-72a6-9d53-bd863bebc1bf/01a15c42-2026-77b1-abca-f08740cb70a0/01a15c42-2027-7b15-b543-79f4d05d7979
+1831:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-20a4-734c-93eb-bde4528b9864", "claimed_at": "2026-10-21T02:20:00.055843+00:00", "monitor_id": "01a15c42-20a1-71a5-aa4f-d88926f8c49a", "project_id": "01a15c42-209f-7b8a-a5e4-d79dc0799438", "lease_until": "2026-10-21T02:20:45.055843+00:00", "workspace_id": "01a15c42-209a-7f0a-8c13-8646c1fcefa5", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:00.058072Z
+1832:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-209a-7f0a-8c13-8646c1fcefa5/01a15c42-209f-7b8a-a5e4-d79dc0799438/01a15c42-20a1-71a5-aa4f-d88926f8c49a
+1837:     scheduler_checkpoint2_locks_test.go:183: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1839:     scheduler_checkpoint2_locks_test.go:191: final gate rejected SQLSTATE=P0001 reason=candidate_invalid
+1840:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-2116-717f-bf4b-26c3bb136b14/01a15c42-211a-7aa6-8a10-5aaa7ad97186/01a15c42-211c-7443-80dc-5b547f559358
+1846:     scheduler_checkpoint2_locks_test.go:214: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2198-77d6-aea1-a8fc95e2cbdc", "claimed_at": "2026-10-21T02:20:00.300959+00:00", "monitor_id": "01a15c42-2194-7c75-9b2e-9cb9ea6fce16", "project_id": "01a15c42-2193-72ee-8f3c-ff76e513c69b", "lease_until": "2026-10-21T02:20:45.300959+00:00", "workspace_id": "01a15c42-218d-75ed-9d41-009b491c2b4f", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:00.303323Z
+1847:     scheduler_checkpoint2_locks_test.go:225: final configuration_version=1 scope=01a15c42-218d-75ed-9d41-009b491c2b4f/01a15c42-2193-72ee-8f3c-ff76e513c69b/01a15c42-2194-7c75-9b2e-9cb9ea6fce16
+1863:     scheduler_checkpoint2_locks_test.go:260: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1865:     scheduler_checkpoint2_locks_test.go:260: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1867:     scheduler_checkpoint2_locks_test.go:274: final configuration_version=2 scope=01a15c42-2205-7731-9701-ce099cb2b602/01a15c42-220a-7533-be7f-af9d8d90a2c4/01a15c42-220b-7a8e-ba1d-c97c65461da9
+1877:     scheduler_checkpoint2_locks_test.go:313: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2286-731e-af1c-36630a2b1981", "claimed_at": "2026-10-21T02:20:00.550756+00:00", "monitor_id": "01a15c42-227d-71a9-a9d1-3c10b5315419", "project_id": "01a15c42-227b-7cf0-a667-9e55398bc5cf", "lease_until": "2026-10-21T02:20:45.550756+00:00", "workspace_id": "01a15c42-2277-7956-b75c-cfd30cb79da3", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:00.552994Z
+1878:     scheduler_checkpoint2_locks_test.go:314: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2294-7266-8443-c04d22f7277a", "claimed_at": "2026-10-21T02:20:00.554022+00:00", "monitor_id": "01a15c42-2292-7c6e-881d-c6406c269f02", "project_id": "01a15c42-2291-7b64-8962-7a9cb8483660", "lease_until": "2026-10-21T02:20:45.554022+00:00", "workspace_id": "01a15c42-228d-753b-ad6a-83100e6019b5", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:00.556102Z
+1879:     scheduler_checkpoint2_locks_test.go:316: final configuration_version=1 scope=01a15c42-2277-7956-b75c-cfd30cb79da3/01a15c42-227b-7cf0-a667-9e55398bc5cf/01a15c42-227d-71a9-a9d1-3c10b5315419
+1881:     scheduler_checkpoint2_locks_test.go:316: final configuration_version=1 scope=01a15c42-228d-753b-ad6a-83100e6019b5/01a15c42-2291-7b64-8962-7a9cb8483660/01a15c42-2292-7c6e-881d-c6406c269f02
+1889:     scheduler_checkpoint2_locks_test.go:354: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+1891:     scheduler_checkpoint2_locks_test.go:359: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2306-7134-8c1d-9c7e69d17548", "claimed_at": "2026-10-21T02:20:00.665747+00:00", "monitor_id": "01a15c42-2302-7fe3-a15a-84b5fbed0d38", "project_id": "01a15c42-2301-782e-a92f-81a036dace6d", "lease_until": "2026-10-21T02:20:45.665747+00:00", "workspace_id": "01a15c42-22fd-7013-89c6-60d61b089ff0", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:00.667898Z
+1892:     scheduler_checkpoint2_locks_test.go:363: final configuration_version=1 scope=01a15c42-22fd-7013-89c6-60d61b089ff0/01a15c42-2301-782e-a92f-81a036dace6d/01a15c42-2302-7fe3-a15a-84b5fbed0d38
+1894:     scheduler_checkpoint2_locks_test.go:364: final configuration_version=1 scope=01a15c42-22fd-7013-89c6-60d61b089ff0/01a15c42-2301-782e-a92f-81a036dace6d/01a15c42-2307-7d79-958d-99152069665f
+1901:     scheduler_checkpoint2_recovery_test.go:59: real commit outcome=lost original_run=01a15c42-2379-73f7-bdbc-24905f80519f confirmed=true; no retry issued
+1902:     scheduler_checkpoint2_recovery_test.go:60: final configuration_version=1 scope=01a15c42-2370-7a44-a295-4f483ea3eb58/01a15c42-2375-7130-9d6c-b3983ed0947c/01a15c42-2376-7549-8635-8cd02c5dd97b
+1907:     scheduler_checkpoint2_recovery_test.go:59: real commit outcome=rollback original_run=01a15c42-23e9-7b2e-8e53-931e033285e6 confirmed=false; no retry issued
+1908:     scheduler_checkpoint2_recovery_test.go:60: final configuration_version=1 scope=01a15c42-23e0-7aac-9565-33e7fec2e5db/01a15c42-23e5-7210-af50-73bbbaa253a4/01a15c42-23e6-7746-b267-4169ac163c39
+1917:     scheduler_checkpoint2_recovery_test.go:211: final configuration_version=1 scope=01a15c42-244c-7c7e-a2d1-b246cb2fbd88/01a15c42-2451-736f-b1c2-1047a6e514cd/01a15c42-2452-76fa-bed1-1dbcc9f1cc6e
+1931:     scheduler_checkpoint2_recovery_test.go:257: final configuration_version=1 scope=01a15c42-24b2-7312-8672-b2972a5d8065/01a15c42-24b6-7a00-b6d9-41be3b58c4ef/01a15c42-24b7-7f8c-aec7-54d35d7787ef
+2003:     scheduler_checkpoint2_scan_test.go:70: real PG scan65W/73M ->64W/71hints <=8/W; tick32claims/32W; cursor=01a15c42-25cf-7536-9534-09e7b331b1df omittedW=01a15c42-2662-78a5-b6e4-20405603b429
+2187:     scheduler_checkpoint2_state_test.go:106: SQLSTATE=22003 reason=bigint out of range
+2188:     scheduler_checkpoint2_state_test.go:108: final configuration_version=1 scope=01a15c42-281c-75aa-b11b-a1e18a01e5ed/01a15c42-2821-7645-b079-1d7caeb51942/01a15c42-2822-7dec-a15d-3284c0baf1fe
+2196:     scheduler_checkpoint2_state_test.go:108: final configuration_version=1 scope=01a15c42-28e2-78c4-8ad5-30d57625f655/01a15c42-28e7-7417-b86e-290df47aedd5/01a15c42-28e8-78c5-a348-3661ec534adf
+2201:     scheduler_checkpoint2_state_test.go:106: SQLSTATE=P0001 reason=clock_untrusted
+2202:     scheduler_checkpoint2_state_test.go:108: final configuration_version=1 scope=01a15c42-294c-7f84-a761-3756ded656dc/01a15c42-2951-76dc-89ff-0a05a8824ec1/01a15c42-2952-7b8f-9201-5225277e441b
+2214:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-29bb-7321-9962-f2a5b488a7fb", "claimed_at": "2026-10-21T02:20:02.37648+00:00", "monitor_id": "01a15c42-29b8-72d6-886e-11619b2c12ed", "project_id": "01a15c42-29b6-776b-93d3-fe05c3ffc5c2", "lease_until": "2026-10-21T02:20:47.37648+00:00", "workspace_id": "01a15c42-29b2-7061-b6f0-5af4f8d0056c", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:02.37883Z
+2215:     scheduler_checkpoint2_waits_test.go:54: final configuration_version=1 scope=01a15c42-29b2-7061-b6f0-5af4f8d0056c/01a15c42-29b6-776b-93d3-fe05c3ffc5c2/01a15c42-29b8-72d6-886e-11619b2c12ed
+2221:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2a25-7678-8307-76cfc50be1e4", "claimed_at": "2026-10-21T02:20:02.481186+00:00", "monitor_id": "01a15c42-2a22-7710-aa75-13e90b07be9d", "project_id": "01a15c42-2a21-7242-89ae-08141683dc35", "lease_until": "2026-10-21T02:20:47.481186+00:00", "workspace_id": "01a15c42-2a1c-78d5-b981-6e90020c75f3", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:02.483522Z
+2222:     scheduler_checkpoint2_waits_test.go:54: final configuration_version=1 scope=01a15c42-2a1c-78d5-b981-6e90020c75f3/01a15c42-2a21-7242-89ae-08141683dc35/01a15c42-2a22-7710-aa75-13e90b07be9d
+2228:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2a89-72eb-8cf2-862adb099c58", "claimed_at": "2026-10-21T02:20:02.582215+00:00", "monitor_id": "01a15c42-2a86-7394-914e-7ccc4c37d32c", "project_id": "01a15c42-2a84-7ebb-95cb-ba13750a9168", "lease_until": "2026-10-21T02:20:47.582215+00:00", "workspace_id": "01a15c42-2a80-7a4d-8318-903916083d15", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:02.584338Z
+2229:     scheduler_checkpoint2_waits_test.go:54: final configuration_version=1 scope=01a15c42-2a80-7a4d-8318-903916083d15/01a15c42-2a84-7ebb-95cb-ba13750a9168/01a15c42-2a86-7394-914e-7ccc4c37d32c
+2235:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2aee-7893-96e0-dc7129a715f3", "claimed_at": "2026-10-21T02:20:02.682054+00:00", "monitor_id": "01a15c42-2aeb-7af4-a19f-1195284d275e", "project_id": "01a15c42-2aea-72ad-8466-2c2fc19cd06b", "lease_until": "2026-10-21T02:20:47.682054+00:00", "workspace_id": "01a15c42-2ae5-7ddb-ada2-d94406a874a5", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:02.684145Z
+2236:     scheduler_checkpoint2_waits_test.go:54: final configuration_version=1 scope=01a15c42-2ae5-7ddb-ada2-d94406a874a5/01a15c42-2aea-72ad-8466-2c2fc19cd06b/01a15c42-2aeb-7af4-a19f-1195284d275e
+2242:     scheduler_checkpoint2_waits_test.go:53: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2b53-7ddf-a247-e4ef6741fa4e", "claimed_at": "2026-10-21T02:20:02.78425+00:00", "monitor_id": "01a15c42-2b50-7ae2-a89c-18ba20c0196e", "project_id": "01a15c42-2b4f-76f9-afd8-aed5129b550c", "lease_until": "2026-10-21T02:20:47.78425+00:00", "workspace_id": "01a15c42-2b4b-707e-818e-602d15ab4c49", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:02.786607Z
+2243:     scheduler_checkpoint2_waits_test.go:54: final configuration_version=1 scope=01a15c42-2b4b-707e-818e-602d15ab4c49/01a15c42-2b4f-76f9-afd8-aed5129b550c/01a15c42-2b50-7ae2-a89c-18ba20c0196e
+2249:     scheduler_checkpoint2_waits_test.go:83: outcome database SQLSTATE=55P03 message=ERROR: canceling statement due to lock timeout (SQLSTATE 55P03) lease= ack_observed_db=0001-01-01T00:00:00Z
+2250:     scheduler_checkpoint2_waits_test.go:91: final configuration_version=1 scope=01a15c42-2bbc-7527-bd76-d60598fc63ec/01a15c42-2bc1-7525-9a9e-58fb273d4545/01a15c42-2bc2-7ab6-8371-cd10de23a40c
+2256:     scheduler_checkpoint2_waits_test.go:83: outcome database SQLSTATE=57014 message=ERROR: canceling statement due to user request (SQLSTATE 57014) lease= ack_observed_db=0001-01-01T00:00:00Z
+2257:     scheduler_checkpoint2_waits_test.go:91: final configuration_version=1 scope=01a15c42-2d50-75c3-8e1c-5203dc59b7be/01a15c42-2d55-74f7-a9e6-641ced020613/01a15c42-2d56-7b74-8426-e85dcd50fe89
+2270:     scheduler_checkpoint2_waits_test.go:117: final configuration_version=1 scope=01a15c42-2dbc-7f65-b474-7a4d40284940/01a15c42-2dc1-7c21-acd2-b08487e15788/01a15c42-2dc3-71bd-ad9d-29b9c07b7dc6
+2278:     scheduler_checkpoint2_waits_test.go:168: outcome database SQLSTATE=P0001 message=ERROR: candidate_busy (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+2279:     scheduler_checkpoint2_waits_test.go:176: final configuration_version=1 scope=01a15c42-2e23-7250-9402-89b2478ff7ba/01a15c42-2e27-7903-a180-07724c8ad072/01a15c42-2e28-7d19-80df-416bc83b153d
+2285:     scheduler_checkpoint2_waits_test.go:168: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2e96-7802-b479-1ce3e3e2d3e8", "claimed_at": "2026-10-21T02:20:03.619147+00:00", "monitor_id": "01a15c42-2e93-7a94-92ff-5e6d46ed2c7b", "project_id": "01a15c42-2e92-7573-8dde-f0379cd6d2bc", "lease_until": "2026-10-21T02:20:48.619147+00:00", "workspace_id": "01a15c42-2e8e-70bc-899c-b3ae141115d5", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:03.621327Z
+2286:     scheduler_checkpoint2_waits_test.go:176: final configuration_version=1 scope=01a15c42-2e8e-70bc-899c-b3ae141115d5/01a15c42-2e92-7573-8dde-f0379cd6d2bc/01a15c42-2e93-7a94-92ff-5e6d46ed2c7b
+2292:     scheduler_checkpoint2_waits_test.go:168: outcome database SQLSTATE=00000 message=<nil> lease={"run_id": "01a15c42-2ef8-7ae6-81ae-0d5672ad6951", "claimed_at": "2026-10-21T02:20:03.716699+00:00", "monitor_id": "01a15c42-2ef5-76ce-95ab-e144b54dc382", "project_id": "01a15c42-2ef4-7228-9df0-3bbbad8214ad", "lease_until": "2026-10-21T02:20:48.716699+00:00", "workspace_id": "01a15c42-2eef-7e7c-bc55-a7241cc3b4ac", "fencing_token": "1", "scheduler_epoch": "1", "activation_generation": "2", "configuration_version": "1"} ack_observed_db=2026-10-21T02:20:03.718724Z
+2293:     scheduler_checkpoint2_waits_test.go:176: final configuration_version=1 scope=01a15c42-2eef-7e7c-bc55-a7241cc3b4ac/01a15c42-2ef4-7228-9df0-3bbbad8214ad/01a15c42-2ef5-76ce-95ab-e144b54dc382
+2299:     scheduler_checkpoint2_waits_test.go:168: outcome database SQLSTATE=P0001 message=ERROR: candidate_invalid (SQLSTATE P0001) lease= ack_observed_db=0001-01-01T00:00:00Z
+2300:     scheduler_checkpoint2_waits_test.go:176: final configuration_version=1 scope=01a15c42-2f5b-71a0-bdd1-2e86344da22b/01a15c42-2f5f-7731-a9fe-24e4753cc242/01a15c42-2f61-70ce-a872-36ca37e9d245
+2311:     scheduler_checkpoint2_waits_test.go:221: SQLSTATE=40P01 message=deadlock detected detail=Process 11152 waits for ShareLock on transaction 122331; blocked by process 11154.
+2313:     scheduler_checkpoint2_waits_test.go:241: final configuration_version=1 scope=01a15c42-2fc9-7706-947e-887b63c1a2fb/01a15c42-2fce-7b37-9a17-aa2209e081ae/01a15c42-2fd0-7358-bbd7-a1202e9e59a6
+2320:     scheduler_claim_concurrency_test.go:129: claim SQLSTATE=P0001 ACK observed DB=0001-01-01T00:00:00Z error=ERROR: candidate_busy (SQLSTATE P0001)
+2322:     scheduler_claim_concurrency_test.go:134: claim SQLSTATE=00000 ACK observed DB=2026-10-21T02:20:04.17347Z error=<nil>
+2324:     scheduler_claim_concurrency_test.go:140: final configuration_version=2 scope=01a15c42-30a9-7542-9d09-073666458af5/01a15c42-30ae-76b5-adf4-fee4ab26314d/01a15c42-30af-7edd-ad45-7e2708e693e7
+2360:     scheduler_legacy_patch_permissions_test.go:48: driver error: SQLSTATE=42501 message="permission denied for table http_monitors" where="" internal_query="" schema="" table="" routine="aclcheck_error" position=0
+2409:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=SELECT * FROM public.monitor_schedules
+2410:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=SELECT * FROM public.monitor_runs
+2411:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=UPDATE public.monitor_schedules SET next_due_at=NULL
+2412:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=DELETE FROM public.monitor_runs
+2413:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=SELECT scheduler_private.authorize(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,60)
+2414:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=SELECT scheduler_private.claim(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)
+2415:     scheduler_legacy_patch_permissions_test.go:213: legacy negative boundary SQLSTATE=42501 SQL=INSERT INTO public.http_monitors(id) VALUES(uuidv7())

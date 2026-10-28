@@ -1,0 +1,15 @@
+{
+  "source": "Current human product-owner request: Checkpoint3 reviewed; formal supplemental authorization; not Checkpoint2 grant approval",
+  "reviewed_head": "e56c69a5832e88dfaac469071f9ada51a758dadc",
+  "branch": "codex/add-monitor-scheduler-worker",
+  "approved_only": {
+    "worker": "scheduler_private.reserve_target(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,text,text)",
+    "controller": "scheduler_private.rotate_target_budget_keys(uuid,bigint,jsonb)"
+  },
+  "sql_acl_role_secret_privilege_changes_this_batch": false,
+  "5.4_complete": false,
+  "authorized_tasks_this_batch": [
+    "6.1",
+    "6.2"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "acceptance-first--result.json.gz": {
+    "source": "acceptance-first/result.json",
+    "original_sha256": "68571f425ae2a5315cc95b2253310615a8dddfcc10738685c196865c530455f8"
+  },
+  "acceptance-first--race-TestResultMinimalPG-allow-https--pg-driver.log.gz": {
+    "source": "acceptance-first/race-TestResultMinimalPG-allow-https/pg-driver.log",
+    "original_sha256": "249dec2eebd13647c49c964e34cd803e0ab6bb1ae02c91c1f6be0269ea50b916"
+  },
+  "acceptance-first--race-TestResultMinimalPG-allow-https--postgres.log.gz": {
+    "source": "acceptance-first/race-TestResultMinimalPG-allow-https/postgres.log",
+    "original_sha256": "2113744ae5f5f48e36de8db9067e858aa7c17cfbf66d6bfb551b7feefdc84572"
+  },
+  "acceptance-first--race-TestResultMinimalPG-allow-https--pg-driver-command.json.gz": {
+    "source": "acceptance-first/race-TestResultMinimalPG-allow-https/pg-driver-command.json",
+    "original_sha256": "42094f142d84d739c29c836bfe710f8ce1a06119b82785164920d3c03ada80aa"
+  },
+  "acceptance-first--receipts--race-TestResultMinimalPG-allow-https.json.gz": {
+    "source": "acceptance-first/receipts/race-TestResultMinimalPG-allow-https.json",
+    "original_sha256": "eedde3d126cdfcf582495dda4ee443f833e866a432290fac4066df711d5c4803"
+  },
+  "build--linux-build.json.gz": {
+    "source": "build/linux-build.json",
+    "original_sha256": "67693f2652846eaa31820a1be91b1b9c46398b67391689796d4aeb7d35e8ad49"
+  },
+  "build--linux-build.log.gz": {
+    "source": "build/linux-build.log",
+    "original_sha256": "8885809a6cf95c67af832c0142689f296a4a3b63277e1ace875eb2664c0ed0fb"
+  },
+  "build--linux-build-separated-goose.json.gz": {
+    "source": "build/linux-build-separated-goose.json",
+    "original_sha256": "95ba3305e48a827583412b8561b12b8992759abc0720a870bb6a10ae49778f00"
+  },
+  "build--linux-build-separated-goose.log.gz": {
+    "source": "build/linux-build-separated-goose.log",
+    "original_sha256": "a6c019d1f303c0d0ece17d7a988e7272fbde39ac16d06520fe85d89c6388fdbd"
+  },
+  "build--linux-build-bootstrap.json.gz": {
+    "source": "build/linux-build-bootstrap.json",
+    "original_sha256": "f22cab50fa717f5c567b338f087d9dc337acef76cddd08fcd4ff6b7ab066a177"
+  }
+}

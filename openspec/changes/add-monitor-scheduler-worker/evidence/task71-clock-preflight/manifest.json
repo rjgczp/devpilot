@@ -1,0 +1,18 @@
+{
+  "clock-acceptance--result.json.gz": {
+    "source": "/private/tmp/devpilot-result71/clock-acceptance/result.json",
+    "sha256": "0d8001423d5565c4947d5e293208ca1efbab09268016d3ceae809f0667096410"
+  },
+  "normal-TestResultMinimalPG-allow-https--pg-driver.log.gz": {
+    "source": "/private/tmp/devpilot-result71/clock-acceptance/normal-TestResultMinimalPG-allow-https/pg-driver.log",
+    "sha256": "a423fac819082d30f2eef74ce24f8ead152f43b35f26d074494a4fc28c582cc6"
+  },
+  "receipts--normal-TestResultMinimalPG-allow-https.json.gz": {
+    "source": "/private/tmp/devpilot-result71/clock-acceptance/receipts/normal-TestResultMinimalPG-allow-https.json",
+    "sha256": "e5a001d5143d0d56ddde15af4057541c8e19652cb672720ee12e6fedab3be124"
+  },
+  "clock-review--build.json.gz": {
+    "source": "/private/tmp/devpilot-result71/clock-review/build.json",
+    "sha256": "25ef6577906c39cd996b926422815df4472c06517c8828f27c372b49bce9eda4"
+  }
+}

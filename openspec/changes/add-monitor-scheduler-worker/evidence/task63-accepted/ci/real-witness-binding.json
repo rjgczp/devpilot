@@ -1,0 +1,165 @@
+{
+  "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+  "rows": [
+    {
+      "event": "push",
+      "mode": "normal",
+      "case": "allow-https",
+      "witness": {
+        "case": "allow-https",
+        "total_connect_syscalls": 2,
+        "dns_connects": 1,
+        "target_connect_syscalls": 1,
+        "target_accepts": 1,
+        "get_count": 1,
+        "physical_stop": true,
+        "at": "2026-10-23T08:38:40.441699Z"
+      },
+      "pidfd_exits": 3,
+      "remaining_pids": 0,
+      "full_lineage_matches": true,
+      "physical_release_confirmed": true,
+      "http_result_fields_remain_null": true
+    },
+    {
+      "event": "push",
+      "mode": "normal",
+      "case": "permit-missing",
+      "witness": {
+        "case": "permit-missing",
+        "total_connect_syscalls": 1,
+        "dns_connects": 1,
+        "target_connect_syscalls": 0,
+        "target_accepts": 0,
+        "get_count": 0,
+        "physical_stop": true,
+        "at": "2026-10-23T08:40:31.571709Z"
+      },
+      "pidfd_exits": 3,
+      "remaining_pids": 0,
+      "full_lineage_matches": true,
+      "physical_release_confirmed": true,
+      "http_result_fields_remain_null": true
+    },
+    {
+      "event": "push",
+      "mode": "race",
+      "case": "allow-https",
+      "witness": {
+        "case": "allow-https",
+        "total_connect_syscalls": 2,
+        "dns_connects": 1,
+        "target_connect_syscalls": 1,
+        "target_accepts": 1,
+        "get_count": 1,
+        "physical_stop": true,
+        "at": "2026-10-23T08:43:33.545091Z"
+      },
+      "pidfd_exits": 3,
+      "remaining_pids": 0,
+      "full_lineage_matches": true,
+      "physical_release_confirmed": true,
+      "http_result_fields_remain_null": true
+    },
+    {
+      "event": "push",
+      "mode": "race",
+      "case": "permit-missing",
+      "witness": {
+        "case": "permit-missing",
+        "total_connect_syscalls": 1,
+        "dns_connects": 1,
+        "target_connect_syscalls": 0,
+        "target_accepts": 0,
+        "get_count": 0,
+        "physical_stop": true,
+        "at": "2026-10-23T08:45:31.632684Z"
+      },
+      "pidfd_exits": 3,
+      "remaining_pids": 0,
+      "full_lineage_matches": true,
+      "physical_release_confirmed": true,
+      "http_result_fields_remain_null": true
+    },
+    {
+      "event": "pull_request",
+      "mode": "normal",
+      "case": "allow-https",
+      "witness": {
+        "case": "allow-https",
+        "total_connect_syscalls": 2,
+        "dns_connects": 1,
+        "target_connect_syscalls": 1,
+        "target_accepts": 1,
+        "get_count": 1,
+        "physical_stop": true,
+        "at": "2026-10-23T08:37:47.573456Z"
+      },
+      "pidfd_exits": 3,
+      "remaining_pids": 0,
+      "full_lineage_matches": true,
+      "physical_release_confirmed": true,
+      "http_result_fields_remain_null": true
+    },
+    {
+      "event": "pull_request",
+      "mode": "normal",
+      "case": "permit-missing",
+      "witness": {
+        "case": "permit-missing",
+        "total_connect_syscalls": 1,
+        "dns_connects": 1,
+        "target_connect_syscalls": 0,
+        "target_accepts": 0,
+        "get_count": 0,
+        "physical_stop": true,
+        "at": "2026-10-23T08:39:29.595905Z"
+      },
+      "pidfd_exits": 3,
+      "remaining_pids": 0,
+      "full_lineage_matches": true,
+      "physical_release_confirmed": true,
+      "http_result_fields_remain_null": true
+    },
+    {
+      "event": "pull_request",
+      "mode": "race",
+      "case": "allow-https",
+      "witness": {
+        "case": "allow-https",
+        "total_connect_syscalls": 2,
+        "dns_connects": 1,
+        "target_connect_syscalls": 1,
+        "target_accepts": 1,
+        "get_count": 1,
+        "physical_stop": true,
+        "at": "2026-10-23T08:42:18.177054Z"
+      },
+      "pidfd_exits": 3,
+      "remaining_pids": 0,
+      "full_lineage_matches": true,
+      "physical_release_confirmed": true,
+      "http_result_fields_remain_null": true
+    },
+    {
+      "event": "pull_request",
+      "mode": "race",
+      "case": "permit-missing",
+      "witness": {
+        "case": "permit-missing",
+        "total_connect_syscalls": 1,
+        "dns_connects": 1,
+        "target_connect_syscalls": 0,
+        "target_accepts": 0,
+        "get_count": 0,
+        "physical_stop": true,
+        "at": "2026-10-23T08:44:10.216653Z"
+      },
+      "pidfd_exits": 3,
+      "remaining_pids": 0,
+      "full_lineage_matches": true,
+      "physical_release_confirmed": true,
+      "http_result_fields_remain_null": true
+    }
+  ]
+}

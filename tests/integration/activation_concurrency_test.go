@@ -84,6 +84,12 @@ func TestActivationExpiryAfterEveryProtectiveWait(t *testing.T) {
 				f, p := monitorFixture(t, db)
 				ctx, cancel := context.WithTimeout(context.Background(), 6*time.Second)
 				defer cancel()
+				// Freeze only the strong precondition before arming the real
+				// expiry. The writer still reauthorizes after every lock wait.
+				condition, err := (monitor.Store{Pool: db}).ActivationDetail(ctx, f.od, p.WorkspaceID, p.ProjectID, p.ID)
+				if err != nil {
+					t.Fatal("condition before expiry", err)
+				}
 				var expiry time.Time
 				if db.QueryRow(ctx, `UPDATE sessions SET expires_at=statement_timestamp()+interval '150ms' WHERE token_hash=$1 RETURNING expires_at`, f.od[:]).Scan(&expiry) != nil {
 					t.Fatal("expiry")
@@ -97,10 +103,34 @@ func TestActivationExpiryAfterEveryProtectiveWait(t *testing.T) {
 						}
 					}}
 				}}}
+				start := func() <-chan activationResult {
+					out := make(chan activationResult, 1)
+					go func() {
+						state := "enabled"
+						if update {
+							state = "disabled"
+						}
+						got, err := store.ActivationUpdate(ctx, f.od, p.WorkspaceID, p.ProjectID, p.ID,
+							monitor.ActivationInput{DesiredState: state, ConfigurationVersion: condition.ConfigurationVersion}, monitor.ActivationETag(condition))
+						out <- activationResult{got, err}
+					}()
+					return out
+				}
+				awaitPID := func(ch <-chan activationResult) int {
+					select {
+					case id := <-pid:
+						return id
+					case result := <-ch:
+						t.Fatalf("writer returned before PID: %v", result.err)
+					case <-ctx.Done():
+						t.Fatalf("PID barrier deadline: %v", ctx.Err())
+					}
+					return 0
+				}
 				var ch <-chan activationResult
 				if stage == "post-gate" {
-					ch = startActivation(ctx, store, f.od, p, update)
-					<-pid
+					ch = start()
+					awaitPID(ch)
 					pause.wait(t)
 					waitWorkspaceTime(t, db, expiry)
 					if _, err := (session.Store{Pool: db}).Cleanup(ctx); err != nil {
@@ -142,8 +172,8 @@ func TestActivationExpiryAfterEveryProtectiveWait(t *testing.T) {
 					if _, err = blocker.Exec(ctx, sql, arg); err != nil {
 						t.Fatal(err)
 					}
-					ch = startActivation(ctx, store, f.od, p, update)
-					waitActivationBlock(t, db, <-pid)
+					ch = start()
+					waitActivationBlock(t, db, awaitPID(ch))
 					waitWorkspaceTime(t, db, expiry)
 					if blocker.Commit(ctx) != nil {
 						t.Fatal("release")

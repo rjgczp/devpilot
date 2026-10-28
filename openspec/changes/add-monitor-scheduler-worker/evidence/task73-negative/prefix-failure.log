@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/recovery_fixture.py", line 56, in <module>
+    if __name__=='__main__':raise SystemExit(main())
+                                             ~~~~^^
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/recovery_fixture.py", line 53, in main
+    try:h.pg(a.pg_binary.resolve(),a.mode);status=0
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/network_fixture.py", line 246, in pg
+    else:answer=self.pg_operation(instance,op,request['payload'],selected,mode)
+                ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/recovery_fixture.py", line 46, in pg_operation
+    return super().pg_operation(self.active or instance,op,payload,selected,mode)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/joint_fixture.py", line 189, in pg_operation
+    network=self.life.revoke(require_live=inflight)
+  File "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/termination_fixture.py", line 156, in revoke
+    install=json.loads((self.h.dest/(self.instance.name+'-install-request.json')).read_text())
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 787, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/devpilot-result73/acceptance-runner-fixed/normal-TestRecoveryUnconfirmedPG-supervisor-killed/run-0-install-request.json'

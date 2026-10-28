@@ -1,0 +1,8 @@
+2026/10/23 08:15:17 OK   00001_create_users.sql (1.32ms)
+2026/10/23 08:15:17 OK   00002_create_sessions.sql (2.64ms)
+2026/10/23 08:15:17 OK   00003_create_workspaces.sql (1.55ms)
+2026/10/23 08:15:17 OK   00004_create_workspace_invitations.sql (2.88ms)
+2026/10/23 08:15:17 OK   00005_create_projects.sql (1.65ms)
+2026/10/23 08:15:17 OK   00006_create_http_monitors.sql (1.65ms)
+2026/10/23 08:15:17 goose: successfully migrated database to version: 6
+guarded PG18: native Goose3.26.0 up-to6; no schema8 Scheduler objects

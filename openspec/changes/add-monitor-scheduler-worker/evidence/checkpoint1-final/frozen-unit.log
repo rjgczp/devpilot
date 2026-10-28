@@ -1,0 +1,144 @@
+--- FAIL: TestProcessSignals (0.63s)
+    --- FAIL: TestProcessSignals/interrupt (0.00s)
+        main_test.go:22: listen tcp 127.0.0.1:0: bind: operation not permitted
+    --- FAIL: TestProcessSignals/terminated (0.00s)
+        main_test.go:22: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestProcessSignalsWithInFlightRequest (0.44s)
+    --- FAIL: TestProcessSignalsWithInFlightRequest/interrupt (0.00s)
+        main_test.go:53: listen tcp 127.0.0.1:0: bind: operation not permitted
+    --- FAIL: TestProcessSignalsWithInFlightRequest/terminated (0.00s)
+        main_test.go:53: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestProcessStartsWhenDatabaseIsUnavailable (0.46s)
+    main_test.go:103: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestProcessShutdownTimeout (0.37s)
+    main_test.go:157: listen tcp 127.0.0.1:0: bind: operation not permitted
+FAIL
+FAIL	github.com/rjgczp/devpilot/cmd/api	4.203s
+--- FAIL: TestRunnerGracefulShutdown (0.00s)
+    runner_test.go:19: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestRunnerClosesResourceAfterWorkerExit (0.00s)
+    runner_test.go:113: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestRunnerShutdownDeadline (0.00s)
+    runner_test.go:161: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestRunnerShutdownError (0.00s)
+    runner_test.go:216: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestRunnerResourceCloseError (0.00s)
+    runner_test.go:240: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestRunnerResourceCloseDeadline (0.00s)
+    runner_test.go:269: listen tcp 127.0.0.1:0: bind: operation not permitted
+--- FAIL: TestIncompleteHeadersTimeOut (0.00s)
+    server_test.go:25: listen tcp 127.0.0.1:0: bind: operation not permitted
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/app	1.127s
+ok  	github.com/rjgczp/devpilot/internal/auth	1.133s
+ok  	github.com/rjgczp/devpilot/internal/config	1.125s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	0.766s
+--- FAIL: TestMonitorSlowBodiesAndEarlyDrainAreBounded (0.00s)
+    --- FAIL: TestMonitorSlowBodiesAndEarlyDrainAreBounded/POST (0.00s)
+panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted [recovered]
+	panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted
+
+goroutine 72 [running]:
+testing.tRunner.func1.2({0x10252c4a0, 0x140004220a0})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1734 +0x1ac
+testing.tRunner.func1()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1737 +0x334
+panic({0x10252c4a0?, 0x140004220a0?})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/runtime/panic.go:792 +0x124
+net/http/httptest.newLocalListener()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:71 +0xdc
+net/http/httptest.NewUnstartedServer(...)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:119
+net/http/httptest.NewServer({0x1025c7ea0, 0x14000432000})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:106 +0x28
+github.com/rjgczp/devpilot/internal/monitor.TestMonitorSlowBodiesAndEarlyDrainAreBounded.func1(0x14000470700)
+	/Users/sansea/Documents/ChatGPT/devpilot/internal/monitor/transport_test.go:24 +0x84
+testing.tRunner(0x14000470700, 0x14000420060)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1792 +0xe4
+created by testing.(*T).Run in goroutine 71
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1851 +0x374
+FAIL	github.com/rjgczp/devpilot/internal/monitor	0.727s
+ok  	github.com/rjgczp/devpilot/internal/monitoring	2.022s
+ok  	github.com/rjgczp/devpilot/internal/password	2.204s
+--- FAIL: TestProjectSlowBodiesAndEarlyDrainAreBounded (0.00s)
+    --- FAIL: TestProjectSlowBodiesAndEarlyDrainAreBounded/POST (0.00s)
+panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted [recovered]
+	panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted
+
+goroutine 54 [running]:
+testing.tRunner.func1.2({0x10310ba60, 0x14000500fd0})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1734 +0x1ac
+testing.tRunner.func1()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1737 +0x334
+panic({0x10310ba60?, 0x14000500fd0?})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/runtime/panic.go:792 +0x124
+net/http/httptest.newLocalListener()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:71 +0xdc
+net/http/httptest.NewUnstartedServer(...)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:119
+net/http/httptest.NewServer({0x1031956a0, 0x140005ee8c0})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:106 +0x28
+github.com/rjgczp/devpilot/internal/project.TestProjectSlowBodiesAndEarlyDrainAreBounded.func1(0x14000082fc0)
+	/Users/sansea/Documents/ChatGPT/devpilot/internal/project/transport_test.go:21 +0x84
+testing.tRunner(0x14000082fc0, 0x14000534c90)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1792 +0xe4
+created by testing.(*T).Run in goroutine 53
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1851 +0x374
+FAIL	github.com/rjgczp/devpilot/internal/project	0.774s
+--- FAIL: TestClientCancellationInStoreAndRealHTTP (0.00s)
+panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted [recovered]
+	panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted
+
+goroutine 67 [running]:
+testing.tRunner.func1.2({0x103322f40, 0x14000302540})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1734 +0x1ac
+testing.tRunner.func1()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1737 +0x334
+panic({0x103322f40?, 0x14000302540?})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/runtime/panic.go:792 +0x124
+net/http/httptest.newLocalListener()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:71 +0xdc
+net/http/httptest.NewUnstartedServer(...)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:119
+net/http/httptest.NewServer({0x1033ba9a0, 0x14000326220})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:106 +0x28
+github.com/rjgczp/devpilot/internal/registration.TestClientCancellationInStoreAndRealHTTP(0x140003001c0)
+	/Users/sansea/Documents/ChatGPT/devpilot/internal/registration/handler_test.go:378 +0x184
+testing.tRunner(0x140003001c0, 0x1033b6918)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1792 +0xe4
+created by testing.(*T).Run in goroutine 1
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1851 +0x374
+FAIL	github.com/rjgczp/devpilot/internal/registration	0.513s
+--- FAIL: TestCleanupWorkerDrainsBeforeResourcesClose (0.00s)
+    worker_test.go:98: listen tcp 127.0.0.1:0: bind: operation not permitted
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/session	0.378s
+ok  	github.com/rjgczp/devpilot/internal/testdb	0.393s
+ok  	github.com/rjgczp/devpilot/internal/user	0.362s
+--- FAIL: TestInvitationSlowBodiesAreBounded (0.00s)
+    --- FAIL: TestInvitationSlowBodiesAreBounded//api/v1/workspaces/019a5abc-1234-7123-8123-123456789abc/invitations (0.00s)
+panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted [recovered]
+	panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: bind: operation not permitted
+
+goroutine 81 [running]:
+testing.tRunner.func1.2({0x10105f420, 0x14000369700})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1734 +0x1ac
+testing.tRunner.func1()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1737 +0x334
+panic({0x10105f420?, 0x14000369700?})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/runtime/panic.go:792 +0x124
+net/http/httptest.newLocalListener()
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:71 +0xdc
+net/http/httptest.NewUnstartedServer(...)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:119
+net/http/httptest.NewServer({0x1010f6fe0, 0x140006253b0})
+	/Applications/ServBay/package/go/1.24/1.24.3/src/net/http/httptest/server.go:106 +0x28
+github.com/rjgczp/devpilot/internal/workspace.TestInvitationSlowBodiesAreBounded.func1(0x14000502c40)
+	/Users/sansea/Documents/ChatGPT/devpilot/internal/workspace/invitations_test.go:216 +0xd0
+testing.tRunner(0x14000502c40, 0x1400059b530)
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1792 +0xe4
+created by testing.(*T).Run in goroutine 48
+	/Applications/ServBay/package/go/1.24/1.24.3/src/testing/testing.go:1851 +0x374
+FAIL	github.com/rjgczp/devpilot/internal/workspace	0.441s
+FAIL

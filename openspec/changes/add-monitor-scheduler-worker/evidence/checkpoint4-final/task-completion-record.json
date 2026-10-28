@@ -1,0 +1,28 @@
+[
+  {
+    "task": "6.1",
+    "id": "25",
+    "line": 46,
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "progress_after": {
+      "total": 47,
+      "complete": 24,
+      "remaining": 23
+    },
+    "tested_sha": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
+    "evidence": "requirement-test-evidence.json"
+  },
+  {
+    "task": "6.2",
+    "id": "26",
+    "line": 47,
+    "sourcePath": "/Users/sansea/Documents/ChatGPT/devpilot/openspec/changes/add-monitor-scheduler-worker/tasks.md",
+    "progress_after": {
+      "total": 47,
+      "complete": 25,
+      "remaining": 22
+    },
+    "tested_sha": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
+    "evidence": "requirement-test-evidence.json"
+  }
+]

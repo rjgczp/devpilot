@@ -1,0 +1,430 @@
+[
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/run-network64.py",
+      "--tools",
+      "/private/tmp/devpilot-network64-tools",
+      "--evidence",
+      "/private/tmp/devpilot-network64-accepted-local"
+    ],
+    "started_at": "2026-10-22T03:42:15.709110+00:00",
+    "elapsed_seconds": 199.30880670808256,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "a108a7977d6217f995f6e00c424b6e2f446e3efdce07d0864ea654ea09f3837d",
+    "binaries": {
+      "/private/tmp/devpilot-network64-tools/networksupervisorfixture": "554f866efef31979535f87078cfe7b96af2a480899822e1801129db6659b8f08",
+      "/private/tmp/devpilot-network64-tools/network64-pg-race.test": "f7fa425dd44d3e5838e064e576a5a9bf2169653bc896628e00b7acacd4d45330"
+    },
+    "log_sha256": "acbd805968f4c1f78694f6476f7df01c01e46879a64529aea4a9077376aabe17"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/run-network64.py",
+      "--tools",
+      "/private/tmp/devpilot-network64-tools",
+      "--evidence",
+      "/private/tmp/devpilot-network64-complete-local"
+    ],
+    "started_at": "2026-10-22T03:27:16.860879+00:00",
+    "elapsed_seconds": 41.19909320794977,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "173c713a9cbf202f01f86a89be791692d137354cfcf706b7d64338213bc9fa7c",
+    "binaries": {
+      "/private/tmp/devpilot-network64-tools/networksupervisorfixture": "72109f9086023c855d86f289dbb5335e59ba190d2fcd7c42362ab350ca0a7179",
+      "/private/tmp/devpilot-network64-tools/network64-pg-race.test": "a67c70cdb73cc3630ee4cc3fed71f3bf7cda7117d16294a02daabd2ac97ebf86"
+    },
+    "log_sha256": "80c3cb15afafed72275332efa81b06af596c231e0e93d3128f08f913c3d36091"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-expanded",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T03:16:26.612836+00:00",
+    "elapsed_seconds": 18.928586666006595,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "c35e4f1b106ed6cd09458bde4286841e7144c767e18a58758a29ca07b9d86be8",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "a5f86cb9f9a2bbd8b2460ec20e69b9d32c0da6e49d13ea0ada876a3173a44d80"
+    },
+    "log_sha256": "ed9c2906c37823ec2d3d0d97f4c2604e8a6fd0bd9982dee6f2c6aa45132a83e2"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-expanded-udp",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T03:19:16.644860+00:00",
+    "elapsed_seconds": 34.57257441605907,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "ba9235e51939a9945b82d3c62971dbf672242761dfa483af98821d7ce9c97cb1",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "a5f86cb9f9a2bbd8b2460ec20e69b9d32c0da6e49d13ea0ada876a3173a44d80"
+    },
+    "log_sha256": "276c380c12ac716cebde34169209b288c7a1ac788406289b4b1d17c13a1ed2db"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/run-network64.py",
+      "--tools",
+      "/private/tmp/devpilot-network64-tools",
+      "--evidence",
+      "/private/tmp/devpilot-network64-final-local"
+    ],
+    "started_at": "2026-10-22T03:38:07.533289+00:00",
+    "elapsed_seconds": 162.26090554206166,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "6fe2880123a6df651130a80df2972e5aea5ccdab40d9e96b68f441391b52d30b",
+    "binaries": {
+      "/private/tmp/devpilot-network64-tools/networksupervisorfixture": "554f866efef31979535f87078cfe7b96af2a480899822e1801129db6659b8f08",
+      "/private/tmp/devpilot-network64-tools/network64-pg-race.test": "f7fa425dd44d3e5838e064e576a5a9bf2169653bc896628e00b7acacd4d45330"
+    },
+    "log_sha256": "cd31dc22988a8963db1e39c472563cef920b81970857e000ef5c158a37862e25"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-linux-clock",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T03:32:55.916391+00:00",
+    "elapsed_seconds": 155.26031183404848,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "05c9e4926e9e457fe4de3474c7599013e3c255d0d1fa37bc57ff2d7feb4535e5",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "a132c767655a4a1543b4cb9c6b3d2cec99c85043272550f2a961d369b74489dd"
+    },
+    "log_sha256": "abade2745504e0966e10cdb13c2f4a8ddda7380bca570b148ae0f301753262c6"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-single-connection",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T03:21:53.582273+00:00",
+    "elapsed_seconds": 143.24765583407134,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "8d0926baffbe0574119687bb969b1f018329c85a4906ba6050611f3af6b9df0b",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "2852155d49dae5c928dcc20da470de895eb559320538d026717e9ff87a83468c"
+    },
+    "log_sha256": "f7d1fb2271c2c6172b1ea6d0e0d6ae8faffff17ced551a85913a3ac53d6dcc6e"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-pg-deadline-guard",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture",
+      "--pg-binary",
+      "/private/tmp/devpilot-scheduler-tools/network64-pg.test"
+    ],
+    "started_at": "2026-10-22T03:16:31.956425+00:00",
+    "elapsed_seconds": 9.89039904193487,
+    "exit_code": 0,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "c35e4f1b106ed6cd09458bde4286841e7144c767e18a58758a29ca07b9d86be8",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "a5f86cb9f9a2bbd8b2460ec20e69b9d32c0da6e49d13ea0ada876a3173a44d80",
+      "/private/tmp/devpilot-scheduler-tools/network64-pg.test": "05c4a16939bf1a86d6b56270d6e5632c27c243025b1bfb21b0078b4cff46eec6"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-pg-initial",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture",
+      "--pg-binary",
+      "/private/tmp/devpilot-scheduler-tools/network64-pg.test"
+    ],
+    "started_at": "2026-10-22T03:11:13.814728+00:00",
+    "elapsed_seconds": 7.0743809579871595,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "0cfc2c6b556d2eeedcecfff77f096b2d37b1b85af3deadecd4ac560648535741",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "1ee2de2601a6d2402d2e55ab5afb86666df3f493313c128892038efb0587bdff",
+      "/private/tmp/devpilot-scheduler-tools/network64-pg.test": "05c4a16939bf1a86d6b56270d6e5632c27c243025b1bfb21b0078b4cff46eec6"
+    },
+    "log_sha256": "99165b37abb602fc092297e4d662bc88890dd578aae8821cea5cc798ad90e4e3"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-pg-race",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture",
+      "--pg-binary",
+      "/private/tmp/devpilot-scheduler-tools/network64-pg-race.test",
+      "--mode",
+      "race"
+    ],
+    "started_at": "2026-10-22T03:19:21.389132+00:00",
+    "elapsed_seconds": 10.784740834031254,
+    "exit_code": 0,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "ba9235e51939a9945b82d3c62971dbf672242761dfa483af98821d7ce9c97cb1",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "a5f86cb9f9a2bbd8b2460ec20e69b9d32c0da6e49d13ea0ada876a3173a44d80",
+      "/private/tmp/devpilot-scheduler-tools/network64-pg-race.test": "c235556539f66d975f3b1000348635255c7515f8ce01dcb00e436ae38ad3aa2f"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-pg-stdin-fixed",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture",
+      "--pg-binary",
+      "/private/tmp/devpilot-scheduler-tools/network64-pg.test"
+    ],
+    "started_at": "2026-10-22T03:13:08.066855+00:00",
+    "elapsed_seconds": 10.973196457955055,
+    "exit_code": 0,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "3882167470ad4cf6e36480fe43a6279ec2625e529bf3e2e35432066989525e1f",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "fcfaefcd94e9758fbdcd747d4b1373ff38401a9af5dd46bbb09addfa30b51046",
+      "/private/tmp/devpilot-scheduler-tools/network64-pg.test": "05c4a16939bf1a86d6b56270d6e5632c27c243025b1bfb21b0078b4cff46eec6"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/run-network64.py",
+      "--tools",
+      "/private/tmp/devpilot-network64-tools",
+      "--evidence",
+      "/private/tmp/devpilot-network64-synchronized-local"
+    ],
+    "started_at": "2026-10-22T03:51:36.754063+00:00",
+    "elapsed_seconds": 252.9245042919647,
+    "exit_code": 0,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "0fa96eada4462c5b592b2fdc58175aa6031ecbcd13634026244e982448e4e68a",
+    "binaries": {
+      "/private/tmp/devpilot-network64-tools/networksupervisorfixture": "3aafb8cb5e3c50891fc0622b53fd9819fa2bacc6e6f23a2b755be91f4d318855",
+      "/private/tmp/devpilot-network64-tools/network64-pg-race.test": "3e4be6b21da11b6adcc075de11b8b556d84e927e902ac67b4fa6a4727fc174f0"
+    },
+    "log_sha256": "8d99220cc677c4819f0ec838d7870d0cb80945d9564484fb83060c4966a7d0b0"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-direct-veth",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T03:06:35.940626+00:00",
+    "elapsed_seconds": 16.84874629206024,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "6f3548419104771a2771a2c09d3d23f872b8a6915ede540e998c980eb1393816",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "ad6059ae322ca861416354a6a4e2373a09a72f09610619db356083015c02d993"
+    },
+    "log_sha256": "8d9c6b7acc8b423a7f6161ecc534d8ae2c86d3015667ffc65939fdc09187cdd8"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-initial",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T02:55:10.646744+00:00",
+    "elapsed_seconds": 0.7106129579478875,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "b2ef2cded30a6d334919bce01cfdb6d57a553cb5480c7c4e27cf0e1bc86e9adb",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "8ce2394e9e676ff20cbb90bf60034ff784c501af23e4029a87d954efba460387"
+    },
+    "log_sha256": "e49e25274e4351de2ff9d90b7e9c80887bb651718e8f0fc5332c79798f862719"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-locale-fixed",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T03:02:03.043036+00:00",
+    "elapsed_seconds": 11.721433999948204,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "3342d3b8369860c92bec1f889e02a6b8f6eee9f04da5f2c4d6e518caaf3b72c3",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "ad6059ae322ca861416354a6a4e2373a09a72f09610619db356083015c02d993"
+    },
+    "log_sha256": "a17071b041d972b37aebd5c8fa0ccf8e8e5b3320eabdbb8cd6fa1751f020a1b1"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-setup-fixed",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T02:57:32.381757+00:00",
+    "elapsed_seconds": 4.920624457998201,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "fee7ee3889cb1f55fadf95e58ec6cd59178b2c9c8876bddc104d1b6813b18ea4",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "ad6059ae322ca861416354a6a4e2373a09a72f09610619db356083015c02d993"
+    },
+    "log_sha256": "d9584d38b0cf21e17ae4f10c04380e16edee0ff4e1fbc45186c48d7fd8c9d64f"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-sysctl-fixed",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T03:00:07.682236+00:00",
+    "elapsed_seconds": 11.312201041029766,
+    "exit_code": 1,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "92e698a578d00c845bedc371368f50926a7f85b0b14d260c50c8a35e5f839605",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "ad6059ae322ca861416354a6a4e2373a09a72f09610619db356083015c02d993"
+    },
+    "log_sha256": "63a46109756ec96ce10f7be308ed9741f9d7c9ea00c6bea71bae4e61fdf532ee"
+  },
+  {
+    "command": [
+      "python3",
+      "tests/scheduler/network_fixture.py",
+      "--evidence",
+      "/private/tmp/devpilot-network64-time-binding",
+      "--supervisor",
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture"
+    ],
+    "started_at": "2026-10-22T03:08:25.814002+00:00",
+    "elapsed_seconds": 89.17244308302179,
+    "exit_code": 0,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "e50e3df3daba020ef2294edec7cae6397695116f72392acd6db8bc55478f7ca0",
+    "binaries": {
+      "/private/tmp/devpilot-scheduler-tools/networksupervisorfixture": "ad6059ae322ca861416354a6a4e2373a09a72f09610619db356083015c02d993"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "./...",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "started_at": "2026-10-22T03:28:12.866581+00:00",
+    "elapsed_seconds": 13.154974875040352,
+    "exit_code": 0,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "173c713a9cbf202f01f86a89be791692d137354cfcf706b7d64338213bc9fa7c",
+    "binaries": {},
+    "log_sha256": "6703391c3dc39ae8469c356d47005029611ceb4156682cc4aa9ba59057d863e3"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "./...",
+      "-count=1",
+      "-timeout=120s"
+    ],
+    "started_at": "2026-10-22T03:27:22.634968+00:00",
+    "elapsed_seconds": 6.224797083996236,
+    "exit_code": 0,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "c007e7dc6690967c3170ca0aa0a41254b60a5b236889cf58870ea69bfce0d3bc",
+    "binaries": {},
+    "log_sha256": "58d6f84bbb7c115e5d93dee43af45f184fba348c852f8ee4650e9b50f1af0bb0"
+  },
+  {
+    "command": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "started_at": "2026-10-22T03:27:29.692639+00:00",
+    "elapsed_seconds": 0.2585027499590069,
+    "exit_code": 0,
+    "head": "343540f1f23a579e35f796b27eddb48776178ab6",
+    "dirty": true,
+    "source_inventory_sha256": "c007e7dc6690967c3170ca0aa0a41254b60a5b236889cf58870ea69bfce0d3bc",
+    "binaries": {},
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

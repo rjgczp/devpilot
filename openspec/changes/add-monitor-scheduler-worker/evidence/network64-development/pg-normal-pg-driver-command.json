@@ -1,0 +1,33 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-i",
+    "--network",
+    "container:36f709980b8b9fd43fb10ad534de061d884c29a3fd6f6de297f2527145c75ebc",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges:true",
+    "-v",
+    "/Users/sansea/Documents/ChatGPT/devpilot:/Users/sansea/Documents/ChatGPT/devpilot:ro",
+    "-v",
+    "/private/tmp/devpilot-network64-tools:/toolbin:ro",
+    "-w",
+    "/Users/sansea/Documents/ChatGPT/devpilot",
+    "-e",
+    "PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable",
+    "--entrypoint",
+    "/toolbin/network64-pg.test",
+    "devpilot-scheduler-fixture",
+    "-test.run",
+    "^TestBudgetNetworkPolicyPG$",
+    "-test.v",
+    "-test.timeout=120s"
+  ],
+  "exit_code": 0,
+  "binary_sha256": "2b60bfafdbef8495a7e0d799ac62ed85ca25ee83ad5212bd2a828c5bd4606b8b"
+}

@@ -1,0 +1,72 @@
+=== RUN   TestCheckpointOneHTTPIntentStatusContract
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/disabled
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/blocked
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/authorized_waiting
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/due
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/leased
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/started
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/unknown
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/completed
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/configuration_changed
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/expired
+=== NAME  TestCheckpointOneHTTPIntentStatusContract
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOneHTTPIntentStatusContract (0.19s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/disabled (0.02s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/blocked (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/authorized_waiting (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/due (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/leased (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/started (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/unknown (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/completed (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/configuration_changed (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/expired (0.01s)
+=== RUN   TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities (0.11s)
+=== RUN   TestExecutionStatusHTTPAuthority
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestExecutionStatusHTTPAuthority/revoked
+=== RUN   TestExecutionStatusHTTPAuthority/expired
+=== RUN   TestExecutionStatusHTTPAuthority/disabled-user
+=== RUN   TestExecutionStatusHTTPAuthority/removed
+=== RUN   TestExecutionStatusHTTPAuthority/rejoined
+=== RUN   TestExecutionStatusHTTPAuthority/full-scope-and-cookie
+=== NAME  TestExecutionStatusHTTPAuthority
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestExecutionStatusHTTPAuthority (0.14s)
+    --- PASS: TestExecutionStatusHTTPAuthority/revoked (0.02s)
+    --- PASS: TestExecutionStatusHTTPAuthority/expired (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/disabled-user (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/removed (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/rejoined (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/full-scope-and-cookie (0.01s)
+=== RUN   TestExecutionStatusProjectionIsolation
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestExecutionStatusProjectionIsolation/pointer-and-unknown
+    scheduler_status74_test.go:236: status74 projection/order {"desired_state":"enabled","workspace_id":"01a18185-f962-7d56-a350-9c9881140e5e","project_id":"01a18185-f967-794c-a1af-39c630beb10d","monitor_id":"01a18185-f968-7f8d-a867-fa27d7adb45c","configuration_version":"2","activation_generation":"3","scheduler_epoch":"1","authorization_state":"valid","scheduling_state":"blocked","effective_authorization":false,"expires_at":"2026-10-28T08:02:03.437106Z","next_due":null,"in_flight":false,"pause_semantics":"start_commit","blocked_reason":"scheduler_unavailable","latest_attempt":{"workspace_id":"01a18185-f962-7d56-a350-9c9881140e5e","project_id":"01a18185-f967-794c-a1af-39c630beb10d","monitor_id":"01a18185-f968-7f8d-a867-fa27d7adb45c","run_id":"01a18185-f96f-720c-9e5f-484932b36e2f","configuration_version":"2","activation_generation":"3","scheduler_epoch":"1","fencing_token":"2","attempt_state":"completed","scheduled_at":"2026-10-28T07:59:53.437106Z","claimed_at":"2026-10-28T07:59:58.439106Z","started_at":"2026-10-28T07:59:59.437106Z","finished_at":"2026-10-28T08:00:02.439126Z","duration_ms":1,"http_status":200,"success":true,"failure_code":null,"stop_reason":null},"latest_completed_observation":{"workspace_id":"01a18185-f962-7d56-a350-9c9881140e5e","project_id":"01a18185-f967-794c-a1af-39c630beb10d","monitor_id":"01a18185-f968-7f8d-a867-fa27d7adb45c","run_id":"01a18185-f976-7bf4-b103-2c6dc67fa260","configuration_version":"1","activation_generation":"2","scheduler_epoch":"1","fencing_token":"1","attempt_state":"completed","scheduled_at":"2026-10-28T07:59:53.437106Z","claimed_at":"2026-10-28T07:59:58.438106Z","started_at":"2026-10-28T07:59:59.437106Z","finished_at":"2026-10-28T08:00:02.446746Z","duration_ms":1,"http_status":200,"success":true,"failure_code":null,"stop_reason":null},"current_observation":{"workspace_id":"01a18185-f962-7d56-a350-9c9881140e5e","project_id":"01a18185-f967-794c-a1af-39c630beb10d","monitor_id":"01a18185-f968-7f8d-a867-fa27d7adb45c","run_id":"01a18185-f96f-720c-9e5f-484932b36e2f","configuration_version":"2","activation_generation":"3","scheduler_epoch":"1","fencing_token":"2","attempt_state":"completed","scheduled_at":"2026-10-28T07:59:53.437106Z","claimed_at":"2026-10-28T07:59:58.439106Z","started_at":"2026-10-28T07:59:59.437106Z","finished_at":"2026-10-28T08:00:02.439126Z","duration_ms":1,"http_status":200,"success":true,"failure_code":null,"stop_reason":null}} [{"fence": 2, "run_id": "01a18185-f96f-720c-9e5f-484932b36e2f", "claimed_at": "2026-10-28T07:59:58.439106+00:00", "finished_at": "2026-10-28T08:00:02.439126+00:00"}, {"fence": 1, "run_id": "01a18185-f976-7bf4-b103-2c6dc67fa260", "claimed_at": "2026-10-28T07:59:58.438106+00:00", "finished_at": "2026-10-28T08:00:02.446746+00:00"}] expected current 01a18185-f96f-720c-9e5f-484932b36e2f late audit 01a18185-f976-7bf4-b103-2c6dc67fa260
+=== RUN   TestExecutionStatusProjectionIsolation/version
+=== RUN   TestExecutionStatusProjectionIsolation/generation
+=== RUN   TestExecutionStatusProjectionIsolation/epoch
+=== NAME  TestExecutionStatusProjectionIsolation
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestExecutionStatusProjectionIsolation (0.15s)
+    --- PASS: TestExecutionStatusProjectionIsolation/pointer-and-unknown (0.03s)
+    --- PASS: TestExecutionStatusProjectionIsolation/version (0.01s)
+    --- PASS: TestExecutionStatusProjectionIsolation/generation (0.01s)
+    --- PASS: TestExecutionStatusProjectionIsolation/epoch (0.01s)
+=== RUN   TestExecutionStatusSingleStatementSnapshot
+    registration_test.go:79: native Goose up expected-success=true: verified
+    scheduler_status74_test.go:301: before writer Commit 2 3
+    scheduler_status74_test.go:309: after writer Commit 3 4
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestExecutionStatusSingleStatementSnapshot (0.12s)
+=== RUN   TestExecutionStatusHTTPFailuresAndBudget
+    registration_test.go:79: native Goose up expected-success=true: verified
+    scheduler_status74_test.go:368: real lock deadline elapsed=2.006089292s; 503 then recovery200 then dependency500
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestExecutionStatusHTTPFailuresAndBudget (2.12s)
+PASS

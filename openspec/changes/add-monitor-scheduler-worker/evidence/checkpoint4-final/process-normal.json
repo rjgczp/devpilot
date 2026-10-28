@@ -1,0 +1,23 @@
+{
+  "command": [
+    "docker",
+    "start",
+    "-a",
+    "405eead602d09f90af79b9928d0b8c393c1215a83c65d306d7981a845c20ab20"
+  ],
+  "started_at": "2026-10-21T07:47:23.111003+00:00",
+  "elapsed_seconds": 0.6235058329766616,
+  "exit_code": 0,
+  "head": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
+  "dirty": false,
+  "source_inventory_sha256": "215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528",
+  "binaries": {
+    "/private/tmp/devpilot-scheduler-tools/cp4-process.test": "57d8e1e700450df634c1e5732dee852092b5357ee85a876d515283a57d8d96d5",
+    "/private/tmp/devpilot-scheduler-tools/cp4-probe": "a4c6c34db03d15c1ea7384e5d112156382e43d7e779e8fced8a57c50f5da7642"
+  },
+  "log_sha256": "c46cc121c78e58e0c86953b6b1c2348d977562c82a782624347ead3191f58eeb",
+  "source_inventory_ref": "source-inventories/215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528.json",
+  "original_receipt_ref": "raw-receipts/process-normal.json.gz",
+  "original_receipt_sha256": "3431fea268359fdb5796a43dfe902262ad144124f5e58dbd01d906be31d5e06e",
+  "log_ref": "process-normal.log"
+}

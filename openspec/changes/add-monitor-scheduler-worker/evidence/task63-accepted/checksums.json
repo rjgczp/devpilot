@@ -1,0 +1,11 @@
+{
+  "approval.json": "4026ddad1b505b3af28219cb0ee6c0e9a1e88bb22e8d7df27c65fd7410cd5a85",
+  "README.md": "c78e9557616690d0178875260fe94f7717db8cd196bf01dcd0eb3ab15b1fdb7b",
+  "acceptance-index.json": "b30f9b8666cc2615c566d39587ca1784d5f5aa9862a26aba10299d87b26ed5d7",
+  "negative-preservation.json": "beb57d7f9d8c612ffeba698c316156d5b7f34d882aabb0f64e8070549d305c55",
+  "ci/push-integration-audit.json": "b43f1c61800717e596e87e1a20f07547cfae26eec3fa3c0e9f38a0bc0c2e7180",
+  "ci/pull_request-security-audit.json": "edd2cf7a2085d9bb7c4e044160dc3aeff4cda71cf8718d85e14787ad6c434654",
+  "ci/push-security-audit.json": "4ca89531b34d02bb4392104ddb6ca7690a2496adfa5dccdaf5f524733df9e2d7",
+  "ci/real-witness-binding.json": "4ad2ef3d15334b0eb8d37866a8fb527900b74db4e5fff89cfe1cac5ae8b2df30",
+  "ci/pull_request-integration-audit.json": "f3fd42040774db2605d336d9bfdc93317fda377f37702306c3c3c2c2704e5df2"
+}

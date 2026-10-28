@@ -7695,7 +7695,7 @@
       "get": {
         "operationId": "getMonitorActivation",
         "summary": "Read HTTP Monitor activation intent",
-        "description": "Activation Intent Foundation only: enabled is intent, never running. Owner writes; current Owner/Member reads. Cookie-only, exact Origin/CSRF/Sec-Fetch-Site for PUT; request 5s / whole DB transaction 2s. Complete tenant triple and live identity gate actual SQL after User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE -> Activation UPDATE. PUT requires a single strong If-Match monitor-activation:<monitor_id>:<configuration_version>:<activation_generation> (128 bytes max) and body confirmation of configuration_version. Strict JSON, 1024 raw bytes; reject unknown/duplicate/null/invalid Unicode, extra JSON, query, unsupported conditions/Content-Encoding; GET forbids body/conditional headers. Semantic priority 401 -> 404 -> 403 -> 428 -> 412 -> 409 -> 429; syntax/CSRF/path rejection retains prior gates. Each successful command including same value increments generation; any successful configuration PATCH atomically disables intent and advances generation, preserving cooling. Maximum100 enabled per Workspace; successful enabled enforces persisted60s cooling, pause/PATCH bypass these limits. No automatic retries; unknown Commit may persist, GET reconciliation required. Fixed execution_state=blocked, blocked_reason=scheduler_unavailable, next_due_at=null. No URL/actor/health/run/lease/results. No production scheduler, worker, probe or unlock switch. Old intent must be cleared and explicitly reconfirmed before a future approved Worker rollout. All responses no-store/nosniff without Set-Cookie/CORS.",
+        "description": "Schema8 intent projection: enabled expresses intent; execution-status is the sole authority for actual execution. Owner writes; current Owner/Member reads. Cookie-only, exact Origin/CSRF/Sec-Fetch-Site for PUT; request 5s / whole DB transaction 2s. Complete tenant triple and live identity gate actual SQL after User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE -> Activation UPDATE. PUT requires a single strong If-Match monitor-activation:<monitor_id>:<configuration_version>:<activation_generation> (128 bytes max) and body confirmation of configuration_version. Strict JSON, 1024 raw bytes; reject unknown/duplicate/null/invalid Unicode, extra JSON, query, unsupported conditions/Content-Encoding; GET forbids body/conditional headers. Semantic priority 401 -> 404 -> 403 -> 428 -> 412 -> 409 -> 429; syntax/CSRF/path rejection retains prior gates. Each successful command including same value increments generation; any successful configuration PATCH atomically disables intent and advances generation, preserving cooling. Maximum100 enabled per Workspace; successful enabled enforces persisted60s cooling, pause/PATCH bypass these limits. No automatic retries; unknown Commit may persist, GET reconciliation required. BREAKING: fixed deprecated execution_state=not_reported and blocked_reason=execution_status_required; success header DevPilot-Activation-Projection:intent-v2. The field names/types and strong validator format remain; Migration8 retires ALL old generations, disabled included. next_due_at remains null. No URL/actor/health/run/lease/results. No production scheduler, worker, probe or unlock switch. Old intent is revoked by Migration8; Owner must explicitly grant at most24h for the current v/g. Pause prevents new Start Commit; a previously started GET may send or finish after the response and cannot be recalled. All responses no-store/nosniff without Set-Cookie/CORS.",
         "security": [
           {
             "SessionCookie": []
@@ -7754,6 +7754,12 @@
                   "type": "string"
                 },
                 "description": "Strong quoted monitor-activation:<monitor_id>:<v>:<g>."
+              },
+              "DevPilot-Activation-Projection": {
+                "schema": {
+                  "type": "string",
+                  "const": "intent-v2"
+                }
               }
             },
             "content": {
@@ -7926,7 +7932,7 @@
       "put": {
         "operationId": "setMonitorActivation",
         "summary": "Confirm or pause versioned HTTP Monitor intent",
-        "description": "Activation Intent Foundation only: enabled is intent, never running. Owner writes; current Owner/Member reads. Cookie-only, exact Origin/CSRF/Sec-Fetch-Site for PUT; request 5s / whole DB transaction 2s. Complete tenant triple and live identity gate actual SQL after User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE -> Activation UPDATE. PUT requires a single strong If-Match monitor-activation:<monitor_id>:<configuration_version>:<activation_generation> (128 bytes max) and body confirmation of configuration_version. Strict JSON, 1024 raw bytes; reject unknown/duplicate/null/invalid Unicode, extra JSON, query, unsupported conditions/Content-Encoding; GET forbids body/conditional headers. Semantic priority 401 -> 404 -> 403 -> 428 -> 412 -> 409 -> 429; syntax/CSRF/path rejection retains prior gates. Each successful command including same value increments generation; any successful configuration PATCH atomically disables intent and advances generation, preserving cooling. Maximum100 enabled per Workspace; successful enabled enforces persisted60s cooling, pause/PATCH bypass these limits. No automatic retries; unknown Commit may persist, GET reconciliation required. Fixed execution_state=blocked, blocked_reason=scheduler_unavailable, next_due_at=null. No URL/actor/health/run/lease/results. No production scheduler, worker, probe or unlock switch. Old intent must be cleared and explicitly reconfirmed before a future approved Worker rollout. All responses no-store/nosniff without Set-Cookie/CORS.",
+        "description": "Schema8 intent projection: enabled expresses intent; execution-status is the sole authority for actual execution. Owner writes; current Owner/Member reads. Cookie-only, exact Origin/CSRF/Sec-Fetch-Site for PUT; request 5s / whole DB transaction 2s. Complete tenant triple and live identity gate actual SQL after User SHARE -> Session SHARE -> Workspace NO KEY UPDATE -> Membership UPDATE -> Project UPDATE -> Monitor UPDATE -> Activation UPDATE. PUT requires a single strong If-Match monitor-activation:<monitor_id>:<configuration_version>:<activation_generation> (128 bytes max) and body confirmation of configuration_version. Strict JSON, 1024 raw bytes; reject unknown/duplicate/null/invalid Unicode, extra JSON, query, unsupported conditions/Content-Encoding; GET forbids body/conditional headers. Semantic priority 401 -> 404 -> 403 -> 428 -> 412 -> 409 -> 429; syntax/CSRF/path rejection retains prior gates. Each successful command including same value increments generation; any successful configuration PATCH atomically disables intent and advances generation, preserving cooling. Maximum100 enabled per Workspace; successful enabled enforces persisted60s cooling, pause/PATCH bypass these limits. No automatic retries; unknown Commit may persist, GET reconciliation required. BREAKING: fixed deprecated execution_state=not_reported and blocked_reason=execution_status_required; success header DevPilot-Activation-Projection:intent-v2. The field names/types and strong validator format remain; Migration8 retires ALL old generations, disabled included. next_due_at remains null. No URL/actor/health/run/lease/results. No production scheduler, worker, probe or unlock switch. Old intent is revoked by Migration8; Owner must explicitly grant at most24h for the current v/g. Pause prevents new Start Commit; a previously started GET may send or finish after the response and cannot be recalled. All responses no-store/nosniff without Set-Cookie/CORS.",
         "security": [
           {
             "SessionCookie": []
@@ -8006,6 +8012,12 @@
                   "type": "string"
                 },
                 "description": "Strong quoted monitor-activation:<monitor_id>:<v>:<g>."
+              },
+              "DevPilot-Activation-Projection": {
+                "schema": {
+                  "type": "string",
+                  "const": "intent-v2"
+                }
               }
             },
             "content": {
@@ -8375,6 +8387,700 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MonitorError_activation_rate_limited"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/execution-authorization": {
+      "put": {
+        "operationId": "authorizeMonitorExecution",
+        "summary": "Grant finite Owner consent for periodic fixture HTTP GET",
+        "description": "Strict single UTF-8 JSON object, max1024 raw bytes, no unknown/duplicate/null keys or trailing JSON. configuration_version is a canonical positive signed bigint string; profile periodic-http-get-v1; integer authorization_seconds60..86400. Cookie-only, Origin/CSRF, strong Activation If-Match and 5s HTTP/2s transaction. Owner rechecks after all parent locks, database time sets expiry, g advances atomically, cooling60s and100 enabled/Workspace remain. Unknown Commit is never retried. Consent is not a manual probe. Production gate stays closed; no target DNS/TCP occurs in this API. effective_authorization is false while deployment is closed. No automatic renewal; a current active Owner is required for future Claim/Start.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "monitor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "description": "Exactly one strong quoted monitor-activation:<monitor_id>:<v>:<g> tag; weak/wildcard/list/repeated/malformed rejected400."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "At most1024 raw bytes. Exactly two required strings; canonical positive bigint string. No Content-Encoding.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonitorExecutionAuthorizationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Strong quoted monitor-activation:<monitor_id>:<v>:<g>."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorExecutionAuthorizationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "PUT"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_csrf_rejected"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_monitor_forbidden"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_request_too_large"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unsupported_media_type"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorExecutionAuthorizationValidationError"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_precondition_failed"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_precondition_required"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_activation_limit_reached"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_retention_capacity"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Ceiling of remaining database cooling seconds."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_activation_rate_limited"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/execution-status": {
+      "get": {
+        "operationId": "getMonitorExecutionStatus",
+        "summary": "Read the authoritative minimal runtime status",
+        "description": "Only authority for execution observation. Cookie-only live Owner/Member and complete scope are checked in one PostgreSQL statement snapshot with authorization, scheduling and at most one latest attempt/completed/current observation. No body/query/conditional headers;5s HTTP/2s DB. No target networking. Disabled intent does not hide an old started/unknown attempt; in_flight remains true while a started physical capability is unconfirmed. unknown has null HTTP/success/failure fields and cannot be masked by earlier success. current_observation requires matching v/g/epoch. Pause semantics start_commit; an already-started GET may send later. Activation is only a deprecated migration hint. Unsupported/404/503 status means running status unavailable. If v/g differs between endpoint reads, refresh this authority instead of merging snapshots. No history pagination/SLA/health inference.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "monitor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorExecutionStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
                 }
               }
             }
@@ -10692,7 +11398,8 @@
               "never_activated",
               "owner_enabled",
               "owner_paused",
-              "configuration_changed"
+              "configuration_changed",
+              "upgrade_revoked"
             ]
           },
           "created_at": {
@@ -10705,11 +11412,15 @@
           },
           "execution_state": {
             "type": "string",
-            "const": "blocked"
+            "const": "not_reported",
+            "deprecated": true,
+            "description": "Migration hint only. Never infer execution/health. Read execution-status; unsupported/404/503 means running status unavailable."
           },
           "blocked_reason": {
             "type": "string",
-            "const": "scheduler_unavailable"
+            "const": "execution_status_required",
+            "deprecated": true,
+            "description": "Migration hint only. Never infer execution/health. Read execution-status; unsupported/404/503 means running status unavailable."
           }
         }
       },
@@ -10787,6 +11498,523 @@
                 }
               }
             }
+          }
+        }
+      },
+      "MonitorExecutionAuthorizationInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "configuration_version",
+          "consent_profile",
+          "authorization_seconds"
+        ],
+        "properties": {
+          "configuration_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "consent_profile": {
+            "type": "string",
+            "const": "periodic-http-get-v1"
+          },
+          "authorization_seconds": {
+            "type": "integer",
+            "minimum": 60,
+            "maximum": 86400
+          }
+        }
+      },
+      "MonitorExecutionAuthorization": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "workspace_id",
+          "project_id",
+          "monitor_id",
+          "configuration_version",
+          "activation_generation",
+          "scheduler_epoch",
+          "issued_at",
+          "expires_at",
+          "effective_authorization",
+          "blocked_reason"
+        ],
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monitor_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "configuration_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "activation_generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "scheduler_epoch": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "issued_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "effective_authorization": {
+            "type": "boolean"
+          },
+          "blocked_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "scheduler_unavailable",
+              "authorization_required",
+              "authorization_expired",
+              "owner_unavailable",
+              "egress_unavailable",
+              "emergency_stop",
+              "resource_limited",
+              "retention_capacity",
+              "quarantined",
+              "clock_untrusted",
+              null
+            ]
+          }
+        }
+      },
+      "MonitorExecutionAuthorizationResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MonitorExecutionAuthorization"
+          }
+        }
+      },
+      "MonitorExecutionAuthorizationValidationError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message",
+              "fields"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "validation_failed"
+              },
+              "message": {
+                "type": "string",
+                "const": "Invalid monitor fields."
+              },
+              "fields": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "configuration_version": {
+                    "type": "string",
+                    "const": "invalid_value"
+                  },
+                  "consent_profile": {
+                    "type": "string",
+                    "const": "invalid_value"
+                  },
+                  "authorization_seconds": {
+                    "type": "string",
+                    "const": "invalid_value"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "MonitorError_retention_capacity": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "retention_capacity"
+              },
+              "message": {
+                "type": "string",
+                "const": "Execution retention capacity unavailable."
+              }
+            }
+          }
+        }
+      },
+      "MonitorAttempt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "workspace_id",
+          "project_id",
+          "monitor_id",
+          "configuration_version",
+          "activation_generation",
+          "run_id",
+          "scheduler_epoch",
+          "fencing_token",
+          "attempt_state",
+          "scheduled_at",
+          "claimed_at",
+          "started_at",
+          "finished_at",
+          "duration_ms",
+          "http_status",
+          "success",
+          "failure_code",
+          "stop_reason"
+        ],
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monitor_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "configuration_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "activation_generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "run_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scheduler_epoch": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "fencing_token": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "attempt_state": {
+            "type": "string",
+            "enum": [
+              "leased",
+              "started",
+              "completed",
+              "canceled",
+              "expired",
+              "unknown"
+            ]
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "claimed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "duration_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 30000
+          },
+          "http_status": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 200,
+            "maximum": 599
+          },
+          "success": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "failure_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "dns_failed",
+              "blocked_target",
+              "connect_failed",
+              "tls_failed",
+              "timeout",
+              "canceled",
+              "response_limit",
+              "protocol_error",
+              "unexpected_status",
+              null
+            ]
+          },
+          "stop_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "authorization_revoked",
+              "authorization_expired",
+              "lease_expired",
+              "commit_unknown",
+              "worker_lost",
+              "resource_limited",
+              "invalid_configuration",
+              "egress_unavailable",
+              "emergency_stop",
+              "retention_capacity",
+              null
+            ]
+          }
+        }
+      },
+      "MonitorExecutionStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "workspace_id",
+          "project_id",
+          "monitor_id",
+          "configuration_version",
+          "activation_generation",
+          "scheduler_epoch",
+          "desired_state",
+          "authorization_state",
+          "scheduling_state",
+          "effective_authorization",
+          "expires_at",
+          "next_due",
+          "in_flight",
+          "pause_semantics",
+          "blocked_reason",
+          "latest_attempt",
+          "latest_completed_observation",
+          "current_observation"
+        ],
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monitor_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "configuration_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "activation_generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "scheduler_epoch": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Canonical positive signed bigint decimal string, at most 9223372036854775807."
+          },
+          "authorization_state": {
+            "type": "string",
+            "enum": [
+              "none",
+              "valid",
+              "expired"
+            ],
+            "description": "Consent lifetime only: none, valid or expired. Separate from Owner intent, deployment admission, scheduling and actual Run outcome."
+          },
+          "scheduling_state": {
+            "type": "string",
+            "enum": [
+              "disabled",
+              "authorized_waiting",
+              "due",
+              "blocked"
+            ]
+          },
+          "effective_authorization": {
+            "type": "boolean"
+          },
+          "expires_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "next_due": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "in_flight": {
+            "type": "boolean",
+            "description": "True if a started Run still lacks trusted physical release confirmation, including old lineage or unknown after Pause/PATCH/expiry. Lease expiry or HTTP completion alone cannot clear it."
+          },
+          "pause_semantics": {
+            "type": "string",
+            "const": "start_commit"
+          },
+          "blocked_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "scheduler_unavailable",
+              "authorization_required",
+              "authorization_expired",
+              "owner_unavailable",
+              "egress_unavailable",
+              "emergency_stop",
+              "resource_limited",
+              "retention_capacity",
+              "quarantined",
+              "clock_untrusted",
+              null
+            ]
+          },
+          "latest_attempt": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MonitorAttempt"
+              },
+              {
+                "type": [
+                  "null"
+                ]
+              }
+            ],
+            "description": "At most one latest attempt with its original lineage. started means running; unknown is uncertain delivery and never inferred HTTP failure. A newer unknown is not hidden by an older success."
+          },
+          "latest_completed_observation": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MonitorAttempt"
+              },
+              {
+                "type": [
+                  "null"
+                ]
+              }
+            ],
+            "description": "At most one historical completed observation with its original v/g/epoch; may differ from the current configuration or authorization and does not assert current health."
+          },
+          "current_observation": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MonitorAttempt"
+              },
+              {
+                "type": [
+                  "null"
+                ]
+              }
+            ],
+            "description": "At most one confirmed observation from the gated Result pointer, matching current configuration_version, activation_generation and scheduler_epoch. Null when the pointer or lineage is invalid or the latest attempt is unknown; independent of physical capacity settlement."
+          },
+          "desired_state": {
+            "type": "string",
+            "enum": [
+              "disabled",
+              "enabled"
+            ],
+            "description": "Owner intent; actual execution is reported by the independent authorization, scheduling and attempt fields."
+          }
+        }
+      },
+      "MonitorExecutionStatusResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MonitorExecutionStatus"
           }
         }
       }

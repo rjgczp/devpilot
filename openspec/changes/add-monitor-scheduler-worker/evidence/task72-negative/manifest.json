@@ -1,0 +1,47 @@
+[
+  {
+    "original": "result.json",
+    "saved": "result.json.gz",
+    "raw_sha256": "18e078a0117f40ee581232583b7df006e7bded1ef0499932c95dcb51690134bb"
+  },
+  {
+    "original": "plan.json",
+    "saved": "plan.json.gz",
+    "raw_sha256": "7546b2ab5639d5e4fecc41b6159c024f39bba8207c31848bfc9db0523a6cc428"
+  },
+  {
+    "original": "receipts/normal-TestResultCommitValidationPG-allow-https.json",
+    "saved": "receipts--normal-TestResultCommitValidationPG-allow-https.json.gz",
+    "raw_sha256": "ae2118ba371a0a133da5c5529e35de3509138b1f86c6bdd845a819c39df11af7"
+  },
+  {
+    "original": "receipts/normal-TestResultCommitValidationPG-allow-https.log",
+    "saved": "receipts--normal-TestResultCommitValidationPG-allow-https.log.gz",
+    "raw_sha256": "675690d41993476e0c956b20b40c606883928fad53a3dce84fa9aa2cc60f32d3"
+  },
+  {
+    "original": "normal-TestResultCommitValidationPG-allow-https/pg-driver.log",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--pg-driver.log.gz",
+    "raw_sha256": "9f5c78fc67a4f76316c7aed48dbdd6215c8489ba511d6a6a79d65e57ffc8e12a"
+  },
+  {
+    "original": "normal-TestResultCommitValidationPG-allow-https/postgres.log",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--postgres.log.gz",
+    "raw_sha256": "f25b827124b64bf75fc24047d6891dfeffac50cff5c5fed2bf210fd83f8e5a5f"
+  },
+  {
+    "original": "normal-TestResultCommitValidationPG-allow-https/postgres-final-ledger.log",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--postgres-final-ledger.log.gz",
+    "raw_sha256": "2bec9be947449f3cc9190f976e64e45c83975d0693c9ee404d02dec6975ca5b3"
+  },
+  {
+    "original": "normal-TestResultCommitValidationPG-allow-https/committed-stop-bundle.json",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--committed-stop-bundle.json.gz",
+    "raw_sha256": "2fddf76ebe4c65cd0d7dfe74176d224b6316fe633394d975bb4199261a5d6782"
+  },
+  {
+    "original": "normal-TestResultCommitValidationPG-allow-https/joint-kernel-witness.json",
+    "saved": "normal-TestResultCommitValidationPG-allow-https--joint-kernel-witness.json.gz",
+    "raw_sha256": "da16ba48df385e1041ce4b2aceb8f5895287b53bccba186a71ee7993cdefa0fa"
+  }
+]

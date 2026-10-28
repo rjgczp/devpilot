@@ -1,0 +1,10 @@
+{
+  "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+  "original_archives_in_actual_git_blobs": {
+    "joint63-negative/review-evidence.tar.gz": "7777a1924594af454b171d89d00c781f6e4e7b874631ba9d622874eb3bcd25f5",
+    "joint63-repair-failure/review-evidence.tar.gz": "054dfc57d6d9cfe7f08c7dea2b0bef8d216426db662358e0236cf41866c1cceb",
+    "joint63-nscd-failure/review-evidence.tar.gz": "3b208aea8078e1a640b07ba94360f3be37fc35249cddc576169f0cfad1d4255c"
+  },
+  "gzip_raw_byte_preservation_verified": 5,
+  "runtime_and_database_source_unmodified_this_batch": true
+}

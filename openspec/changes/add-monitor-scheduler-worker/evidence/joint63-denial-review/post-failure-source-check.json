@@ -1,0 +1,7 @@
+{
+  "tested_source_inventory_sha256": "c44586b33cc960267c2217567b34924d311aafa13d2d957d4b23879a0543bbcf",
+  "runtime_code_unchanged_after_stop": true,
+  "changed_since_test": [
+    "tests/scheduler/joint63-blocker.md"
+  ]
+}

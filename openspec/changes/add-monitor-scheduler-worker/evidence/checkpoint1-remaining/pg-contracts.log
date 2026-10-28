@@ -1,0 +1,77 @@
+=== RUN   TestCheckpointOneAuthorizationRealHTTPStrictContract
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOneAuthorizationRealHTTPStrictContract (0.17s)
+=== RUN   TestCheckpointOneControllerPublicAndIncarnation
+    registration_test.go:79: native Goose up expected-success=true: verified
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:37: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:65: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:70: database rejected SQLSTATE=42501 constraint=
+    scheduler_checkpoint1_roles_test.go:73: database rejected SQLSTATE=42501 constraint=
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOneControllerPublicAndIncarnation (0.12s)
+=== RUN   TestCheckpointOnePersistenceConstraints
+    registration_test.go:79: native Goose up expected-success=true: verified
+    scheduler_checkpoint1_test.go:38: database rejected SQLSTATE=23503 constraint=monitor_schedules_workspace_id_project_id_monitor_id_fkey
+    scheduler_checkpoint1_test.go:44: database rejected SQLSTATE=23505 constraint=monitor_runs_outstanding_idx
+    scheduler_checkpoint1_test.go:45: database rejected SQLSTATE=23503 constraint=scheduler_reservations_workspace_id_project_id_monitor_id__fkey
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_reservations_check1
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_preparation_shape
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_preparation_shape
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_reservations_origin_key_check
+    scheduler_checkpoint1_test.go:50: database rejected SQLSTATE=23514 constraint=scheduler_target_permit_shape
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check4
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check5
+    scheduler_checkpoint1_test.go:53: database rejected SQLSTATE=23514 constraint=monitor_runs_check2
+    scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=
+    scheduler_checkpoint1_test.go:59: database rejected SQLSTATE=23514 constraint=monitor_schedules_check1
+    scheduler_checkpoint1_test.go:61: database rejected SQLSTATE=23514 constraint=scheduler_control_check1
+    scheduler_checkpoint1_test.go:62: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check
+    scheduler_checkpoint1_test.go:63: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check1
+    scheduler_checkpoint1_test.go:64: database rejected SQLSTATE=23514 constraint=scheduler_budget_state_check2
+    scheduler_checkpoint1_test.go:72: database rejected SQLSTATE=23505 constraint=monitor_runs_outstanding_idx
+    scheduler_checkpoint1_test.go:84: database rejected SQLSTATE=23505 constraint=monitor_runs_workspace_id_project_id_monitor_id_fencing_tok_key
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOnePersistenceConstraints (0.10s)
+=== RUN   TestCheckpointOneSchemaSevenFailsClosed
+    scheduler_checkpoint1_test.go:94: native Goose up-to 7 expected-success=true: verified
+    scheduler_checkpoint1_test.go:95: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOneSchemaSevenFailsClosed (0.07s)
+=== RUN   TestCheckpointOneConfigurationRevokeRollback
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOneConfigurationRevokeRollback (0.09s)
+PASS

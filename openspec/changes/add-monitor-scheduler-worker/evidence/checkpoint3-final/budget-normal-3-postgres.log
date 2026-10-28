@@ -1,0 +1,95 @@
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.utf8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are enabled.
+
+fixing permissions on existing directory /var/lib/postgresql/18/docker ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Etc/UTC
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+initdb: warning: enabling "trust" authentication for local connections
+initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+syncing data to disk ... ok
+
+
+Success. You can now start the database server using:
+
+    pg_ctl -D /var/lib/postgresql/18/docker -l logfile start
+
+waiting for server to start....2026-10-21 06:42:23.434 UTC [59] LOG:  starting PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-21 06:42:23.435 UTC [59] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-21 06:42:23.438 UTC [65] LOG:  database system was shut down at 2026-10-21 06:42:23 UTC
+2026-10-21 06:42:23.439 UTC [59] LOG:  database system is ready to accept connections
+ done
+server started
+CREATE DATABASE
+
+
+/usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+
+waiting for server to shut down....2026-10-21 06:42:23.571 UTC [59] LOG:  received fast shutdown request
+2026-10-21 06:42:23.572 UTC [59] LOG:  aborting any active transactions
+2026-10-21 06:42:23.573 UTC [59] LOG:  background worker "logical replication launcher" (PID 68) exited with exit code 1
+2026-10-21 06:42:23.573 UTC [63] LOG:  shutting down
+2026-10-21 06:42:23.574 UTC [63] LOG:  checkpoint starting: shutdown immediate
+2026-10-21 06:42:23.587 UTC [63] LOG:  checkpoint complete: wrote 943 buffers (5.8%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.009 s, total=0.015 s; sync files=303, longest=0.003 s, average=0.001 s; distance=4352 kB, estimate=4352 kB; lsn=0/1BA1C08, redo lsn=0/1BA1C08
+2026-10-21 06:42:23.590 UTC [59] LOG:  database system is shut down
+ done
+server stopped
+
+PostgreSQL init process complete; ready for start up.
+
+2026-10-21 06:42:23.683 UTC [1] LOG:  starting PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-21 06:42:23.683 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-10-21 06:42:23.683 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-10-21 06:42:23.684 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-21 06:42:23.686 UTC [87] LOG:  database system was shut down at 2026-10-21 06:42:23 UTC
+2026-10-21 06:42:23.687 UTC [1] LOG:  database system is ready to accept connections
+2026-10-21 06:42:23.977 UTC [99] ERROR:  relation "goose_db_version" does not exist at character 36
+2026-10-21 06:42:23.977 UTC [99] STATEMENT:  SELECT version_id, is_applied from goose_db_version ORDER BY id DESC
+2026-10-21 06:42:24.018 UTC [98] ERROR:  clock_untrusted
+2026-10-21 06:42:24.018 UTC [98] CONTEXT:  PL/pgSQL function consume_token(text,text,bigint,bigint,timestamp with time zone) line 5 at RAISE
+2026-10-21 06:42:24.018 UTC [98] STATEMENT:  SELECT scheduler_private.consume_token($1,$2,$3,$4,$5)
+2026-10-21 06:42:24.019 UTC [98] ERROR:  resource_limited
+2026-10-21 06:42:24.019 UTC [98] CONTEXT:  PL/pgSQL function consume_token(text,text,bigint,bigint,timestamp with time zone) line 7 at RAISE
+2026-10-21 06:42:24.019 UTC [98] STATEMENT:  SELECT scheduler_private.consume_token($1,$2,$3,$4,$5)
+2026-10-21 06:42:24.020 UTC [98] ERROR:  clock_untrusted
+2026-10-21 06:42:24.020 UTC [98] CONTEXT:  PL/pgSQL function consume_token(text,text,bigint,bigint,timestamp with time zone) line 5 at RAISE
+2026-10-21 06:42:24.020 UTC [98] STATEMENT:  SELECT scheduler_private.consume_token($1,$2,$3,$4,$5)
+2026-10-21 06:42:24.020 UTC [98] ERROR:  resource_limited
+2026-10-21 06:42:24.020 UTC [98] CONTEXT:  PL/pgSQL function consume_token(text,text,bigint,bigint,timestamp with time zone) line 7 at RAISE
+2026-10-21 06:42:24.020 UTC [98] STATEMENT:  SELECT scheduler_private.consume_token($1,$2,$3,$4,$5)
+2026-10-21 06:42:24.021 UTC [98] ERROR:  clock_untrusted
+2026-10-21 06:42:24.021 UTC [98] CONTEXT:  PL/pgSQL function consume_token(text,text,bigint,bigint,timestamp with time zone) line 5 at RAISE
+2026-10-21 06:42:24.021 UTC [98] STATEMENT:  SELECT scheduler_private.consume_token($1,$2,$3,$4,$5)
+2026-10-21 06:42:24.021 UTC [98] ERROR:  resource_limited
+2026-10-21 06:42:24.021 UTC [98] CONTEXT:  PL/pgSQL function consume_token(text,text,bigint,bigint,timestamp with time zone) line 7 at RAISE
+2026-10-21 06:42:24.021 UTC [98] STATEMENT:  SELECT scheduler_private.consume_token($1,$2,$3,$4,$5)
+2026-10-21 06:42:24.022 UTC [98] ERROR:  clock_untrusted
+2026-10-21 06:42:24.022 UTC [98] CONTEXT:  PL/pgSQL function consume_target_token(text,text,timestamp with time zone) line 6 at RAISE
+2026-10-21 06:42:24.022 UTC [98] STATEMENT:  SELECT scheduler_private.consume_target_token($1,$2,$3)
+2026-10-21 06:42:24.022 UTC [98] ERROR:  resource_limited
+2026-10-21 06:42:24.022 UTC [98] CONTEXT:  PL/pgSQL function consume_target_token(text,text,timestamp with time zone) line 9 at RAISE
+2026-10-21 06:42:24.022 UTC [98] STATEMENT:  SELECT scheduler_private.consume_target_token($1,$2,$3)
+2026-10-21 06:42:24.023 UTC [98] ERROR:  clock_untrusted
+2026-10-21 06:42:24.023 UTC [98] CONTEXT:  PL/pgSQL function consume_target_token(text,text,timestamp with time zone) line 6 at RAISE
+2026-10-21 06:42:24.023 UTC [98] STATEMENT:  SELECT scheduler_private.consume_target_token($1,$2,$3)
+2026-10-21 06:42:24.023 UTC [98] ERROR:  resource_limited
+2026-10-21 06:42:24.023 UTC [98] CONTEXT:  PL/pgSQL function consume_target_token(text,text,timestamp with time zone) line 9 at RAISE
+2026-10-21 06:42:24.023 UTC [98] STATEMENT:  SELECT scheduler_private.consume_target_token($1,$2,$3)
+2026-10-21 06:42:25.073 UTC [100] ERROR:  retention_capacity
+2026-10-21 06:42:25.073 UTC [100] CONTEXT:  PL/pgSQL function budget_capacity() line 12 at RAISE
+	SQL statement "INSERT INTO public.scheduler_budget_state(kind,budget_key,tokens,keep_until) VALUES('workspace',p_wid::text,2000000,n+interval '1 hour') ON CONFLICT DO NOTHING"
+	PL/pgSQL function lock_budgets(uuid,uuid,uuid) line 5 at SQL statement
+	SQL statement "SELECT scheduler_private.lock_budgets(p_wid,p_pid,p_mid)"
+	PL/pgSQL function claim(uuid,uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,uuid) line 16 at PERFORM
+2026-10-21 06:42:25.073 UTC [100] STATEMENT:  SELECT scheduler_private.claim($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::bigint,$8::bigint,$9::bigint,$10::uuid)

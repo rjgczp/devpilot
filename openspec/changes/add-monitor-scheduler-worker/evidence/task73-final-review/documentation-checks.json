@@ -1,0 +1,41 @@
+{
+  "checked_at": "2026-10-28T07:17:57.263904+00:00",
+  "implementation_head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+  "checks": [
+    {
+      "argv": [
+        "openspec",
+        "validate",
+        "add-monitor-scheduler-worker",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "stdout": "Change 'add-monitor-scheduler-worker' is valid\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "Read-only source/diff/hash assertions (recorded in this conversation)",
+      "exit_code": 0,
+      "summary": "31/47; 7.3/7.4 unchecked; 44 retained negative files unchanged; Migration/SQL/Go/tests/workflow/API unchanged"
+    }
+  ],
+  "document_sha256": {
+    "docs/monitor-scheduler-task74-plan.md": "4499f7d1ed6bfb046b391798c02a91dbaca68e5281aa052c62ce117027752c1b",
+    "docs/monitor-scheduler-task73-verification.md": "c6819ac2d2c212d55cf891508df392e1ea3b38879f257f3fcbe51f8249752b0b",
+    "openspec/changes/add-monitor-scheduler-worker/tasks.md": "da223479a15d47e1738b191b3fd6213aecbf9d674d9e699ff168449a17e97cde",
+    "openspec/changes/add-monitor-scheduler-worker/verification.md": "7ffa9194bc7e61e5e19f39734dc4125e8b1a9cce735afb1fc401f61d9af22c04"
+  },
+  "implementation_tests_run": false,
+  "commit_created": false,
+  "pushed": false
+}

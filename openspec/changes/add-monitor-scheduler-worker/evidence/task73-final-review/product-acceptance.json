@@ -1,0 +1,17 @@
+{
+  "implementation_sha": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+  "approval_source": "Direct role=user message in this conversation: DevPilot AI — PR #11 下一阶段指令",
+  "approval_quote": "我确认接受 Task 7.3 的保守验收范围调整",
+  "accepted_scope": [
+    "started without distinguishable trusted persisted denial becomes unknown",
+    "No unsupported canceled inference",
+    "Precise canceled classification deferred",
+    "Historical IPv6 timeout root cause unresolved; preserve negative evidence",
+    "Physical release, isolation and network privileges unchanged"
+  ],
+  "complete": 32,
+  "total": 47,
+  "task74": "separately authorized only; task75 not authorized",
+  "raw_evidence_hashes_verified": true,
+  "new_tests_run_for_acceptance": false
+}

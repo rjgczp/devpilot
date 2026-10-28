@@ -1,0 +1,23 @@
+{
+  "parent_head": "ef689e82c11d04e695ca10fb9b55d079f7db7492",
+  "source_inventory_sha256": "9d2aa5bccdd64fd3c22bd1b0248c248e7e8fe9f66496994df87913097e8f7aaa",
+  "local_dirty": true,
+  "modes": {
+    "normal": {
+      "tests": 23,
+      "exit_code": 0,
+      "accepted": 8,
+      "refused": 1,
+      "burst_span_seconds": 0.030575,
+      "binary_sha256": "15fb3a5f2a145bc6c183ca519b748eae54e97a37879bb00a28d4e0de3eddac4e"
+    },
+    "race": {
+      "tests": 23,
+      "exit_code": 0,
+      "accepted": 8,
+      "refused": 1,
+      "burst_span_seconds": 0.03391,
+      "binary_sha256": "89a6fe8a40de36be4967f2bf5a119c546efd71e2eec921e14b241c339fb5c507"
+    }
+  }
+}

@@ -1,0 +1,1522 @@
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-user
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-session
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-workspace
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-membership
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-project
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-monitor
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-activation
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatefalse-post-gate
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-user
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-session
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-workspace
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-membership
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-project
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-monitor
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-activation
+=== RUN   TestActivationExpiryAfterEveryProtectiveWait/updatetrue-post-gate
+=== NAME  TestActivationExpiryAfterEveryProtectiveWait
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationExpiryAfterEveryProtectiveWait (2.73s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-user (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-session (0.17s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-workspace (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-membership (0.17s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-project (0.17s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-monitor (0.17s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-activation (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatefalse-post-gate (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-user (0.17s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-session (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-workspace (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-membership (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-project (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-monitor (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-activation (0.16s)
+    --- PASS: TestActivationExpiryAfterEveryProtectiveWait/updatetrue-post-gate (0.16s)
+=== RUN   TestActivationIdentityAndMembershipOrderings
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-disable-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-disable-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-role-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-role-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-exit-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-exit-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-remove-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-remove-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-accept-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatefalse-accept-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-disable-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-disable-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-role-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-role-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-exit-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-exit-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-remove-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-remove-monitorfirsttrue
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-accept-monitorfirstfalse
+=== RUN   TestActivationIdentityAndMembershipOrderings/updatetrue-accept-monitorfirsttrue
+=== NAME  TestActivationIdentityAndMembershipOrderings
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationIdentityAndMembershipOrderings (0.22s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-disable-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-disable-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-role-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-role-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-exit-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-exit-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-remove-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-remove-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-accept-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatefalse-accept-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirstfalse (0.00s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-disable-monitorfirstfalse (0.00s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-disable-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-role-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-role-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-exit-monitorfirstfalse (0.00s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-exit-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-remove-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-remove-monitorfirsttrue (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-accept-monitorfirstfalse (0.01s)
+    --- PASS: TestActivationIdentityAndMembershipOrderings/updatetrue-accept-monitorfirsttrue (0.01s)
+=== RUN   TestActivationDelayedOwnerRequestCannotUseRejoin
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationDelayedOwnerRequestCannotUseRejoin/false
+=== RUN   TestActivationDelayedOwnerRequestCannotUseRejoin/true
+=== NAME  TestActivationDelayedOwnerRequestCannotUseRejoin
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationDelayedOwnerRequestCannotUseRejoin (0.08s)
+    --- PASS: TestActivationDelayedOwnerRequestCannotUseRejoin/false (0.01s)
+    --- PASS: TestActivationDelayedOwnerRequestCannotUseRejoin/true (0.01s)
+=== RUN   TestActivationCleanupCandidateOrdering
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationCleanupCandidateOrdering (0.07s)
+=== RUN   TestActivationTwoOwnerCASAndConfigOrderings
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationTwoOwnerCASAndConfigOrderings/two-owners
+=== RUN   TestActivationTwoOwnerCASAndConfigOrderings/patch-first
+=== RUN   TestActivationTwoOwnerCASAndConfigOrderings/enable-first
+=== NAME  TestActivationTwoOwnerCASAndConfigOrderings
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationTwoOwnerCASAndConfigOrderings (0.10s)
+    --- PASS: TestActivationTwoOwnerCASAndConfigOrderings/two-owners (0.01s)
+    --- PASS: TestActivationTwoOwnerCASAndConfigOrderings/patch-first (0.01s)
+    --- PASS: TestActivationTwoOwnerCASAndConfigOrderings/enable-first (0.01s)
+=== RUN   TestActivationProjectWriteOrderings
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationProjectWriteOrderings/updatefalse-projectfirstfalse
+=== RUN   TestActivationProjectWriteOrderings/updatefalse-projectfirsttrue
+=== RUN   TestActivationProjectWriteOrderings/updatetrue-projectfirstfalse
+=== RUN   TestActivationProjectWriteOrderings/updatetrue-projectfirsttrue
+=== NAME  TestActivationProjectWriteOrderings
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationProjectWriteOrderings (0.09s)
+    --- PASS: TestActivationProjectWriteOrderings/updatefalse-projectfirstfalse (0.01s)
+    --- PASS: TestActivationProjectWriteOrderings/updatefalse-projectfirsttrue (0.01s)
+    --- PASS: TestActivationProjectWriteOrderings/updatetrue-projectfirstfalse (0.01s)
+    --- PASS: TestActivationProjectWriteOrderings/updatetrue-projectfirsttrue (0.01s)
+=== RUN   TestActivationHTTPUnknownCommitAndFaults
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationHTTPUnknownCommitAndFaults/lost
+=== RUN   TestActivationHTTPUnknownCommitAndFaults/rollback
+=== RUN   TestActivationHTTPUnknownCommitAndFaults/deadlock
+=== RUN   TestActivationHTTPUnknownCommitAndFaults/schema
+=== RUN   TestActivationHTTPUnknownCommitAndFaults/timeout
+=== RUN   TestActivationHTTPUnknownCommitAndFaults/actual-schema6
+=== NAME  TestActivationHTTPUnknownCommitAndFaults
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationHTTPUnknownCommitAndFaults (0.08s)
+    --- PASS: TestActivationHTTPUnknownCommitAndFaults/lost (0.01s)
+    --- PASS: TestActivationHTTPUnknownCommitAndFaults/rollback (0.00s)
+    --- PASS: TestActivationHTTPUnknownCommitAndFaults/deadlock (0.00s)
+    --- PASS: TestActivationHTTPUnknownCommitAndFaults/schema (0.00s)
+    --- PASS: TestActivationHTTPUnknownCommitAndFaults/timeout (0.00s)
+    --- PASS: TestActivationHTTPUnknownCommitAndFaults/actual-schema6 (0.00s)
+=== RUN   TestActivationMigration
+    activation_test.go:56: native Goose down-to 0 expected-success=true: verified
+    activation_test.go:58: native Goose up-to 6 expected-success=true: verified
+    activation_test.go:87: native Goose up-to 7 expected-success=false: verified
+    activation_test.go:91: native Goose up-to 7 expected-success=true: verified
+    activation_test.go:92: native Goose up-to 7 expected-success=true: verified
+    activation_test.go:147: native Goose down expected-success=true: verified
+    activation_test.go:151: native Goose up-to 7 expected-success=true: verified
+    activation_test.go:152: native Goose down-to 0 expected-success=true: verified
+    activation_test.go:153: native Goose up-to 7 expected-success=true: verified
+    activation_test.go:57: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationMigration (0.15s)
+=== RUN   TestActivationStatePermissionsAndInvalidation
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestActivationStatePermissionsAndInvalidation (0.08s)
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/missing
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/overflow
+=== RUN   TestActivationTriggerAtomicFailureAndBoundedAudit/trigger
+=== NAME  TestActivationTriggerAtomicFailureAndBoundedAudit
+    activation_test.go:291: 64 commands -> one row, generation 65; no run/lease/results
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestActivationTriggerAtomicFailureAndBoundedAudit (0.10s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/missing (0.01s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/overflow (0.01s)
+    --- PASS: TestActivationTriggerAtomicFailureAndBoundedAudit/trigger (0.00s)
+=== RUN   TestActivationQuotaAndCAS
+    registration_test.go:79: native Goose up expected-success=true: verified
+    activation_test.go:356: two Store instances serialized at Workspace: exactly100; 101st409; pause/PATCH allowed; cooling429
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestActivationQuotaAndCAS (0.12s)
+=== RUN   TestActivationCommitFaults
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationCommitFaults/rollback
+=== RUN   TestActivationCommitFaults/lost
+=== NAME  TestActivationCommitFaults
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestActivationCommitFaults (0.04s)
+    --- PASS: TestActivationCommitFaults/rollback (0.01s)
+    --- PASS: TestActivationCommitFaults/lost (0.00s)
+=== RUN   TestActivationWorkspaceIntentLifetime
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestActivationWorkspaceIntentLifetime/owner-exits
+=== RUN   TestActivationWorkspaceIntentLifetime/no-active-owner
+=== NAME  TestActivationWorkspaceIntentLifetime
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestActivationWorkspaceIntentLifetime (0.04s)
+    --- PASS: TestActivationWorkspaceIntentLifetime/owner-exits (0.01s)
+    --- PASS: TestActivationWorkspaceIntentLifetime/no-active-owner (0.00s)
+=== RUN   TestAuthenticationWithPostgreSQL
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestAuthenticationWithPostgreSQL/loopback-http
+=== RUN   TestAuthenticationWithPostgreSQL/production-https
+=== NAME  TestAuthenticationWithPostgreSQL
+    auth_test.go:121: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestAuthenticationWithPostgreSQL (1.89s)
+    --- PASS: TestAuthenticationWithPostgreSQL/loopback-http (0.94s)
+    --- PASS: TestAuthenticationWithPostgreSQL/production-https (0.93s)
+=== RUN   TestAuthenticationDatabaseFailuresAndCancellation
+    registration_test.go:79: native Goose up expected-success=true: verified
+    auth_test.go:295: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestAuthenticationDatabaseFailuresAndCancellation (6.60s)
+=== RUN   TestCleanupBatchMultiInstanceAndFaults
+    registration_test.go:79: native Goose up expected-success=true: verified
+    cleanup_test.go:75: overlapping deletes or skipped row lost
+    cleanup_test.go:19: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestCleanupBatchMultiInstanceAndFaults (0.05s)
+=== RUN   TestDelayedDeletePreservesRejoin
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestDelayedDeletePreservesRejoin (0.03s)
+=== RUN   TestInvitationDeleteHeldLockAndSelfReplay
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationDeleteHeldLockAndSelfReplay/owner-workspace-held-false
+=== RUN   TestInvitationDeleteHeldLockAndSelfReplay/owner-workspace-held-true
+=== RUN   TestInvitationDeleteHeldLockAndSelfReplay/self-workspace-held-false
+=== RUN   TestInvitationDeleteHeldLockAndSelfReplay/self-workspace-held-true
+=== NAME  TestInvitationDeleteHeldLockAndSelfReplay
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationDeleteHeldLockAndSelfReplay (0.06s)
+    --- PASS: TestInvitationDeleteHeldLockAndSelfReplay/owner-workspace-held-false (0.01s)
+    --- PASS: TestInvitationDeleteHeldLockAndSelfReplay/owner-workspace-held-true (0.01s)
+    --- PASS: TestInvitationDeleteHeldLockAndSelfReplay/self-workspace-held-false (0.01s)
+    --- PASS: TestInvitationDeleteHeldLockAndSelfReplay/self-workspace-held-true (0.01s)
+=== RUN   TestInvitationActionRaces
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationActionRaces/accept-reverse-false-
+=== RUN   TestInvitationActionRaces/accept-reverse-false-rollback
+=== RUN   TestInvitationActionRaces/accept-reverse-false-lost
+=== RUN   TestInvitationActionRaces/accept-reverse-true-
+=== RUN   TestInvitationActionRaces/accept-reverse-true-rollback
+=== RUN   TestInvitationActionRaces/accept-reverse-true-lost
+=== RUN   TestInvitationActionRaces/decline-reverse-false-
+=== RUN   TestInvitationActionRaces/decline-reverse-false-rollback
+=== RUN   TestInvitationActionRaces/decline-reverse-false-lost
+=== RUN   TestInvitationActionRaces/decline-reverse-true-
+=== RUN   TestInvitationActionRaces/decline-reverse-true-rollback
+=== RUN   TestInvitationActionRaces/decline-reverse-true-lost
+=== RUN   TestInvitationActionRaces/revoke-reverse-false-
+=== RUN   TestInvitationActionRaces/revoke-reverse-false-rollback
+=== RUN   TestInvitationActionRaces/revoke-reverse-false-lost
+=== RUN   TestInvitationActionRaces/revoke-reverse-true-
+=== RUN   TestInvitationActionRaces/revoke-reverse-true-rollback
+=== RUN   TestInvitationActionRaces/revoke-reverse-true-lost
+=== NAME  TestInvitationActionRaces
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationActionRaces (0.13s)
+    --- PASS: TestInvitationActionRaces/accept-reverse-false- (0.01s)
+    --- PASS: TestInvitationActionRaces/accept-reverse-false-rollback (0.01s)
+    --- PASS: TestInvitationActionRaces/accept-reverse-false-lost (0.01s)
+    --- PASS: TestInvitationActionRaces/accept-reverse-true- (0.01s)
+    --- PASS: TestInvitationActionRaces/accept-reverse-true-rollback (0.00s)
+    --- PASS: TestInvitationActionRaces/accept-reverse-true-lost (0.00s)
+    --- PASS: TestInvitationActionRaces/decline-reverse-false- (0.01s)
+    --- PASS: TestInvitationActionRaces/decline-reverse-false-rollback (0.00s)
+    --- PASS: TestInvitationActionRaces/decline-reverse-false-lost (0.01s)
+    --- PASS: TestInvitationActionRaces/decline-reverse-true- (0.01s)
+    --- PASS: TestInvitationActionRaces/decline-reverse-true-rollback (0.01s)
+    --- PASS: TestInvitationActionRaces/decline-reverse-true-lost (0.01s)
+    --- PASS: TestInvitationActionRaces/revoke-reverse-false- (0.01s)
+    --- PASS: TestInvitationActionRaces/revoke-reverse-false-rollback (0.01s)
+    --- PASS: TestInvitationActionRaces/revoke-reverse-false-lost (0.01s)
+    --- PASS: TestInvitationActionRaces/revoke-reverse-true- (0.01s)
+    --- PASS: TestInvitationActionRaces/revoke-reverse-true-rollback (0.01s)
+    --- PASS: TestInvitationActionRaces/revoke-reverse-true-lost (0.01s)
+=== RUN   TestInvitationQuotaAndLazyExpiry
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationQuotaAndLazyExpiry/duplicate
+=== RUN   TestInvitationQuotaAndLazyExpiry/quota
+=== RUN   TestInvitationQuotaAndLazyExpiry/expired-quota
+=== RUN   TestInvitationQuotaAndLazyExpiry/expired-replace
+=== NAME  TestInvitationQuotaAndLazyExpiry
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationQuotaAndLazyExpiry (0.05s)
+    --- PASS: TestInvitationQuotaAndLazyExpiry/duplicate (0.01s)
+    --- PASS: TestInvitationQuotaAndLazyExpiry/quota (0.01s)
+    --- PASS: TestInvitationQuotaAndLazyExpiry/expired-quota (0.01s)
+    --- PASS: TestInvitationQuotaAndLazyExpiry/expired-replace (0.00s)
+=== RUN   TestInvitationFaultAtomicity
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationFaultAtomicity/create-candidate
+=== RUN   TestInvitationFaultAtomicity/create-user
+=== RUN   TestInvitationFaultAtomicity/create-session
+=== RUN   TestInvitationFaultAtomicity/create-workspace
+=== RUN   TestInvitationFaultAtomicity/create-members
+=== RUN   TestInvitationFaultAtomicity/create-invitations
+=== RUN   TestInvitationFaultAtomicity/create-gate
+=== RUN   TestInvitationFaultAtomicity/create-create
+=== RUN   TestInvitationFaultAtomicity/create-rollback
+=== RUN   TestInvitationFaultAtomicity/create-lost
+=== RUN   TestInvitationFaultAtomicity/accept-candidate
+=== RUN   TestInvitationFaultAtomicity/accept-user
+=== RUN   TestInvitationFaultAtomicity/accept-session
+=== RUN   TestInvitationFaultAtomicity/accept-workspace
+=== RUN   TestInvitationFaultAtomicity/accept-members
+=== RUN   TestInvitationFaultAtomicity/accept-invitations
+=== RUN   TestInvitationFaultAtomicity/accept-gate
+=== RUN   TestInvitationFaultAtomicity/accept-transition
+=== RUN   TestInvitationFaultAtomicity/accept-join
+=== RUN   TestInvitationFaultAtomicity/accept-rollback
+=== RUN   TestInvitationFaultAtomicity/accept-lost
+=== RUN   TestInvitationFaultAtomicity/decline-candidate
+=== RUN   TestInvitationFaultAtomicity/decline-user
+=== RUN   TestInvitationFaultAtomicity/decline-session
+=== RUN   TestInvitationFaultAtomicity/decline-workspace
+=== RUN   TestInvitationFaultAtomicity/decline-members
+=== RUN   TestInvitationFaultAtomicity/decline-invitations
+=== RUN   TestInvitationFaultAtomicity/decline-gate
+=== RUN   TestInvitationFaultAtomicity/decline-transition
+=== RUN   TestInvitationFaultAtomicity/decline-rollback
+=== RUN   TestInvitationFaultAtomicity/decline-lost
+=== RUN   TestInvitationFaultAtomicity/revoke-candidate
+=== RUN   TestInvitationFaultAtomicity/revoke-user
+=== RUN   TestInvitationFaultAtomicity/revoke-session
+=== RUN   TestInvitationFaultAtomicity/revoke-workspace
+=== RUN   TestInvitationFaultAtomicity/revoke-members
+=== RUN   TestInvitationFaultAtomicity/revoke-invitations
+=== RUN   TestInvitationFaultAtomicity/revoke-gate
+=== RUN   TestInvitationFaultAtomicity/revoke-transition
+=== RUN   TestInvitationFaultAtomicity/revoke-rollback
+=== RUN   TestInvitationFaultAtomicity/revoke-lost
+=== RUN   TestInvitationFaultAtomicity/expired-accept-candidate
+=== RUN   TestInvitationFaultAtomicity/expired-accept-user
+=== RUN   TestInvitationFaultAtomicity/expired-accept-session
+=== RUN   TestInvitationFaultAtomicity/expired-accept-workspace
+=== RUN   TestInvitationFaultAtomicity/expired-accept-members
+=== RUN   TestInvitationFaultAtomicity/expired-accept-invitations
+=== RUN   TestInvitationFaultAtomicity/expired-accept-gate
+=== RUN   TestInvitationFaultAtomicity/expired-accept-transition
+=== RUN   TestInvitationFaultAtomicity/expired-accept-rollback
+=== RUN   TestInvitationFaultAtomicity/expired-accept-lost
+=== RUN   TestInvitationFaultAtomicity/expired-quota-candidate
+=== RUN   TestInvitationFaultAtomicity/expired-quota-user
+=== RUN   TestInvitationFaultAtomicity/expired-quota-session
+=== RUN   TestInvitationFaultAtomicity/expired-quota-workspace
+=== RUN   TestInvitationFaultAtomicity/expired-quota-members
+=== RUN   TestInvitationFaultAtomicity/expired-quota-invitations
+=== RUN   TestInvitationFaultAtomicity/expired-quota-gate
+=== RUN   TestInvitationFaultAtomicity/expired-quota-transition
+=== RUN   TestInvitationFaultAtomicity/expired-quota-rollback
+=== RUN   TestInvitationFaultAtomicity/expired-quota-lost
+=== NAME  TestInvitationFaultAtomicity
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationFaultAtomicity (0.19s)
+    --- PASS: TestInvitationFaultAtomicity/create-candidate (0.01s)
+    --- PASS: TestInvitationFaultAtomicity/create-user (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/create-session (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/create-workspace (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/create-members (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/create-invitations (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/create-gate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/create-create (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/create-rollback (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/create-lost (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-candidate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-user (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-session (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-workspace (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-members (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-invitations (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-gate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-transition (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-join (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-rollback (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/accept-lost (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-candidate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-user (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-session (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-workspace (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-members (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-invitations (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-gate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-transition (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-rollback (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/decline-lost (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-candidate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-user (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-session (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-workspace (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-members (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-invitations (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-gate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-transition (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-rollback (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/revoke-lost (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-candidate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-user (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-session (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-workspace (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-members (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-invitations (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-gate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-transition (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-rollback (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-accept-lost (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-candidate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-user (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-session (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-workspace (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-members (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-invitations (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-gate (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-transition (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-rollback (0.00s)
+    --- PASS: TestInvitationFaultAtomicity/expired-quota-lost (0.00s)
+=== RUN   TestInvitationLockOrderAndIdentity
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationLockOrderAndIdentity/create
+=== RUN   TestInvitationLockOrderAndIdentity/accept
+=== RUN   TestInvitationLockOrderAndIdentity/decline
+=== RUN   TestInvitationLockOrderAndIdentity/revoke
+=== RUN   TestInvitationLockOrderAndIdentity/revoke-create
+=== RUN   TestInvitationLockOrderAndIdentity/revoke-accept
+=== RUN   TestInvitationLockOrderAndIdentity/revoke-decline
+=== RUN   TestInvitationLockOrderAndIdentity/revoke-revoke
+=== RUN   TestInvitationLockOrderAndIdentity/disable-create
+=== RUN   TestInvitationLockOrderAndIdentity/disable-accept
+=== RUN   TestInvitationLockOrderAndIdentity/disable-decline
+=== RUN   TestInvitationLockOrderAndIdentity/disable-revoke
+=== RUN   TestInvitationLockOrderAndIdentity/expire-create
+=== RUN   TestInvitationLockOrderAndIdentity/expire-accept
+=== RUN   TestInvitationLockOrderAndIdentity/expire-decline
+=== RUN   TestInvitationLockOrderAndIdentity/expire-revoke
+=== NAME  TestInvitationLockOrderAndIdentity
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationLockOrderAndIdentity (0.07s)
+    --- PASS: TestInvitationLockOrderAndIdentity/create (0.01s)
+    --- PASS: TestInvitationLockOrderAndIdentity/accept (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/decline (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/revoke (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/revoke-create (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/revoke-accept (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/revoke-decline (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/revoke-revoke (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/disable-create (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/disable-accept (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/disable-decline (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/disable-revoke (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/expire-create (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/expire-accept (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/expire-decline (0.00s)
+    --- PASS: TestInvitationLockOrderAndIdentity/expire-revoke (0.00s)
+=== RUN   TestInvitationExpiryAfterEveryLockWait
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-create-user
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-create-session
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-create-workspace
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-create-members
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-create-invitations
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-accept-user
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-accept-session
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-accept-workspace
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-accept-members
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-accept-invitations
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-decline-user
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-decline-session
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-decline-workspace
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-decline-members
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-decline-invitations
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-revoke-user
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-revoke-session
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-revoke-workspace
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-revoke-members
+=== RUN   TestInvitationExpiryAfterEveryLockWait/session-revoke-invitations
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-create-user
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-create-session
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-create-workspace
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-create-members
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-create-invitations
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-accept-user
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-accept-session
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-accept-workspace
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-accept-members
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-accept-invitations
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-decline-user
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-decline-session
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-decline-workspace
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-decline-members
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-decline-invitations
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-revoke-user
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-revoke-session
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-revoke-workspace
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-revoke-members
+=== RUN   TestInvitationExpiryAfterEveryLockWait/invitation-revoke-invitations
+=== NAME  TestInvitationExpiryAfterEveryLockWait
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationExpiryAfterEveryLockWait (12.58s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-create-user (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-create-session (0.32s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-create-workspace (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-create-members (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-create-invitations (0.32s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-accept-user (0.32s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-accept-session (0.32s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-accept-workspace (0.32s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-accept-members (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-accept-invitations (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-decline-user (0.32s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-decline-session (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-decline-workspace (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-decline-members (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-decline-invitations (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-revoke-user (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-revoke-session (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-revoke-workspace (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-revoke-members (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/session-revoke-invitations (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-create-user (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-create-session (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-create-workspace (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-create-members (0.32s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-create-invitations (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-accept-user (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-accept-session (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-accept-workspace (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-accept-members (0.32s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-accept-invitations (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-decline-user (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-decline-session (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-decline-workspace (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-decline-members (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-decline-invitations (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-revoke-user (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-revoke-session (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-revoke-workspace (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-revoke-members (0.31s)
+    --- PASS: TestInvitationExpiryAfterEveryLockWait/invitation-revoke-invitations (0.31s)
+=== RUN   TestInvitationPostGateExpiry
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationPostGateExpiry/create
+=== RUN   TestInvitationPostGateExpiry/accept
+=== RUN   TestInvitationPostGateExpiry/decline
+=== RUN   TestInvitationPostGateExpiry/revoke
+=== NAME  TestInvitationPostGateExpiry
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationPostGateExpiry (1.31s)
+    --- PASS: TestInvitationPostGateExpiry/create (0.31s)
+    --- PASS: TestInvitationPostGateExpiry/accept (0.32s)
+    --- PASS: TestInvitationPostGateExpiry/decline (0.31s)
+    --- PASS: TestInvitationPostGateExpiry/revoke (0.31s)
+=== RUN   TestInvitationProtectedIdentityOrderings
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationProtectedIdentityOrderings/create-revoke-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/create-revoke-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/create-disable-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/create-disable-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/create-role-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/create-role-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/create-remove-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/create-remove-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/accept-revoke-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/accept-revoke-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/accept-disable-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/accept-disable-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/decline-revoke-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/decline-revoke-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/decline-disable-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/decline-disable-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/revoke-revoke-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/revoke-revoke-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/revoke-disable-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/revoke-disable-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/revoke-role-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/revoke-role-change-first-true
+=== RUN   TestInvitationProtectedIdentityOrderings/revoke-remove-change-first-false
+=== RUN   TestInvitationProtectedIdentityOrderings/revoke-remove-change-first-true
+=== NAME  TestInvitationProtectedIdentityOrderings
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationProtectedIdentityOrderings (0.17s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/create-revoke-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/create-revoke-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/create-disable-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/create-disable-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/create-role-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/create-role-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/create-remove-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/create-remove-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/accept-revoke-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/accept-revoke-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/accept-disable-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/accept-disable-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/decline-revoke-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/decline-revoke-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/decline-disable-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/decline-disable-change-first-true (0.00s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/revoke-revoke-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/revoke-revoke-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/revoke-disable-change-first-false (0.00s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/revoke-disable-change-first-true (0.00s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/revoke-role-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/revoke-role-change-first-true (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/revoke-remove-change-first-false (0.01s)
+    --- PASS: TestInvitationProtectedIdentityOrderings/revoke-remove-change-first-true (0.00s)
+=== RUN   TestInvitationCreationUserUUIDOrder
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationCreationUserUUIDOrder (0.03s)
+=== RUN   TestInvitationSessionCleanupOrderings
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationSessionCleanupOrderings/create-cleanup-first-false
+=== RUN   TestInvitationSessionCleanupOrderings/create-cleanup-first-true
+=== RUN   TestInvitationSessionCleanupOrderings/accept-cleanup-first-false
+=== RUN   TestInvitationSessionCleanupOrderings/accept-cleanup-first-true
+=== RUN   TestInvitationSessionCleanupOrderings/decline-cleanup-first-false
+=== RUN   TestInvitationSessionCleanupOrderings/decline-cleanup-first-true
+=== RUN   TestInvitationSessionCleanupOrderings/revoke-cleanup-first-false
+=== RUN   TestInvitationSessionCleanupOrderings/revoke-cleanup-first-true
+=== NAME  TestInvitationSessionCleanupOrderings
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationSessionCleanupOrderings (1.33s)
+    --- PASS: TestInvitationSessionCleanupOrderings/create-cleanup-first-false (0.32s)
+    --- PASS: TestInvitationSessionCleanupOrderings/create-cleanup-first-true (0.01s)
+    --- PASS: TestInvitationSessionCleanupOrderings/accept-cleanup-first-false (0.31s)
+    --- PASS: TestInvitationSessionCleanupOrderings/accept-cleanup-first-true (0.01s)
+    --- PASS: TestInvitationSessionCleanupOrderings/decline-cleanup-first-false (0.31s)
+    --- PASS: TestInvitationSessionCleanupOrderings/decline-cleanup-first-true (0.01s)
+    --- PASS: TestInvitationSessionCleanupOrderings/revoke-cleanup-first-false (0.31s)
+    --- PASS: TestInvitationSessionCleanupOrderings/revoke-cleanup-first-true (0.01s)
+=== RUN   TestInvitationHTTPFaultsAndCancellation
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationHTTPFaultsAndCancellation/create-begin
+=== RUN   TestInvitationHTTPFaultsAndCancellation/create-gate
+=== RUN   TestInvitationHTTPFaultsAndCancellation/create-lost
+=== RUN   TestInvitationHTTPFaultsAndCancellation/create-rollback
+=== RUN   TestInvitationHTTPFaultsAndCancellation/create-cancel
+=== RUN   TestInvitationHTTPFaultsAndCancellation/accept-begin
+=== RUN   TestInvitationHTTPFaultsAndCancellation/accept-gate
+=== RUN   TestInvitationHTTPFaultsAndCancellation/accept-lost
+=== RUN   TestInvitationHTTPFaultsAndCancellation/accept-rollback
+=== RUN   TestInvitationHTTPFaultsAndCancellation/accept-cancel
+=== RUN   TestInvitationHTTPFaultsAndCancellation/decline-begin
+=== RUN   TestInvitationHTTPFaultsAndCancellation/decline-gate
+=== RUN   TestInvitationHTTPFaultsAndCancellation/decline-lost
+=== RUN   TestInvitationHTTPFaultsAndCancellation/decline-rollback
+=== RUN   TestInvitationHTTPFaultsAndCancellation/decline-cancel
+=== RUN   TestInvitationHTTPFaultsAndCancellation/revoke-begin
+=== RUN   TestInvitationHTTPFaultsAndCancellation/revoke-gate
+=== RUN   TestInvitationHTTPFaultsAndCancellation/revoke-lost
+=== RUN   TestInvitationHTTPFaultsAndCancellation/revoke-rollback
+=== RUN   TestInvitationHTTPFaultsAndCancellation/revoke-cancel
+=== RUN   TestInvitationHTTPFaultsAndCancellation/actual-lock-timeout
+=== RUN   TestInvitationHTTPFaultsAndCancellation/actual-pool-timeout
+=== RUN   TestInvitationHTTPFaultsAndCancellation/missing-schema
+=== NAME  TestInvitationHTTPFaultsAndCancellation
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationHTTPFaultsAndCancellation (4.18s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/create-begin (0.01s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/create-gate (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/create-lost (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/create-rollback (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/create-cancel (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/accept-begin (0.01s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/accept-gate (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/accept-lost (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/accept-rollback (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/accept-cancel (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/decline-begin (0.01s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/decline-gate (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/decline-lost (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/decline-rollback (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/decline-cancel (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/revoke-begin (0.01s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/revoke-gate (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/revoke-lost (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/revoke-rollback (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/revoke-cancel (0.00s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/actual-lock-timeout (2.02s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/actual-pool-timeout (2.02s)
+    --- PASS: TestInvitationHTTPFaultsAndCancellation/missing-schema (0.02s)
+=== RUN   TestInvitationMigration
+    invitations_test.go:54: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationMigration (0.02s)
+=== RUN   TestInvitationLifecycle
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestInvitationLifecycle/accept
+=== RUN   TestInvitationLifecycle/decline
+=== RUN   TestInvitationLifecycle/revoke
+=== RUN   TestInvitationLifecycle/expire-accept
+=== RUN   TestInvitationLifecycle/expire-decline
+=== RUN   TestInvitationLifecycle/expire-revoke
+=== RUN   TestInvitationLifecycle/creator-lost
+=== RUN   TestInvitationLifecycle/creator-demoted
+=== RUN   TestInvitationLifecycle/creator-revoked
+=== RUN   TestInvitationLifecycle/ownerless
+=== RUN   TestInvitationLifecycle/existing
+=== RUN   TestInvitationLifecycle/privacy
+=== NAME  TestInvitationLifecycle
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationLifecycle (0.10s)
+    --- PASS: TestInvitationLifecycle/accept (0.02s)
+    --- PASS: TestInvitationLifecycle/decline (0.01s)
+    --- PASS: TestInvitationLifecycle/revoke (0.01s)
+    --- PASS: TestInvitationLifecycle/expire-accept (0.00s)
+    --- PASS: TestInvitationLifecycle/expire-decline (0.00s)
+    --- PASS: TestInvitationLifecycle/expire-revoke (0.00s)
+    --- PASS: TestInvitationLifecycle/creator-lost (0.01s)
+    --- PASS: TestInvitationLifecycle/creator-demoted (0.01s)
+    --- PASS: TestInvitationLifecycle/creator-revoked (0.01s)
+    --- PASS: TestInvitationLifecycle/ownerless (0.00s)
+    --- PASS: TestInvitationLifecycle/existing (0.00s)
+    --- PASS: TestInvitationLifecycle/privacy (0.01s)
+=== RUN   TestInvitationHTTP
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationHTTP (0.03s)
+=== RUN   TestInvitationListsAndTenantPermissions
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationListsAndTenantPermissions (0.04s)
+=== RUN   TestInvitationAcceptanceVisibilityAndIndependentTenant
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationAcceptanceVisibilityAndIndependentTenant (0.03s)
+=== RUN   TestInvitationIndexPlans
+    registration_test.go:79: native Goose up expected-success=true: verified
+    invitations_test.go:446: PG18 workspace plan root=Limit actual_rows=100
+    invitations_test.go:446: PG18 recipient plan root=Limit actual_rows=1
+    invitations_test.go:446: PG18 capacity plan root=Aggregate actual_rows=1
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestInvitationIndexPlans (0.03s)
+=== RUN   TestMemberWriteLockOrder
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberWriteLockOrder (0.03s)
+=== RUN   TestMemberConcurrentOwnerAndExitRaces
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-rollback-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-rollback-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-lost-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/two-exits-lost-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/mutual-owner-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/mutual-owner-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/duplicate-delete-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/duplicate-delete-reverse-true
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/owner-exit-race-reverse-false
+=== RUN   TestMemberConcurrentOwnerAndExitRaces/owner-exit-race-reverse-true
+=== NAME  TestMemberConcurrentOwnerAndExitRaces
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberConcurrentOwnerAndExitRaces (0.08s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-reverse-false (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-reverse-true (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-rollback-reverse-false (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-rollback-reverse-true (0.00s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-lost-reverse-false (0.01s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/two-exits-lost-reverse-true (0.00s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/mutual-owner-reverse-false (0.00s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/mutual-owner-reverse-true (0.00s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/duplicate-delete-reverse-false (0.00s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/duplicate-delete-reverse-true (0.00s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/owner-exit-race-reverse-false (0.00s)
+    --- PASS: TestMemberConcurrentOwnerAndExitRaces/owner-exit-race-reverse-true (0.00s)
+=== RUN   TestMemberPermissionChangeOrdering
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberPermissionChangeOrdering/demote-change
+=== RUN   TestMemberPermissionChangeOrdering/demote-member
+=== RUN   TestMemberPermissionChangeOrdering/remove-change
+=== RUN   TestMemberPermissionChangeOrdering/remove-member
+=== RUN   TestMemberPermissionChangeOrdering/promote-change
+=== RUN   TestMemberPermissionChangeOrdering/promote-member
+=== NAME  TestMemberPermissionChangeOrdering
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberPermissionChangeOrdering (0.06s)
+    --- PASS: TestMemberPermissionChangeOrdering/demote-change (0.01s)
+    --- PASS: TestMemberPermissionChangeOrdering/demote-member (0.01s)
+    --- PASS: TestMemberPermissionChangeOrdering/remove-change (0.01s)
+    --- PASS: TestMemberPermissionChangeOrdering/remove-member (0.00s)
+    --- PASS: TestMemberPermissionChangeOrdering/promote-change (0.01s)
+    --- PASS: TestMemberPermissionChangeOrdering/promote-member (0.00s)
+=== RUN   TestMemberIdentityChangeOrdering
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberIdentityChangeOrdering/revoke-change
+=== RUN   TestMemberIdentityChangeOrdering/revoke-member
+=== RUN   TestMemberIdentityChangeOrdering/disable-change
+=== RUN   TestMemberIdentityChangeOrdering/disable-member
+=== NAME  TestMemberIdentityChangeOrdering
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberIdentityChangeOrdering (0.05s)
+    --- PASS: TestMemberIdentityChangeOrdering/revoke-change (0.01s)
+    --- PASS: TestMemberIdentityChangeOrdering/revoke-member (0.01s)
+    --- PASS: TestMemberIdentityChangeOrdering/disable-change (0.01s)
+    --- PASS: TestMemberIdentityChangeOrdering/disable-member (0.01s)
+=== RUN   TestMemberExpiryAfterEveryLockWait
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberExpiryAfterEveryLockWait/user
+=== RUN   TestMemberExpiryAfterEveryLockWait/session
+=== RUN   TestMemberExpiryAfterEveryLockWait/workspace
+=== RUN   TestMemberExpiryAfterEveryLockWait/membership
+=== NAME  TestMemberExpiryAfterEveryLockWait
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberExpiryAfterEveryLockWait (1.30s)
+    --- PASS: TestMemberExpiryAfterEveryLockWait/user (0.31s)
+    --- PASS: TestMemberExpiryAfterEveryLockWait/session (0.32s)
+    --- PASS: TestMemberExpiryAfterEveryLockWait/workspace (0.31s)
+    --- PASS: TestMemberExpiryAfterEveryLockWait/membership (0.31s)
+=== RUN   TestMemberPostGateExpiryAndCleanup
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberPostGateExpiryAndCleanup (0.35s)
+=== RUN   TestMemberTransactionFailures
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberTransactionFailures/lost
+=== RUN   TestMemberTransactionFailures/rollback
+=== RUN   TestMemberTransactionFailures/gate-unavailable
+=== RUN   TestMemberTransactionFailures/gate-deadline
+=== RUN   TestMemberTransactionFailures/schema
+=== RUN   TestMemberTransactionFailures/deadlock
+=== RUN   TestMemberTransactionFailures/serialization
+=== RUN   TestMemberTransactionFailures/unexplained-cancel
+=== RUN   TestMemberTransactionFailures/actual-lock-timeout
+=== RUN   TestMemberTransactionFailures/cancel-after-delete-gate
+=== NAME  TestMemberTransactionFailures
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberTransactionFailures (2.08s)
+    --- PASS: TestMemberTransactionFailures/lost (0.01s)
+    --- PASS: TestMemberTransactionFailures/rollback (0.00s)
+    --- PASS: TestMemberTransactionFailures/gate-unavailable (0.00s)
+    --- PASS: TestMemberTransactionFailures/gate-deadline (0.00s)
+    --- PASS: TestMemberTransactionFailures/schema (0.00s)
+    --- PASS: TestMemberTransactionFailures/deadlock (0.00s)
+    --- PASS: TestMemberTransactionFailures/serialization (0.00s)
+    --- PASS: TestMemberTransactionFailures/unexplained-cancel (0.00s)
+    --- PASS: TestMemberTransactionFailures/actual-lock-timeout (2.01s)
+    --- PASS: TestMemberTransactionFailures/cancel-after-delete-gate (0.01s)
+=== RUN   TestMemberPoolTimeoutAndMissingSchema
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberPoolTimeoutAndMissingSchema (2.07s)
+=== RUN   TestMemberHTTPCancellationAfterGate
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberHTTPCancellationAfterGate (0.04s)
+=== RUN   TestMemberHTTPPermissionsAndRevocation
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberHTTPPermissionsAndRevocation/http
+=== RUN   TestMemberHTTPPermissionsAndRevocation/tls
+=== RUN   TestMemberHTTPPermissionsAndRevocation/revoke
+=== RUN   TestMemberHTTPPermissionsAndRevocation/disable
+=== RUN   TestMemberHTTPPermissionsAndRevocation/expire
+=== NAME  TestMemberHTTPPermissionsAndRevocation
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberHTTPPermissionsAndRevocation (0.06s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/http (0.01s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/tls (0.01s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/revoke (0.00s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/disable (0.00s)
+    --- PASS: TestMemberHTTPPermissionsAndRevocation/expire (0.00s)
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation/remove
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation/role
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation/revoke
+=== RUN   TestMemberRosterSnapshotAndCursorRevocation/disable
+=== NAME  TestMemberRosterSnapshotAndCursorRevocation
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberRosterSnapshotAndCursorRevocation (0.04s)
+    --- PASS: TestMemberRosterSnapshotAndCursorRevocation/remove (0.01s)
+    --- PASS: TestMemberRosterSnapshotAndCursorRevocation/role (0.00s)
+    --- PASS: TestMemberRosterSnapshotAndCursorRevocation/revoke (0.00s)
+    --- PASS: TestMemberRosterSnapshotAndCursorRevocation/disable (0.00s)
+=== RUN   TestMemberMixedOperationsAndCleanup
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberMixedOperationsAndCleanup/member-first
+=== RUN   TestMemberMixedOperationsAndCleanup/cleanup-first
+=== NAME  TestMemberMixedOperationsAndCleanup
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberMixedOperationsAndCleanup (0.03s)
+    --- PASS: TestMemberMixedOperationsAndCleanup/member-first (0.01s)
+    --- PASS: TestMemberMixedOperationsAndCleanup/cleanup-first (0.00s)
+=== RUN   TestMemberRosterStore
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberRosterStore (0.03s)
+=== RUN   TestMemberDeleteStore
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMemberDeleteStore/owner-member
+=== RUN   TestMemberDeleteStore/member-self
+=== RUN   TestMemberDeleteStore/member-other
+=== RUN   TestMemberDeleteStore/owner-self
+=== RUN   TestMemberDeleteStore/owner-other-owner
+=== RUN   TestMemberDeleteStore/two-owner-self
+=== RUN   TestMemberDeleteStore/missing
+=== RUN   TestMemberDeleteStore/foreign-target
+=== RUN   TestMemberDeleteStore/disabled-target
+=== RUN   TestMemberDeleteStore/malformed-target
+=== RUN   TestMemberDeleteStore/outside
+=== RUN   TestMemberDeleteStore/invalid-identity
+=== RUN   TestMemberDeleteStore/corrupt
+=== NAME  TestMemberDeleteStore
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMemberDeleteStore (0.05s)
+    --- PASS: TestMemberDeleteStore/owner-member (0.01s)
+    --- PASS: TestMemberDeleteStore/member-self (0.00s)
+    --- PASS: TestMemberDeleteStore/member-other (0.00s)
+    --- PASS: TestMemberDeleteStore/owner-self (0.00s)
+    --- PASS: TestMemberDeleteStore/owner-other-owner (0.00s)
+    --- PASS: TestMemberDeleteStore/two-owner-self (0.00s)
+    --- PASS: TestMemberDeleteStore/missing (0.00s)
+    --- PASS: TestMemberDeleteStore/foreign-target (0.00s)
+    --- PASS: TestMemberDeleteStore/disabled-target (0.00s)
+    --- PASS: TestMemberDeleteStore/malformed-target (0.00s)
+    --- PASS: TestMemberDeleteStore/outside (0.00s)
+    --- PASS: TestMemberDeleteStore/invalid-identity (0.00s)
+    --- PASS: TestMemberDeleteStore/corrupt (0.00s)
+=== RUN   TestMonitorConcurrentVersions
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorConcurrentVersions/false
+=== RUN   TestMonitorConcurrentVersions/true
+=== NAME  TestMonitorConcurrentVersions
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorConcurrentVersions (0.04s)
+    --- PASS: TestMonitorConcurrentVersions/false (0.01s)
+    --- PASS: TestMonitorConcurrentVersions/true (0.01s)
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-user
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-session
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-workspace
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-membership
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-project
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-post-gate
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-user
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-session
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-workspace
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-membership
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-project
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-monitor
+=== RUN   TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-post-gate
+=== NAME  TestMonitorExpiryAfterEveryProtectiveWait
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorExpiryAfterEveryProtectiveWait (2.18s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-user (0.16s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-session (0.16s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-workspace (0.16s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-membership (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-project (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatefalse-post-gate (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-user (0.17s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-session (0.16s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-workspace (0.16s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-membership (0.16s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-project (0.16s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-monitor (0.16s)
+    --- PASS: TestMonitorExpiryAfterEveryProtectiveWait/updatetrue-post-gate (0.16s)
+=== RUN   TestMonitorIdentityAndMembershipOrderings
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-disable-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-disable-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-role-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-role-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-exit-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-exit-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-remove-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-remove-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-accept-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatefalse-accept-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-disable-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-disable-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-role-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-role-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-exit-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-exit-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-remove-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-remove-monitorfirsttrue
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-accept-monitorfirstfalse
+=== RUN   TestMonitorIdentityAndMembershipOrderings/updatetrue-accept-monitorfirsttrue
+=== NAME  TestMonitorIdentityAndMembershipOrderings
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorIdentityAndMembershipOrderings (0.18s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-revoke-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-disable-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-disable-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-role-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-role-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-exit-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-exit-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-remove-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-remove-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-accept-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatefalse-accept-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirstfalse (0.00s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-revoke-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-disable-monitorfirstfalse (0.00s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-disable-monitorfirsttrue (0.00s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-role-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-role-monitorfirsttrue (0.00s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-exit-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-exit-monitorfirsttrue (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-remove-monitorfirstfalse (0.00s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-remove-monitorfirsttrue (0.00s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-accept-monitorfirstfalse (0.01s)
+    --- PASS: TestMonitorIdentityAndMembershipOrderings/updatetrue-accept-monitorfirsttrue (0.01s)
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-candidate
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-user
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-session
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-workspace
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-membership
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-project
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-gate
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-rollback
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-lost
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-candidate
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-user
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-session
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-workspace
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-membership
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-project
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-monitor
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-gate
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-rollback
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-lost
+=== RUN   TestMonitorFaultAtomicityAndTenantIndependence/independent-tenants
+=== NAME  TestMonitorFaultAtomicityAndTenantIndependence
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorFaultAtomicityAndTenantIndependence (0.09s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-candidate (0.01s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-user (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-session (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-workspace (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-membership (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-project (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-gate (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-rollback (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatefalse-lost (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-candidate (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-user (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-session (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-workspace (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-membership (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-project (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-monitor (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-gate (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-rollback (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/updatetrue-lost (0.00s)
+    --- PASS: TestMonitorFaultAtomicityAndTenantIndependence/independent-tenants (0.01s)
+=== RUN   TestMonitorReadSnapshotAndLateCommit
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorReadSnapshotAndLateCommit (0.03s)
+=== RUN   TestMonitorSameTenantSerializationAndParentReferences
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorSameTenantSerializationAndParentReferences/false
+=== RUN   TestMonitorSameTenantSerializationAndParentReferences/true
+=== NAME  TestMonitorSameTenantSerializationAndParentReferences
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorSameTenantSerializationAndParentReferences (0.04s)
+    --- PASS: TestMonitorSameTenantSerializationAndParentReferences/false (0.00s)
+    --- PASS: TestMonitorSameTenantSerializationAndParentReferences/true (0.00s)
+=== RUN   TestMonitorDelayedOwnerRequestCannotUseRejoin
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorDelayedOwnerRequestCannotUseRejoin/false
+=== RUN   TestMonitorDelayedOwnerRequestCannotUseRejoin/true
+=== NAME  TestMonitorDelayedOwnerRequestCannotUseRejoin
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorDelayedOwnerRequestCannotUseRejoin (0.05s)
+    --- PASS: TestMonitorDelayedOwnerRequestCannotUseRejoin/false (0.01s)
+    --- PASS: TestMonitorDelayedOwnerRequestCannotUseRejoin/true (0.01s)
+=== RUN   TestMonitorProjectWriteOrderings
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorProjectWriteOrderings/updatefalse-projectfirstfalse
+=== RUN   TestMonitorProjectWriteOrderings/updatefalse-projectfirsttrue
+=== RUN   TestMonitorProjectWriteOrderings/updatetrue-projectfirstfalse
+=== RUN   TestMonitorProjectWriteOrderings/updatetrue-projectfirsttrue
+=== NAME  TestMonitorProjectWriteOrderings
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorProjectWriteOrderings (0.05s)
+    --- PASS: TestMonitorProjectWriteOrderings/updatefalse-projectfirstfalse (0.01s)
+    --- PASS: TestMonitorProjectWriteOrderings/updatefalse-projectfirsttrue (0.01s)
+    --- PASS: TestMonitorProjectWriteOrderings/updatetrue-projectfirstfalse (0.01s)
+    --- PASS: TestMonitorProjectWriteOrderings/updatetrue-projectfirsttrue (0.01s)
+=== RUN   TestMonitorCleanupCandidateOrdering
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorCleanupCandidateOrdering (0.03s)
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/lostcreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/rollbackcreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/timeoutcreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/deadlockcreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/schemacreate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/lostupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/rollbackupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/timeoutupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/deadlockupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/schemaupdate
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/actual-schema5
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/lock-timeout
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/cancel-after-lock
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/real-pool-timeout
+=== RUN   TestMonitorHTTPFaultsCancellationAndRecovery/actual-query-timeout
+=== NAME  TestMonitorHTTPFaultsCancellationAndRecovery
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorHTTPFaultsCancellationAndRecovery (0.16s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/lostcreate (0.01s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/rollbackcreate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/timeoutcreate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/deadlockcreate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/schemacreate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/lostupdate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/rollbackupdate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/timeoutupdate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/deadlockupdate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/schemaupdate (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/actual-schema5 (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/lock-timeout (0.04s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/cancel-after-lock (0.00s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/real-pool-timeout (0.03s)
+    --- PASS: TestMonitorHTTPFaultsCancellationAndRecovery/actual-query-timeout (0.03s)
+=== RUN   TestMonitorHTTPJourneyAndIsolation
+    registration_test.go:79: native Goose up expected-success=true: verified
+    monitors_http_test.go:235: activation enable 200 {"data":{"workspace_id":"01a1577c-8e93-763f-93c8-94012df0b121","project_id":"01a1577c-8ef9-7f24-b2d5-8412dd89a66e","monitor_id":"01a1577c-8efe-7676-b059-ac8440b30cf1","configuration_version":"1","desired_state":"enabled","activation_configuration_version":"1","activation_generation":"2","next_due_at":null,"next_enable_allowed_at":"2026-10-20T04:06:43.296887Z","last_transition_kind":"owner_enabled","created_at":"2026-10-20T04:05:43.294374Z","updated_at":"2026-10-20T04:05:43.296887Z","execution_state":"not_reported","blocked_reason":"execution_status_required"}}
+        
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorHTTPJourneyAndIsolation (0.44s)
+=== RUN   TestMonitorMigration
+    monitors_test.go:52: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorMigration (0.02s)
+=== RUN   TestMonitorStorePermissionsPaginationAndVersions
+    registration_test.go:79: native Goose up expected-success=true: verified
+    monitors_test.go:228: loss deleted config
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorStorePermissionsPaginationAndVersions (0.04s)
+=== RUN   TestMonitorCreatorReferenceAndEmptyScope
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorCreatorReferenceAndEmptyScope (0.03s)
+=== RUN   TestMonitorMergedConfigurationRevalidated
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMonitorMergedConfigurationRevalidated (0.03s)
+=== RUN   TestProjectConcurrentVersions
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestProjectConcurrentVersions/false
+=== RUN   TestProjectConcurrentVersions/true
+=== NAME  TestProjectConcurrentVersions
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectConcurrentVersions (0.04s)
+    --- PASS: TestProjectConcurrentVersions/false (0.01s)
+    --- PASS: TestProjectConcurrentVersions/true (0.01s)
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatefalse-user
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatefalse-session
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatefalse-workspace
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatefalse-membership
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatefalse-post-gate
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatetrue-user
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatetrue-session
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatetrue-workspace
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatetrue-membership
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatetrue-project
+=== RUN   TestProjectExpiryAfterEveryProtectiveWait/updatetrue-post-gate
+=== NAME  TestProjectExpiryAfterEveryProtectiveWait
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectExpiryAfterEveryProtectiveWait (1.83s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-user (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-session (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-workspace (0.17s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-membership (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatefalse-post-gate (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-user (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-session (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-workspace (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-membership (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-project (0.16s)
+    --- PASS: TestProjectExpiryAfterEveryProtectiveWait/updatetrue-post-gate (0.16s)
+=== RUN   TestProjectIdentityAndMembershipOrderings
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-revoke-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-revoke-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-disable-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-disable-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-role-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-role-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-exit-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-exit-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-remove-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-remove-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-accept-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatefalse-accept-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-revoke-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-revoke-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-disable-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-disable-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-role-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-role-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-exit-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-exit-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-remove-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-remove-projectfirsttrue
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-accept-projectfirstfalse
+=== RUN   TestProjectIdentityAndMembershipOrderings/updatetrue-accept-projectfirsttrue
+=== NAME  TestProjectIdentityAndMembershipOrderings
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectIdentityAndMembershipOrderings (0.17s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-revoke-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-revoke-projectfirsttrue (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-disable-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-disable-projectfirsttrue (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-role-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-role-projectfirsttrue (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-exit-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-exit-projectfirsttrue (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-remove-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-remove-projectfirsttrue (0.00s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-accept-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatefalse-accept-projectfirsttrue (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-revoke-projectfirstfalse (0.00s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-revoke-projectfirsttrue (0.00s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-disable-projectfirstfalse (0.00s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-disable-projectfirsttrue (0.00s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-role-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-role-projectfirsttrue (0.00s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-exit-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-exit-projectfirsttrue (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-remove-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-remove-projectfirsttrue (0.00s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-accept-projectfirstfalse (0.01s)
+    --- PASS: TestProjectIdentityAndMembershipOrderings/updatetrue-accept-projectfirsttrue (0.01s)
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatefalse-candidate
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatefalse-user
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatefalse-session
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatefalse-workspace
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatefalse-membership
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatefalse-gate
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatefalse-rollback
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatefalse-lost
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-candidate
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-user
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-session
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-workspace
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-membership
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-project
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-gate
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-rollback
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/updatetrue-lost
+=== RUN   TestProjectFaultAtomicityAndTenantIndependence/independent-tenants
+=== NAME  TestProjectFaultAtomicityAndTenantIndependence
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectFaultAtomicityAndTenantIndependence (0.07s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-candidate (0.01s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-user (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-session (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-workspace (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-membership (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-gate (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-rollback (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatefalse-lost (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-candidate (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-user (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-session (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-workspace (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-membership (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-project (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-gate (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-rollback (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/updatetrue-lost (0.00s)
+    --- PASS: TestProjectFaultAtomicityAndTenantIndependence/independent-tenants (0.00s)
+=== RUN   TestProjectReadSnapshotAndLateCommit
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectReadSnapshotAndLateCommit (0.03s)
+=== RUN   TestProjectSameTenantSerializationAndParentReferences
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestProjectSameTenantSerializationAndParentReferences/false
+=== RUN   TestProjectSameTenantSerializationAndParentReferences/true
+=== NAME  TestProjectSameTenantSerializationAndParentReferences
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectSameTenantSerializationAndParentReferences (0.04s)
+    --- PASS: TestProjectSameTenantSerializationAndParentReferences/false (0.00s)
+    --- PASS: TestProjectSameTenantSerializationAndParentReferences/true (0.00s)
+=== RUN   TestProjectDelayedOwnerRequestCannotUseRejoin
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestProjectDelayedOwnerRequestCannotUseRejoin/false
+=== RUN   TestProjectDelayedOwnerRequestCannotUseRejoin/true
+=== NAME  TestProjectDelayedOwnerRequestCannotUseRejoin
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectDelayedOwnerRequestCannotUseRejoin (0.04s)
+    --- PASS: TestProjectDelayedOwnerRequestCannotUseRejoin/false (0.01s)
+    --- PASS: TestProjectDelayedOwnerRequestCannotUseRejoin/true (0.00s)
+=== RUN   TestProjectHTTPJourneyAndIsolation
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectHTTPJourneyAndIsolation (0.44s)
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/lostcreate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/rollbackcreate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/timeoutcreate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/deadlockcreate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/schemacreate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/lostupdate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/rollbackupdate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/timeoutupdate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/deadlockupdate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/schemaupdate
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/actual-schema4
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/lock-timeout
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/cancel-after-lock
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/real-pool-timeout
+=== RUN   TestProjectHTTPFaultsCancellationAndRecovery/actual-query-timeout
+=== NAME  TestProjectHTTPFaultsCancellationAndRecovery
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectHTTPFaultsCancellationAndRecovery (0.15s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/lostcreate (0.01s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/rollbackcreate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/timeoutcreate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/deadlockcreate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/schemacreate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/lostupdate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/rollbackupdate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/timeoutupdate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/deadlockupdate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/schemaupdate (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/actual-schema4 (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/lock-timeout (0.04s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/cancel-after-lock (0.00s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/real-pool-timeout (0.03s)
+    --- PASS: TestProjectHTTPFaultsCancellationAndRecovery/actual-query-timeout (0.02s)
+=== RUN   TestProjectMigration
+    projects_test.go:49: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectMigration (0.02s)
+=== RUN   TestProjectStorePermissionsPaginationAndVersions
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectStorePermissionsPaginationAndVersions (0.04s)
+=== RUN   TestProjectLiveAuthorityAndCreatorLifetime
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestProjectLiveAuthorityAndCreatorLifetime/exit
+=== RUN   TestProjectLiveAuthorityAndCreatorLifetime/remove
+=== RUN   TestProjectLiveAuthorityAndCreatorLifetime/revoke
+=== RUN   TestProjectLiveAuthorityAndCreatorLifetime/disable
+=== RUN   TestProjectLiveAuthorityAndCreatorLifetime/creator
+=== NAME  TestProjectLiveAuthorityAndCreatorLifetime
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestProjectLiveAuthorityAndCreatorLifetime (0.05s)
+    --- PASS: TestProjectLiveAuthorityAndCreatorLifetime/exit (0.01s)
+    --- PASS: TestProjectLiveAuthorityAndCreatorLifetime/remove (0.01s)
+    --- PASS: TestProjectLiveAuthorityAndCreatorLifetime/revoke (0.00s)
+    --- PASS: TestProjectLiveAuthorityAndCreatorLifetime/disable (0.00s)
+    --- PASS: TestProjectLiveAuthorityAndCreatorLifetime/creator (0.00s)
+=== RUN   TestMigrationAndConstraints
+    registration_test.go:92: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestMigrationAndConstraints (0.02s)
+=== RUN   TestRegistrationWithPostgreSQL
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestRegistrationWithPostgreSQL/missing-schema-is500
+=== RUN   TestRegistrationWithPostgreSQL/database-deadline
+=== RUN   TestRegistrationWithPostgreSQL/client-cancel-during-insert
+=== NAME  TestRegistrationWithPostgreSQL
+    registration_test.go:247: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestRegistrationWithPostgreSQL (2.83s)
+    --- PASS: TestRegistrationWithPostgreSQL/missing-schema-is500 (0.10s)
+    --- PASS: TestRegistrationWithPostgreSQL/database-deadline (2.12s)
+    --- PASS: TestRegistrationWithPostgreSQL/client-cancel-during-insert (0.16s)
+=== RUN   TestUnavailableDatabaseAndRecovery
+    registration_test.go:79: native Goose up expected-success=true: verified
+    registration_test.go:452: verified PostgreSQL18 recovery with native migrations and actual Argon2id
+    registration_test.go:410: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestUnavailableDatabaseAndRecovery (0.23s)
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/user
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 722, "locks": [{"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}, {"mode": "RowShareLock", "granted": true, "locktype": "tuple", "relation": "users"}], "blocking": [720], "observed_at": "2026-10-20T04:05:49.447085+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/session
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 720, "locks": [{"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}, {"mode": "RowShareLock", "granted": true, "locktype": "tuple", "relation": "sessions"}], "blocking": [722], "observed_at": "2026-10-20T04:05:49.666643+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/workspace
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 722, "locks": [{"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}, {"mode": "ExclusiveLock", "granted": true, "locktype": "tuple", "relation": "workspaces"}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}], "blocking": [720], "observed_at": "2026-10-20T04:05:49.884082+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/membership
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 720, "locks": [{"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}, {"mode": "AccessExclusiveLock", "granted": true, "locktype": "tuple", "relation": "workspace_members"}], "blocking": [722], "observed_at": "2026-10-20T04:05:50.103151+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/project
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 722, "locks": [{"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_workspace_id_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}, {"mode": "AccessExclusiveLock", "granted": true, "locktype": "tuple", "relation": "projects"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}], "blocking": [720], "observed_at": "2026-10-20T04:05:50.318844+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/monitor
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 720, "locks": [{"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_tenant_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_workspace_id_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}, {"mode": "AccessExclusiveLock", "granted": true, "locktype": "tuple", "relation": "http_monitors"}], "blocking": [722], "observed_at": "2026-10-20T04:05:50.537567+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/activation
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 722, "locks": [{"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_enabled_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_states_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_actor_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_states"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_tenant_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_workspace_id_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}, {"mode": "AccessExclusiveLock", "granted": true, "locktype": "tuple", "relation": "monitor_activation_states"}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}], "blocking": [720], "observed_at": "2026-10-20T04:05:50.751511+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/schedule
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 720, "locks": [{"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_enabled_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_states_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_actor_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_states"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_tenant_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules_due_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_workspace_id_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}, {"mode": "AccessExclusiveLock", "granted": true, "locktype": "tuple", "relation": "monitor_schedules"}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}], "blocking": [722], "observed_at": "2026-10-20T04:05:50.972446+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/budget
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 722, "locks": [{"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_enabled_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_states_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_actor_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_states"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "scheduler_budget_state"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_tenant_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "scheduler_budget_state_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules_due_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_workspace_id_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}, {"mode": "AccessExclusiveLock", "granted": true, "locktype": "tuple", "relation": "scheduler_budget_state"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}], "blocking": [720], "observed_at": "2026-10-20T04:05:51.183549+00:00"}
+=== RUN   TestExecutionAuthorizationFreshTimeAfterEverySPIWait/control
+    scheduler_authorization_concurrency_test.go:89: wait evidence {"pid": 720, "locks": [{"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "scheduler_control"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_enabled_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_states_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_membership_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_actor_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_activation_states"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspaces_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_user_id_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "scheduler_budget_state"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors_tenant_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "http_monitors"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_user_workspace_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members_pkey"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_expires_at_idx"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_token_hash_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "scheduler_control_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "scheduler_budget_state_pkey"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules_due_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "monitor_schedules"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_created_by_user_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects_workspace_id_id_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "projects"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "workspace_members"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users_email_key"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "users"}, {"mode": "AccessShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "RowShareLock", "granted": true, "locktype": "relation", "relation": "sessions_revoked_at_idx"}, {"mode": "ExclusiveLock", "granted": true, "locktype": "virtualxid", "relation": null}, {"mode": "ExclusiveLock", "granted": true, "locktype": "transactionid", "relation": null}, {"mode": "ShareLock", "granted": false, "locktype": "transactionid", "relation": null}, {"mode": "RowShareLock", "granted": true, "locktype": "tuple", "relation": "scheduler_control"}], "blocking": [722], "observed_at": "2026-10-20T04:05:51.397695+00:00"}
+=== NAME  TestExecutionAuthorizationFreshTimeAfterEverySPIWait
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestExecutionAuthorizationFreshTimeAfterEverySPIWait (2.21s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/user (0.21s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/session (0.22s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/workspace (0.22s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/membership (0.22s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/project (0.22s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/monitor (0.22s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/activation (0.22s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/schedule (0.22s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/budget (0.21s)
+    --- PASS: TestExecutionAuthorizationFreshTimeAfterEverySPIWait/control (0.22s)
+=== RUN   TestExecutionAuthorizationCommitAcknowledgementUnknown
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestExecutionAuthorizationCommitAcknowledgementUnknown/rollback
+=== RUN   TestExecutionAuthorizationCommitAcknowledgementUnknown/lost
+=== NAME  TestExecutionAuthorizationCommitAcknowledgementUnknown
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestExecutionAuthorizationCommitAcknowledgementUnknown (0.05s)
+    --- PASS: TestExecutionAuthorizationCommitAcknowledgementUnknown/rollback (0.02s)
+    --- PASS: TestExecutionAuthorizationCommitAcknowledgementUnknown/lost (0.01s)
+=== RUN   TestExecutionAuthorizationAtomicIntentAndRevocation
+    registration_test.go:79: native Goose up expected-success=true: verified
+--- PASS: TestExecutionAuthorizationAtomicIntentAndRevocation (0.03s)
+=== RUN   TestSchedulerMigrationRetiresAllLegacyTags
+    scheduler_migration_test.go:24: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestSchedulerMigrationRetiresAllLegacyTags (0.01s)
+=== RUN   TestSchedulerMigrationRollback
+    scheduler_migration_test.go:92: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestSchedulerMigrationRollback (0.02s)
+=== RUN   TestSchemaSevenFixtureMatchesReviewedHistoricalWriter
+--- PASS: TestSchemaSevenFixtureMatchesReviewedHistoricalWriter (0.00s)
+=== RUN   TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities (0.04s)
+=== RUN   TestSessionStoreAndUpgrade
+    session_test.go:19: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestSessionStoreAndUpgrade (0.01s)
+=== RUN   TestSessionCreationRechecksConcurrentUpdate
+    registration_test.go:79: native Goose up expected-success=true: verified
+    session_test.go:174: rejected race inserted sessions
+    session_test.go:132: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestSessionCreationRechecksConcurrentUpdate (0.03s)
+=== RUN   TestCreationLockSerializesDisableAndConcurrentRevocation
+    registration_test.go:79: native Goose up expected-success=true: verified
+    session_test.go:181: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestCreationLockSerializesDisableAndConcurrentRevocation (0.03s)
+=== RUN   TestWorkspaceCreationLockOrdering
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceCreationLockOrdering/revoke-change-first
+=== RUN   TestWorkspaceCreationLockOrdering/revoke-create-first
+=== RUN   TestWorkspaceCreationLockOrdering/disable-change-first
+=== RUN   TestWorkspaceCreationLockOrdering/disable-create-first
+=== NAME  TestWorkspaceCreationLockOrdering
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceCreationLockOrdering (0.04s)
+    --- PASS: TestWorkspaceCreationLockOrdering/revoke-change-first (0.00s)
+    --- PASS: TestWorkspaceCreationLockOrdering/revoke-create-first (0.00s)
+    --- PASS: TestWorkspaceCreationLockOrdering/disable-change-first (0.00s)
+    --- PASS: TestWorkspaceCreationLockOrdering/disable-create-first (0.00s)
+=== RUN   TestWorkspaceExpiryAndCleanupBoundaries
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceExpiryAndCleanupBoundaries/before-insert
+=== RUN   TestWorkspaceExpiryAndCleanupBoundaries/after-insert
+=== NAME  TestWorkspaceExpiryAndCleanupBoundaries
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceExpiryAndCleanupBoundaries (0.66s)
+    --- PASS: TestWorkspaceExpiryAndCleanupBoundaries/before-insert (0.31s)
+    --- PASS: TestWorkspaceExpiryAndCleanupBoundaries/after-insert (0.31s)
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges/remove
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges/role
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges/revoke
+=== RUN   TestWorkspaceReadSnapshotMembershipAndIdentityChanges/disable
+=== NAME  TestWorkspaceReadSnapshotMembershipAndIdentityChanges
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceReadSnapshotMembershipAndIdentityChanges (0.04s)
+    --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges/remove (0.00s)
+    --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges/role (0.00s)
+    --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges/revoke (0.00s)
+    --- PASS: TestWorkspaceReadSnapshotMembershipAndIdentityChanges/disable (0.00s)
+=== RUN   TestWorkspaceTransactionFaultsAndUnknownCommit
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_concurrency_test.go:489: real PostgreSQL owner constraint failure left a partial workspace
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceTransactionFaultsAndUnknownCommit (0.03s)
+=== RUN   TestWorkspaceHTTPAuthenticationAndTenantIsolation
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceHTTPAuthenticationAndTenantIsolation/development
+=== RUN   TestWorkspaceHTTPAuthenticationAndTenantIsolation/production
+=== NAME  TestWorkspaceHTTPAuthenticationAndTenantIsolation
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceHTTPAuthenticationAndTenantIsolation (0.44s)
+    --- PASS: TestWorkspaceHTTPAuthenticationAndTenantIsolation/development (0.21s)
+    --- PASS: TestWorkspaceHTTPAuthenticationAndTenantIsolation/production (0.21s)
+=== RUN   TestWorkspaceHTTPDatabaseFailuresAndRecovery
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceHTTPDatabaseFailuresAndRecovery (2.06s)
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges/remove
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges/role
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges/revoke
+=== RUN   TestWorkspaceListSnapshotAndCursorChanges/disable
+=== NAME  TestWorkspaceListSnapshotAndCursorChanges
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceListSnapshotAndCursorChanges (0.04s)
+    --- PASS: TestWorkspaceListSnapshotAndCursorChanges/remove (0.01s)
+    --- PASS: TestWorkspaceListSnapshotAndCursorChanges/role (0.00s)
+    --- PASS: TestWorkspaceListSnapshotAndCursorChanges/revoke (0.00s)
+    --- PASS: TestWorkspaceListSnapshotAndCursorChanges/disable (0.00s)
+=== RUN   TestWorkspaceMigrationAndConstraints
+    workspace_test.go:50: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceMigrationAndConstraints (0.02s)
+=== RUN   TestWorkspaceTenantQueriesAndConcurrentCreation
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 success=false; restricted diagnostic bytes=460
+--- FAIL: TestWorkspaceTenantQueriesAndConcurrentCreation (0.04s)
+FAIL

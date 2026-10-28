@@ -1,0 +1,71 @@
+{
+  "implementation_sha": "f30dcddbecc250e7d7747f6d50c852eedef7d38b",
+  "source_inventory_sha256": "2ccc19d594c0f1105e44337167c17a221cce7ba803451139872ec1e02aea671e",
+  "push_ci": {
+    "id": 40261990493,
+    "url": "https://github.com/rjgczp/devpilot/actions/runs/40261990493",
+    "jobs": "3/3 success"
+  },
+  "pr_ci": {
+    "id": 40261994278,
+    "url": "https://github.com/rjgczp/devpilot/actions/runs/40261994278",
+    "jobs": "3/3 success"
+  },
+  "task71": true,
+  "task63": true,
+  "progress": "30/47",
+  "result71_cells_per_event": 24,
+  "pg_each_mode_per_event": 147,
+  "budget_each_mode_per_event": 23,
+  "snapshot_each_mode_per_event": 4,
+  "original_network_per_event": 81,
+  "joint63_per_event": 46,
+  "denial_regressions_per_event": 6,
+  "safety": [
+    "6.4",
+    "6.5",
+    "5.4"
+  ],
+  "production_execution": false,
+  "task72_implemented": false,
+  "independent_review_pending": true,
+  "review_diff": "https://github.com/rjgczp/devpilot/compare/65316cc41e7e4a1186e8ce3a7d2d53a937e6380d...f30dcddbecc250e7d7747f6d50c852eedef7d38b",
+  "migration1_7_sha256": [
+    {
+      "path": "migrations/00001_create_users.sql",
+      "sha256": "e09f6476b25ce0a60cbd6607486a9b4208f2c3413957c83e54110e0e661b5490",
+      "unchanged_from_main": true
+    },
+    {
+      "path": "migrations/00002_create_sessions.sql",
+      "sha256": "27ce132375459ea1e061aac1e2c00de1010c9dc8f94c21489e7c24243f02c96a",
+      "unchanged_from_main": true
+    },
+    {
+      "path": "migrations/00003_create_workspaces.sql",
+      "sha256": "327651e7727c512d80062792bab0ea874f1f63320b98ca6b0491dd8e6f94223d",
+      "unchanged_from_main": true
+    },
+    {
+      "path": "migrations/00004_create_workspace_invitations.sql",
+      "sha256": "0374475bb78a985a9baf3de72055032bcc08e6f18512b850442a59940f20fdfb",
+      "unchanged_from_main": true
+    },
+    {
+      "path": "migrations/00005_create_projects.sql",
+      "sha256": "4715106905a92991c7f1dcb2da08afb7fd93217716bfa83eb4a33bb8145ac519",
+      "unchanged_from_main": true
+    },
+    {
+      "path": "migrations/00006_create_http_monitors.sql",
+      "sha256": "26ac26c66da96b0f16076342f0f11258bb6ea92be5f71a6b015c97a3075ee4e2",
+      "unchanged_from_main": true
+    },
+    {
+      "path": "migrations/00007_create_monitor_activation_states.sql",
+      "sha256": "713c39b60a3ede8156c1163404a6883cea00b6c8979b94b36a96047a5532cfaa",
+      "unchanged_from_main": true
+    }
+  ],
+  "migration8_sha256": "04c27a9aa194d359790c8aad627a0d27cfdc577501eb1868a5beafadaf35674b"
+}

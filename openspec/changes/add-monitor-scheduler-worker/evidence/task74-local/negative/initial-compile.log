@@ -1,0 +1,16 @@
+Command: go test -tags=integration ./tests/integration -run '^$' -count=1
+Exit: 1
+# github.com/rjgczp/devpilot/tests/integration [github.com/rjgczp/devpilot/tests/integration.test]
+tests/integration/scheduler_status74_test.go:151:83: cannot use "other project" (untyped string constant) as *string value in struct literal
+tests/integration/scheduler_status74_test.go:160:43: unknown field WorkspaceID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:71: unknown field ProjectID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:99: unknown field ID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:115: unknown field WorkspaceID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:147: unknown field ProjectID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:171: unknown field ID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:183: unknown field WorkspaceID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:211: unknown field ProjectID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:235: unknown field ID in struct literal of type monitor.Public
+tests/integration/scheduler_status74_test.go:160:235: too many errors
+FAIL github.com/rjgczp/devpilot/tests/integration [build failed]
+FAIL

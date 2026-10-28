@@ -1,0 +1,16 @@
+{
+  "command": [
+    "openspec",
+    "validate",
+    "--all",
+    "--strict"
+  ],
+  "started_at": "2026-10-20T06:44:06.804147+00:00",
+  "elapsed_seconds": 0.3851387919858098,
+  "exit_code": 1,
+  "head": "0c915c8a11c08b46d39a08222e07293e4a8fc555",
+  "dirty": false,
+  "source_inventory_sha256": "c032fd0c77b8fa88dc96b4a4c0d4ec37bb7f004dcd35a341f20c31f40fd2ff4f",
+  "binaries": {},
+  "log_sha256": "fef4737504c8a9567664c2e4925fa8db19971473867e035eb2f8dff3ca9bd3d1"
+}

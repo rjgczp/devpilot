@@ -1,0 +1,185 @@
+{
+  "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+  "remote_sha": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+  "branch": "codex/add-monitor-scheduler-worker",
+  "source_inventory_sha256": "7b338f2df3dc56827e8837843fdebde09a3a462d5fc5da780afdb209daa48ee3",
+  "working_tree_clean": true,
+  "pr": {
+    "number": 11,
+    "state": "open",
+    "merged": false,
+    "url": "https://github.com/rjgczp/devpilot/pull/11"
+  },
+  "ci": [
+    {
+      "event": "push",
+      "id": 39924189519,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/39924189519",
+      "jobs": [
+        {
+          "name": "execution-security",
+          "status": "completed",
+          "conclusion": "success",
+          "current": [],
+          "failed": []
+        },
+        {
+          "name": "integration",
+          "status": "completed",
+          "conclusion": "success",
+          "current": [],
+          "failed": []
+        },
+        {
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "success",
+          "current": [],
+          "failed": []
+        }
+      ]
+    },
+    {
+      "event": "pull_request",
+      "id": 39924195122,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/39924195122",
+      "jobs": [
+        {
+          "name": "execution-security",
+          "status": "completed",
+          "conclusion": "success",
+          "current": [],
+          "failed": []
+        },
+        {
+          "name": "integration",
+          "status": "completed",
+          "conclusion": "success",
+          "current": [],
+          "failed": []
+        },
+        {
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "success",
+          "current": [],
+          "failed": []
+        }
+      ]
+    }
+  ],
+  "integration_audits": [
+    {
+      "event": "push",
+      "artifact_id": 12488848352,
+      "artifact_digest": "7b42b11c577094b6a2e6f893591473fd08be067dd4f98a8a929913cd757fd3dd",
+      "exact_pg_tests": {
+        "normal": 147,
+        "race": 147
+      },
+      "source_bound_receipts": 20,
+      "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+      "source_inventory_sha256": "7b338f2df3dc56827e8837843fdebde09a3a462d5fc5da780afdb209daa48ee3"
+    },
+    {
+      "event": "pull_request",
+      "artifact_id": 12488848177,
+      "artifact_digest": "a536484f6aef76856c4576373d287b87e2d050ff9b2c640778a902c6992acda1",
+      "exact_pg_tests": {
+        "normal": 147,
+        "race": 147
+      },
+      "source_bound_receipts": 20,
+      "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+      "source_inventory_sha256": "7b338f2df3dc56827e8837843fdebde09a3a462d5fc5da780afdb209daa48ee3"
+    }
+  ],
+  "security_audits": [
+    {
+      "event": "push",
+      "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+      "source_inventory_sha256": "7b338f2df3dc56827e8837843fdebde09a3a462d5fc5da780afdb209daa48ee3",
+      "artifact_id": 12489133296,
+      "artifact_digest": "cb91a3a156dd77910fd62a0714d215ed04c649c8519ae802e5966d3176eb745b",
+      "artifact_url": "https://github.com/rjgczp/devpilot/actions/runs/39924189519/artifacts/12489133296",
+      "source_bound_successful_receipts": 110,
+      "budget": {
+        "normal": 23,
+        "race": 23
+      },
+      "joint_matrix": 46,
+      "denial_regressions": 6,
+      "historical_snapshots": {
+        "snapshot-normal.log": 4,
+        "snapshot-race.log": 4
+      },
+      "original_network_scenarios": 81,
+      "retained_safety_suites": [
+        "network64",
+        "stop65",
+        "release54"
+      ]
+    },
+    {
+      "event": "pull_request",
+      "head": "65316cc41e7e4a1186e8ce3a7d2d53a937e6380d",
+      "source_inventory_sha256": "7b338f2df3dc56827e8837843fdebde09a3a462d5fc5da780afdb209daa48ee3",
+      "artifact_id": 12490325836,
+      "artifact_digest": "1115d43a8bdfd697d265c47d6e082a34f80d3e8b666b622aa8ff824618cca324",
+      "artifact_url": "https://github.com/rjgczp/devpilot/actions/runs/39924195122/artifacts/12490325836",
+      "source_bound_successful_receipts": 110,
+      "budget": {
+        "normal": 23,
+        "race": 23
+      },
+      "joint_matrix": 46,
+      "denial_regressions": 6,
+      "historical_snapshots": {
+        "snapshot-normal.log": 4,
+        "snapshot-race.log": 4
+      },
+      "original_network_scenarios": 81,
+      "retained_safety_suites": [
+        "network64",
+        "stop65",
+        "release54"
+      ]
+    }
+  ],
+  "representative_real_witnesses": "ci/real-witness-binding.json",
+  "frozen_change_strict_exit": 0,
+  "frozen_diff_check_exit": 0,
+  "repository_strict": {
+    "exit_code": 1,
+    "inherited_spec_count": 4,
+    "inherited_description_length_warnings": 7,
+    "unrelated_specs_modified": false
+  },
+  "tasks": {
+    "completed": 28,
+    "total": 47,
+    "task63_checked": false,
+    "task63_status": "complete acceptance submitted for independent review; checkbox not preempted",
+    "group7_started": false
+  },
+  "risk_records_retained": [
+    "original PID1/tracer dependency",
+    "original NSCD calls and native stack limits",
+    "permit-missing denial transport failure",
+    "supplemental planner inventory assertion, not compiler error",
+    "local Snapshot port-mapping orchestration failure",
+    "previous SIGCONT/management confirmation timeout internal root cause unproven",
+    "production historical-role ACL inventory unavailable"
+  ],
+  "bounds": {
+    "production_network_execution": false,
+    "merge": false,
+    "archive": false,
+    "deployment": false,
+    "new_database_privileges": false
+  }
+}

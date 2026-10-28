@@ -1,0 +1,57 @@
+{
+  "recorded_at": "2026-10-28T07:14:55.363311+00:00",
+  "implementation_head": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+  "documentation_only": true,
+  "tasks_completed": 31,
+  "tasks_total": 47,
+  "task73_accepted": false,
+  "product_scope_acceptance": "pending_explicit_acceptance",
+  "task74_implementation": "not_authorized_not_started",
+  "raw_artifact_hash_check": [
+    {
+      "id": 12783034939,
+      "size_match": true,
+      "sha256_match": true
+    },
+    {
+      "id": 12783394646,
+      "size_match": true,
+      "sha256_match": true
+    },
+    {
+      "id": 12784940443,
+      "size_match": true,
+      "sha256_match": true
+    },
+    {
+      "id": 12784586300,
+      "size_match": true,
+      "sha256_match": true
+    },
+    {
+      "id": 12785762456,
+      "size_match": true,
+      "sha256_match": true
+    },
+    {
+      "id": 12785903209,
+      "size_match": true,
+      "sha256_match": true
+    }
+  ],
+  "raw_artifact_hash_check_exit": 0,
+  "raw_tests_rerun": false,
+  "docker_started": false,
+  "prior_review_bundle": {
+    "path": "/private/tmp/devpilot-task73-a-ci-20261028/Task-7.3-A-frozen-CI-review.zip",
+    "bytes": 542307,
+    "sha256": "56f4fd0a90934d814dc5694f7b043a5584a2de9f6c33fe17265eedd853af0830"
+  },
+  "metadata_observer_error": {
+    "command": "gh api repos/rjgczp/devpilot/actions/runs/40613027846",
+    "exit_code": 1,
+    "stderr": "Get \"https://api.github.com/repos/rjgczp/devpilot/actions/runs/40613027846\": EOF",
+    "meaning": "Read-only metadata collection failed; no CI failure, rerun or fixture change. Six PR check-rollup entries independently read successfully and saved."
+  },
+  "tests_source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22"
+}

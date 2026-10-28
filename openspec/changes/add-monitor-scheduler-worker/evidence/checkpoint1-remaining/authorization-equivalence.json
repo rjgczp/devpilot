@@ -1,0 +1,19 @@
+{
+  "previous_tested_sha": "0c915c8a11c08b46d39a08222e07293e4a8fc555",
+  "current_implementation_sha": "3774a75eb7d3e733b174530d71816ed319d9f084",
+  "authorize_routine_and_acl_sha256": "5326f871ee7fa9c4a1a1925f0c5807e717a33fd894f473d5d9f7ca5927c6462f",
+  "unchanged_files_sha256": {
+    "internal/monitor/execution_authorization.go": "ac49ac29fc4ead14860bedff65dd456bad6e567dae42856901ff7b6b70ed3f75",
+    "internal/monitor/execution_authorization_store.go": "141d1ddef21cd8695b1a7669bebbc1ea845880acc9d3816a9fe0ca376b1c1479",
+    "internal/monitor/execution_authorization_handler.go": "8e1ce389d253abfe43c02c43dc89751cf272d6c23dd9483679a05395ffe67bcc",
+    "tests/integration/scheduler_authorization_concurrency_test.go": "0f1192afdb9dfa5308c5fcecdbc1293495c7c7e83ae33a43a3528011d3c510c1"
+  },
+  "existing_real_pg_evidence": "../checkpoint2/pg-full.json and pg-full.log",
+  "previous_tests": [
+    "TestExecutionAuthorizationFreshTimeAfterEverySPIWait",
+    "TestExecutionAuthorizationTwoOwnersSameTag",
+    "TestExecutionAuthorizationLossWhileWaiting",
+    "TestExecutionAuthorizationCommitAcknowledgementUnknown"
+  ],
+  "scope": "Avoid repeating proven checks whose authorization implementation and tests remain byte-identical; newly missing quota/cooling, registration capacity and real expiry were executed in pg-capacity-expiry."
+}

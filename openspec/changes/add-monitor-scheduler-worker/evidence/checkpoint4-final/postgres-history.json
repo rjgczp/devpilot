@@ -1,0 +1,21 @@
+{
+  "command": [
+    "docker",
+    "logs",
+    "--since",
+    "2026-10-21T07:47:15Z",
+    "devpilot-scheduler-apply-pg18"
+  ],
+  "started_at": "2026-10-21T07:59:39.492092+00:00",
+  "elapsed_seconds": 0.07546254200860858,
+  "exit_code": 0,
+  "head": "7b761cad01706ff1abfba51bf0e13f2d091fd44a",
+  "dirty": false,
+  "source_inventory_sha256": "215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528",
+  "binaries": {},
+  "log_sha256": "245e08aa4f17e40c374ed1ebc20f53f0eeb5c643550c6e204b398f297581dc4b",
+  "source_inventory_ref": "source-inventories/215129b2ec76f6dbf6d9914d842e3533c1ebce69526851349fed614377fa0528.json",
+  "original_receipt_ref": "raw-receipts/postgres-history.json.gz",
+  "original_receipt_sha256": "240409bd67a007b3895773039aa3eb7db7e31e2becb89c1412f8b2d0353c11bb",
+  "log_ref": "postgres-history.log.gz"
+}

@@ -1,0 +1,21 @@
+{
+  "command": [
+    "env",
+    "GOCACHE=/private/tmp/devpilot-scheduler-go-cache",
+    "go",
+    "test",
+    "./...",
+    "-count=1"
+  ],
+  "started_at": "2026-10-20T08:32:35.637756+00:00",
+  "elapsed_seconds": 4.856167749967426,
+  "exit_code": 1,
+  "head": "851137d65d746687e4b0cb0e151e36c2f0fb96da",
+  "dirty": false,
+  "source_inventory_sha256": "95e34d71179c1b3026cd45e616eb37529e329e86b68161da7eb17e38852b111b",
+  "binaries": {},
+  "log_sha256": "fa81c363213894d7dd07810b77c5068597b18d127f5e34dca6667afe246c899e",
+  "source_inventory_ref": "source-inventories/95e34d71179c1b3026cd45e616eb37529e329e86b68161da7eb17e38852b111b.json",
+  "original_receipt_ref": "raw-receipts/frozen-unit.json.gz",
+  "original_receipt_sha256": "b82793c421c5b6a094eae629d4602601f429c68d28c1d61e243880034a7826d8"
+}

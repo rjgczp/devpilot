@@ -1,0 +1,31 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "--user",
+    "postgres",
+    "devpilot-scheduler-apply-pg18",
+    "psql",
+    "-X",
+    "-U",
+    "devpilot_fixture",
+    "-d",
+    "devpilot_registration_test",
+    "-At",
+    "-v",
+    "ON_ERROR_STOP=1",
+    "-c",
+    "SELECT jsonb_build_object('database',current_database(),'server_version',current_setting('server_version'),'version',(SELECT max(version_id) FROM goose_db_version WHERE is_applied),'schedule_table',to_regclass('public.monitor_schedules'),'scheduler_roles',(SELECT count(*) FROM pg_roles WHERE rolname LIKE 'devpilot_scheduler_%' OR rolname LIKE 'scheduler_claim_worker%'),'other_transactions',(SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid() AND xact_start IS NOT NULL),'lock_waiters',(SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock'));"
+  ],
+  "started_at": "2026-10-21T02:23:18.512195+00:00",
+  "elapsed_seconds": 0.09819483297178522,
+  "exit_code": 0,
+  "head": "6eb76fc93e86d7cc9038f86b74bfbd6f03b4b877",
+  "dirty": false,
+  "source_inventory_sha256": "c93642d57c7469533da7b9d9fa801a255d160fa80e48be14efc13e07a2d9112a",
+  "binaries": {},
+  "log_sha256": "384589b7b7f56641466fdbaaf6ea27bdacd113e572a793ce6b3b0d65b325d054",
+  "source_inventory_ref": "source-inventories/c93642d57c7469533da7b9d9fa801a255d160fa80e48be14efc13e07a2d9112a.json",
+  "original_receipt_ref": "raw-receipts/final-pg-state.json.gz",
+  "original_receipt_sha256": "921aaa105ea385aea8abb129144cd8203a69a8ab7e55d3e1c31d3f6e01679da3"
+}

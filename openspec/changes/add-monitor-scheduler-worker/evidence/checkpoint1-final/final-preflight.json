@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "tests/scheduler/preflight-docker.py",
+    "--evidence",
+    "/private/tmp/devpilot-cp1-final/preflight"
+  ],
+  "started_at": "2026-10-21T01:23:20.054940+00:00",
+  "elapsed_seconds": 3.8422787919989787,
+  "exit_code": 0,
+  "head": "d781d7560904ee81c4939d9520604ff2240766a4",
+  "dirty": false,
+  "source_inventory_sha256": "1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb",
+  "binaries": {},
+  "log_sha256": "55b3e0b6f575b4eaaeb2144ecb03baca762d68d8adaec8502080d288159ec76e",
+  "source_inventory_ref": "source-inventories/1cae1483aefa7fce5ad5983aa25fa42b6fab6bf84e8b45773d78fa2db66605fb.json",
+  "original_receipt_ref": "raw-receipts/final-preflight.json.gz",
+  "original_receipt_sha256": "225ca082b17e5af2c39ab1840b44a2f9b7bdba28d98db8a4a646c172bad58ac9"
+}

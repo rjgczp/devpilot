@@ -1,0 +1,55 @@
+=== RUN   TestCheckpointOneHTTPIntentStatusContract
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/disabled
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/blocked
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/authorized_waiting
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/due
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/leased
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/started
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/unknown
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/completed
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/configuration_changed
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/expired
+=== NAME  TestCheckpointOneHTTPIntentStatusContract
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOneHTTPIntentStatusContract (0.23s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/disabled (0.02s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/blocked (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/authorized_waiting (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/due (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/leased (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/started (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/unknown (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/completed (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/configuration_changed (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/expired (0.01s)
+=== RUN   TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities (0.15s)
+=== RUN   TestExecutionStatusHTTPAuthority
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestExecutionStatusHTTPAuthority/revoked
+=== RUN   TestExecutionStatusHTTPAuthority/expired
+=== RUN   TestExecutionStatusHTTPAuthority/disabled-user
+=== RUN   TestExecutionStatusHTTPAuthority/removed
+=== RUN   TestExecutionStatusHTTPAuthority/rejoined
+=== RUN   TestExecutionStatusHTTPAuthority/full-scope-and-cookie
+=== NAME  TestExecutionStatusHTTPAuthority
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestExecutionStatusHTTPAuthority (0.18s)
+    --- PASS: TestExecutionStatusHTTPAuthority/revoked (0.02s)
+    --- PASS: TestExecutionStatusHTTPAuthority/expired (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/disabled-user (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/removed (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/rejoined (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/full-scope-and-cookie (0.01s)
+=== RUN   TestExecutionStatusProjectionIsolation
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestExecutionStatusProjectionIsolation/pointer-and-unknown
+    scheduler_status74_test.go:222: ERROR: inconsistent types deduced for parameter $7 (SQLSTATE 42P08)
+=== NAME  TestExecutionStatusProjectionIsolation
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- FAIL: TestExecutionStatusProjectionIsolation (0.13s)
+    --- FAIL: TestExecutionStatusProjectionIsolation/pointer-and-unknown (0.02s)
+FAIL

@@ -1,0 +1,8 @@
+{
+  "original_path": "/private/tmp/devpilot-status74/postgres-final.log",
+  "sha256": "5095768587c7aaeef63aec6b03f34460695255ec0e0aed8366b60ee97f915aba",
+  "bytes": 41359,
+  "archive_index": "archive.json",
+  "preserved_verbatim": true,
+  "reason": "Raw PostgreSQL diagnostic whitespace is preserved in the original archive; Git review uses this hash reference instead of normalizing the raw log."
+}

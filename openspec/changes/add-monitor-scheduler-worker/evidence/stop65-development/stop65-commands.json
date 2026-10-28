@@ -1,0 +1,74 @@
+[
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/termination_fixture.py",
+      "--supervisor",
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture",
+      "--evidence",
+      "/private/tmp/devpilot-stop65-final-local/linux-termination"
+    ],
+    "exit_code": 0,
+    "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+    "dirty": true,
+    "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "elapsed_seconds": 48.47317629097961,
+    "binaries": {
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture": "e709d7eeea11f3ff5900911c76f71b5361162e4d7fbd19192ab61b39b4060376"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/termination_fixture.py",
+      "--supervisor",
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture",
+      "--evidence",
+      "/private/tmp/devpilot-stop65-final-local/pg-normal",
+      "--pg-binary",
+      "/private/tmp/devpilot-stop65-final-tools/physical-stop-pg.test",
+      "--mode",
+      "normal"
+    ],
+    "exit_code": 0,
+    "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+    "dirty": true,
+    "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "elapsed_seconds": 13.002236666972749,
+    "binaries": {
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture": "e709d7eeea11f3ff5900911c76f71b5361162e4d7fbd19192ab61b39b4060376",
+      "/private/tmp/devpilot-stop65-final-tools/physical-stop-pg.test": "b35ec5b0416906d404d4ba5eb6789b7cdbd5971eb5e4e83291ca58ba2c23ee12",
+      "/private/tmp/devpilot-stop65-final-tools/goose": "b9d42a96017db430bec647240d706bc9ae57775c76fa65321a7d24e7e38bbe3a"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "/Users/sansea/Documents/ChatGPT/devpilot/tests/scheduler/termination_fixture.py",
+      "--supervisor",
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture",
+      "--evidence",
+      "/private/tmp/devpilot-stop65-final-local/pg-race",
+      "--pg-binary",
+      "/private/tmp/devpilot-stop65-final-tools/physical-stop-pg-race.test",
+      "--mode",
+      "race"
+    ],
+    "exit_code": 0,
+    "head": "33fb5edde369a30f9bfb902d5e3fdd3525a46586",
+    "dirty": true,
+    "source_inventory_sha256": "be7aa9c0177fc7df80ba2d5fd24934a177c6dc222d4b44d128e61f05495165e8",
+    "elapsed_seconds": 14.1020405839663,
+    "binaries": {
+      "/private/tmp/devpilot-stop65-final-tools/networksupervisorfixture": "e709d7eeea11f3ff5900911c76f71b5361162e4d7fbd19192ab61b39b4060376",
+      "/private/tmp/devpilot-stop65-final-tools/physical-stop-pg-race.test": "cd3663539dd7ea82784f5433f67242f60151215d4d4b01e24d8dc8e945d41a9f",
+      "/private/tmp/devpilot-stop65-final-tools/goose": "b9d42a96017db430bec647240d706bc9ae57775c76fa65321a7d24e7e38bbe3a"
+    },
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

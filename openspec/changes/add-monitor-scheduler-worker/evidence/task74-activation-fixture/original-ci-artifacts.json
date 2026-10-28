@@ -1,0 +1,46 @@
+{
+  "head": "99497c3b27e2882ff3763e42ffffe425785270ef",
+  "artifacts": [
+    {
+      "event": "push",
+      "run_id": 40656977308,
+      "id": 12801738768,
+      "name": "integration-and-monitor-network-evidence",
+      "sha256": "116aa52618d33514a5415b812aafbd33d92a5439ee1bb32a3ef1448f76d3e4ec",
+      "bytes": 196331,
+      "path": "/private/tmp/devpilot-status74-delivery-99497c3/artifacts/push/integration-and-monitor-network-evidence/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40656977308/artifacts/12801738768"
+    },
+    {
+      "event": "push",
+      "run_id": 40656977308,
+      "id": 12801214920,
+      "name": "verify-evidence",
+      "sha256": "f2cf1f9d5fdbca1e93fdab09abcb9912fccca9a43baef24bec15688e0c388ba0",
+      "bytes": 180577,
+      "path": "/private/tmp/devpilot-status74-delivery-99497c3/artifacts/push/verify-evidence/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40656977308/artifacts/12801214920"
+    },
+    {
+      "event": "pr",
+      "run_id": 40656985730,
+      "id": 12802901015,
+      "name": "integration-and-monitor-network-evidence",
+      "sha256": "2a5df3aa53d67e125919fa0d754ada7918f228a6af515485b7bcfe198930d2b5",
+      "bytes": 1653581,
+      "path": "/private/tmp/devpilot-status74-delivery-99497c3/artifacts/pr/integration-and-monitor-network-evidence/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40656985730/artifacts/12802901015"
+    },
+    {
+      "event": "pr",
+      "run_id": 40656985730,
+      "id": 12801644102,
+      "name": "verify-evidence",
+      "sha256": "8e31825baf51623042b8fb9376c3a7d81e829fc1a8fb1809873bc430d8d57a3a",
+      "bytes": 180582,
+      "path": "/private/tmp/devpilot-status74-delivery-99497c3/artifacts/pr/verify-evidence/artifact.zip",
+      "url": "https://github.com/rjgczp/devpilot/actions/runs/40656985730/artifacts/12801644102"
+    }
+  ],
+  "complete_security_artifacts": false
+}

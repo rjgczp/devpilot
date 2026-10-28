@@ -1,0 +1,21 @@
+{
+  "command": [
+    "docker",
+    "logs",
+    "--since",
+    "2026-10-21T06:42:22Z",
+    "devpilot-scheduler-apply-pg18"
+  ],
+  "started_at": "2026-10-21T06:50:54.792953+00:00",
+  "elapsed_seconds": 0.07236024999292567,
+  "exit_code": 0,
+  "head": "e05959ec7aa0e4e80981bcd59ea0d6ee4c823815",
+  "dirty": false,
+  "source_inventory_sha256": "615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96",
+  "binaries": {},
+  "log_sha256": "35bb4ac8df5f8c595ce3952679be662b0cb9ec50abd8dc078e767d5ec125d536",
+  "source_inventory_ref": "source-inventories/615b7fd0fdbbbde73a5f6d66fd7e1f53b8a2934f7b4df3bc254bf48623ca0b96.json",
+  "original_receipt_ref": "raw-receipts/postgres-regression.json.gz",
+  "original_receipt_sha256": "b5210c0f2b655c0d8b13f5b3846bbaccf0419b8353cc000ced6d77309af8f2e0",
+  "log_ref": "postgres-regression.log.gz"
+}

@@ -1,0 +1,780 @@
+diff --git a/tests/integration/scheduler_checkpoint1_capacity_test.go b/tests/integration/scheduler_checkpoint1_capacity_test.go
+new file mode 100644
+index 0000000..c7151c8
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_capacity_test.go
+@@ -0,0 +1,128 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"errors"
++	"testing"
++
++	"github.com/rjgczp/devpilot/internal/monitor"
++)
++
++func TestCheckpointOneRegistrationCapacityLastSlot(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	f, m := monitorFixture(t, db)
++	s := monitor.Store{Pool: db}
++	second, err := s.Create(ctx, f.od, m.WorkspaceID, m.ProjectID, monitorInput("second"))
++	if err != nil {
++		t.Fatal(err)
++	}
++	// Real PG rows and composite FKs, not a mocked/counter-only capacity state.
++	// Administrator fixture loading grants no execution authorization.
++	if _, err = db.Exec(ctx, `INSERT INTO http_monitors(workspace_id,project_id,name,url,created_by_user_id) SELECT $1,$2,'capacity-fixture','https://example.com/',$3 FROM generate_series(1,9999)`, m.WorkspaceID, m.ProjectID, f.owner.ID); err != nil {
++		t.Fatal(err)
++	}
++	if _, err = db.Exec(ctx, `INSERT INTO monitor_schedules(workspace_id,project_id,monitor_id) SELECT workspace_id,project_id,id FROM http_monitors WHERE workspace_id=$1 AND name='capacity-fixture'`, m.WorkspaceID); err != nil {
++		t.Fatal(err)
++	}
++	if queryInt(t, db, `SELECT count(*) FROM monitor_schedules`) != 9999 || queryInt(t, db, `SELECT schedule_count FROM scheduler_budget_state WHERE kind='global'`) != 9999 {
++		t.Fatal("real registration count diverged")
++	}
++	results := make(chan struct {
++		m   monitor.Public
++		err error
++	}, 2)
++	for _, candidate := range []monitor.Public{m, second} {
++		a := activationRead(t, db, f.od, candidate)
++		go func(v monitor.Public, a monitor.Activation) {
++			_, e := s.ExecutionAuthorize(ctx, f.od, v.WorkspaceID, v.ProjectID, v.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(a))
++			results <- struct {
++				m   monitor.Public
++				err error
++			}{v, e}
++		}(candidate, a)
++	}
++	var winner, loser monitor.Public
++	for range 2 {
++		r := <-results
++		if r.err == nil {
++			if winner.ID != "" {
++				t.Fatal("last slot granted twice")
++			}
++			winner = r.m
++		} else if errors.Is(r.err, monitor.ErrRetentionCapacity) {
++			loser = r.m
++		} else {
++			t.Fatal("registration conflict", r.err)
++		}
++	}
++	if winner.ID == "" || loser.ID == "" || queryInt(t, db, `SELECT count(*) FROM monitor_schedules`) != 10000 || queryInt(t, db, `SELECT schedule_count FROM scheduler_budget_state WHERE kind='global'`) != 10000 {
++		t.Fatal("registration cap is not atomic")
++	}
++	if activationRead(t, db, f.od, loser).ActivationGeneration != "1" {
++		t.Fatal("capacity rejection changed intent")
++	}
++	a := activationRead(t, db, f.od, winner)
++	if _, err = activationPut(s, f.od, winner, a, "disabled"); err != nil {
++		t.Fatal("capacity blocked pause", err)
++	}
++	if _, err = s.Update(ctx, f.od, loser.WorkspaceID, loser.ProjectID, loser.ID, monitorInput("patch at capacity"), monitor.ETag(loser)); err != nil {
++		t.Fatal("capacity blocked configuration PATCH", err)
++	}
++	if queryInt(t, db, `SELECT count(*) FROM monitor_runs`) != 0 {
++		t.Fatal("registration created runnable work")
++	}
++	t.Log("9999 real schedules + two competing grants -> 10000 schedules, one accepted, one retention_capacity; pause/PATCH remain available")
++}
++func TestCheckpointOneEnabledQuotaAndCooling(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	f, m := monitorFixture(t, db)
++	s := monitor.Store{Pool: db}
++	if _, err := db.Exec(ctx, `INSERT INTO http_monitors(workspace_id,project_id,name,url,created_by_user_id) SELECT $1,$2,'quota-fixture','https://example.com/',$3 FROM generate_series(1,100)`, m.WorkspaceID, m.ProjectID, f.owner.ID); err != nil {
++		t.Fatal(err)
++	}
++	if _, err := db.Exec(ctx, `UPDATE monitor_activation_states a SET desired_state='enabled',activation_configuration_version=1,activation_generation=activation_generation+1,next_enable_allowed_at=clock_timestamp()+interval '60 seconds',last_transition_kind='owner_enabled',last_actor_user_id=$2,updated_at=clock_timestamp() FROM http_monitors m WHERE m.workspace_id=$1 AND m.name='quota-fixture' AND (a.workspace_id,a.project_id,a.monitor_id)=(m.workspace_id,m.project_id,m.id)`, m.WorkspaceID, f.owner.ID); err != nil {
++		t.Fatal(err)
++	}
++	a := activationRead(t, db, f.od, m)
++	input := monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}
++	_, err := s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, input, monitor.ActivationETag(a))
++	monitorWant(t, err, monitor.ErrActivationLimit)
++	if activationRead(t, db, f.od, m).ActivationGeneration != "1" || queryInt(t, db, `SELECT count(*) FROM monitor_schedules`) != 0 {
++		t.Fatal("quota failure partially granted")
++	}
++	var free monitor.Public
++	if err = db.QueryRow(ctx, `SELECT id::text,workspace_id::text,project_id::text FROM http_monitors WHERE workspace_id=$1 AND name='quota-fixture' ORDER BY id LIMIT 1`, m.WorkspaceID).Scan(&free.ID, &free.WorkspaceID, &free.ProjectID); err != nil {
++		t.Fatal(err)
++	}
++	if _, err = activationPut(s, f.od, free, activationRead(t, db, f.od, free), "disabled"); err != nil {
++		t.Fatal(err)
++	}
++	if _, err = s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, input, monitor.ActivationETag(a)); err != nil {
++		t.Fatal(err)
++	}
++	a = activationRead(t, db, f.od, m)
++	if a.NextEnableAllowedAt == nil {
++		t.Fatal("missing persistent cooling")
++	}
++	cooling := *a.NextEnableAllowedAt
++	if _, err = activationPut(s, f.od, m, a, "disabled"); err != nil {
++		t.Fatal(err)
++	}
++	if _, err = s.Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitorInput("new version during cooling"), monitor.ETag(m)); err != nil {
++		t.Fatal(err)
++	}
++	a = activationRead(t, db, f.od, m)
++	if a.NextEnableAllowedAt == nil || !a.NextEnableAllowedAt.Equal(cooling) {
++		t.Fatal("pause/PATCH shortened cooling")
++	}
++	input.ConfigurationVersion = "2"
++	_, err = s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, input, monitor.ActivationETag(a))
++	var limit monitor.ActivationRateLimit
++	if !errors.As(err, &limit) || limit.RetryAfter < 1 || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND expires_at IS NOT NULL`, m.ID) != 0 {
++		t.Fatal("new version reset cooling or restored permission", err)
++	}
++}
+diff --git a/tests/integration/scheduler_checkpoint1_http_test.go b/tests/integration/scheduler_checkpoint1_http_test.go
+new file mode 100644
+index 0000000..1e9d124
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_http_test.go
+@@ -0,0 +1,173 @@
++//go:build integration
++
++package integration
++
++import (
++	"bytes"
++	"context"
++	"encoding/json"
++	"io"
++	"log/slog"
++	"net"
++	"net/http"
++	"net/http/httptest"
++	"os"
++	"strings"
++	"testing"
++
++	"github.com/jackc/pgx/v5/pgxpool"
++	"github.com/rjgczp/devpilot/internal/config"
++	"github.com/rjgczp/devpilot/internal/monitor"
++)
++
++func checkpointHTTPServer(t *testing.T, db *pgxpool.Pool) (*httptest.Server, *http.Client, *bytes.Buffer) {
++	t.Helper()
++	logs := new(bytes.Buffer)
++	origin, err := config.ParseOrigin("https://app.example.com")
++	if err != nil {
++		t.Fatal(err)
++	}
++	h := monitor.New(monitor.Store{Pool: db}, config.AuthConfig{Mode: "production", Origin: origin}, slog.New(slog.NewJSONHandler(logs, nil)))
++	s := httptest.NewUnstartedServer(h)
++	if address := os.Getenv("MONITOR_PROBE_HTTP_ADDR"); address != "" {
++		s.Listener.Close()
++		s.Listener, err = net.Listen("tcp4", address)
++		if err != nil {
++			t.Fatal(err)
++		}
++	}
++	s.Start()
++	t.Cleanup(s.Close)
++	transport := &http.Transport{Proxy: nil}
++	t.Cleanup(transport.CloseIdleConnections)
++	return s, &http.Client{Transport: transport}, logs
++}
++func checkpointHTTP(t *testing.T, c *http.Client, server, method, path, body, token, tag string, modify func(http.Header)) (int, http.Header, []byte) {
++	t.Helper()
++	r, err := http.NewRequest(method, server+path, strings.NewReader(body))
++	if err != nil {
++		t.Fatal(err)
++	}
++	if token != "" {
++		r.AddCookie(&http.Cookie{Name: "__Host-devpilot_session", Value: token})
++	}
++	if method != "GET" {
++		r.Header.Set("Origin", "https://app.example.com")
++		r.Header.Set("X-DevPilot-CSRF", "1")
++		r.Header.Set("Content-Type", "application/json")
++	}
++	if tag != "" {
++		r.Header.Set("If-Match", tag)
++	}
++	if modify != nil {
++		modify(r.Header)
++	}
++	resp, err := c.Do(r)
++	if err != nil {
++		t.Fatal(err)
++	}
++	defer resp.Body.Close()
++	raw, err := io.ReadAll(io.LimitReader(resp.Body, 16385))
++	if err != nil || len(raw) > 16384 {
++		t.Fatal("unbounded response", err)
++	}
++	return resp.StatusCode, resp.Header, raw
++}
++func TestCheckpointOneAuthorizationRealHTTPStrictContract(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	f, m := monitorFixture(t, db)
++	server, client, logs := checkpointHTTPServer(t, db)
++	path := "/api/v1/workspaces/" + m.WorkspaceID + "/projects/" + m.ProjectID + "/monitors/" + m.ID + "/execution-authorization"
++	a := activationRead(t, db, f.od, m)
++	tag := monitor.ActivationETag(a)
++	valid := `{"configuration_version":"1","consent_profile":"periodic-http-get-v1","authorization_seconds":60}`
++	cases := []struct {
++		name, body, token, tag string
++		status                 int
++		modify                 func(http.Header)
++	}{
++		{name: "cookie-first", body: valid, tag: "", status: 401},
++		{name: "member-before-precondition", body: valid, token: f.memberToken, status: 403},
++		{name: "foreign-before-precondition", body: valid, token: f.otherToken, status: 404},
++		{name: "required", body: valid, token: f.ownerToken, status: 428},
++		{name: "stale", body: valid, token: f.ownerToken, tag: `"monitor-activation:` + m.ID + `:1:99"`, status: 412},
++	}
++	invalidBodies := []string{`null`, `[]`, `{}`, valid + ` {}`, strings.TrimSuffix(valid, "}") + `,"extra":true}`, strings.TrimSuffix(valid, "}") + `,"configuration_\u0076ersion":"1"}`, strings.Replace(valid, `:60`, `:null`, 1), strings.Replace(valid, `:60`, `:"60"`, 1), strings.Replace(valid, `:60`, `:60.0`, 1), strings.Replace(valid, `:60`, `:6e1`, 1), strings.Replace(valid, `"1"`, `null`, 1), strings.Replace(valid, `"1"`, `"\ud800"`, 1), string(append([]byte(valid[:len(valid)-1]), 255, '}'))}
++	for _, body := range invalidBodies {
++		cases = append(cases, struct {
++			name, body, token, tag string
++			status                 int
++			modify                 func(http.Header)
++		}{name: "strict-json", body: body, token: f.ownerToken, tag: tag, status: 400})
++	}
++	for _, v := range []string{"0", "01", "+1", "9223372036854775808"} {
++		cases = append(cases, struct {
++			name, body, token, tag string
++			status                 int
++			modify                 func(http.Header)
++		}{name: "version", body: strings.Replace(valid, `"1"`, `"`+v+`"`, 1), token: f.ownerToken, tag: tag, status: 422})
++	}
++	for _, h := range []struct {
++		name   string
++		status int
++		edit   func(http.Header)
++	}{
++		{"weak", 400, func(h http.Header) { h.Set("If-Match", "W/"+tag) }},
++		{"wildcard", 400, func(h http.Header) { h.Set("If-Match", "*") }},
++		{"duplicate", 400, func(h http.Header) { h.Add("If-Match", tag) }},
++		{"multivalue", 400, func(h http.Header) { h.Set("If-Match", tag+","+tag) }},
++		{"media", 415, func(h http.Header) { h.Set("Content-Type", "text/plain") }},
++		{"duplicate-media", 415, func(h http.Header) { h.Add("Content-Type", "application/json") }},
++		{"encoding", 415, func(h http.Header) { h.Set("Content-Encoding", "identity") }},
++		{"origin", 403, func(h http.Header) { h.Set("Origin", "null") }},
++		{"csrf", 403, func(h http.Header) { h.Del("X-DevPilot-CSRF") }},
++	} {
++		cases = append(cases, struct {
++			name, body, token, tag string
++			status                 int
++			modify                 func(http.Header)
++		}{name: h.name, body: valid, token: f.ownerToken, tag: tag, status: h.status, modify: h.edit})
++	}
++	cases = append(cases, struct {
++		name, body, token, tag string
++		status                 int
++		modify                 func(http.Header)
++	}{name: "1025", body: valid + strings.Repeat(" ", 1025-len(valid)), token: f.ownerToken, tag: tag, status: 413})
++	for i, tc := range cases {
++		status, headers, raw := checkpointHTTP(t, client, server.URL, "PUT", path, tc.body, tc.token, tc.tag, tc.modify)
++		if status != tc.status {
++			t.Fatalf("case %d %s: HTTP %d want %d body=%s", i, tc.name, status, tc.status, raw)
++		}
++		if headers.Get("ETag") != "" || headers.Get("Set-Cookie") != "" || bytes.Contains(raw, []byte(`"data"`)) {
++			t.Fatal("failure carried success data", tc.name)
++		}
++		if activationRead(t, db, f.od, m).ActivationGeneration != "1" || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1`, m.ID) != 0 {
++			t.Fatal("rejected request changed authorization", tc.name)
++		}
++	}
++	status, headers, raw := checkpointHTTP(t, client, server.URL, "PUT", path, valid+strings.Repeat(" ", 1024-len(valid)), f.ownerToken, tag, nil)
++	var grant struct {
++		Data monitor.ExecutionAuthorization
++	}
++	if status != 200 || json.Unmarshal(raw, &grant) != nil || grant.Data.ActivationGeneration != "2" || grant.Data.EffectiveAuthorization {
++		t.Fatal("1024-byte confirmed grant", status, string(raw))
++	}
++	if headers.Get("ETag") != monitor.ActivationETag(activationRead(t, db, f.od, m)) || headers.Get("Cache-Control") != "no-store" || headers.Get("X-Content-Type-Options") != "nosniff" {
++		t.Fatal("grant response contract")
++	}
++	status, _, raw = checkpointHTTP(t, client, server.URL, "GET", strings.TrimSuffix(path, "execution-authorization")+"execution-status", "", f.memberToken, "", nil)
++	var result struct{ Data monitor.ExecutionStatus }
++	if status != 200 || json.Unmarshal(raw, &result) != nil || result.Data.AuthorizationState != "valid" || result.Data.SchedulingState != "blocked" {
++		t.Fatal("Member status", status, string(raw))
++	}
++	if queryInt(t, db, `SELECT count(*) FROM monitor_runs`) != 0 {
++		t.Fatal("HTTP API created a run")
++	}
++	if strings.Contains(logs.String(), f.ownerToken) || strings.Contains(logs.String(), "private-path") {
++		t.Fatal("sensitive HTTP log")
++	}
++	if _, err := (monitor.Store{Pool: db}).ExecutionStatus(ctx, f.xd, m.WorkspaceID, m.ProjectID, m.ID); err == nil {
++		t.Fatal("cross-tenant status visible")
++	}
++}
+diff --git a/tests/integration/scheduler_checkpoint1_migration_concurrency_test.go b/tests/integration/scheduler_checkpoint1_migration_concurrency_test.go
+new file mode 100644
+index 0000000..2b88e34
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_migration_concurrency_test.go
+@@ -0,0 +1,189 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"os"
++	"os/exec"
++	"path/filepath"
++	"strings"
++	"testing"
++	"time"
++
++	"github.com/jackc/pgx/v5"
++	"github.com/jackc/pgx/v5/pgxpool"
++	"github.com/rjgczp/devpilot/internal/monitor"
++)
++
++type checkpointGooseResult struct {
++	err    error
++	output []byte
++}
++
++func checkpointStartGoose(t *testing.T, dir string) <-chan checkpointGooseResult {
++	t.Helper()
++	ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
++	t.Cleanup(cancel)
++	cmd := exec.CommandContext(ctx, "goose", "-env=none", "-dir", dir, "-timeout", "30s", "up-to", "8")
++	for _, v := range os.Environ() {
++		if !strings.HasPrefix(v, "GOOSE_") {
++			cmd.Env = append(cmd.Env, v)
++		}
++	}
++	cmd.Env = append(cmd.Env, "GOOSE_DRIVER=postgres", "GOOSE_DBSTRING="+os.Getenv("TEST_DATABASE_URL"))
++	ch := make(chan checkpointGooseResult, 1)
++	go func() { out, err := cmd.CombinedOutput(); ch <- checkpointGooseResult{err, out} }()
++	return ch
++}
++func checkpointAwaitGoose(t *testing.T, ch <-chan checkpointGooseResult) {
++	t.Helper()
++	r := <-ch
++	if r.err != nil {
++		t.Fatalf("migration failed; diagnostic bytes=%d", len(r.output))
++	}
++	t.Log("native Goose 7->8 confirmed commit")
++}
++func checkpointMigrationWait(t *testing.T, db *pgxpool.Pool, advisory bool) int {
++	t.Helper()
++	until := time.Now().Add(time.Second)
++	for time.Now().Before(until) {
++		var pid int
++		sql := `SELECT pid FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid() AND state='active' AND wait_event_type='Lock' AND query LIKE '%LOCK TABLE public.monitor_activation_states%' LIMIT 1`
++		if advisory {
++			sql = `SELECT pid FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid() AND state='active' AND wait_event='advisory' LIMIT 1`
++		}
++		if db.QueryRow(context.Background(), sql).Scan(&pid) == nil {
++			return pid
++		}
++		time.Sleep(time.Millisecond)
++	}
++	t.Fatal("migration barrier not observed within existing API budget")
++	return 0
++}
++func TestCheckpointOneOldWritersStraddleMigration(t *testing.T) {
++	for _, order := range []string{"activation-first", "patch-first", "migration-first"} {
++		t.Run(order, func(t *testing.T) {
++			db := openDB(t)
++			ctx := context.Background()
++			dir := filepath.Join(root(), "migrations")
++			goose(t, dir, "up-to 7", true)
++			t.Cleanup(func() { goose(t, dir, "down-to 0", true) })
++			f, m := monitorFixture(t, db)
++			if _, err := db.Exec(ctx, `CREATE ROLE checkpoint1_legacy LOGIN PASSWORD 'disposable_fixture_only'; GRANT USAGE ON SCHEMA public TO checkpoint1_legacy;GRANT SELECT,UPDATE ON users,sessions,workspaces,workspace_members,projects,http_monitors,monitor_activation_states TO checkpoint1_legacy`); err != nil {
++				t.Fatal(err)
++			}
++			t.Cleanup(func() {
++				if _, err := db.Exec(ctx, `DROP OWNED BY checkpoint1_legacy;DROP ROLE checkpoint1_legacy`); err != nil {
++					t.Error(err)
++				}
++			})
++			cfg := db.Config()
++			cfg.ConnConfig.User = "checkpoint1_legacy"
++			cfg.ConnConfig.Password = "disposable_fixture_only"
++			oldPool, err := pgxpool.NewWithConfig(ctx, cfg)
++			if err != nil {
++				t.Fatal(err)
++			}
++			t.Cleanup(oldPool.Close)
++			old := monitor.SchemaSevenFixtureStore{Pool: oldPool}
++			a, err := old.ActivationDetail(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID)
++			if err != nil {
++				t.Fatal(err)
++			}
++			pause := newWorkspacePause(t)
++			pid := make(chan int, 1)
++			done := make(chan error, 1)
++			if order == "migration-first" {
++				blocker, err := db.Begin(ctx)
++				if err != nil {
++					t.Fatal(err)
++				}
++				defer blocker.Rollback(ctx)
++				if _, err = blocker.Exec(ctx, `SELECT pg_advisory_xact_lock(181108)`); err != nil {
++					t.Fatal(err)
++				}
++				temp := t.TempDir()
++				files, err := filepath.Glob(filepath.Join(dir, "*.sql"))
++				if err != nil {
++					t.Fatal(err)
++				}
++				for _, file := range files {
++					raw, err := os.ReadFile(file)
++					if err != nil {
++						t.Fatal(err)
++					}
++					if strings.HasPrefix(filepath.Base(file), "00008_") {
++						raw = []byte(strings.Replace(string(raw), "-- +goose Down", "SELECT pg_advisory_xact_lock(181108);\n-- +goose Down", 1))
++					}
++					if err = os.WriteFile(filepath.Join(temp, filepath.Base(file)), raw, 0600); err != nil {
++						t.Fatal(err)
++					}
++				}
++				migration := checkpointStartGoose(t, temp)
++				mp := checkpointMigrationWait(t, db, true)
++				go func() {
++					_, e := (monitor.SchemaSevenFixtureStore{Pool: workspaceObservedDB{Pool: oldPool, pid: pid}}).ActivationUpdate(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ActivationInput{DesiredState: "enabled", ConfigurationVersion: "1"}, monitor.ActivationETag(a))
++					done <- e
++				}()
++				actor := <-pid
++				waitActivationBlock(t, db, actor)
++				schedulerLockReceipt(t, db, "Migration holds table locks; old API waits Activation", mp, actor)
++				if err = blocker.Commit(ctx); err != nil {
++					t.Fatal(err)
++				}
++				checkpointAwaitGoose(t, migration)
++				monitorWant(t, <-done, monitor.ErrPreconditionFailed)
++				if activationRead(t, db, f.od, m).ActivationGeneration != "2" {
++					t.Fatal("migration-first reused tag")
++				}
++			} else {
++				observed := workspaceObservedDB{Pool: oldPool, pid: pid, wrap: func(tx pgx.Tx) pgx.Tx {
++					if order == "activation-first" {
++						return activationObservedTx{Tx: tx, after: func(ctx context.Context, stage string) {
++							if stage == "activation" {
++								pause.stop(ctx)
++							}
++						}}
++					}
++					return monitorObservedTx{Tx: tx, after: func(ctx context.Context, stage string) {
++						if stage == "monitor" {
++							pause.stop(ctx)
++						}
++					}}
++				}}
++				go func() {
++					var e error
++					if order == "activation-first" {
++						_, e = (monitor.SchemaSevenFixtureStore{Pool: observed}).ActivationUpdate(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ActivationInput{DesiredState: "enabled", ConfigurationVersion: "1"}, monitor.ActivationETag(a))
++					} else {
++						_, e = (monitor.Store{Pool: observed}).Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitorInput("old PATCH after schema8"), monitor.ETag(m))
++					}
++					done <- e
++				}()
++				actor := <-pid
++				pause.wait(t)
++				migration := checkpointStartGoose(t, dir)
++				if order == "activation-first" {
++					mp := checkpointMigrationWait(t, db, false)
++					schedulerLockReceipt(t, db, "old Activation writer precedes Migration retirement", actor, mp)
++					pause.resume()
++					monitorWant(t, <-done, nil)
++					checkpointAwaitGoose(t, migration)
++				} else {
++					checkpointAwaitGoose(t, migration)
++					schedulerLockReceipt(t, db, "Migration commits before old PATCH DML; no child-to-parent cycle", actor)
++					pause.resume()
++					monitorWant(t, <-done, nil)
++				}
++				after := activationRead(t, db, f.od, m)
++				if after.ActivationGeneration != "3" || after.DesiredState != "disabled" {
++					t.Fatal("old writer/migration generation order", after.ActivationGeneration)
++				}
++			}
++			if queryInt(t, db, `SELECT count(*) FROM monitor_schedules`)+queryInt(t, db, `SELECT count(*) FROM monitor_runs`) != 0 {
++				t.Fatal("straddling writer granted execution")
++			}
++		})
++	}
++}
+diff --git a/tests/integration/scheduler_checkpoint1_roles_test.go b/tests/integration/scheduler_checkpoint1_roles_test.go
+new file mode 100644
+index 0000000..5839143
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_roles_test.go
+@@ -0,0 +1,74 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"testing"
++
++	"github.com/jackc/pgx/v5/pgxpool"
++)
++
++func TestCheckpointOneControllerPublicAndIncarnation(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	if _, err := db.Exec(ctx, `CREATE ROLE checkpoint1_controller LOGIN PASSWORD 'disposable_fixture_only' IN ROLE devpilot_scheduler_controller;CREATE ROLE checkpoint1_public LOGIN PASSWORD 'disposable_fixture_only'`); err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(func() {
++		if _, err := db.Exec(ctx, `DROP OWNED BY checkpoint1_controller,checkpoint1_public;DROP ROLE checkpoint1_controller,checkpoint1_public`); err != nil {
++			t.Error(err)
++		}
++	})
++	connect := func(name string) *pgxpool.Pool {
++		cfg := db.Config()
++		cfg.ConnConfig.User = name
++		cfg.ConnConfig.Password = "disposable_fixture_only"
++		p, err := pgxpool.NewWithConfig(ctx, cfg)
++		if err != nil {
++			t.Fatal(err)
++		}
++		t.Cleanup(p.Close)
++		return p
++	}
++	for _, p := range []*pgxpool.Pool{connect("checkpoint1_controller"), connect("checkpoint1_public")} {
++		for _, sql := range []string{`SELECT password_hash FROM users`, `SELECT token_hash FROM sessions`, `SELECT * FROM monitor_schedules`, `UPDATE monitor_runs SET physical_release_confirmed_at=clock_timestamp()`, `CREATE TABLE public.checkpoint1_forged(i int)`, `CREATE TEMP TABLE checkpoint1_forged(i int)`, `SET ROLE devpilot_scheduler_owner`, `SET ROLE devpilot_scheduler_api_owner`, `SELECT scheduler_private.authorize(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,60)`, `SELECT scheduler_private.consume_input(NULL,NULL,NULL,NULL,NULL,NULL,1)`} {
++			_, err := p.Exec(ctx, sql)
++			checkpointReject(t, err, "42501")
++		}
++	}
++	if queryInt(t, db, `SELECT count(*) FROM pg_roles WHERE rolname IN ('devpilot_scheduler_owner','devpilot_scheduler_api_owner') AND (rolcanlogin OR rolsuper OR rolbypassrls OR rolcreaterole OR rolcreatedb OR rolreplication)`) != 0 {
++		t.Fatal("elevated function owner")
++	}
++	if queryInt(t, db, `SELECT count(*) FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.roleid WHERE r.rolname IN ('devpilot_scheduler_owner','devpilot_scheduler_api_owner')`) != 0 {
++		t.Fatal("runtime membership of function owner")
++	}
++	if queryInt(t, db, `SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='scheduler_private' AND (EXISTS(SELECT 1 FROM aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0 AND a.privilege_type='EXECUTE') OR (p.prosecdef AND (p.proconfig IS NULL OR NOT 'search_path=pg_catalog, scheduler_private'=ANY(p.proconfig) OR p.prosrc ~* '\mEXECUTE\M')))`) != 0 {
++		t.Fatal("PUBLIC execution, unsafe search_path or dynamic SQL")
++	}
++	for _, pair := range [][2]string{{"users", "password_hash"}, {"sessions", "token_hash"}} {
++		var allowed bool
++		if err := db.QueryRow(ctx, `SELECT has_column_privilege('devpilot_scheduler_owner',$1,$2,'SELECT')`, pair[0], pair[1]).Scan(&allowed); err != nil || allowed {
++			t.Fatal("system definer reads user secrets", err)
++		}
++	}
++	worker, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
++	var hints []byte
++	if err := worker.QueryRow(ctx, `SELECT scheduler_private.candidates($1::uuid,NULL)`, inc).Scan(&hints); err != nil {
++		t.Fatal("registered bounded identity denied", err)
++	}
++	var forged string
++	if err := db.QueryRow(ctx, `SELECT uuidv7()::text`).Scan(&forged); err != nil {
++		t.Fatal(err)
++	}
++	_, err := worker.Exec(ctx, `SELECT scheduler_private.candidates($1::uuid,NULL)`, forged)
++	checkpointReject(t, err, "42501")
++	if _, err = db.Exec(ctx, `UPDATE scheduler_control SET incarnation=$1::uuid WHERE login_name='scheduler_claim_worker1'`, forged); err != nil {
++		t.Fatal(err)
++	}
++	_, err = worker.Exec(ctx, `SELECT scheduler_private.candidates($1::uuid,NULL)`, inc)
++	checkpointReject(t, err, "42501")
++	// A caller cannot obtain elevated identity by SET ROLE or a copied parameter.
++	_, err = worker.Exec(ctx, `SET ROLE devpilot_scheduler_owner`)
++	checkpointReject(t, err, "42501")
++}
+diff --git a/tests/integration/scheduler_checkpoint1_test.go b/tests/integration/scheduler_checkpoint1_test.go
+new file mode 100644
+index 0000000..01a189a
+--- /dev/null
++++ b/tests/integration/scheduler_checkpoint1_test.go
+@@ -0,0 +1,186 @@
++//go:build integration
++
++package integration
++
++import (
++	"context"
++	"errors"
++	"path/filepath"
++	"testing"
++	"time"
++
++	"github.com/jackc/pgx/v5/pgconn"
++	"github.com/rjgczp/devpilot/internal/monitor"
++	"github.com/rjgczp/devpilot/internal/session"
++	"github.com/rjgczp/devpilot/internal/user"
++)
++
++func checkpointReject(t *testing.T, err error, code string) {
++	t.Helper()
++	var p *pgconn.PgError
++	if !errors.As(err, &p) || p.Code != code {
++		t.Fatalf("expected PostgreSQL %s, got %v", code, err)
++	}
++	t.Logf("database rejected SQLSTATE=%s constraint=%s", p.Code, p.ConstraintName)
++}
++func TestCheckpointOnePersistenceConstraints(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	f, m := monitorFixture(t, db)
++	if _, err := db.Exec(ctx, `INSERT INTO monitor_schedules(workspace_id,project_id,monitor_id) VALUES($1,$2,$3)`, m.WorkspaceID, m.ProjectID, m.ID); err != nil {
++		t.Fatal(err)
++	}
++	reject := func(code, sql string, args ...any) {
++		t.Helper()
++		_, err := db.Exec(ctx, sql, args...)
++		checkpointReject(t, err, code)
++	}
++	reject("23503", `INSERT INTO monitor_schedules(workspace_id,project_id,monitor_id) VALUES($1,$2,$3)`, f.z.ID, m.ProjectID, m.ID)
++	var rid string
++	const insertRun = `WITH t AS MATERIALIZED(SELECT clock_timestamp() n) INSERT INTO monitor_runs(workspace_id,project_id,monitor_id,run_id,configuration_version,activation_generation,scheduler_epoch,fencing_token,scheduled_at,claimed_at,lease_owner,worker_incarnation,lease_until,attempt_state) SELECT $1,$2,$3,uuidv7(),1,1,1,$4,n,n,session_user,uuidv7(),n+interval '45 seconds','leased' FROM t RETURNING run_id::text`
++	if err := db.QueryRow(ctx, insertRun, m.WorkspaceID, m.ProjectID, m.ID, 1).Scan(&rid); err != nil {
++		t.Fatal(err)
++	}
++	reject("23505", insertRun, m.WorkspaceID, m.ProjectID, m.ID, 2)
++	reject("23503", `INSERT INTO scheduler_reservations(workspace_id,project_id,monitor_id,run_id,reservation_state) VALUES($1,$2,$3,$4,'reserved')`, f.z.ID, m.ProjectID, m.ID, rid)
++	if _, err := db.Exec(ctx, `INSERT INTO scheduler_reservations(workspace_id,project_id,monitor_id,run_id,reservation_state) VALUES($1,$2,$3,$4,'reserved')`, m.WorkspaceID, m.ProjectID, m.ID, rid); err != nil {
++		t.Fatal(err)
++	}
++	for _, set := range []string{`workspace_id=uuidv7()`, `project_id=uuidv7()`, `monitor_id=uuidv7()`, `run_id=uuidv7()`, `reservation_id=uuidv7()`, `reservation_state='released'`, `namespace_incarnation=uuidv7()`, `permit_deadline=clock_timestamp()+interval '1 hour'`, `origin_key='192.0.2.1'`, `ip_key=repeat('a',64)`} {
++		reject("23514", `UPDATE scheduler_reservations SET `+set+` WHERE run_id=$1`, rid)
++	}
++	for _, set := range []string{`fencing_token=2`, `scheduler_epoch=2`, `configuration_version=2`, `activation_generation=2`, `lease_until=claimed_at`, `attempt_state='completed'`, `http_status=0`, `http_status=600`, `failure_code='raw_secret'`, `finished_at=claimed_at-interval '1 second'`} {
++		reject("23514", `UPDATE monitor_runs SET `+set+` WHERE run_id=$1`, rid)
++	}
++	if _, err := db.Exec(ctx, `UPDATE monitor_schedules SET scheduler_epoch=2,last_fencing_token=1 WHERE monitor_id=$1`, m.ID); err != nil {
++		t.Fatal(err)
++	}
++	for _, set := range []string{`scheduler_epoch=1`, `last_fencing_token=0`, `workspace_id=uuidv7()`, `next_due_at=clock_timestamp()`} {
++		reject("23514", `UPDATE monitor_schedules SET `+set+` WHERE monitor_id=$1`, m.ID)
++	}
++	reject("23514", `UPDATE scheduler_control SET gate='production' WHERE control_id='deployment'`)
++	reject("23514", `UPDATE scheduler_budget_state SET in_use=33 WHERE kind='global'`)
++	reject("23514", `UPDATE scheduler_budget_state SET tokens=8000001 WHERE kind='global'`)
++	reject("23514", `INSERT INTO scheduler_budget_state(kind,budget_key,keep_until) VALUES('origin','https://private.example/path',clock_timestamp())`)
++	if _, err := db.Exec(ctx, `UPDATE monitor_runs SET attempt_state='started',started_at=clock_timestamp() WHERE run_id=$1`, rid); err != nil {
++		t.Fatal(err)
++	}
++	if _, err := db.Exec(ctx, `UPDATE monitor_runs SET attempt_state='unknown',finished_at=clock_timestamp(),stop_reason='worker_lost' WHERE run_id=$1`, rid); err != nil {
++		t.Fatal(err)
++	}
++	// Unknown is terminal but its physical slot is still outstanding.
++	reject("23505", insertRun, m.WorkspaceID, m.ProjectID, m.ID, 2)
++	// No Probe, input or namespace ever existed in this DB-only constraint fixture.
++	if _, err := db.Exec(ctx, `UPDATE monitor_runs SET physical_release_confirmed_at=clock_timestamp() WHERE run_id=$1`, rid); err != nil {
++		t.Fatal(err)
++	}
++	var second string
++	if err := db.QueryRow(ctx, insertRun, m.WorkspaceID, m.ProjectID, m.ID, 2).Scan(&second); err != nil {
++		t.Fatal("physical-release positive control", err)
++	}
++	if _, err := db.Exec(ctx, `UPDATE monitor_runs SET attempt_state='canceled',finished_at=clock_timestamp(),physical_release_confirmed_at=clock_timestamp() WHERE run_id=$1`, second); err != nil {
++		t.Fatal(err)
++	}
++	reject("23505", insertRun, m.WorkspaceID, m.ProjectID, m.ID, 1)
++	if queryInt(t, db, `SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND table_name IN ('monitor_schedules','monitor_runs','scheduler_reservations','scheduler_budget_state','scheduler_control') AND column_name ~ '(url|password|cookie|token_hash|header|body|cname|certificate)'`) != 0 {
++		t.Fatal("sensitive persisted field")
++	}
++}
++
++func TestCheckpointOneSchemaSevenFailsClosed(t *testing.T) {
++	db := openDB(t)
++	ctx := context.Background()
++	dir := filepath.Join(root(), "migrations")
++	goose(t, dir, "up-to 7", true)
++	t.Cleanup(func() { goose(t, dir, "down-to 0", true) })
++	f, m := monitorFixture(t, db)
++	s := monitor.Store{Pool: db}
++	a := activationRead(t, db, f.od, m)
++	got, err := s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(a))
++	monitorWant(t, err, user.ErrInternal)
++	if got.MonitorID != "" || monitor.ActivationETag(a) != monitor.ActivationETag(activationRead(t, db, f.od, m)) {
++		t.Fatal("schema7 authorization partially succeeded")
++	}
++	if _, err = s.ExecutionStatus(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID); err == nil {
++		t.Fatal("schema7 invented execution status")
++	}
++}
++
++func TestCheckpointOneConfigurationRevokeRollback(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	f, m := monitorFixture(t, db)
++	s := monitor.Store{Pool: db}
++	a := activationRead(t, db, f.od, m)
++	grant, err := s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(a))
++	if err != nil {
++		t.Fatal(err)
++	}
++	if _, err = db.Exec(ctx, `CREATE FUNCTION checkpoint1_revoke_fail() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'checkpoint1 revocation failure'; END $$; CREATE TRIGGER checkpoint1_revoke_fail BEFORE UPDATE ON monitor_schedules FOR EACH ROW EXECUTE FUNCTION checkpoint1_revoke_fail()`); err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(func() {
++		if _, err := db.Exec(ctx, `DROP TRIGGER checkpoint1_revoke_fail ON monitor_schedules;DROP FUNCTION checkpoint1_revoke_fail()`); err != nil {
++			t.Error(err)
++		}
++	})
++	_, err = s.Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitorInput("must roll back"), monitor.ETag(m))
++	monitorWant(t, err, user.ErrInternal)
++	after, err := s.Detail(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID)
++	if err != nil || monitor.ETag(after) != monitor.ETag(m) {
++		t.Fatal("configuration partially changed", err)
++	}
++	if activationRead(t, db, f.od, m).ActivationGeneration != grant.ActivationGeneration || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND authorized_activation_generation=2 AND expires_at IS NOT NULL`, m.ID) != 1 {
++		t.Fatal("grant partially revoked")
++	}
++}
++
++func TestCheckpointOneRealExpiryExplicitRenewal(t *testing.T) {
++	db := workspaceDB(t)
++	ctx := context.Background()
++	f, m := monitorFixture(t, db)
++	s := monitor.Store{Pool: db}
++	a := activationRead(t, db, f.od, m)
++	grant, err := s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(a))
++	if err != nil {
++		t.Fatal(err)
++	}
++	if err = (session.Store{Pool: db}).Revoke(ctx, f.od); err != nil {
++		t.Fatal(err)
++	}
++	before := activationRead(t, db, f.md, m)
++	// Actual database time and the public minimum lifetime; no clock injection or
++	// mutation of authorization/cooling timestamps. Every read is a short statement.
++	for {
++		var now time.Time
++		if err = db.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&now); err != nil {
++			t.Fatal(err)
++		}
++		if !now.Before(grant.ExpiresAt) {
++			break
++		}
++		if now.After(grant.ExpiresAt.Add(3 * time.Second)) {
++			t.Fatal("expiry observation overran")
++		}
++		time.Sleep(250 * time.Millisecond)
++	}
++	status, err := s.ExecutionStatus(ctx, f.md, m.WorkspaceID, m.ProjectID, m.ID)
++	if err != nil || status.AuthorizationState != "expired" || status.EffectiveAuthorization || status.BlockedReason == nil || *status.BlockedReason != "authorization_expired" || status.ExpiresAt == nil || !status.ExpiresAt.Equal(grant.ExpiresAt) {
++		t.Fatal("expiry renewed or hid grant", err, status)
++	}
++	after := activationRead(t, db, f.md, m)
++	if monitor.ActivationETag(before) != monitor.ActivationETag(after) || !before.UpdatedAt.Equal(after.UpdatedAt) {
++		t.Fatal("expiry/logout changed intent")
++	}
++	if _, err = s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 60}, monitor.ActivationETag(after)); !errors.Is(err, session.ErrInvalid) {
++		t.Fatal("revoked session became a background identity", err)
++	}
++	if _, err = db.Exec(ctx, `UPDATE workspace_members SET role='owner' WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.member.ID); err != nil {
++		t.Fatal(err)
++	}
++	renewed, err := s.ExecutionAuthorize(ctx, f.md, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: "1", ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 86400}, monitor.ActivationETag(after))
++	if err != nil || renewed.ActivationGeneration != "3" || renewed.IssuedAt.Before(grant.ExpiresAt) || renewed.ExpiresAt.Sub(renewed.IssuedAt) != 24*time.Hour {
++		t.Fatal("explicit Owner renewal", err)
++	}
++	t.Logf("database lifetime: issued=%s expired=%s explicit-renewal=%s", grant.IssuedAt, grant.ExpiresAt, renewed.IssuedAt)
++}
