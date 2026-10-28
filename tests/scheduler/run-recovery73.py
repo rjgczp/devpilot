@@ -10,7 +10,8 @@ PLAN=[
  ('TestRecoveryPausePG','allow-https'),('TestRecoveryPatchPG','allow-https'),('TestRecoveryOwnerPG','allow-https'),
  ('TestRecoveryResultFirstPG','allow-https'),('TestRecoveryRecoveryFirstPG','allow-https'),
  ('TestRecoveryZombiePG','allow-https'),('TestRecoveryNextCyclePG','allow-https'),
- ('TestRecoveryPartitionPG','allow-https'),('TestRecoveryExpiryPG','allow-https'),('TestRecoveryEmergencyPG','tls-stop'),('TestRecoveryAmbiguousDenialPG','permit-missing'),('TestRecoveryQuotaDeniedPG','permit-missing')]
+ ('TestRecoveryPartitionPG','allow-https'),('TestRecoveryExpiryPG','allow-https'),('TestRecoveryEmergencyPG','tls-stop'),('TestRecoveryAmbiguousDenialPG','permit-missing'),('TestRecoveryQuotaDeniedPG','permit-missing'),
+ ('TestRecoveryRecordedDenialPG','permit-missing'),('TestRecoveryStopOnlyPG','permit-missing')]
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('--tools',type=Path,required=True);p.add_argument('--evidence',type=Path,required=True);a=p.parse_args();assert a.tools.is_absolute() and a.evidence.is_absolute();a.evidence.mkdir(parents=True,exist_ok=False);repo=Path(__file__).resolve().parents[2];runs=[]

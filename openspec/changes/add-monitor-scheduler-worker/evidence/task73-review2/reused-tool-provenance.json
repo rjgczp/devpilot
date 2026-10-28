@@ -1,0 +1,10 @@
+{
+  "prior_build_receipt": "/private/tmp/devpilot-result73/build/build-real-tenant-scope.json",
+  "checked_source_changes": [],
+  "reason": "unchanged approved kernel Probe Supervisor network and termination components",
+  "reused_binaries": {
+    "networksupervisorfixture": "6a6aa459f934bdea3a089b5131e73ce753706abc9ce9b0685aacda5a0b52a153",
+    "schedulerprobefixture": "327f09c5eb7e36b858f0a59f9a0028b5d65cfebda824cd75b8e5c3ee34a713ce",
+    "goose": "984d6157e10754e08f569cde6271660d586f7499e846f2c7dc6776860084fa2f"
+  }
+}

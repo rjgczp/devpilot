@@ -1,5 +1,29 @@
 # Task7.3 — unknown recovery review index
 
+## Review correction — candidate, not accepted (2026-10-27)
+
+The previous canceled claim below is superseded: current persisted stop_reason
+cannot distinguish permit_denied from physical_stop_unconfirmed. The minimal
+safe implementation retains unknown for every unresolved started Run. Existing
+unknown/canceled/completed terminal facts and independent physical release stay
+unchanged; no new schema field, role or EXECUTE is introduced.
+
+TestRecoveryNoPermitPG now requires unknown despite a real kernel refusal and
+physical stop, because no refusal cause was persisted. New RecordedDenial and
+StopOnly tests use the two actual approved Worker calls with egress_unavailable,
+verify their identical minimal stored shape, and also require unknown. Existing
+QuotaDenied/AmbiguousDenial/TargetACK cases retain their original network and
+physical proof assertions; quota/no-record classification expectations are
+strictly tightened. The declared full manifest grows from20/40 to22/44 cases;
+that full matrix is NOT claimed run in this correction. Directed execution and
+source hashes are recorded separately in verification.md.
+
+Historical PR run40468671798 remains failed and Push40468664422 cancelled. No
+CI rerun is authorized as a substitute for finding the IPv6 timeout cause.
+Task7.3 is unchecked,31/47; all older32/47 and known-canceled implementation
+statements below describe superseded candidates, not final acceptance.
+
+
 Scope: isolated Linux/PG18 fixture only. This is implementation/test evidence,
 not an independent approval. Task7.4 and later are not implemented in this batch.
 The separately approved capability and original approval message are in

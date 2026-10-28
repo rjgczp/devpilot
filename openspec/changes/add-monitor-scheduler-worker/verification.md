@@ -1,5 +1,72 @@
 # Verification — add-monitor-scheduler-worker
 
+## Task7.3 A design approved for commit and one frozen CI run (2026-10-28)
+
+The human owner explicitly approved the conservative A correction after reviewing
+its14directed real PG18 normal/race results, and authorized committing only that
+correction/tests/evidence followed by the existing Push/PR CI at its frozen SHA.
+This supersedes the earlier no-commit/no-push stop for this action only. B's
+historical20s IPv6 timeout remains open; no B patch, timeout change, skipped cell
+or repeat-until-green is authorized. No new field, trust, role or SQL grant.
+
+Precommit review confirmed every directed receipt/log/source hash still matches
+source inventory093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22,
+Migration1–7 are byte-identical and Migration8 outside recover_started is exact.
+The previous dirty-parent receipts remain original evidence, not frozen-CI passes.
+Actual new SHA, Push/PR results and artifact digests are reported separately
+only after GitHub produces them; nothing here predeclares CI success.
+
+Task7.3 remains unchecked31/47 and independent final acceptance unsigned.
+See [A approval/commit boundary](evidence/task73-a-approved/README.md),
+[directed tests and B comparison](evidence/task73-review2/README.md), and
+[original failed PR evidence](evidence/task73-ci-blocker/README.md).
+Production hard closed; no7.4, merge, Archive or deployment.
+
+## Task7.3 review round2 — conservative unknown; B unresolved (31/47)
+
+2026-10-28 Asia/Shanghai review record; original UTC test/log times retained.
+Base/remote HEAD f596a25553dcffb77a9e972d547d6e5a383c593d; local candidate is
+uncommitted. No new implementation SHA or Push/PR success is claimed.
+
+- A: no existing persisted discriminator distinguishes permit_denied from
+  physical_stop_unconfirmed with egress_unavailable. Real approved Worker calls
+  demonstrate identical stored minimal facts. The candidate removes the entire
+  started→canceled shortcut rather than treating a non-NULL reason as new proof.
+  Unresolved started stays unknown; prior terminal facts remain immutable,
+  physical release and HTTP result commits remain independent. No new field,
+  authority, function or ACL. The planned known-canceled exception remains a
+  review limitation; this is not final7.3 acceptance.
+- Directed real guarded PG18/Linux:14/14invocations,7normal+7race, exit0,
+  each once. Source inventory093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22;
+  all dirty f596 snapshots, not a clean final commit. Source/log/binary hashes,
+  real signatures/PIDFD/retirement/DB capacity and exact commands are indexed
+  in [task73-review2](evidence/task73-review2/README.md).12signed releases,
+  2quarantine/no receipt; only the2Supervisor-unavailable cases performed one
+  real fixture Header-only HTTPS GET each. Other12zero target TCP/GET.
+- Targeted tagged Linux vet and normal/race compilation exit0; gofmt complete;
+  Change strict and diff --check exit0. Full matrices/CI were not rerun.
+- B: Push vs PR actual Runner/initial namespace/route/lifecycle comparisons did
+  not identify a deterministic root cause. Same image-version/iproute2/nftables,
+  different IDs/regions/built fixture image IDs; differences are not causality.
+  Original PR failure remains failed, Push remains cancelled; no fixture patch,
+  budget extension, skip or retry. Original raw failure and negative evidence kept.
+- The first OFFLINE evidence-auditor invocation had a Python escape SyntaxError;
+  original script/error retained, syntax fixed, hash/signature audit then passed.
+  This did not change tests/implementation or rerun any PG/network scenario.
+
+Stop:31/47,7.3unchecked,7.4not started. B root cause and final-SHA full CI remain
+blocking, and independently verifiable canceled provenance is unavailable under
+existing fields. Keep candidate diff uncommitted/unpushed and submit for review;
+no merge/Archive/deploy or production execution.
+
+## Task7.3 blocked — final PR CI security setup timeout,31/47 (2026-10-27)
+
+最终远端实现候选f596a25553dcffb77a9e972d547d6e5a383c593d的PR40468671798实际失败：历史6.3联合矩阵第18项normal-cross-run-envelope在fixture创建期的docker exec IPv6 resolver路由配置命令超过原20秒，17项通过后立即停，未完成整套46项，也未执行PR的7.3矩阵。失败早于该用例PG18、Supervisor prepare及Probe启动；独立receiver仅ready，无accept/GET，但这不能算安全拒绝验收通过。没有该用例PG锁图/Probe trace，因为组件尚未启动。Docker控制/exec/iproute/kernel/Runner调度的具体根因未确定，不归因瞬态，也不宣称不存在并发问题。
+
+PR verify/integration成功；两套真实integration原始Artifact均核验147normal+147race无skip/重复及API25approved/0blocked。PR安全Artifact12719305073实际下载并匹配SHA256 8d3a5acf0eaa53bec18a66fd84db872b4bf8cadce66fa55bdbed684e7468f970，失败回执绑定clean f596a25/source ddbd3475dae7dc3cd2bc62ea168f07cbdeee9685617113a92cd8c7d616b59257。Push40468664422已在此失败后取消，停止后续验收；不是成功或重试。Push已完成46个joint63和24个legacy7.1，但当前7.1在4/6中断，7.2/7.3均无最终矩阵。六个最终Artifact均已真实下载并校验。原命令/完整traceback/fixture配置/receiver/manifest见evidence/task73-ci-blocker/，完整raw和外部阻塞审查包在/private/tmp/devpilot-result73/。
+
+没有重跑、改20秒期限、弱化断言/网络/权限或推进7.4。7.3此前在最终CI门禁前勾选过早，现本地撤回勾选，进度31/47；实现和开发技术测试完成不等于完整验收。以下32/47及候选段落为历史，不覆盖此状态。为避免失败后触发未经审查的自动整套重跑，本次任务状态/失败证据修正暂留本地未提交/未推送；远端f596a25仍是旧候选，最终不通过。生产硬关闭，不合并、Archive或部署，等待独立审查。
+
 ## Task7.3 delivery candidate — local technical acceptance, frozen CI pending (2026-10-27)
 
 交付复核补强：首候选5b4d22bc4351c9620f421449343f05d836ff96ee的Push40467141311/PR40467147152在尚未完成时主动取消，因新增“另一真实Workspace的合法三元组+原Run”及错误Controller incarnation拒绝断言，不是失败后跳过。该候选verify成功及Artifact校验只属于5b4d，不作为最终全绿。仅新增测试/证据，无生产SQL/Go或权限变更；定向真实PG18 normal/race2/2成功，source ddbd3475dae7dc3cd2bc62ea168f07cbdeee9685617113a92cd8c7d616b59257。最新本地累计44次、仍40个独立模式用例；新的冻结HEAD须完整重新验证Push/PR，不将取消的运行标记成功。

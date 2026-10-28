@@ -1,0 +1,34 @@
+{
+  "modes": [
+    "normal",
+    "race"
+  ],
+  "cases": [
+    "allow-https",
+    "tls-stop",
+    "tracer-stopped",
+    "tracer-crashed",
+    "supervisor-killed",
+    "stop-ack-lost",
+    "journal-collision",
+    "allow-http",
+    "permit-missing",
+    "permit-timeout",
+    "target-commit-unknown",
+    "supervisor-lost",
+    "rules-missing",
+    "old-fence",
+    "old-incarnation",
+    "cross-run",
+    "duplicate-envelope",
+    "cross-run-envelope",
+    "rebinding",
+    "ipv6-poison",
+    "tls-invalid",
+    "start-commit-unknown",
+    "input-commit-unknown"
+  ],
+  "clusters": 46,
+  "retry": false,
+  "skip": false
+}

@@ -117,7 +117,7 @@ func runRecovery(t *testing.T, mode string) {
 		if mode == "zombie" {
 			reason = "lease_expired"
 		}
-		if mode == "no-permit" || mode == "ambiguous-denial" || mode == "quota-denial" {
+		if mode == "no-permit" || mode == "ambiguous-denial" || mode == "quota-denial" || mode == "recorded-denial" || mode == "stop-only" {
 			reason = "egress_unavailable"
 		}
 		if recoveryCycle == 1 {
@@ -139,19 +139,44 @@ func runRecovery(t *testing.T, mode string) {
 			t.Log("two real cycles, fresh Run/fence/namespace; old unknown unchanged", firstLine, l)
 			return
 		}
-		if stage == "before-stop" && (mode == "no-permit" || mode == "ambiguous-denial" || mode == "quota-denial") {
-			if mode == "ambiguous-denial" || mode == "quota-denial" {
+		if stage == "before-stop" && (mode == "no-permit" || mode == "ambiguous-denial" || mode == "quota-denial" || mode == "recorded-denial" || mode == "stop-only") {
+			if mode == "no-permit" && queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE workspace_id=$1 AND project_id=$2 AND monitor_id=$3 AND run_id=$4 AND stop_reason IS NULL`, l.WorkspaceID, l.ProjectID, l.MonitorID, l.RunID) != 1 {
+				t.Fatal("unrecorded denial unexpectedly has a stored cause")
+			}
+			if mode != "no-permit" {
 				controlReason := "commit_unknown"
+				kind := "permit_denied"
 				if mode == "quota-denial" {
 					controlReason = "resource_limited"
 				}
-				v, err := scheduler.NewControlOutcome(l, "permit_denied", controlReason)
+				if mode == "recorded-denial" || mode == "stop-only" {
+					controlReason = "egress_unavailable"
+				}
+				if mode == "stop-only" {
+					kind = "physical_stop_unconfirmed"
+				}
+				v, err := scheduler.NewControlOutcome(l, kind, controlReason)
 				if err != nil {
 					t.Fatal(err)
 				}
 				if err = w.PersistControlResult(ctx, v); err != nil {
 					t.Fatal(err)
 				}
+				var raw []byte
+				if err = db.QueryRow(ctx, `SELECT jsonb_build_object('attempt_state',r.attempt_state,'stop_reason',r.stop_reason,'result_commit_id',r.result_commit_id,'target_permit_id',q.target_permit_id,'physical_release_confirmed_at',r.physical_release_confirmed_at) FROM monitor_runs r JOIN scheduler_reservations q USING(workspace_id,project_id,monitor_id,run_id) WHERE r.workspace_id=$1 AND r.project_id=$2 AND r.monitor_id=$3 AND r.run_id=$4`, l.WorkspaceID, l.ProjectID, l.MonitorID, l.RunID).Scan(&raw); err != nil {
+					t.Fatal(err)
+				}
+				var fact struct {
+					AttemptState string  `json:"attempt_state"`
+					StopReason   string  `json:"stop_reason"`
+					ResultID     *string `json:"result_commit_id"`
+					PermitID     *string `json:"target_permit_id"`
+					ReleasedAt   *string `json:"physical_release_confirmed_at"`
+				}
+				if json.Unmarshal(raw, &fact) != nil || fact.AttemptState != "started" || fact.StopReason != controlReason || fact.ResultID != nil || fact.PermitID != nil || fact.ReleasedAt != nil {
+					t.Fatal("control fact is not a denial attestation", string(raw))
+				}
+				t.Log("actual control writer kind; identical stored shape does not attest denial", kind, string(raw))
 			}
 			return
 		}
@@ -237,9 +262,6 @@ func runRecovery(t *testing.T, mode string) {
 		}
 		outcome, e := controller.RecoverStarted(ctx, l, reason)
 		want := "unknown"
-		if mode == "no-permit" || mode == "quota-denial" {
-			want = "canceled"
-		}
 		if e != nil || outcome.AttemptState != want || !outcome.Released {
 			t.Fatal("released recovery", outcome, e)
 		}
@@ -431,3 +453,8 @@ func recoveryHint(t *testing.T, db *pgxpool.Pool, f memberFixture, m monitor.Pub
 func TestRecoveryAmbiguousDenialPG(t *testing.T) { runRecovery(t, "ambiguous-denial") }
 
 func TestRecoveryQuotaDeniedPG(t *testing.T) { runRecovery(t, "quota-denial") }
+
+// The same persisted reason can come from two different accepted control kinds.
+// Real kernel denial/zero TCP and physical stop do not restore that lost origin.
+func TestRecoveryRecordedDenialPG(t *testing.T) { runRecovery(t, "recorded-denial") }
+func TestRecoveryStopOnlyPG(t *testing.T)       { runRecovery(t, "stop-only") }

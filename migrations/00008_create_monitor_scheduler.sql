@@ -1560,12 +1560,12 @@ BEGIN
  IF state='started' THEN
   IF p_reason='lease_expired' AND r.lease_until>gate_now THEN RAISE EXCEPTION 'candidate_invalid' USING ERRCODE='P0001'; END IF;
   state:='unknown';
-  -- No caller no-send boolean. Monotonic reservation history, consumed input,
-  -- restricted install-after-commit protocol AND trusted complete physical proof
-  -- are required. ACK uncertainty never takes this known-denial branch.
-  IF p_reason='egress_unavailable' AND (r.stop_reason IS NULL OR r.stop_reason IN ('egress_unavailable','resource_limited','authorization_revoked','authorization_expired','emergency_stop')) AND released AND q.input_consumed_at IS NOT NULL
-  AND q.target_permit_id IS NULL AND q.target_permit_committed_at IS NULL AND q.permit_installed_at IS NULL
-  AND q.origin_key IS NULL AND q.ip_key IS NULL AND q.target_keys='[]' THEN state:='canceled'; END IF;
+  -- Absence of a committed target permit plus trusted physical release can
+  -- prove no target capability under the approved install-after-commit path.
+  -- It does not prove a known denial event: the existing control writer stores
+  -- only stop_reason, and permit_denied / physical_stop_unconfirmed can leave
+  -- the same value. Neither that value nor the Controller's reason supplies
+  -- the missing provenance. Keep unknown; introduce no new field or authority.
   UPDATE public.monitor_runs SET attempt_state=state,finished_at=gate_now,stop_reason=COALESCE(stop_reason,p_reason)
   WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid AND run_id=p_run;
  END IF;

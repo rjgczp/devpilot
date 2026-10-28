@@ -1,0 +1,16 @@
+{
+  "image_id": "sha256:338ad40a47d5722fd94be0aa10628696696c59c4e5ea5d81f64a2b28ced743f6",
+  "binary_sha256": "8beeb4ba39392242fd5417817c472a36fdc647bc7829e2812502026a36df3de1",
+  "files_sha256": {
+    "cases.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "commands.json": "81d7b097502962aef46da00757c9535b39a2dd6e5c1e40541cb90ed5ba966f34",
+    "joint63-result.json": "a906e18897765b5d98de912a2e0c3fd1ef319997733e2fca6e5432dc31e3a892",
+    "receipt-public-key.json": "77e9f2f8abe06d654dfb90ff1638e5b7d678d19cebab346daa3719a867c53f29",
+    "receiver-container.json": "f90c9f0d581d5869150fdb5c6d828d34695b25001b97c5e9f55ff27f31bbdf3e",
+    "receiver-events.json": "3cb1113ed9762b4e7d90fbf21119491a154f8a0ad2dd2b26c51e5739fe2c37c3",
+    "receiver.stderr": "41efca96946b9c6f5fbe16ba9b43e70c4396fe28030633bda45ddc9005075e14",
+    "run-0-container.json": "9f5c6302f82ca24d1b8486554edf273019938a858aa238ea41c09d594a0c00ee",
+    "run-0-guard-container.json": "0ecad88b01a2ad3eced702507a48bf12a61d1788025dc82d14be74bb291d864a",
+    "timeline.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  }
+}

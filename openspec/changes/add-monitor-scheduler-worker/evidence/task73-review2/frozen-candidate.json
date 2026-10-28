@@ -1,0 +1,13 @@
+{
+  "head": "f596a25553dcffb77a9e972d547d6e5a383c593d",
+  "branch": "codex/add-monitor-scheduler-worker",
+  "committed": false,
+  "pushed": false,
+  "dirty": true,
+  "progress": "31/47",
+  "task73": "candidate_not_accepted",
+  "source_inventory_sha256": "093e195b725a25d9d55659a4a8a2e2f5cca6d4cd760f0c7825cc02a38ee71d22",
+  "candidate_diff_sha256": "72e8c7e49d5cc36e3eb82e53290f0b0ef02d67866362feabe1eaf07c6b46a825",
+  "implementation_diff_sha256": "b57dbe735c6ba0379d2a436d2b5a8c51196c6d3d88951bbc300bd56ece7df6d6",
+  "checks": "14 directed PG18/Linux; not full acceptance; B unresolved"
+}

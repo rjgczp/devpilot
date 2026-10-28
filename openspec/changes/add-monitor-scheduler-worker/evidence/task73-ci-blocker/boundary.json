@@ -1,0 +1,16 @@
+{
+  "head": "f596a25553dcffb77a9e972d547d6e5a383c593d",
+  "source_inventory_sha256": "ddbd3475dae7dc3cd2bc62ea168f07cbdeee9685617113a92cd8c7d616b59257",
+  "failure_record_exit": 1,
+  "timeout_seconds": 20,
+  "retried": false,
+  "constructor_byte_unchanged": true,
+  "pg_for_failed_case_started": false,
+  "probe_started": false,
+  "receiver_only_ready": true,
+  "sqlstate": null,
+  "errno": null,
+  "root_cause_unresolved": true,
+  "completed_tasks": 31,
+  "task73_accepted": false
+}

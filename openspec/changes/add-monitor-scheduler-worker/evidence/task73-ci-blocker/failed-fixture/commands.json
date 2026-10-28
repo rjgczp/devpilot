@@ -1,0 +1,1274 @@
+[
+  {
+    "command": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "devpilot-n64-07ab781693-receiver",
+      "--label",
+      "devpilot.disposable.network64=devpilot-n64-07ab781693",
+      "--network",
+      "none",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--read-only",
+      "--memory=128m",
+      "--cpus=1",
+      "--pids-limit=128",
+      "--ulimit",
+      "nofile=256:256",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=4m",
+      "--tmpfs",
+      "/var/lib/postgresql:ro,noexec,nosuid,size=4k",
+      "--cap-add",
+      "NET_ADMIN",
+      "--sysctl",
+      "net.ipv6.conf.all.disable_ipv6=0",
+      "--sysctl",
+      "net.ipv4.ip_forward=0",
+      "--sysctl",
+      "net.ipv6.conf.all.forwarding=0",
+      "--sysctl",
+      "net.ipv6.conf.all.accept_ra=0",
+      "--sysctl",
+      "net.ipv6.conf.default.accept_ra=0",
+      "-v",
+      "/home/runner/work/_temp/network64-tools/networksupervisorfixture:/usr/local/bin/networksupervisorfixture:ro",
+      "devpilot-scheduler-fixture",
+      "-c",
+      "exec sleep infinity"
+    ],
+    "started": "2026-10-27T08:01:32.581194Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12"
+    ],
+    "started": "2026-10-27T08:01:32.676781Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "addr",
+      "add",
+      "93.184.216.34/32",
+      "dev",
+      "lo"
+    ],
+    "started": "2026-10-27T08:01:32.689135Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "addr",
+      "add",
+      "93.184.216.35/32",
+      "dev",
+      "lo"
+    ],
+    "started": "2026-10-27T08:01:32.735696Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "addr",
+      "add",
+      "192.0.2.53/32",
+      "dev",
+      "lo"
+    ],
+    "started": "2026-10-27T08:01:32.781642Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "addr",
+      "add",
+      "169.254.169.254/32",
+      "dev",
+      "lo"
+    ],
+    "started": "2026-10-27T08:01:32.827760Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "addr",
+      "add",
+      "10.0.0.9/32",
+      "dev",
+      "lo"
+    ],
+    "started": "2026-10-27T08:01:32.874292Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "addr",
+      "add",
+      "11.0.0.9/32",
+      "dev",
+      "lo"
+    ],
+    "started": "2026-10-27T08:01:32.921270Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "2001:4860:ffff::34/128",
+      "dev",
+      "lo",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:32.968259Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "2001:4860:ffff::35/128",
+      "dev",
+      "lo",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:33.016217Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "fd64:53::53/128",
+      "dev",
+      "lo",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:33.063923Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "fd64:bad::254/128",
+      "dev",
+      "lo",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:33.111097Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "64:ff9b::5db8:d822/128",
+      "dev",
+      "lo",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:33.157830Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "2002:5db8:d822::1/128",
+      "dev",
+      "lo",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:33.206379Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "neigh",
+      "flush",
+      "all"
+    ],
+    "started": "2026-10-27T08:01:33.252782Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "devpilot-n64-07ab781693-run-0",
+      "--label",
+      "devpilot.disposable.network64=devpilot-n64-07ab781693",
+      "--network",
+      "none",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--read-only",
+      "--memory=128m",
+      "--cpus=1",
+      "--pids-limit=128",
+      "--ulimit",
+      "nofile=256:256",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=4m",
+      "--tmpfs",
+      "/var/lib/postgresql:ro,noexec,nosuid,size=4k",
+      "--cap-add",
+      "NET_ADMIN",
+      "--sysctl",
+      "net.ipv6.conf.all.disable_ipv6=0",
+      "--sysctl",
+      "net.ipv4.ip_forward=0",
+      "--sysctl",
+      "net.ipv6.conf.all.forwarding=0",
+      "--sysctl",
+      "net.ipv6.conf.all.accept_ra=0",
+      "--sysctl",
+      "net.ipv6.conf.default.accept_ra=0",
+      "-v",
+      "/home/runner/work/_temp/network64-tools/networksupervisorfixture:/usr/local/bin/networksupervisorfixture:ro",
+      "devpilot-scheduler-fixture",
+      "-c",
+      "exec sleep infinity"
+    ],
+    "started": "2026-10-27T08:01:33.407569Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404"
+    ],
+    "started": "2026-10-27T08:01:33.508309Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "devpilot-n64-07ab781693-run-0-guard",
+      "--label",
+      "devpilot.disposable.network64=devpilot-n64-07ab781693",
+      "--network",
+      "none",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--read-only",
+      "--memory=128m",
+      "--cpus=1",
+      "--pids-limit=128",
+      "--ulimit",
+      "nofile=256:256",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=4m",
+      "--tmpfs",
+      "/var/lib/postgresql:ro,noexec,nosuid,size=4k",
+      "--cap-add",
+      "NET_ADMIN",
+      "--sysctl",
+      "net.ipv6.conf.all.disable_ipv6=0",
+      "--sysctl",
+      "net.ipv4.ip_forward=1",
+      "--sysctl",
+      "net.ipv6.conf.all.forwarding=1",
+      "--sysctl",
+      "net.ipv6.conf.all.accept_ra=0",
+      "--sysctl",
+      "net.ipv6.conf.default.accept_ra=0",
+      "--pid",
+      "container:2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "-v",
+      "/home/runner/work/_temp/network64-tools/networksupervisorfixture:/usr/local/bin/networksupervisorfixture:ro",
+      "devpilot-scheduler-fixture",
+      "-c",
+      "exec sleep infinity"
+    ],
+    "started": "2026-10-27T08:01:33.521190Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3"
+    ],
+    "started": "2026-10-27T08:01:33.615542Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "link",
+      "add",
+      "eth0",
+      "type",
+      "veth",
+      "peer",
+      "name",
+      "runpeer"
+    ],
+    "started": "2026-10-27T08:01:33.629419Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "link",
+      "set",
+      "runpeer",
+      "netns",
+      "1"
+    ],
+    "started": "2026-10-27T08:01:33.675149Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "link",
+      "set",
+      "runpeer",
+      "name",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:33.725719Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "container:fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "--pid",
+      "container:0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "--cap-drop",
+      "ALL",
+      "--cap-add",
+      "NET_ADMIN",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--read-only",
+      "devpilot-scheduler-fixture",
+      "-c",
+      "ip link add eth1 type veth peer name rx0 && ip link set rx0 netns 1"
+    ],
+    "started": "2026-10-27T08:01:33.773111Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "addr",
+      "add",
+      "198.19.64.2/28",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:33.904676Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "link",
+      "set",
+      "dev",
+      "eth0",
+      "addrgenmode",
+      "none"
+    ],
+    "started": "2026-10-27T08:01:33.950591Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "fd64:64:1::2/64",
+      "dev",
+      "eth0",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:34.000678Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "link",
+      "set",
+      "eth0",
+      "up"
+    ],
+    "started": "2026-10-27T08:01:34.045854Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "addr",
+      "add",
+      "198.19.64.3/28",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:34.091799Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "link",
+      "set",
+      "dev",
+      "eth0",
+      "addrgenmode",
+      "none"
+    ],
+    "started": "2026-10-27T08:01:34.138360Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "fd64:64:1::3/64",
+      "dev",
+      "eth0",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:34.184613Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "link",
+      "set",
+      "eth0",
+      "up"
+    ],
+    "started": "2026-10-27T08:01:34.231995Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "addr",
+      "add",
+      "198.19.66.1/30",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:34.278658Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "link",
+      "set",
+      "dev",
+      "eth1",
+      "addrgenmode",
+      "none"
+    ],
+    "started": "2026-10-27T08:01:34.324946Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "fd64:65:1::1/64",
+      "dev",
+      "eth1",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:34.370890Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "link",
+      "set",
+      "eth1",
+      "up"
+    ],
+    "started": "2026-10-27T08:01:34.417408Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "addr",
+      "add",
+      "198.19.66.2/30",
+      "dev",
+      "rx0"
+    ],
+    "started": "2026-10-27T08:01:34.463260Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "link",
+      "set",
+      "dev",
+      "rx0",
+      "addrgenmode",
+      "none"
+    ],
+    "started": "2026-10-27T08:01:34.508663Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "fd64:65:1::2/64",
+      "dev",
+      "rx0",
+      "nodad"
+    ],
+    "started": "2026-10-27T08:01:34.554070Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "link",
+      "set",
+      "rx0",
+      "up"
+    ],
+    "started": "2026-10-27T08:01:34.599751Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-j",
+      "link",
+      "show",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:34.645189Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-j",
+      "link",
+      "show",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:34.690867Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-j",
+      "link",
+      "show",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:34.735338Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-j",
+      "link",
+      "show",
+      "rx0"
+    ],
+    "started": "2026-10-27T08:01:34.781508Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-4",
+      "neigh",
+      "replace",
+      "198.19.66.2",
+      "lladdr",
+      "fa:0f:86:d2:67:ab",
+      "nud",
+      "permanent",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:34.827566Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-6",
+      "neigh",
+      "replace",
+      "fd64:65:1::2",
+      "lladdr",
+      "fa:0f:86:d2:67:ab",
+      "nud",
+      "permanent",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:34.873601Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-4",
+      "neigh",
+      "replace",
+      "198.19.66.1",
+      "lladdr",
+      "de:9c:74:0a:c0:37",
+      "nud",
+      "permanent",
+      "dev",
+      "rx0"
+    ],
+    "started": "2026-10-27T08:01:34.918715Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "0cdfbe6c664317f0cd2d0be35db1b23047441a222d3abedbc8ea9756b05bce12",
+      "ip",
+      "-6",
+      "neigh",
+      "replace",
+      "fd64:65:1::1",
+      "lladdr",
+      "de:9c:74:0a:c0:37",
+      "nud",
+      "permanent",
+      "dev",
+      "rx0"
+    ],
+    "started": "2026-10-27T08:01:34.964582Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "neigh",
+      "replace",
+      "198.19.64.3",
+      "lladdr",
+      "72:52:ef:92:cd:a2",
+      "nud",
+      "permanent",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.010151Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-6",
+      "neigh",
+      "replace",
+      "fd64:64:1::3",
+      "lladdr",
+      "72:52:ef:92:cd:a2",
+      "nud",
+      "permanent",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.061569Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "neigh",
+      "replace",
+      "198.19.64.2",
+      "lladdr",
+      "92:77:db:50:0d:ca",
+      "nud",
+      "permanent",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.113838Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-6",
+      "neigh",
+      "replace",
+      "fd64:64:1::2",
+      "lladdr",
+      "92:77:db:50:0d:ca",
+      "nud",
+      "permanent",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.159481Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "93.184.216.34/32",
+      "via",
+      "198.19.64.3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.207245Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "93.184.216.34/32",
+      "via",
+      "198.19.66.2",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:35.253653Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "93.184.216.35/32",
+      "via",
+      "198.19.64.3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.300662Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "93.184.216.35/32",
+      "via",
+      "198.19.66.2",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:35.346537Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "192.0.2.53/32",
+      "via",
+      "198.19.64.3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.393202Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "192.0.2.53/32",
+      "via",
+      "198.19.66.2",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:35.438918Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "169.254.169.254/32",
+      "via",
+      "198.19.64.3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.486092Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "169.254.169.254/32",
+      "via",
+      "198.19.66.2",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:35.531299Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "10.0.0.9/32",
+      "via",
+      "198.19.64.3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.577549Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "10.0.0.9/32",
+      "via",
+      "198.19.66.2",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:35.622840Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "11.0.0.9/32",
+      "via",
+      "198.19.64.3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.668725Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-4",
+      "route",
+      "replace",
+      "11.0.0.9/32",
+      "via",
+      "198.19.66.2",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:35.714725Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-6",
+      "route",
+      "replace",
+      "2001:4860:ffff::34/128",
+      "via",
+      "fd64:64:1::3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.760435Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-6",
+      "route",
+      "replace",
+      "2001:4860:ffff::34/128",
+      "via",
+      "fd64:65:1::2",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:35.805496Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-6",
+      "route",
+      "replace",
+      "2001:4860:ffff::35/128",
+      "via",
+      "fd64:64:1::3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.851224Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "fce2530aaac4b87752311a37f419a5f415bb7ddf07cb45fcfed65a6b084321d3",
+      "ip",
+      "-6",
+      "route",
+      "replace",
+      "2001:4860:ffff::35/128",
+      "via",
+      "fd64:65:1::2",
+      "dev",
+      "eth1"
+    ],
+    "started": "2026-10-27T08:01:35.896575Z",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-i",
+      "2ae1885b7271b9fb8e33e0c9aa8afa332b6cb288ddf22adb657647cd3593b404",
+      "ip",
+      "-6",
+      "route",
+      "replace",
+      "fd64:53::53/128",
+      "via",
+      "fd64:64:1::3",
+      "dev",
+      "eth0"
+    ],
+    "started": "2026-10-27T08:01:35.941382Z",
+    "failed": true
+  }
+]

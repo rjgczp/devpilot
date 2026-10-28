@@ -1,5 +1,14 @@
 # Task7.3 narrow recovery capability — separately approved
 
+> Review correction (2026-10-27, not final acceptance): started→canceled is now
+> conservatively disabled. Existing stop_reason does not preserve whether the
+> writer called permit_denied or physical_stop_unconfirmed, and NULL cannot
+> establish either event. No new field, role, EXECUTE or attestation is added.
+> The original approval provenance and its permission ceiling remain unchanged.
+> Already-terminal facts remain immutable; physical release stays independent.
+> Task7.3 remains unchecked,31/47; the historical PR IPv6 timeout is unresolved.
+
+
 Date:2026-10-27. Baseline local/origin/PR11 head:
 `e767a5ad961a47cd323768aaafdd99ca83b55bbe`; clean before this document.
 Main/origin main:`1d3b8266e494061beccc3ccdf47694ba4b0339c5`.
@@ -82,17 +91,18 @@ does not require the old Owner, authorization or Worker still to be active.
    requires the actual lease to have expired after all waits. Preserve a preexisting
    fixed stop_reason. Nonreleased reservations become/stay quarantined and every
    physical slot/cooldown/token stays held. No rate refund or physical release.
-3. `canceled` is allowed only as the first terminal classification for a known
-   permit-denial control outcome: the single input was consumed, durable monotonic
-   target authorization fields/keys show **no committed target permit ever**, and
-   an already consumed trusted Supervisor receipt proves full matching physical
-   stop. The approved6.3 protocol installs target access only after confirmed DB
-   target reservation; NULL alone, elapsed time, process exit or Worker claims are
-   insufficient. Real kernel/receiver/connect/Supervisor evidence must corroborate
-   zero target TCP and no installed target permit. Target ACK uncertainty with a
-   committed target_permit_id remains unknown even if no GET was seen. Start ACK
-   uncertainty, loss of input confirmation or incomplete proof defaults to unknown.
-   No `no_send=true` assertion parameter or new attestation trust is introduced.
+3. The originally approved canceled exception requires a trustworthy known
+   refusal/no-send classification. Current immutable no-target fields plus
+   install-after-commit and trusted physical stop establish absence of target
+   capability within the approved trusted adapter, but do not attest the denial
+   event. The existing control writer persists only stop_reason: even a recorded
+   egress_unavailable can originate from physical_stop_unconfirmed. Therefore
+   recover_started now keeps ALL unresolved started attempts unknown, including
+   a real refusal with no sufficiently discriminating persisted provenance.
+   It does not infer canceled from a Controller reason or invent a denial record.
+   A future distinguishable canceled path needs independent review; no new proof
+   or permission is introduced in this correction. Already canceled facts are
+   returned unchanged, never converted to unknown or a result.
 4. Already unknown remains unknown forever, including when later proof establishes
    physical stop or a late Worker presents an otherwise valid observation. Never
    rewrite terminal HTTP fields. Existing completed facts win a race and are returned
