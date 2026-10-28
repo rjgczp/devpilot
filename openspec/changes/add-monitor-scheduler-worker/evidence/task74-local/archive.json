@@ -1,0 +1,7 @@
+{
+  "path": "/private/tmp/devpilot-status74-original-evidence.tar.gz",
+  "sha256": "1efb083213da398cc87e2d8ee2335f00d070adf26dead2366945a05216da66e3",
+  "bytes": 2119803,
+  "contents": "original raw PG18 normal/race, physical evidence6, API strace, failure snapshots, command receipts; tools binaries excluded",
+  "frozen_ci": "pending actual new implementation SHA; no predeclared success"
+}

@@ -1,5 +1,44 @@
 # Task7.3 — unknown recovery review index
 
+## Product scope acceptance — Task7.3 complete,32/47 (2026-10-28)
+
+The product owner explicitly accepted the conservative unknown scope in the
+current direct user message. Six original frozen a1fc65a Artifact ZIPs and
+44 retained negative-evidence files were rehashed unchanged. Both frozen
+Push40613022394/PR40613027846 passed verify/integration/execution-security.
+Task7.3 is now complete only within that accepted isolated fixture scope.
+Precise canceled classification without trusted persisted denial provenance
+remains unsupported and deferred. Historical IPv6 timeout20s remains unexplained,
+not fixed; independent physical release and production hard-close are unchanged.
+See the original message transcription in
+`openspec/changes/add-monitor-scheduler-worker/evidence/task73-final-review/product-acceptance.json`.
+Earlier pending-product/31-of47 passages are historical records superseded here.
+Only Task7.4 is now authorized; no Task7.5, merge,Archive or deployment.
+
+
+## Current final review gate (2026-10-28)
+
+Implementation HEAD `a1fc65a0dbc9c53259d9b06a411250575f35fa6d` has passed
+independent A code review and frozen Push/PR CI. See the
+[final evidence index](../openspec/changes/add-monitor-scheduler-worker/evidence/task73-final-review/README.md)
+for live check results, six raw Artifact hash checks and unchanged negative logs.
+No tests were rerun for this documentation update.
+
+The current implementation **does not support canceled classification for
+unresolved started Runs lacking distinguishable, trustworthy persisted denial
+events**. They remain unknown, even after independent physical release.
+Existing unknown and HTTP outcomes are not relabeled; physical settlement
+continues to be a separate fact. Future trusted event provenance needs its own
+review, not an inferred Controller reason or new authority in Task7.4.
+
+Product acceptance of that scope adjustment is still pending. Task7.3 is
+unchecked,31/47; historical IPv6 timeout20s remains unexplained and unfixed.
+The older canceled-capability and pending-CI passages below are retained
+historical candidate records and are superseded by this current gate.
+Task7.4 remains [plan only](monitor-scheduler-task74-plan.md), with zero proposed
+permission delta and no implementation authorization. No production execution,
+merge, Archive or deployment.
+
 ## Review correction — candidate, not accepted (2026-10-27)
 
 The previous canceled claim below is superseded: current persisted stop_reason

@@ -413,12 +413,12 @@ WITH gate_time AS MATERIALIZED(SELECT clock_timestamp() AS now), identity AS MAT
  s.authorized_configuration_version,s.authorized_activation_generation,s.scheduler_epoch,s.expires_at,s.next_due_at,
  c.gate,c.emergency_stop,c.expires_at deployment_expires,c.disk_used_bytes,c.disk_budget_bytes,t.now,
  EXISTS(SELECT 1 FROM public.workspace_members o JOIN public.users u ON u.id=o.user_id WHERE o.workspace_id=m.workspace_id AND o.role='owner' AND u.status='active') has_owner,
- la.attempt,lc.observation,
+ la.attempt,lc.observation,co.observation current_observation,
  la.v attempt_v,la.g attempt_g,la.e attempt_e,la.state attempt_state,
- lc.v completed_v,lc.g completed_g,lc.e completed_e,
+ co.v completed_v,co.g completed_g,co.e completed_e,
  EXISTS(SELECT 1 FROM public.monitor_runs r WHERE r.workspace_id=m.workspace_id AND r.project_id=m.project_id AND r.monitor_id=m.id AND r.started_at IS NOT NULL AND r.physical_release_confirmed_at IS NULL) in_flight,
  EXISTS(SELECT 1 FROM public.monitor_runs r WHERE r.workspace_id=m.workspace_id AND r.project_id=m.project_id AND r.monitor_id=m.id AND r.attempt_state IN ('unknown','completed') AND r.physical_release_confirmed_at IS NULL) quarantined
- FROM identity i JOIN public.workspace_members b ON b.user_id=i.id AND b.workspace_id=p_wid
+ FROM identity i JOIN public.workspace_members b ON b.user_id=i.id AND b.workspace_id=p_wid AND b.role IN ('owner','member')
  JOIN public.projects p ON p.workspace_id=b.workspace_id AND p.id=p_pid
  JOIN public.http_monitors m ON m.workspace_id=p.workspace_id AND m.project_id=p.id AND m.id=p_mid
  JOIN public.monitor_activation_states a ON a.workspace_id=m.workspace_id AND a.project_id=m.project_id AND a.monitor_id=m.id
@@ -431,7 +431,7 @@ WITH gate_time AS MATERIALIZED(SELECT clock_timestamp() AS now), identity AS MAT
    'duration_ms',r.duration_ms,'http_status',r.http_status,'success',r.success,'failure_code',r.failure_code,'stop_reason',r.stop_reason) attempt,
    r.configuration_version v,r.activation_generation g,r.scheduler_epoch e,r.attempt_state state
   FROM public.monitor_runs r WHERE r.workspace_id=m.workspace_id AND r.project_id=m.project_id AND r.monitor_id=m.id
-  ORDER BY r.claimed_at DESC,r.run_id DESC LIMIT 1
+  ORDER BY r.claimed_at DESC,r.fencing_token DESC LIMIT 1
  ) la ON true
  LEFT JOIN LATERAL (
   SELECT jsonb_build_object('workspace_id',r.workspace_id,'project_id',r.project_id,'monitor_id',r.monitor_id,'run_id',r.run_id,
@@ -442,6 +442,18 @@ WITH gate_time AS MATERIALIZED(SELECT clock_timestamp() AS now), identity AS MAT
   FROM public.monitor_runs r WHERE r.workspace_id=m.workspace_id AND r.project_id=m.project_id AND r.monitor_id=m.id AND r.attempt_state='completed'
   ORDER BY r.finished_at DESC,r.run_id DESC LIMIT 1
  ) lc ON true
+ -- Current observation follows the independently gated Result pointer. A later
+ -- historical audit commit cannot select itself merely by finishing last.
+ LEFT JOIN LATERAL (
+  SELECT jsonb_build_object('workspace_id',r.workspace_id,'project_id',r.project_id,'monitor_id',r.monitor_id,'run_id',r.run_id,
+   'configuration_version',r.configuration_version::text,'activation_generation',r.activation_generation::text,'scheduler_epoch',r.scheduler_epoch::text,'fencing_token',r.fencing_token::text,
+   'attempt_state',r.attempt_state,'scheduled_at',r.scheduled_at,'claimed_at',r.claimed_at,'started_at',r.started_at,'finished_at',r.finished_at,
+   'duration_ms',r.duration_ms,'http_status',r.http_status,'success',r.success,'failure_code',r.failure_code,'stop_reason',r.stop_reason) observation,
+   r.configuration_version v,r.activation_generation g,r.scheduler_epoch e
+  FROM public.monitor_runs r WHERE r.workspace_id=m.workspace_id AND r.project_id=m.project_id AND r.monitor_id=m.id AND r.attempt_state='completed' AND r.run_id=s.latest_result_run_id
+   AND r.configuration_version=s.authorized_configuration_version AND r.activation_generation=s.authorized_activation_generation
+  ORDER BY r.finished_at DESC,r.run_id DESC LIMIT 1
+ ) co ON true
  WHERE c.control_id='deployment'
 ), states AS MATERIALIZED (
  SELECT *,CASE WHEN authorized_configuration_version IS NULL THEN 'none' WHEN expires_at<=now THEN 'expired' ELSE 'valid' END authorization_state,
@@ -463,7 +475,7 @@ SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM identity) THEN 'unauthenticated' WHEN 
  'effective_authorization',desired_state='enabled' AND authorization_state='valid' AND reason IS NULL,
  'expires_at',expires_at,'next_due',next_due_at,'in_flight',in_flight,'pause_semantics','start_commit','blocked_reason',reason,
  'latest_attempt',attempt,'latest_completed_observation',observation,
- 'current_observation',CASE WHEN attempt_state IS DISTINCT FROM 'unknown' AND completed_v=version AND completed_g=activation_generation AND completed_e=scheduler_epoch THEN observation END) FROM states);
+ 'current_observation',CASE WHEN attempt_state IS DISTINCT FROM 'unknown' AND completed_v=version AND completed_g=activation_generation AND completed_e=scheduler_epoch THEN current_observation END) FROM states);
 $$;
 -- +goose StatementEnd
 ALTER FUNCTION scheduler_private.execution_status(bytea,uuid,uuid,uuid) OWNER TO devpilot_scheduler_api_owner;

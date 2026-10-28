@@ -1,0 +1,8 @@
+{
+  "sqlstate": "42P08",
+  "cause": "New fixture parameter $7 inferred float8 for interval multiplication and bigint for fencing_token in the same SQL statement",
+  "fix": "Explicit $7::bigint in both expressions",
+  "production_changes": false,
+  "assertions_weakened": false,
+  "initial_diagnostic": "initial-compile.log is a transcription of original tool output; PG log/receipt here are original bytes"
+}

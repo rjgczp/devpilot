@@ -1,0 +1,18 @@
+{
+  "receipts_verified": [
+    "/private/tmp/devpilot-status74/pg-final/normal.json",
+    "/private/tmp/devpilot-status74/pg-final/race.json",
+    "/private/tmp/devpilot-status74/physical/receipts/normal-TestExecutionStatusRealUnknownPG.json",
+    "/private/tmp/devpilot-status74/physical/receipts/race-TestExecutionStatusRealCompletedPG.json",
+    "/private/tmp/devpilot-status74/physical/receipts/race-TestExecutionStatusRealOldResultPG.json",
+    "/private/tmp/devpilot-status74/physical/receipts/race-TestExecutionStatusRealUnknownPG.json",
+    "/private/tmp/devpilot-status74/physical/receipts/normal-TestExecutionStatusRealCompletedPG.json",
+    "/private/tmp/devpilot-status74/physical/receipts/normal-TestExecutionStatusRealOldResultPG.json",
+    "/private/tmp/devpilot-status74/api-audit/receipt/api.json"
+  ],
+  "implementation_and_test_bytes_match": true,
+  "dirty_parent": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+  "preflight_source_inventory_sha256": "84a646e841be5ac2b7a34da7c7a01f62f8ae7cf54f4df4e578c1d4582739d6a3",
+  "document_changes_after_test": true,
+  "frozen_ci_required": true
+}

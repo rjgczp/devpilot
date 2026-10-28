@@ -1,0 +1,36 @@
+{
+  "runs": [
+    {
+      "mode": "normal",
+      "test": "TestExecutionStatusRealCompletedPG",
+      "exit_code": 0
+    },
+    {
+      "mode": "normal",
+      "test": "TestExecutionStatusRealOldResultPG",
+      "exit_code": 0
+    },
+    {
+      "mode": "normal",
+      "test": "TestExecutionStatusRealUnknownPG",
+      "exit_code": 0
+    },
+    {
+      "mode": "race",
+      "test": "TestExecutionStatusRealCompletedPG",
+      "exit_code": 0
+    },
+    {
+      "mode": "race",
+      "test": "TestExecutionStatusRealOldResultPG",
+      "exit_code": 0
+    },
+    {
+      "mode": "race",
+      "test": "TestExecutionStatusRealUnknownPG",
+      "exit_code": 0
+    }
+  ],
+  "complete": true,
+  "production_execution": false
+}

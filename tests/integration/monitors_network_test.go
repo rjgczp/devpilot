@@ -39,4 +39,6 @@ func TestMonitorNoTargetNetwork(t *testing.T) {
 	t.Run("full-workspace-intent-cap", TestActivationQuotaAndCAS)
 	t.Run("finite-execution-authorization", TestCheckpointOneAuthorizationRealHTTPStrictContract)
 	t.Run("intent-and-authoritative-status", TestCheckpointOneHTTPIntentStatusContract)
+	t.Run("live-status-authority", TestExecutionStatusHTTPAuthority)
+	t.Run("private-status-projection", TestExecutionStatusProjectionIsolation)
 }

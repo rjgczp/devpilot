@@ -1,5 +1,84 @@
 # Verification — add-monitor-scheduler-worker
 
+## Task7.4 implemented and local acceptance passed — frozen CI pending
+
+This batch is explicitly authorized after product acceptance of Task7.3's
+conservative scope. Task7.3 is complete32/47; Task7.4 now has required real
+PG18/HTTP normal/race and Linux physical-chain acceptance, **33/47**. Task7.5
+remains unchecked and unimplemented. This is technical implementation status,
+not independent7.4 approval or a predeclared Push/PR CI pass.
+
+Only the existing execution_status SQL body changed; route/Store/DTO, all roles,
+ACL/EXECUTE/signatures/owners, all other Migration8 bytes and Migration1–7 are
+unchanged. New current observation follows the gated Result pointer and matches
+current v/g/epoch. Historical completed and latest unknown remain distinct.
+
+Local PG18 selected6tests normal+6race passed (4new,2necessary old regressions).
+New real Linux6/6 passed with6actual Header-only HTTPS GETs,6verified Ed25519
+physical-stop receipts/PIDFD/orphan/namespace proof sets and atomic PG releases.
+Two of those Runs remain unknown with NULL HTTP result after physical release.
+API strace:55approved control-plane attempts/0blocked, intentional bypass
+child0/audit1 retained; no destination whitelist expansion. Ordinary Go
+unit/race/vet and populated OpenAPI contracts passed at documented development
+versions; clean frozen implementation SHA CI must independently re-execute.
+
+Evidence: [local raw receipts and failure index](evidence/task74-local/README.md),
+[Requirement/Scenario/Test mapping](../../../docs/monitor-scheduler-task74-verification.md).
+Nine PG/network receipts match final implementation/test/config bytes; original
+full source inventories/dirty parent hashes are kept, not relabeled as clean CI.
+Raw archive, signatures, receiver, strace, actual SQLSTATE/Goose failure and fixes
+are retained. Earlier7.3/6.3 failures and historical IPv620s risk remain; no
+timeout, assertion, permission or physical-release protocol was weakened.
+
+New CI preserves original147PG tests plus4named status tests (151each mode),
+all old security matrices, and adds3x2 status physical cases. Final new HEAD,
+actual Push/PR links, artifact digests and review status are recorded after
+GitHub produces them. PR11 staysOpen; production closed; no merge/Archive/deploy.
+
+
+## Product scope acceptance — Task7.3 complete,32/47 (2026-10-28)
+
+The product owner explicitly accepted the conservative unknown scope in the
+current direct user message. Six original frozen a1fc65a Artifact ZIPs and
+44 retained negative-evidence files were rehashed unchanged. Both frozen
+Push40613022394/PR40613027846 passed verify/integration/execution-security.
+Task7.3 is now complete only within that accepted isolated fixture scope.
+Precise canceled classification without trusted persisted denial provenance
+remains unsupported and deferred. Historical IPv6 timeout20s remains unexplained,
+not fixed; independent physical release and production hard-close are unchanged.
+See the original message transcription in
+`openspec/changes/add-monitor-scheduler-worker/evidence/task73-final-review/product-acceptance.json`.
+Earlier pending-product/31-of47 passages are historical records superseded here.
+Only Task7.4 is now authorized; no Task7.5, merge,Archive or deployment.
+
+
+## Current review gate — 7.3 scope acceptance pending; 7.4 plan only (2026-10-28)
+
+Current local/remote implementation HEAD is
+`a1fc65a0dbc9c53259d9b06a411250575f35fa6d`. The human independent reviewer
+accepts A's conservative unknown correction and confirms frozen PR CI. Live
+GitHub checks also show Push40613022394 and PR40613027846 each succeeded in
+verify/integration/execution-security. Six retained raw Artifact ZIPs were
+rehashed successfully; no test, container, migration or workflow was rerun.
+
+**Current capability limitation:** recovery does not classify unresolved started
+Runs as canceled without trustworthy, distinguishable persisted denial events.
+Existing stop_reason, absent target permission and physical release do not
+supply that denial provenance. Such Runs remain unknown. Adding a trusted event
+source requires later review; no field, authority or permission is added here.
+
+The product owner has not yet explicitly accepted this scope adjustment.
+Task7.3 therefore remains unchecked, **31/47**, rather than32/47. Historical
+IPv6 route timeout20s remains unresolved negative evidence, not a fixed issue;
+new CI successes do not erase it. This current gate supersedes historical
+pending-CI/canceled-capability statements below without rewriting their evidence.
+
+See [final review and raw Artifact index](evidence/task73-final-review/README.md)
+and [Task7.4 implementation boundary/zero permission delta](../../../docs/monitor-scheduler-task74-plan.md).
+Task7.4 is planning only, not implemented or authorized by this record.
+No SQL/Go/test assertions/ACL/physical settlement/network policy changes.
+Production remains hard closed; no merge, Archive or deployment.
+
 ## Task7.3 A design approved for commit and one frozen CI run (2026-10-28)
 
 The human owner explicitly approved the conservative A correction after reviewing

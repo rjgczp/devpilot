@@ -1,0 +1,13 @@
+{
+  "tests": [
+    "TestExecutionStatusRealCompletedPG",
+    "TestExecutionStatusRealOldResultPG",
+    "TestExecutionStatusRealUnknownPG"
+  ],
+  "modes": [
+    "normal",
+    "race"
+  ],
+  "skip": false,
+  "retry": false
+}

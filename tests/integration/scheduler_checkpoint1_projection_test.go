@@ -120,6 +120,11 @@ func TestCheckpointOneHTTPIntentStatusContract(t *testing.T) {
 					if _, err := db.Exec(ctx, `UPDATE monitor_runs SET attempt_state='completed',finished_at=clock_timestamp(),result_commit_id=uuidv7(),duration_ms=1,http_status=200,success=true,physical_release_confirmed_at=clock_timestamp() WHERE run_id=$1`, run); err != nil {
 						t.Fatal(err)
 					}
+					// Administrative HTTP projection fixture only: model the pointer
+					// a real accepted Result Commit sets. This is not a stop proof.
+					if _, err := db.Exec(ctx, `UPDATE monitor_schedules SET latest_result_run_id=$1 WHERE workspace_id=$2 AND project_id=$3 AND monitor_id=$4`, run, m.WorkspaceID, m.ProjectID, m.ID); err != nil {
+						t.Fatal(err)
+					}
 				}
 			}
 			if state == "configuration_changed" {

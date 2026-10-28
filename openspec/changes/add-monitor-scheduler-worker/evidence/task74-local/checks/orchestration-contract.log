@@ -1,0 +1,10 @@
+test_every_discovered_test_is_assigned_once (test_integration_plan.IntegrationCoverageContract.test_every_discovered_test_is_assigned_once) ... ok
+test_real_deadlines_cannot_rejoin_cumulative_process (test_integration_plan.IntegrationCoverageContract.test_real_deadlines_cannot_rejoin_cumulative_process) ... ok
+test_skip_or_zero_test_success_cannot_pass (test_integration_plan.IntegrationCoverageContract.test_skip_or_zero_test_success_cannot_pass) ... ok
+test_current_matrices_include_all_control_phases_and_legacy_refusal (test_result_protocol.ResultProtocolContract.test_current_matrices_include_all_control_phases_and_legacy_refusal) ... ok
+test_original_71_assertions_unchanged_and_history_pin_explicit (test_result_protocol.ResultProtocolContract.test_original_71_assertions_unchanged_and_history_pin_explicit) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.009s
+
+OK

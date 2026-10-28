@@ -1,0 +1,46 @@
+[
+  {
+    "event": "push",
+    "mode": "normal",
+    "distinct_actual_calls_same_persisted_fact": {
+      "stop_reason": "egress_unavailable",
+      "attempt_state": "started",
+      "result_commit_id": null,
+      "target_permit_id": null,
+      "physical_release_confirmed_at": null
+    }
+  },
+  {
+    "event": "push",
+    "mode": "race",
+    "distinct_actual_calls_same_persisted_fact": {
+      "stop_reason": "egress_unavailable",
+      "attempt_state": "started",
+      "result_commit_id": null,
+      "target_permit_id": null,
+      "physical_release_confirmed_at": null
+    }
+  },
+  {
+    "event": "pr",
+    "mode": "normal",
+    "distinct_actual_calls_same_persisted_fact": {
+      "stop_reason": "egress_unavailable",
+      "attempt_state": "started",
+      "result_commit_id": null,
+      "target_permit_id": null,
+      "physical_release_confirmed_at": null
+    }
+  },
+  {
+    "event": "pr",
+    "mode": "race",
+    "distinct_actual_calls_same_persisted_fact": {
+      "stop_reason": "egress_unavailable",
+      "attempt_state": "started",
+      "result_commit_id": null,
+      "target_permit_id": null,
+      "physical_release_confirmed_at": null
+    }
+  }
+]

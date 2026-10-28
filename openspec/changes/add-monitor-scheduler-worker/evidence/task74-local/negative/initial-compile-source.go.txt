@@ -1,0 +1,344 @@
+//go:build integration
+
+package integration
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rjgczp/devpilot/internal/monitor"
+	"github.com/rjgczp/devpilot/internal/project"
+)
+
+// A real LOGIN with only the already-approved API role. Administrative setup
+// and projection-row fixtures below are never physical termination evidence.
+func status74API(t *testing.T, db *pgxpool.Pool) *pgxpool.Pool {
+	t.Helper()
+	ctx := context.Background()
+	if _, e := db.Exec(ctx, `CREATE ROLE status74_api LOGIN PASSWORD 'disposable_fixture_only' IN ROLE devpilot_scheduler_api`); e != nil {
+		t.Fatal(e)
+	}
+	t.Cleanup(func() {
+		if _, e := db.Exec(ctx, `DROP OWNED BY status74_api; DROP ROLE status74_api`); e != nil {
+			t.Error(e)
+		}
+	})
+	cfg := db.Config()
+	cfg.ConnConfig.User = "status74_api"
+	cfg.ConnConfig.Password = "disposable_fixture_only"
+	p, e := pgxpool.NewWithConfig(ctx, cfg)
+	if e != nil {
+		t.Fatal(e)
+	}
+	t.Cleanup(p.Close)
+	return p
+}
+func status74Path(m monitor.Public) string {
+	return "/api/v1/workspaces/" + m.WorkspaceID + "/projects/" + m.ProjectID + "/monitors/" + m.ID + "/execution-status"
+}
+func status74Decode(t *testing.T, raw []byte) monitor.ExecutionStatus {
+	t.Helper()
+	var envelope struct{ Data monitor.ExecutionStatus }
+	if json.Unmarshal(raw, &envelope) != nil {
+		t.Fatal("status JSON")
+	}
+	var shape struct{ Data map[string]json.RawMessage }
+	if json.Unmarshal(raw, &shape) != nil {
+		t.Fatal("status shape")
+	}
+	keys := strings.Fields("workspace_id project_id monitor_id configuration_version activation_generation scheduler_epoch desired_state authorization_state scheduling_state effective_authorization expires_at next_due in_flight pause_semantics blocked_reason latest_attempt latest_completed_observation current_observation")
+	if len(shape.Data) != len(keys) {
+		t.Fatal("unbounded status fields", string(raw))
+	}
+	for _, k := range keys {
+		if _, ok := shape.Data[k]; !ok {
+			t.Fatal("missing status field", k)
+		}
+	}
+	attemptKeys := strings.Fields("workspace_id project_id monitor_id configuration_version activation_generation run_id scheduler_epoch fencing_token attempt_state scheduled_at claimed_at started_at finished_at duration_ms http_status success failure_code stop_reason")
+	for _, k := range []string{"latest_attempt", "latest_completed_observation", "current_observation"} {
+		if bytes.Equal(shape.Data[k], []byte("null")) {
+			continue
+		}
+		var a map[string]json.RawMessage
+		if json.Unmarshal(shape.Data[k], &a) != nil || len(a) != len(attemptKeys) {
+			t.Fatal("unbounded attempt")
+		}
+		for _, key := range attemptKeys {
+			if _, ok := a[key]; !ok {
+				t.Fatal("missing attempt field", key)
+			}
+		}
+	}
+	for _, bad := range []string{"private-path", "SENTINEL", "password_hash", "token_hash", "lease_owner", "worker_incarnation", "origin_key", "namespace_incarnation", "stop_public_key", "target_permit", "https://", "Authorization", "Cookie"} {
+		if bytes.Contains(raw, []byte(bad)) {
+			t.Fatal("private status leak", bad)
+		}
+	}
+	if envelope.Data.PauseSemantics != "start_commit" {
+		t.Fatal("pause contract")
+	}
+	return envelope.Data
+}
+func status74Read(t *testing.T, db *pgxpool.Pool, m monitor.Public, token string) monitor.ExecutionStatus {
+	t.Helper()
+	server, client, _ := checkpointHTTPServer(t, db)
+	defer server.Close()
+	code, h, raw := checkpointHTTP(t, client, server.URL, "GET", status74Path(m), "", token, "", nil)
+	if code != 200 || h.Get("Cache-Control") != "no-store" || h.Get("X-Content-Type-Options") != "nosniff" || h.Get("ETag") != "" {
+		t.Fatal("status HTTP contract", code, string(raw))
+	}
+	return status74Decode(t, raw)
+}
+func TestExecutionStatusHTTPAuthority(t *testing.T) {
+	db := workspaceDB(t)
+	api := status74API(t, db)
+	ctx := context.Background()
+	for _, kind := range []string{"revoked", "expired", "disabled-user", "removed", "rejoined"} {
+		t.Run(kind, func(t *testing.T) {
+			f, m := monitorFixture(t, db)
+			server, client, _ := checkpointHTTPServer(t, api)
+			defer server.Close()
+			for _, token := range []string{f.ownerToken, f.memberToken} {
+				status74Read(t, api, m, token)
+			}
+			want := 401
+			switch kind {
+			case "revoked":
+				_, e := db.Exec(ctx, `UPDATE sessions SET revoked_at=clock_timestamp() WHERE token_hash=$1`, f.md[:])
+				if e != nil {
+					t.Fatal(e)
+				}
+			case "expired":
+				_, e := db.Exec(ctx, `UPDATE sessions SET expires_at=created_at+interval '1 microsecond' WHERE token_hash=$1`, f.md[:])
+				if e != nil {
+					t.Fatal(e)
+				}
+			case "disabled-user":
+				_, e := db.Exec(ctx, `UPDATE users SET status='disabled' WHERE id=$1`, f.member.ID)
+				if e != nil {
+					t.Fatal(e)
+				}
+			default:
+				if _, e := db.Exec(ctx, `DELETE FROM workspace_members WHERE workspace_id=$1 AND user_id=$2`, m.WorkspaceID, f.member.ID); e != nil {
+					t.Fatal(e)
+				}
+				want = 404
+			}
+			code, _, raw := checkpointHTTP(t, client, server.URL, "GET", status74Path(m), "", f.memberToken, "", nil)
+			if code != want || bytes.Contains(raw, []byte(`"data"`)) || bytes.Contains(raw, []byte(m.ID)) {
+				t.Fatal("lost live authority", code, string(raw))
+			}
+			if kind == "rejoined" {
+				if _, e := db.Exec(ctx, `INSERT INTO workspace_members(workspace_id,user_id,role) VALUES($1,$2,'member')`, m.WorkspaceID, f.member.ID); e != nil {
+					t.Fatal(e)
+				}
+				status74Read(t, api, m, f.memberToken)
+			}
+		})
+	}
+	t.Run("full-scope-and-cookie", func(t *testing.T) {
+		f, m := monitorFixture(t, db)
+		server, client, _ := checkpointHTTPServer(t, api)
+		defer server.Close()
+		p, e := (project.Store{Pool: db}).Create(ctx, f.xd, f.z.ID, project.Input{Name: "other project"})
+		if e != nil {
+			t.Fatal(e)
+		}
+		other, e := (monitor.Store{Pool: db}).Create(ctx, f.xd, f.z.ID, p.ID, monitorInput("other monitor"))
+		if e != nil {
+			t.Fatal(e)
+		}
+		// This Member belongs to BOTH Workspaces: substituting valid IDs must still fail.
+		for _, mixed := range []monitor.Public{{WorkspaceID: m.WorkspaceID, ProjectID: other.ProjectID, ID: other.ID}, {WorkspaceID: other.WorkspaceID, ProjectID: m.ProjectID, ID: m.ID}, {WorkspaceID: m.WorkspaceID, ProjectID: m.ProjectID, ID: other.ID}, {WorkspaceID: m.WorkspaceID, ProjectID: m.ProjectID, ID: "BAD"}} {
+			code, _, raw := checkpointHTTP(t, client, server.URL, "GET", status74Path(mixed), "", f.memberToken, "", nil)
+			if code != 404 || bytes.Contains(raw, []byte(`"data"`)) {
+				t.Fatal("mixed scope", code)
+			}
+		}
+		code, _, _ := checkpointHTTP(t, client, server.URL, "GET", status74Path(m), "", "", "", func(h http.Header) { h.Set("Authorization", "Bearer "+f.memberToken) })
+		if code != 401 {
+			t.Fatal("non-Cookie authority", code)
+		}
+		code, _, _ = checkpointHTTP(t, client, server.URL, "GET", status74Path(m), "", f.memberToken, "", func(h http.Header) { h.Add("Cookie", "__Host-devpilot_session="+f.memberToken) })
+		if code != 401 {
+			t.Fatal("duplicate Cookie", code)
+		}
+	})
+}
+
+// Pure PG/HTTP projection fixtures: these rows do not claim actual GETs,
+// Supervisor proof, capacity settlement or an authorized result write.
+func status74Row(t *testing.T, db *pgxpool.Pool, m monitor.Public, v, g, ep, fence int64, unknown bool) string {
+	t.Helper()
+	var run string
+	sql := `WITH t AS MATERIALIZED(SELECT clock_timestamp() n) INSERT INTO monitor_runs(workspace_id,project_id,monitor_id,run_id,configuration_version,activation_generation,scheduler_epoch,fencing_token,scheduled_at,claimed_at,started_at,finished_at,lease_owner,worker_incarnation,lease_until,attempt_state,result_commit_id,duration_ms,http_status,success,physical_release_confirmed_at,stop_reason)
+ SELECT $1,$2,$3,uuidv7(),$4,$5,$6,$7,n-interval '10 seconds',n-interval '5 seconds'+$7*interval '1 millisecond',n-interval '4 seconds',n-interval '1 second',session_user,uuidv7(),n+interval '45 seconds',
+ CASE WHEN $8 THEN 'unknown' ELSE 'completed' END,CASE WHEN $8 THEN NULL ELSE uuidv7() END,CASE WHEN $8 THEN NULL ELSE 1 END,CASE WHEN $8 THEN NULL ELSE 200 END,CASE WHEN $8 THEN NULL ELSE true END,CASE WHEN $8 THEN NULL ELSE n END,CASE WHEN $8 THEN 'worker_lost' ELSE NULL END FROM t RETURNING run_id::text`
+	if e := db.QueryRow(context.Background(), sql, m.WorkspaceID, m.ProjectID, m.ID, v, g, ep, fence, unknown).Scan(&run); e != nil {
+		t.Fatal(e)
+	}
+	return run
+}
+func status74Authorized(t *testing.T, db *pgxpool.Pool) (memberFixture, monitor.Public, int64, int64, int64) {
+	t.Helper()
+	f, m := monitorFixture(t, db)
+	s := monitor.Store{Pool: db}
+	ctx := context.Background()
+	name := "projection-SENTINEL"
+	var e error
+	m, e = s.Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.Input{Name: &name}, monitor.ETag(m))
+	if e != nil {
+		t.Fatal(e)
+	}
+	a := activationRead(t, db, f.od, m)
+	if _, e = s.ExecutionAuthorize(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.ExecutionAuthorizationInput{ConfigurationVersion: m.Version, ConsentProfile: "periodic-http-get-v1", AuthorizationSeconds: 120}, monitor.ActivationETag(a)); e != nil {
+		t.Fatal(e)
+	}
+	var v, g, ep int64
+	if e = db.QueryRow(ctx, `SELECT authorized_configuration_version,authorized_activation_generation,scheduler_epoch FROM monitor_schedules WHERE workspace_id=$1 AND project_id=$2 AND monitor_id=$3`, m.WorkspaceID, m.ProjectID, m.ID).Scan(&v, &g, &ep); e != nil {
+		t.Fatal(e)
+	}
+	return f, m, v, g, ep
+}
+func TestExecutionStatusProjectionIsolation(t *testing.T) {
+	db := workspaceDB(t)
+	api := status74API(t, db)
+	ctx := context.Background()
+	t.Run("pointer-and-unknown", func(t *testing.T) {
+		f, m, v, g, ep := status74Authorized(t, db)
+		current := status74Row(t, db, m, v, g, ep, 2, false)
+		if s := status74Read(t, api, m, f.memberToken); s.CurrentObservation != nil {
+			t.Fatal("unconfirmed Result pointer inferred")
+		}
+		if _, e := db.Exec(ctx, `UPDATE monitor_schedules SET latest_result_run_id=$1 WHERE workspace_id=$2 AND project_id=$3 AND monitor_id=$4`, current, m.WorkspaceID, m.ProjectID, m.ID); e != nil {
+			t.Fatal(e)
+		}
+		late := status74Row(t, db, m, v-1, g-1, ep, 1, false)
+		s := status74Read(t, api, m, f.memberToken)
+		if s.CurrentObservation == nil || s.CurrentObservation.RunID != current || s.LatestCompletedObservation == nil || s.LatestCompletedObservation.RunID != late || s.LatestAttempt.RunID != current {
+			t.Fatal("late audit shadowed current Result pointer", s)
+		}
+		unknown := status74Row(t, db, m, v, g, ep, 3, true)
+		s = status74Read(t, api, m, f.memberToken)
+		if s.LatestAttempt.RunID != unknown || s.LatestAttempt.AttemptState != "unknown" || s.CurrentObservation != nil || s.LatestCompletedObservation == nil || !s.InFlight || s.LatestAttempt.HTTPStatus != nil || s.LatestAttempt.Success != nil || s.LatestAttempt.FailureCode != nil {
+			t.Fatal("unknown masked or fabricated result", s)
+		}
+	})
+	for _, dimension := range []string{"version", "generation", "epoch"} {
+		t.Run(dimension, func(t *testing.T) {
+			f, m, v, g, ep := status74Authorized(t, db)
+			rv, rg, re := v, g, ep
+			if dimension == "version" {
+				rv--
+			}
+			if dimension == "generation" {
+				rg--
+			}
+			if dimension == "epoch" {
+				re++
+			}
+			id := status74Row(t, db, m, rv, rg, re, 1, false)
+			if _, e := db.Exec(ctx, `UPDATE monitor_schedules SET latest_result_run_id=$1 WHERE workspace_id=$2 AND project_id=$3 AND monitor_id=$4`, id, m.WorkspaceID, m.ProjectID, m.ID); e != nil {
+				t.Fatal(e)
+			}
+			s := status74Read(t, api, m, f.ownerToken)
+			if s.CurrentObservation != nil || s.LatestCompletedObservation == nil || s.LatestCompletedObservation.RunID != id {
+				t.Fatal("mismatched lineage became current", dimension)
+			}
+		})
+	}
+}
+
+func TestExecutionStatusSingleStatementSnapshot(t *testing.T) {
+	db := workspaceDB(t)
+	api := status74API(t, db)
+	ctx := context.Background()
+	f, m, _, _, _ := status74Authorized(t, db)
+	old := status74Read(t, api, m, f.memberToken)
+	tx, e := db.Begin(ctx)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer tx.Rollback(ctx)
+	if _, e = tx.Exec(ctx, `UPDATE http_monitors SET name='atomic-new-config',version=version+1,updated_at=clock_timestamp() WHERE workspace_id=$1 AND project_id=$2 AND id=$3`, m.WorkspaceID, m.ProjectID, m.ID); e != nil {
+		t.Fatal(e)
+	}
+	// Independent HTTP/LOGIN sees the complete pre-commit snapshot without
+	// waiting for row writers. After Commit every dimension changes atomically.
+	before := status74Read(t, api, m, f.memberToken)
+	if before.ConfigurationVersion != old.ConfigurationVersion || before.ActivationGeneration != old.ActivationGeneration || before.AuthorizationState != "valid" {
+		t.Fatal("uncommitted mixed projection")
+	}
+	t.Log("before writer Commit", before.ConfigurationVersion, before.ActivationGeneration)
+	if e = tx.Commit(ctx); e != nil {
+		t.Fatal(e)
+	}
+	after := status74Read(t, api, m, f.memberToken)
+	if after.ConfigurationVersion == old.ConfigurationVersion || after.ActivationGeneration == old.ActivationGeneration || after.AuthorizationState != "none" || after.DesiredState != "disabled" || after.SchedulingState != "disabled" || after.CurrentObservation != nil {
+		t.Fatal("mixed post-commit projection", after)
+	}
+	t.Log("after writer Commit", after.ConfigurationVersion, after.ActivationGeneration)
+	// An uncommitted membership removal similarly cannot produce partial
+	// authorization. The next statement after committed removal must refuse.
+	tx, e = db.Begin(ctx)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer tx.Rollback(ctx)
+	if _, e = tx.Exec(ctx, `DELETE FROM workspace_members WHERE workspace_id=$1 AND user_id=$2`, m.WorkspaceID, f.member.ID); e != nil {
+		t.Fatal(e)
+	}
+	status74Read(t, api, m, f.memberToken)
+	if e = tx.Commit(ctx); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = (monitor.Store{Pool: api}).ExecutionStatus(ctx, f.md, m.WorkspaceID, m.ProjectID, m.ID); e != monitor.ErrNotFound {
+		t.Fatal("stale membership snapshot", e)
+	}
+}
+
+func TestExecutionStatusHTTPFailuresAndBudget(t *testing.T) {
+	db := workspaceDB(t)
+	api := status74API(t, db)
+	f, m := monitorFixture(t, db)
+	ctx := context.Background()
+	server, client, logs := checkpointHTTPServer(t, api)
+	tx, e := db.Begin(ctx)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer tx.Rollback(ctx)
+	if _, e = tx.Exec(ctx, `LOCK TABLE scheduler_control IN ACCESS EXCLUSIVE MODE`); e != nil {
+		t.Fatal(e)
+	}
+	started := time.Now()
+	code, h, raw := checkpointHTTP(t, client, server.URL, "GET", status74Path(m), "", f.memberToken, "", nil)
+	elapsed := time.Since(started)
+	if code != 503 || !bytes.Contains(raw, []byte("database_timeout")) || h.Get("Cache-Control") != "no-store" || elapsed < 1500*time.Millisecond || elapsed > 5*time.Second {
+		t.Fatal("2s DB/5s HTTP budget", code, elapsed, string(raw))
+	}
+	if e = tx.Rollback(ctx); e != nil {
+		t.Fatal(e)
+	}
+	status74Read(t, api, m, f.memberToken)
+	api.Close()
+	code, _, raw = checkpointHTTP(t, client, server.URL, "GET", status74Path(m), "", f.memberToken, "", nil)
+	if code != 500 || !bytes.Contains(raw, []byte("internal_error")) {
+		t.Fatal("closed dependency contract", code, string(raw))
+	}
+	server.Close()
+	for _, x := range []string{m.URL, m.ID, "scheduler_control", "status74_api", "password", "token_hash", "SENTINEL"} {
+		if strings.Contains(logs.String(), x) || bytes.Contains(raw, []byte(x)) {
+			t.Fatal("dependency error leak", x)
+		}
+	}
+	t.Log(fmt.Sprintf("real lock deadline elapsed=%s; 503 then recovery200 then dependency500", elapsed))
+}

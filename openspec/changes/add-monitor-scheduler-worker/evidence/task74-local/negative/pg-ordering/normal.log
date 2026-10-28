@@ -1,0 +1,55 @@
+=== RUN   TestCheckpointOneHTTPIntentStatusContract
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/disabled
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/blocked
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/authorized_waiting
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/due
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/leased
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/started
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/unknown
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/completed
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/configuration_changed
+=== RUN   TestCheckpointOneHTTPIntentStatusContract/expired
+=== NAME  TestCheckpointOneHTTPIntentStatusContract
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestCheckpointOneHTTPIntentStatusContract (0.23s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/disabled (0.02s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/blocked (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/authorized_waiting (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/due (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/leased (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/started (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/unknown (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/completed (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/configuration_changed (0.01s)
+    --- PASS: TestCheckpointOneHTTPIntentStatusContract/expired (0.01s)
+=== RUN   TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities
+    registration_test.go:79: native Goose up expected-success=true: verified
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities (0.15s)
+=== RUN   TestExecutionStatusHTTPAuthority
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestExecutionStatusHTTPAuthority/revoked
+=== RUN   TestExecutionStatusHTTPAuthority/expired
+=== RUN   TestExecutionStatusHTTPAuthority/disabled-user
+=== RUN   TestExecutionStatusHTTPAuthority/removed
+=== RUN   TestExecutionStatusHTTPAuthority/rejoined
+=== RUN   TestExecutionStatusHTTPAuthority/full-scope-and-cookie
+=== NAME  TestExecutionStatusHTTPAuthority
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- PASS: TestExecutionStatusHTTPAuthority (0.19s)
+    --- PASS: TestExecutionStatusHTTPAuthority/revoked (0.02s)
+    --- PASS: TestExecutionStatusHTTPAuthority/expired (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/disabled-user (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/removed (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/rejoined (0.01s)
+    --- PASS: TestExecutionStatusHTTPAuthority/full-scope-and-cookie (0.01s)
+=== RUN   TestExecutionStatusProjectionIsolation
+    registration_test.go:79: native Goose up expected-success=true: verified
+=== RUN   TestExecutionStatusProjectionIsolation/pointer-and-unknown
+    scheduler_status74_test.go:232: late audit shadowed current Result pointer {enabled 01a18178-b97a-75b8-97c9-92b00baf05af 01a18178-b980-73cb-bb71-bcba2a38b45e 01a18178-b981-7bb7-b48b-1dc55ea56dd7 2 3 0x40000b57f0 valid blocked false 2026-10-28 07:47:35.110767 +0000 UTC <nil> false start_commit 0x40000b5800 0x40000f7100 0x40000f7200 0x40000f7300}
+=== NAME  TestExecutionStatusProjectionIsolation
+    workspace_test.go:26: native Goose down-to 0 expected-success=true: verified
+--- FAIL: TestExecutionStatusProjectionIsolation (0.14s)
+    --- FAIL: TestExecutionStatusProjectionIsolation/pointer-and-unknown (0.03s)
+FAIL

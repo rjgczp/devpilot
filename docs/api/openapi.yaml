@@ -11901,7 +11901,8 @@
               "none",
               "valid",
               "expired"
-            ]
+            ],
+            "description": "Consent lifetime only: none, valid or expired. Separate from Owner intent, deployment admission, scheduling and actual Run outcome."
           },
           "scheduling_state": {
             "type": "string",
@@ -11930,7 +11931,8 @@
             "format": "date-time"
           },
           "in_flight": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "True if a started Run still lacks trusted physical release confirmation, including old lineage or unknown after Pause/PATCH/expiry. Lease expiry or HTTP completion alone cannot clear it."
           },
           "pause_semantics": {
             "type": "string",
@@ -11965,7 +11967,8 @@
                   "null"
                 ]
               }
-            ]
+            ],
+            "description": "At most one latest attempt with its original lineage. started means running; unknown is uncertain delivery and never inferred HTTP failure. A newer unknown is not hidden by an older success."
           },
           "latest_completed_observation": {
             "oneOf": [
@@ -11977,7 +11980,8 @@
                   "null"
                 ]
               }
-            ]
+            ],
+            "description": "At most one historical completed observation with its original v/g/epoch; may differ from the current configuration or authorization and does not assert current health."
           },
           "current_observation": {
             "oneOf": [
@@ -11989,7 +11993,8 @@
                   "null"
                 ]
               }
-            ]
+            ],
+            "description": "At most one confirmed observation from the gated Result pointer, matching current configuration_version, activation_generation and scheduler_epoch. Null when the pointer or lineage is invalid or the latest attempt is unknown; independent of physical capacity settlement."
           },
           "desired_state": {
             "type": "string",

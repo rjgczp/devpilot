@@ -238,6 +238,9 @@ jobs:
       - name: Verify task7.3 unknown quarantine and future recovery normal/race
         run: |
           python3 tests/scheduler/run-recovery73.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/recovery73-evidence"
+      - name: Verify task7.4 authoritative HTTP status over real PG18 physical lifecycle normal/race
+        run: |
+          python3 tests/scheduler/run-status74.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/status74-evidence"
       - name: Upload separate execution evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -261,4 +264,5 @@ jobs:
             ${{ runner.temp }}/result71-evidence/
             ${{ runner.temp }}/result72-evidence/
             ${{ runner.temp }}/recovery73-evidence/
+            ${{ runner.temp }}/status74-evidence/
           if-no-files-found: error

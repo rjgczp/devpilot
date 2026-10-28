@@ -12,9 +12,11 @@ only run36s of its real60s wait; earlier tests had already used about84s. A late
 real45s unstarted Lease test also needs a separate process. This is a cumulative
 process budget, not evidence of a stuck DB permission or a reason to weaken time.
 
-`integration-groups.json` is an explicit147-test manifest: all142 tests previously
+The original147-test manifest included all142 tests previously
 selected by `integration`, plus the5 already-reviewed Linux schedulerfixture
-Claim/recovery tests. Five core groups contain30/30/30/30/25 tests. The real60s
+Claim/recovery tests. Task7.4 adds four named HTTP/projection/snapshot/budget tests
+in a separate status74 group, for151 total; none of the147 are removed. Five
+original core groups still contain30/30/30/30/25 tests. The real60s
 authorization and45s Lease tests each own one process. Every process retains
 `-timeout=120s` and `-count=1`; normal and race run serially against the guarded
 PG18. The former separately repeated Activation prefix is represented exactly

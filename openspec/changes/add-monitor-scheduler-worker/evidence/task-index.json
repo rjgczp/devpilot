@@ -3391,9 +3391,71 @@
         "Actions execution-security release54-evidence/{normal,race}; frozen HEAD CI reported separately"
       ],
       "implementation_commit": "30870fc2d713c8865e9921fe6d6e5bcec8c35e0d"
+    },
+    "7.3": {
+      "requirements": [
+        "Unknown delivery is terminal for retry and distinct from failure"
+      ],
+      "scenarios": [
+        "Exception - Process dies after sending GET",
+        "Exception - Start acknowledgement is lost",
+        "Concurrency - Late results and later cycles"
+      ],
+      "implementation_commit": "a1fc65a0dbc9c53259d9b06a411250575f35fa6d",
+      "tests": [
+        "22 real recovery tests normal and race, 44 cells per frozen Push/PR CI"
+      ],
+      "command": "Original frozen commands/exit codes/source hashes retained in referenced Artifacts; acceptance only rehashed evidence, did not rerun",
+      "exit_code": 0,
+      "evidence": [
+        "evidence/task73-final-review/README.md",
+        "evidence/task73-final-review/artifact-index.json",
+        "evidence/task73-final-review/product-acceptance.json"
+      ],
+      "scope_adjustment": "No precise canceled classification absent trusted distinguishable persisted denial; conservative unknown explicitly accepted",
+      "residual_risk": "Historical IPv6 route20s timeout root cause unresolved"
+    },
+    "7.4": {
+      "requirements": [
+        "Execution status is a separate live authorized projection",
+        "Every run preserves complete immutable execution lineage",
+        "Results contain only bounded private observations"
+      ],
+      "scenarios": [
+        "Success - Minimal status distinguishes intent and actual execution",
+        "Security - Current identity and privacy remain mandatory",
+        "Concurrency - Unknown is not masked by an earlier success"
+      ],
+      "implementation": [
+        "migrations/00008_create_monitor_scheduler.sql: existing execution_status body only",
+        "internal/monitor/execution_status_handler.go: reused unchanged",
+        "internal/monitor/execution_status_store.go: reused unchanged",
+        "docs/api/openapi.yaml"
+      ],
+      "tests": [
+        "TestExecutionStatusHTTPAuthority",
+        "TestExecutionStatusProjectionIsolation",
+        "TestExecutionStatusSingleStatementSnapshot",
+        "TestExecutionStatusHTTPFailuresAndBudget",
+        "TestExecutionStatusRealCompletedPG",
+        "TestExecutionStatusRealOldResultPG",
+        "TestExecutionStatusRealUnknownPG",
+        "TestExecutionStatusPopulatedOpenAPIContract",
+        "TestExecutionStatusOrthogonalSchema"
+      ],
+      "command": "Actual argv, per-run exits and source/binary/log hashes in evidence/task74-local; clean frozen SHA captured by subsequent GitHub Actions checkout/record receipts",
+      "exit_code": 0,
+      "implementation_commit": "Git commit containing this entry; actual full frozen SHA recorded in delivery/CI checkout receipts after commit (no self-referential guessed SHA)",
+      "evidence": [
+        "evidence/task74-local/README.md",
+        "evidence/task74-local/implementation-byte-binding.json",
+        "evidence/task74-local/proof-audit.json"
+      ],
+      "frozen_ci": "pending actual Push/PR results; no success predeclared",
+      "sql_permission_delta": []
     }
   },
-  "remaining": "19 unchecked tasks:6.3,groups7–10. Task5.4 physical quarantine/receipt settlement and task6.5 isolated physical stop accepted in their fixture scopes;28/47 overall. No production execution or task6.3 combined-kernel acceptance; stop for independent review. Final frozen-HEAD CI is reported separately.",
+  "remaining": "14 unchecked tasks: 7.5,8.1,8.2,8.3,9.1,9.2,9.3,9.4,9.5,10.1,10.2,10.3,10.4,10.5. Stop after7.4 delivery;7.5 not authorized. Production hard closed.",
   "final_implementation_sha": null,
   "checkpoint1_final": {
     "tasks": [
@@ -3527,5 +3589,63 @@
     "whole_change_complete": false,
     "count_unchanged": 27,
     "final_ci": "Must inspect new delivered HEAD Push/PR; no result prefilled."
+  },
+  "current_task_snapshot": {
+    "complete": 33,
+    "total": 47,
+    "completed_task_numbers": [
+      "1.1",
+      "1.2",
+      "1.3",
+      "1.4",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4",
+      "2.5",
+      "3.1",
+      "3.2",
+      "3.3",
+      "3.4",
+      "3.5",
+      "4.1",
+      "4.2",
+      "4.3",
+      "4.4",
+      "4.5",
+      "4.6",
+      "5.1",
+      "5.2",
+      "5.3",
+      "5.4",
+      "6.1",
+      "6.2",
+      "6.3",
+      "6.4",
+      "6.5",
+      "7.1",
+      "7.2",
+      "7.3",
+      "7.4"
+    ],
+    "remaining_task_numbers": [
+      "7.5",
+      "8.1",
+      "8.2",
+      "8.3",
+      "9.1",
+      "9.2",
+      "9.3",
+      "9.4",
+      "9.5",
+      "10.1",
+      "10.2",
+      "10.3",
+      "10.4",
+      "10.5"
+    ],
+    "authority": "current tasks.md checkboxes; historical completed map/checkpoint records below may omit older accepted tasks",
+    "independent_task74_review": "pending",
+    "frozen_ci": "pending"
   }
 }

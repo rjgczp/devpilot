@@ -1,0 +1,10 @@
+{
+  "diagnostic_exit": 1,
+  "bounded_diagnostic_only": true,
+  "actual_current_pointer_correct": true,
+  "fence1_claimed_at": "2026-10-28T07:51:59.520790Z",
+  "fence2_claimed_at": "2026-10-28T07:51:59.511476Z",
+  "cause": "New row fixture incorrectly made old Run claimed 9.314ms later, despite earlier fence. Endpoint correctly chose actual latest attempt. Fixed claim timestamps to one immutable schedule.created_at anchor while finish times remain independent.",
+  "production_changes_for_fix": false,
+  "assertions_weakened": false
+}
