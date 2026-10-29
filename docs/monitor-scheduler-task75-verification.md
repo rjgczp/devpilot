@@ -2,7 +2,7 @@
 
 基线：main/origin/main `5905f518632025c32b2a02c6f21ab675bf45bb2c`，PR11阶段性合并；
 main CI40669015064实际成功。开发分支：`codex/monitor-execution-status-consistency`。
-本轮仅7.5，当前33/47，待新提交的Push/PR CI全部成功后才勾选并更新34/47。
+本轮仅7.5，已在实现提交的Push/PR CI全部成功后勾选，当前34/47；独立代码审查待签署。
 
 ## 变更边界
 
@@ -49,7 +49,8 @@ EXECUTE及表列ACL均无变更。未发现需要修改生产实现的缺陷。
 | CI integration清单合同 / gofmt / git diff --check / Change strict | 0；ci-plan-final.log、openspec-change.log；原151项不删，新增4项，总155每模式，真实60s独立分组 |
 | 全库OpenSpec strict | 1；openspec-all.json：原4份规格7项长度WARNING，14通过/4失败；未改无关规格 |
 
-原始本地证据归档：`/private/tmp/devpilot-task75-evidence.tar.gz`，SHA256：
+原始本地证据归档（稳定保存）：
+`/Users/sansea/.codex/artifacts/devpilot/task75/task75-evidence.tar.gz`，SHA256：
 `c48d2c6d7aa6398277745819bde37ae13ea6943aa7477b5e102adbe2289bc8cc`。
 大型trace留在原始归档及后续GitHub Actions Artifacts，不反复提交Git。
 
@@ -62,5 +63,24 @@ EXECUTE及表列ACL均无变更。未发现需要修改生产实现的缺陷。
 4. 新测试屏障编译缺pgxpool import；补import。日志、原始新fixture源码和命令均在归档。
 
 7.3保守unknown、精确canceled尚不支持、历史IPv620s及既有未确定风险继续保留，未宣称修复。
-本地所有本轮容器已停止。新Push/PR CI及最终提交SHA待实际完成后登记；不预称独立批准。
+本地所有本轮容器及本轮启动的Docker运行时已停止；未预称独立批准。
 PR保持Open，完成7.5交付后停止；不实施8.1，不合并、Archive、部署或开放生产网络。
+
+## 冻结实现提交的实际 CI
+
+实现/测试 SHA：`4434303831467630a969b12609f32d5b929143e1`，冻结时工作区干净。
+以下两个workflow的verify、integration、execution-security均实际success后，才更新任务34/47。
+记录跟进提交只改文档/任务索引，其CI结论以PR最新检查为准，不冒充已验证。
+
+| 事件 | Workflow | 原始Artifact入口 |
+| --- | --- | --- |
+| Push | [40816288586](https://github.com/rjgczp/devpilot/actions/runs/40816288586) | [verify](https://github.com/rjgczp/devpilot/actions/runs/40816288586/artifacts/12872447032)、[integration](https://github.com/rjgczp/devpilot/actions/runs/40816288586/artifacts/12873440539)、[execution-security](https://github.com/rjgczp/devpilot/actions/runs/40816288586/artifacts/12875315625) |
+| PR | [40816345802](https://github.com/rjgczp/devpilot/actions/runs/40816345802) | [verify](https://github.com/rjgczp/devpilot/actions/runs/40816345802/artifacts/12872860996)、[integration](https://github.com/rjgczp/devpilot/actions/runs/40816345802/artifacts/12873271319)、[execution-security](https://github.com/rjgczp/devpilot/actions/runs/40816345802/artifacts/12875177949) |
+
+每workflow完整155 normal+155 race；原76+5内核安全、Budget23、历史Snapshot、
+6.4/6.5/5.4、6.3、7.1/7.2/7.3/7.4回归及本轮12项联合用例保留并通过。
+原始命令、退出码、实际HEAD/源码/二进制哈希及接收端/网络/签名/PG数据在对应Artifact。
+PR integration Artifact已本地核对：head4434303、dirty=false、155/155、API80/0。
+Push Artifact两次本地读取EOF，未重复测试；远端Artifact及其workflow实际成功记录仍可审阅。
+本轮无新增未解决实现问题；历史风险与新测试开发首次失败均保留。
+下一开发任务是8.1，本轮未实施；PR12保持Open等待独立审查，不合并。

@@ -1,17 +1,30 @@
 # Verification — add-monitor-scheduler-worker
 
-## Task7.5 candidate — local acceptance complete, CI pending (2026-10-29)
+## Task7.5 technical verification complete — 34/47 (2026-10-29)
 
-PR11 was staged-merged at5905f518; main CI40669015064 succeeded. Earlier PR11
-Open/pending passages below are historical. This batch starts from clean latest
-main on codex/monitor-execution-status-consistency and implements only7.5 tests.
-Production code, Migration1–8 and all SQL/role/ACL permissions are unchanged.
-Local directed PG18 normal/race, real physical12/12 and prior7.4 regression6/6,
-unit/race/vet, exact API zero-target audit and Change strict passed. Commands,
-first failures and Requirement/Scenario/Test mapping:
+Implementation/test SHA4434303831467630a969b12609f32d5b929143e1 has actual
+[Push40816288586](https://github.com/rjgczp/devpilot/actions/runs/40816288586) and
+[PR40816345802](https://github.com/rjgczp/devpilot/actions/runs/40816345802)
+verify/integration/execution-security all successful. Only after both completed,
+Task7.5 was checked:34/47. Independent Task7.5 code review is still pending.
+The follow-up acceptance commit changes records only; no implementation/test or
+permission change. Its own CI is reported by the PR checks, not predeclared here.
+
+Each frozen workflow executed155 PG18 tests normal and155 race, API audit80
+approved control connections/0 unapproved targets, the new12-cell real physical
+consistency matrix and all preserved security regressions. Local directed7x2,
+physical12/12, prior7.4 regression6/6, unit/race/vet and Change strict also passed.
+Only tests/CI and the optional nil-default test observation barrier were added;
+production Go, Migration1–8, roles/functions/EXECUTE/table ACL and networking
+policy are unchanged. No production feature defect was found.
+
+PR11 was staged-merged at5905f518 and main CI40669015064 succeeded. Older PR11
+Open/pending paragraphs below remain historical. This batch uses a fresh branch
+from that main, codex/monitor-execution-status-consistency. Exact commands,
+first failures, raw archive and Requirement/Scenario/Test/CI Artifact mapping:
 [Task7.5 verification](../../../docs/monitor-scheduler-task75-verification.md).
-Task7.5 stays unchecked33/47 until actual new Push/PR CI succeeds; no8.1, merge,
-Archive, deployment or production execution. Historical negative evidence stays.
+No8.1, merge, Archive, deployment or production execution. Historical negative
+evidence and conservative unknown remain unchanged.
 
 ## Task7.4 CI delivery — separately approved historical fixture repair
 
