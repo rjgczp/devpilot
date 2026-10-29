@@ -14,6 +14,7 @@ on:
       - codex/add-monitoring-engine
       - codex/add-monitor-activation-scheduler
       - codex/add-monitor-scheduler-worker
+      - codex/monitor-execution-status-consistency
   pull_request:
     branches:
       - main
@@ -241,6 +242,9 @@ jobs:
       - name: Verify task7.4 authoritative HTTP status over real PG18 physical lifecycle normal/race
         run: |
           python3 tests/scheduler/run-status74.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/status74-evidence"
+      - name: Verify task7.5 cross-endpoint consistency with real PG18 physical lifecycle normal/race
+        run: |
+          python3 tests/scheduler/run-status75.py --tools "$RUNNER_TEMP/network64-tools" --evidence "$RUNNER_TEMP/status75-evidence"
       - name: Upload separate execution evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -265,4 +269,5 @@ jobs:
             ${{ runner.temp }}/result72-evidence/
             ${{ runner.temp }}/recovery73-evidence/
             ${{ runner.temp }}/status74-evidence/
+            ${{ runner.temp }}/status75-evidence/
           if-no-files-found: error

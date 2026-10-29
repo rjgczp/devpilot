@@ -1,5 +1,18 @@
 # Verification — add-monitor-scheduler-worker
 
+## Task7.5 candidate — local acceptance complete, CI pending (2026-10-29)
+
+PR11 was staged-merged at5905f518; main CI40669015064 succeeded. Earlier PR11
+Open/pending passages below are historical. This batch starts from clean latest
+main on codex/monitor-execution-status-consistency and implements only7.5 tests.
+Production code, Migration1–8 and all SQL/role/ACL permissions are unchanged.
+Local directed PG18 normal/race, real physical12/12 and prior7.4 regression6/6,
+unit/race/vet, exact API zero-target audit and Change strict passed. Commands,
+first failures and Requirement/Scenario/Test mapping:
+[Task7.5 verification](../../../docs/monitor-scheduler-task75-verification.md).
+Task7.5 stays unchecked33/47 until actual new Push/PR CI succeeds; no8.1, merge,
+Archive, deployment or production execution. Historical negative evidence stays.
+
 ## Task7.4 CI delivery — separately approved historical fixture repair
 
 The first frozen99497c3 Push40656977308 failed historical Activation expiry

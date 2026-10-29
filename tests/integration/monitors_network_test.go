@@ -41,4 +41,7 @@ func TestMonitorNoTargetNetwork(t *testing.T) {
 	t.Run("intent-and-authoritative-status", TestCheckpointOneHTTPIntentStatusContract)
 	t.Run("live-status-authority", TestExecutionStatusHTTPAuthority)
 	t.Run("private-status-projection", TestExecutionStatusProjectionIsolation)
+	t.Run("cross-endpoint-matrix", TestExecutionStatusCrossEndpointMatrix)
+	t.Run("cross-endpoint-snapshots", TestExecutionStatusCrossEndpointSnapshots)
+	t.Run("cross-endpoint-authority", TestExecutionStatusCrossEndpointAuthority)
 }

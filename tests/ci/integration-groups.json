@@ -183,6 +183,20 @@
       ]
     },
     {
+      "name": "status75",
+      "tests": [
+        "TestExecutionStatusCrossEndpointMatrix",
+        "TestExecutionStatusCrossEndpointSnapshots",
+        "TestExecutionStatusCrossEndpointAuthority"
+      ]
+    },
+    {
+      "name": "status75-real-expiry-60s",
+      "tests": [
+        "TestExecutionStatusCrossEndpointExpiry"
+      ]
+    },
+    {
       "name": "real-authorization-60s",
       "tests": [
         "TestCheckpointOneRealExpiryExplicitRenewal"
