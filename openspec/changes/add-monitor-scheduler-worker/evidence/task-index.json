@@ -3688,6 +3688,19 @@
     "authority": "current tasks.md checkboxes; historical completed map/checkpoint records below may omit older accepted tasks",
     "independent_task74_review": "pending",
     "frozen_ci": "Implementation4434303831467630a969b12609f32d5b929143e1 Push40816288586/PR40816345802 all three jobs success; record-only follow-up CI is reported separately.",
-    "independent_task75_review": "pending external code review"
+    "independent_task75_review": "approved by user at c31478bd3995216654a5f2206415426ade35dea8; implementation4434303831467630a969b12609f32d5b929143e1"
+  },
+  "task81_candidate": {
+    "approved_design": "a0273be20881490b59cfce7ef5a398f5fa8cb2ac",
+    "scope": "8.1 only; no cleanup/keyset/disk/production permission",
+    "migration": "migrations/00009_enforce_scheduler_capacity.sql; 1-8 unchanged",
+    "new_runtime_execute": false,
+    "local_pg_budget_normal_race": "31 each; later single-row DELETE extension passed normal/race",
+    "local_integration_normal_race": "156 each; schema9 ordinary/capacity plus explicitly pinned historical schema8 fixtures",
+    "local_physical_normal_race": "12/12 schema9 with new retention ledger assertions",
+    "local_api_audit": "80 approved control, zero unapproved target attempts; positive control detected",
+    "review_index": "docs/monitor-scheduler-task81-verification.md",
+    "ci": "not predeclared; inspect actual frozen implementation HEAD Push/PR and Artifacts",
+    "independent_code_review": "pending"
   }
 }

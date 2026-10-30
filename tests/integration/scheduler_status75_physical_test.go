@@ -37,6 +37,7 @@ func status75PhysicalObserver(t *testing.T, db *pgxpool.Pool, l handoff.Lineage)
 }
 func (o status75Observer) read(t *testing.T, db *pgxpool.Pool) status75Pair {
 	t.Helper()
+	retentionLedger(t, db) // Schema9: physical slots, pending records and retained audits agree atomically.
 	before := minimalLedger(t, db)
 	owner := status75ReadPair(t, o.client, o.server, o.m, o.owner)
 	member := status75ReadPair(t, o.client, o.server, o.m, o.member)

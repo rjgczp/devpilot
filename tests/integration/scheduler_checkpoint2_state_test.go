@@ -11,7 +11,7 @@ import (
 )
 
 func TestCheckpointTwoAttemptTransitionMatrix(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	states := []string{"leased", "started", "completed", "canceled", "expired", "unknown"}
 	for _, from := range states {
@@ -50,7 +50,7 @@ func TestCheckpointTwoAttemptTransitionMatrix(t *testing.T) {
 func TestCheckpointTwoFenceOverflowAndClockRegression(t *testing.T) {
 	for _, kind := range []string{"fence-overflow", "epoch-overflow", "clock-back-small", "clock-back-large"} {
 		t.Run(kind, func(t *testing.T) {
-			db := workspaceDB(t)
+			db := schedulerHistoricalDB(t)
 			ctx := context.Background()
 			_, _, h := schedulerClaimFixture(t, db)
 			w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")

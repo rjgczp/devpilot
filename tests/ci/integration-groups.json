@@ -170,7 +170,8 @@
         "TestWorkspaceHTTPDatabaseFailuresAndRecovery",
         "TestWorkspaceListSnapshotAndCursorChanges",
         "TestWorkspaceMigrationAndConstraints",
-        "TestWorkspaceTenantQueriesAndConcurrentCreation"
+        "TestWorkspaceTenantQueriesAndConcurrentCreation",
+        "TestSchedulerCapacityMigrationLifecycle"
       ]
     },
     {

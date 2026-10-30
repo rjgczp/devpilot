@@ -12,7 +12,7 @@ import (
 // These rows are constraint/projection fixtures only. This test never creates a
 // namespace, sends an envelope or starts a Probe. It is not physical-stop proof.
 func TestSchedulerPersistenceScopeLineageAndShape(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	s := monitor.Store{Pool: db}

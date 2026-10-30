@@ -1,5 +1,18 @@
 # Verification — add-monitor-scheduler-worker
 
+## Task8.1 implementation candidate — acceptance pending (2026-10-30)
+
+The user formally accepted Task7.5 at c31478b (implementation4434303) and approved
+the exact Task8.1 design a0273be, including Migration9/internal Trigger/column ACL.
+Only8.1 is in scope; no8.2/8.3, new runtime EXECUTE, production execution or merge.
+Migration1–8 remain byte-identical. Current technical scope, Requirement/Test map,
+schema8 historical isolation versus real schema9 coverage, first failures and raw
+receipts are in [Task8.1 verification](../../../docs/monitor-scheduler-task81-verification.md).
+Local Budget31 normal/race and complete integration156 normal/race passed in real
+protected PG18. Schema9 physical12/12, API zero-target audit80/0 and unit/race/vet
+also passed. Frozen CI still requires actual results;
+no independent8.1 approval or task checkbox is asserted here. Progress34/47.
+
 ## Task7.5 technical verification complete — 34/47 (2026-10-29)
 
 Implementation/test SHA4434303831467630a969b12609f32d5b929143e1 has actual

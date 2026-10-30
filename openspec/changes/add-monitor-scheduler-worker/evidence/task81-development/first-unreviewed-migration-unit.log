@@ -1,0 +1,19 @@
+ok  	github.com/rjgczp/devpilot/cmd/api	6.257s
+ok  	github.com/rjgczp/devpilot/internal/app	1.568s
+ok  	github.com/rjgczp/devpilot/internal/auth	0.494s
+ok  	github.com/rjgczp/devpilot/internal/config	0.297s
+?   	github.com/rjgczp/devpilot/internal/credentials	[no test files]
+ok  	github.com/rjgczp/devpilot/internal/health	0.327s
+ok  	github.com/rjgczp/devpilot/internal/monitor	0.687s
+--- FAIL: TestDormantProductionDependencyAndSchemaBoundary (0.14s)
+    contract_test.go:104: unreviewed migration
+FAIL
+FAIL	github.com/rjgczp/devpilot/internal/monitoring	2.017s
+ok  	github.com/rjgczp/devpilot/internal/password	1.563s
+ok  	github.com/rjgczp/devpilot/internal/project	0.650s
+ok  	github.com/rjgczp/devpilot/internal/registration	0.329s
+ok  	github.com/rjgczp/devpilot/internal/session	0.317s
+ok  	github.com/rjgczp/devpilot/internal/testdb	0.543s
+ok  	github.com/rjgczp/devpilot/internal/user	0.335s
+ok  	github.com/rjgczp/devpilot/internal/workspace	0.739s
+FAIL

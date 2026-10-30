@@ -57,7 +57,7 @@ func checkpointInvalidCandidate(t *testing.T, err error) {
 }
 
 func TestCheckpointOneStartOwnerLossBothOrders(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	schedulerDatabaseOnlyGate(t, db)
@@ -139,7 +139,7 @@ func TestCheckpointOneStartOwnerLossBothOrders(t *testing.T) {
 }
 
 func TestCheckpointOneStartExpiryAfterFinalWait(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	_, m, h := schedulerClaimFixture(t, db)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
@@ -181,7 +181,7 @@ func TestCheckpointOneStartExpiryAfterFinalWait(t *testing.T) {
 }
 
 func TestCheckpointOneSessionIsNotBackgroundIdentity(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	schedulerDatabaseOnlyGate(t, db)

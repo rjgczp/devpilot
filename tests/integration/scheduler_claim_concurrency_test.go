@@ -95,7 +95,7 @@ func awaitSchedulerClaim(t *testing.T, ch <-chan schedulerClaimResult, wantSucce
 	}
 }
 func TestSchedulerClaimTwoOwnersWorkersAndUserPatch(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m, h := schedulerClaimFixture(t, db)
 	if _, err := db.Exec(ctx, `UPDATE workspace_members SET role='owner' WHERE workspace_id=$1 AND user_id=$2`, f.w.ID, f.member.ID); err != nil {
@@ -147,7 +147,7 @@ func TestSchedulerClaimTwoOwnersWorkersAndUserPatch(t *testing.T) {
 	}
 }
 func TestSchedulerClaimOwnerHintInvalidation(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	w1, i1 := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	schedulerDatabaseOnlyGate(t, db)
@@ -197,7 +197,7 @@ func TestSchedulerClaimOwnerHintInvalidation(t *testing.T) {
 	}
 }
 func TestSchedulerClaimFinalClockAfterControlWait(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	_, m, h := schedulerClaimFixture(t, db)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")

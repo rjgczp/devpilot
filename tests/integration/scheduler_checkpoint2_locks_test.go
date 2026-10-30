@@ -75,7 +75,7 @@ func checkpointTwoPromote(t *testing.T, db *pgxpool.Pool, f memberFixture, h sch
 func TestCheckpointTwoClaimCompetingOwners(t *testing.T) {
 	for _, candidate := range []string{"same-owner", "different-owner"} {
 		t.Run(candidate, func(t *testing.T) {
-			db := workspaceDB(t)
+			db := schedulerHistoricalDB(t)
 			ctx := context.Background()
 			f, _, h := schedulerClaimFixture(t, db)
 			h2 := h
@@ -125,7 +125,7 @@ func TestCheckpointTwoClaimOwnerLossBothOrders(t *testing.T) {
 	for _, mode := range []string{"disabled", "demoted", "removed", "rejoined-member", "rejoined-owner"} {
 		for _, order := range []string{"loss-first", "claim-first"} {
 			t.Run(mode+"/"+order, func(t *testing.T) {
-				db := workspaceDB(t)
+				db := schedulerHistoricalDB(t)
 				ctx := context.Background()
 				f, _, h := schedulerClaimFixture(t, db)
 				h2 := checkpointTwoPromote(t, db, f, h)
@@ -229,7 +229,7 @@ func TestCheckpointTwoClaimOwnerLossBothOrders(t *testing.T) {
 }
 
 func TestCheckpointTwoPatchBeforeWorkers(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m, h := schedulerClaimFixture(t, db)
 	h2 := checkpointTwoPromote(t, db, f, h)
@@ -282,7 +282,7 @@ func checkpointTwoAssertPatched(t *testing.T, db *pgxpool.Pool, h schedulerClaim
 }
 
 func TestCheckpointTwoDifferentWorkspaceCandidates(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	var hints []schedulerClaimHint
 	for _, name := range []string{"first", "second"} {
@@ -321,7 +321,7 @@ func TestCheckpointTwoDifferentWorkspaceCandidates(t *testing.T) {
 }
 
 func TestCheckpointTwoDifferentMonitorSameWorkspace(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m, h := schedulerClaimFixture(t, db)
 	h2 := checkpointTwoPromote(t, db, f, h)

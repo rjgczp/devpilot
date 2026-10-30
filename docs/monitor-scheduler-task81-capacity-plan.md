@@ -1,4 +1,10 @@
-# Task 8.1 — 容量账迁移与最小权限申请（待批准）
+# Task 8.1 — 容量账迁移与最小权限设计（已批准，实施验收中）
+
+实施授权更新：产品负责人明确批准以a0273be20881490b59cfce7ef5a398f5fa8cb2ac为依据实施
+本设计的Migration9、内部Trigger、Claim重排、status及最小ACL，无运行角色新EXECUTE。
+实际代码与验收状态见[Task8.1验收索引](monitor-scheduler-task81-verification.md)。
+以下“尚未创建/仅设计提交/待批准”叙述保留的是设计编写时状态，不表示本次授权仍缺失；
+不以设计批准冒充实现独立审核或尚未执行的测试。
 
 日期：2026-10-30。仅为实施前设计申请，尚未创建 Migration9、函数、权限或测试。
 本次用户仅授权将此设计文档提交至独立分支 `codex/monitor-capacity-design`；
