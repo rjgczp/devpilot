@@ -8,6 +8,10 @@
 实现基线分支：`codex/monitor-execution-status-consistency`；PR12 Open。
 Task7.5 已获本轮用户独立批准；34/47，Task8.1 未完成。
 
+设计复核修订：此前版本把预算初始化隐含在 Run INSERT 之后，不能保证首次 Claim
+所需预算行存在。本版明确改变拟实现的 claim() SQL 顺序；不保留该旧方案。
+这仍是待批准设计，下面的新顺序、Trigger 和迁移均未实施或进行 PG 验收。
+
 ## 依据与现状
 
 对应 Design **D9** 的容量条款、Task8.1，以及 Delta `monitor-runs`：
@@ -76,15 +80,110 @@ REVOKE ALL ON FUNCTION scheduler_private.run_capacity_accounting() FROM PUBLIC;
 不向 Worker、Controller、Supervisor、API 或其 LOGIN 身份授予该函数 EXECUTE。
 仅由 `monitor_runs` 的容量触发器进入，不是新的结果、回收或管理 API。
 
-- INSERT：在 Run 阶段之后按 G→W→P→M 锁现有预算行，原子预留 retained 与 pending。
-  Claim 中原有 retained 增量随之移入此处，避免双计；物理槽增量仍由 Claim 执行。
-  任何后续鉴权、预算或 Commit 失败都与 Run 一并回滚。
+- INSERT：Claim **先初始化并按 G→W→P→M 锁定预算行，再 INSERT Run**。
+  非延迟的行级容量 Trigger 只对这些已存在、已锁定的行原子预留 retained 与 pending；
+  不调用 lock_budgets、不创建预算行、不自行补取锁。缺行、计数不一致或容量不足即失败。
+  Claim 中原有 retained 增量移入 Trigger，避免双计；物理槽增量仍由 Claim 执行。
+  下节给出必须替换的 SQL 顺序，不以加注释代替重排。
 - UPDATE：仅按旧/新 predicate 的变化调整 pending；不重复预留终态空间。
   现有 Start、Result、unknown、终止回执、未准备租约回收路径必须在 Run 之后、
-  Reservation 之前已锁预算；触发器不能在 Reservation 后首次补取预算锁。
+  Reservation 之前已锁预算；Trigger 不初始化预算行、不调用 lock_budgets，不能在
+  Reservation 或控制锁之后首次补取预算锁。predicate 不变时不更新容量账。
 - DELETE：容量账基础保护只允许已终态、无未确认物理权限、无活动引用的记录；
   拒绝删除仍被 Schedule/Reservation 引用的 Run，禁止 TRUNCATE 绕过账。
-  合法删除与减账同事务；本批不提供删除入口、清理循环或投影指针修复。
+  合法删除与减账同事务；调用者必须先按父序预锁，Trigger 不能反向锁父级、Run、
+  Reservation 或控制行。本批不提供删除入口、清理循环或投影指针修复。
+
+### Claim 新旧 SQL 顺序：首次登记必须先有预算行
+
+源码基线：`migrations/00008_create_monitor_scheduler.sql` 的 claim()，598–657行；
+lock_budgets()，566–579行。以下伪 SQL 展示实际操作顺序，省略参数不代表省略校验。
+
+```sql
+-- 旧 Migration8（原文件保持不变）
+system_identity('worker', incarnation);
+lock_parents(...);               -- User / W / Membership / P / M / Activation / Schedule
+lock_existing_outstanding_run(); -- 若存在则失败，不再领取
+INSERT INTO public.monitor_runs (...);  -- 此时首次 W/P/M 预算行可能尚不存在
+lock_budgets(wid, pid, mid);     -- 之后才创建并锁 G/W/P/M
+INSERT INTO public.scheduler_reservations (...);
+lock_control(incarnation);
+fresh_time_and_authorization_check();
+increment_physical_slots_and_retained(); -- 原有混合增量
+finalize_claim_and_schedule();
+```
+
+拟由 Migration9 替换 claim() 的函数体，完整顺序如下：
+
+1. 身份与原父级锁：先 system_identity；候选 Owner User SHARE → Workspace
+   NO KEY UPDATE SKIP LOCKED → Membership → Project → Monitor → Activation → Schedule。
+   不在 Workspace 后改选 Owner。现有 outstanding Run 检查/锁仍在预算之前，
+   有冲突直接回滚；不得持预算锁后再寻找或锁定另一个既存 Run。
+2. 调用现有 lock_budgets(wid,pid,mid)：先锁 global；在其保护下按 W→P→M
+   INSERT ON CONFLICT DO NOTHING 并逐行 FOR UPDATE。首次 Claim 因而有完整预算行。
+   预算 key 的10000限制仍由既有 Trigger 强制；初始化失败不得留下半套预算。
+3. INSERT 新 monitor_runs。容量 Trigger 原子增加 G/W/M retained 及 G pending；
+   全部更新命中步骤2已锁的行，不能把“未命中预算行”当成预留成功。
+4. Claim 单独条件更新物理并发账：G 的 in_use/active_count、W/P/M 的 in_use，
+   保留32/4/2/1约束；**不再增加 retained 或 pending**。这里是事务内暂存的预订，
+   不是成功 Claim 或可执行网络能力；物理槽不足也使步骤2–3全部回滚。
+5. 创建 Reservation，然后取得原 control 锁；所有等待完成后，以新 SPI 命令和
+   clock_timestamp() 复验身份、Owner、完整scope、v/g/epoch、期限、冷却、部署许可与stop。
+   最终时间/keep_until、claimed_at/lease、Schedule 和控制账使用复验后的 gate_now。
+6. 同一 READ COMMITTED 数据库事务内提交，确认 Commit 后才承认 Claim。
+   任意初始化/Trigger/配额/授权/超时/取消失败均全量回滚，不能捕获后保留预订并继续。
+   Commit ACK 未知沿用固定 Run 身份对账，不重新 Claim 或重新创建容量预留。
+
+```sql
+-- 新设计（未实施）
+system_identity('worker', incarnation);
+lock_parents(...);
+lock_existing_outstanding_run(); -- 既存 Run 的所有加锁在预算之前；有冲突即失败
+lock_budgets(wid, pid, mid);     -- 初始化并按 G→W→P→M 锁定，先于新 Run INSERT
+INSERT INTO public.monitor_runs (...); -- Trigger 仅在已锁行上预留 retained / pending
+increment_physical_slots_only();       -- 不重复增加 retained / pending
+INSERT INTO public.scheduler_reservations (...);
+lock_control(incarnation);
+fresh_time_and_authorization_check();
+finalize_claim_and_schedule();
+COMMIT;                         -- 唯一持久化边界；此前所有更改一并成败
+```
+
+新增 Run INSERT 是创建本候选自己的记录，不是预算之后锁一个共享既存 Run。
+其完整scope、next_run_id、fence来自已锁 Schedule；不由调用者任意指定另一个 Run。
+既存 outstanding Run 的检查必须保留在步骤1，不能为了重排把它移到预算之后。
+重复 ID/唯一约束冲突必须在原预算内失败回滚，不能在同一事务里改选身份或无限等待。
+
+### 其他 Run UPDATE/DELETE 路径的只读锁序核查
+
+下表核查同一 Migration8 源码；行号指本设计基线，不代表8.1实现或运行证明。
+代码目录 internal/ 与 cmd/ 未找到直接 monitor_runs INSERT/UPDATE/DELETE；运行写入口在这些
+受限 SQL 函数中。容量 Trigger 只能更新已持有的预算行，SQL UPDATE 的隐式行锁也必须
+是对既有锁的重入；不得把 Trigger 内 UPDATE 视作“不需要锁序”的操作。
+
+| 入口与源码行 | 现有首次锁获取顺序 | 拟新增 Trigger 行为与兼容条件 |
+| --- | --- | --- |
+| claim，598–657 | 父级→既存 Run 检查；原 INSERT 后才锁预算 | 按上节实质重排。最后更新新 Run 的 claimed_at 时，预算及新 Run 已由本事务持有，predicate 不变，不再加账 |
+| start_run，771–820 | User/父级→Run FOR UPDATE→G/W/P/M→Reservation→Control/Supervisor control→UPDATE Run | leased→started 的 pending predicate 都为true，不改容量；Trigger 不取新锁 |
+| expire_unstarted，934–975 | 父级→Run→G/W/P/M→Reservation→Control→UPDATE Reservation/Run | never_prepared 已由原协议确认时，expired退出pending一次；已准备但未释放则仍占pending。仅更新已锁G，不减retained，不伪造物理证明 |
+| accept_termination，1209–1293 | 父级→Run→G/W/P/M→排序origin/IP→Reservation→Control→返物理槽→UPDATE Run | started仅增加物理证明仍占pending；unknown/expired等已终态才退出pending一次。Trigger只更新已锁G，不回头锁Run/父级/目标key |
+| persist_minimal_result，1324–1382 | 父级→Run→G/W/P/M→排序origin/IP→Reservation→Control→UPDATE stop_reason | 仅stop_reason变化，predicate不变，无容量增减；旧network写路径继续拒绝 |
+| commit_result，1395–1463 | 父级→Run→G/W/P/M→排序origin/IP→Reservation→Control→UPDATE Run | 原物理证明门控不变，started→completed退出pending一次；retained早已预留。相同commit_id重提不再执行首次转换，不重复减账 |
+| recover_started，1518–1581 | 父级→Run→G/W/P/M→排序origin/IP→Reservation→Control→UPDATE Run | 保守started→unknown；未释放则pending不变，已有可信物理释放才退出pending。安排未来Schedule身份不INSERT新Run、不退款retained |
+| DELETE | 当前运行函数没有Run DELETE入口，普通运行角色无表DELETE权限 | 不在8.1引入入口。未来调用者须父级→目标Run FOR UPDATE→G/W/P/M→必要目标key→Reservation，再处理引用后DELETE；Trigger只校验和更新已锁账，不代做预锁/清理 |
+
+prepare_run、consume_input、reserve_target、quarantine_physical 以及各 reconcile 入口
+不执行 Run INSERT/UPDATE/DELETE，因此不触发新增容量 Trigger；不为了容量账扩大这些
+函数的行为或权限。父级撤销 Trigger 更新 Schedule，不借 Pause/PATCH 删除或重写 Run。
+
+Supervisor 与 Recovery 并发修改同一 Run 时先在共同父级/Run 上串行，再取得同方向预算锁；
+Trigger 不在持有 Reservation/Control 后新增 G/W/P/M 锁依赖。不同 Workspace 的 Claim
+在全局预算行串行预留，持有预算后不能反向选择既存 Run。初次预算创建也在同方向完成。
+因此本设计不引入“预算→既存Run/父级”或“Reservation→新预算锁”的反向边。
+DELETE 调用者未预锁、预算缺行、活动引用未解除时不能由 Trigger 自行补救并放行。
+该结论是源码与拟定操作顺序的兼容性结论，**不是已实现或真实PG无死锁的验收结论**；
+获批实施后必须以首次Claim缺预算、Claim/Supervisor/Recovery交错、最后一槽及故障回滚
+的真实PG18锁图、独立连接、normal/race验证，失败则停止，不扩大权限或更改超时。
 
 运行事务保持原有父序、250ms lock_timeout、2s 预算；不新增容量表或反向锁。
 容量失败固定 retention_capacity，物理并发不足仍为 resource_limited。
@@ -136,6 +235,7 @@ GRANT UPDATE (
 | 项目 | 必要证据 |
 | --- | --- |
 | M/W/global/count 边界 | 真实持久 Run 填充，独立连接竞争最后一槽；不能只把计数 UPDATE 到边界冒充真实数据 |
+| 首次Claim与锁序 | W/P/M预算行起初不存在，证明预锁初始化先于Run INSERT；保存与Supervisor/Recovery交错的pg_locks/pg_blocking_pids及事务时间线，失败无Run/Reservation/计数残留 |
 | pending 与物理账分离 | 已释放但未结果、unknown 未释放、结果/回执两个顺序；真实 Supervisor 证明，零提前返槽 |
 | Schedule/key10000 | 不同 Workspace 并发最后一槽、插入失败全回滚、冷却/引用数据不被当作空位 |
 | Result/状态转换 | 首次提交、同 commit_id 重提、旧 fence、unknown、转换中故障；账无负值/双计 |
