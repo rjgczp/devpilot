@@ -170,7 +170,8 @@
         "TestWorkspaceHTTPDatabaseFailuresAndRecovery",
         "TestWorkspaceListSnapshotAndCursorChanges",
         "TestWorkspaceMigrationAndConstraints",
-        "TestWorkspaceTenantQueriesAndConcurrentCreation"
+        "TestWorkspaceTenantQueriesAndConcurrentCreation",
+        "TestSchedulerCapacityMigrationLifecycle"
       ]
     },
     {
@@ -180,6 +181,20 @@
         "TestExecutionStatusProjectionIsolation",
         "TestExecutionStatusSingleStatementSnapshot",
         "TestExecutionStatusHTTPFailuresAndBudget"
+      ]
+    },
+    {
+      "name": "status75",
+      "tests": [
+        "TestExecutionStatusCrossEndpointMatrix",
+        "TestExecutionStatusCrossEndpointSnapshots",
+        "TestExecutionStatusCrossEndpointAuthority"
+      ]
+    },
+    {
+      "name": "status75-real-expiry-60s",
+      "tests": [
+        "TestExecutionStatusCrossEndpointExpiry"
       ]
     },
     {

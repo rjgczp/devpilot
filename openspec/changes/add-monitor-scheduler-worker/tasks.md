@@ -57,7 +57,7 @@
 - [x] 7.3 实现started→unknown及迟到结果拒绝；按产品已接受范围，缺少可信且可区分的持久许可拒绝证据时保守unknown，不推断canceled，精确canceled分类后续另审；强杀/分区/Commit未知实测证明unknown不退leased、不补发，物理回收后下个正常周期可以继续。
 <!-- 2026-10-28: Product explicitly accepts conservative unknown scope at a1fc65a; 7.3 accepted, 32/47. Precise canceled provenance is deferred, not implemented. Historical IPv620s timeout remains unresolved. See evidence/task73-final-review/product-acceptance.json. This batch authorizes only 7.4, not 7.5. -->
 - [x] 7.4 实现唯一权威execution-status实时Owner/Member读取、同语句意图/授权/调度/attempt正交投影及最近记录各最多1条；HTTP/PG测试覆盖失权/混合scope、unknown不被旧success掩盖、版本不符null、无URL/actor/lease详情/固定错误/预算，OpenAPI及客户端明确不能从Activation迁移提示推断运行。
-- [ ] 7.5 按D11.3做真实PG18/HTTP跨接口矩阵：disabled、authorized_waiting、due、running、blocked、unknown、配置失效、期限过期及completed；无并发窗口验证固定迁移对与权威观察不矛盾，屏障覆盖两读间v/g变化须刷新、Pause/PATCH后旧在途仍可见、unknown物理回收前后in_flight变化；保持零目标审计。
+- [x] 7.5 按D11.3做真实PG18/HTTP跨接口矩阵：disabled、authorized_waiting、due、running、blocked、unknown、配置失效、期限过期及completed；无并发窗口验证固定迁移对与权威观察不矛盾，屏障覆盖两读间v/g变化须刷新、Pause/PATCH后旧在途仍可见、unknown物理回收前后in_flight变化；保持零目标审计。
 
 ## 8. 保留上限与磁盘预算
 

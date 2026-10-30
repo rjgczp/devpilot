@@ -3453,6 +3453,47 @@
       ],
       "frozen_ci": "pending actual Push/PR results; no success predeclared",
       "sql_permission_delta": []
+    },
+    "7.5": {
+      "requirements": [
+        "Execution status is a separate live authorized projection",
+        "Deprecated execution fields have an explicit breaking compatibility protocol",
+        "Physical resource release requires independent termination proof"
+      ],
+      "scenarios": [
+        "Cross endpoint disabled waiting and blocked states",
+        "Independent snapshots are not merged into a false state",
+        "Running survives pause and configuration invalidation visibly",
+        "Unknown is not masked by an earlier success",
+        "Unknown and authorization expiry remain separate observations"
+      ],
+      "implementation": [
+        "tests/integration/scheduler_status75_test.go",
+        "tests/integration/scheduler_status75_physical_test.go",
+        "tests/integration/scheduler_recovery_kernel_test.go",
+        "tests/scheduler/run-status75.py"
+      ],
+      "tests": [
+        "TestExecutionStatusCrossEndpointMatrix",
+        "TestExecutionStatusCrossEndpointSnapshots",
+        "TestExecutionStatusCrossEndpointExpiry",
+        "TestExecutionStatusCrossEndpointAuthority",
+        "TestExecutionStatusConsistencyCompletedPG",
+        "TestExecutionStatusConsistencyPausePG",
+        "TestExecutionStatusConsistencyPatchPG",
+        "TestExecutionStatusConsistencyUnknownPG",
+        "TestExecutionStatusConsistencyUnconfirmedPG",
+        "TestExecutionStatusConsistencyExpiryPG"
+      ],
+      "command": "Selected native PG18 integration normal/race; run-status75.py; run-status74.py; original API network audit; Go unit/race/vet; full frozen Push/PR CI. Exact argv in verification and Artifact receipts.",
+      "exit_code": 0,
+      "evidence": [
+        "docs/monitor-scheduler-task75-verification.md",
+        "https://github.com/rjgczp/devpilot/actions/runs/40816288586",
+        "https://github.com/rjgczp/devpilot/actions/runs/40816345802"
+      ],
+      "implementation_commit": "4434303831467630a969b12609f32d5b929143e1",
+      "independent_review": "pending"
     }
   },
   "remaining": "14 unchecked tasks: 7.5,8.1,8.2,8.3,9.1,9.2,9.3,9.4,9.5,10.1,10.2,10.3,10.4,10.5. Stop after7.4 delivery;7.5 not authorized. Production hard closed.",
@@ -3591,7 +3632,7 @@
     "final_ci": "Must inspect new delivered HEAD Push/PR; no result prefilled."
   },
   "current_task_snapshot": {
-    "complete": 33,
+    "complete": 34,
     "total": 47,
     "completed_task_numbers": [
       "1.1",
@@ -3626,10 +3667,10 @@
       "7.1",
       "7.2",
       "7.3",
-      "7.4"
+      "7.4",
+      "7.5"
     ],
     "remaining_task_numbers": [
-      "7.5",
       "8.1",
       "8.2",
       "8.3",
@@ -3646,6 +3687,20 @@
     ],
     "authority": "current tasks.md checkboxes; historical completed map/checkpoint records below may omit older accepted tasks",
     "independent_task74_review": "pending",
-    "frozen_ci": "pending"
+    "frozen_ci": "Implementation4434303831467630a969b12609f32d5b929143e1 Push40816288586/PR40816345802 all three jobs success; record-only follow-up CI is reported separately.",
+    "independent_task75_review": "approved by user at c31478bd3995216654a5f2206415426ade35dea8; implementation4434303831467630a969b12609f32d5b929143e1"
+  },
+  "task81_candidate": {
+    "approved_design": "a0273be20881490b59cfce7ef5a398f5fa8cb2ac",
+    "scope": "8.1 only; no cleanup/keyset/disk/production permission",
+    "migration": "migrations/00009_enforce_scheduler_capacity.sql; 1-8 unchanged",
+    "new_runtime_execute": false,
+    "local_pg_budget_normal_race": "31 each; later single-row DELETE extension passed normal/race",
+    "local_integration_normal_race": "156 each; schema9 ordinary/capacity plus explicitly pinned historical schema8 fixtures",
+    "local_physical_normal_race": "12/12 schema9 with new retention ledger assertions",
+    "local_api_audit": "80 approved control, zero unapproved target attempts; positive control detected",
+    "review_index": "docs/monitor-scheduler-task81-verification.md",
+    "ci": "not predeclared; inspect actual frozen implementation HEAD Push/PR and Artifacts",
+    "independent_code_review": "pending"
   }
 }

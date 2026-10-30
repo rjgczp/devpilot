@@ -87,6 +87,8 @@ for i, test in enumerate(listed):
         (a.evidence/(prefix+'-inspect.json')).write_text(json.dumps(json.loads(subprocess.check_output(['docker', 'inspect', cid]))[0], indent=2)+'\n')
         # Capture the ledger without raw configuration, network data or secrets.
         sql = "SELECT jsonb_build_object('at',clock_timestamp(),'budgets',(SELECT jsonb_agg(to_jsonb(b)) FROM scheduler_budget_state b),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r),'reservations',(SELECT jsonb_agg(to_jsonb(q)) FROM scheduler_reservations q),'locks',(SELECT jsonb_agg(to_jsonb(l)) FROM pg_locks l),'waits',(SELECT jsonb_agg(jsonb_build_object('pid',pid,'wait',wait_event,'blockers',pg_blocking_pids(pid))) FROM pg_stat_activity WHERE datname=current_database()))"
+        if test.startswith('TestBudgetRetention'):
+            sql = "SELECT jsonb_build_object('at',clock_timestamp(),'runs',(SELECT count(*) FROM monitor_runs),'global',(SELECT to_jsonb(b) FROM scheduler_budget_state b WHERE kind='global'),'states',(SELECT jsonb_agg(to_jsonb(s)) FROM (SELECT attempt_state,count(*) FROM monitor_runs GROUP BY attempt_state)s),'locks',(SELECT jsonb_agg(to_jsonb(l)) FROM pg_locks l),'waits',(SELECT jsonb_agg(jsonb_build_object('pid',pid,'wait',wait_event,'blockers',pg_blocking_pids(pid))) FROM pg_stat_activity WHERE datname=current_database()))"
         receipt = subprocess.run(['docker','exec',cid,'psql','-U','devpilot_fixture','-d','devpilot_registration_test','-At','-c',sql],capture_output=True)
         (a.evidence/(prefix+'-ledger.log')).write_bytes(receipt.stdout+receipt.stderr)
         # Only destroy the exact freshly-created, labeled disposable test server.

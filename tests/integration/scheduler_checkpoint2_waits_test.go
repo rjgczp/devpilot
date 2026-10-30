@@ -19,7 +19,7 @@ func TestCheckpointTwoParentStagesAndRollback(t *testing.T) {
 	}
 	for _, stage := range stages {
 		t.Run(stage.name, func(t *testing.T) {
-			db := workspaceDB(t)
+			db := schedulerHistoricalDB(t)
 			ctx := context.Background()
 			_, _, h := schedulerClaimFixture(t, db)
 			w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
@@ -56,7 +56,7 @@ func TestCheckpointTwoParentStagesAndRollback(t *testing.T) {
 	}
 	for _, mode := range []string{"lock-timeout", "cancel"} {
 		t.Run(mode, func(t *testing.T) {
-			db := workspaceDB(t)
+			db := schedulerHistoricalDB(t)
 			ctx := context.Background()
 			_, _, h := schedulerClaimFixture(t, db)
 			w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
@@ -94,7 +94,7 @@ func TestCheckpointTwoParentStagesAndRollback(t *testing.T) {
 }
 
 func TestCheckpointTwoScheduleSkip(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	_, _, h := schedulerClaimFixture(t, db)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
@@ -120,7 +120,7 @@ func TestCheckpointTwoScheduleSkip(t *testing.T) {
 func TestCheckpointTwoLateLocksAndFreshStop(t *testing.T) {
 	for _, stage := range []string{"Run", "Budgets", "Reservation", "Control-stop"} {
 		t.Run(stage, func(t *testing.T) {
-			db := workspaceDB(t)
+			db := schedulerHistoricalDB(t)
 			ctx := context.Background()
 			_, _, h := schedulerClaimFixture(t, db)
 			w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
@@ -179,7 +179,7 @@ func TestCheckpointTwoLateLocksAndFreshStop(t *testing.T) {
 }
 
 func TestCheckpointTwoInjectedExternalDeadlock(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	_, _, h := schedulerClaimFixture(t, db)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")

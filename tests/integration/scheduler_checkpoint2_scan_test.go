@@ -12,7 +12,7 @@ import (
 )
 
 func TestCheckpointTwoBoundedScanAndTick(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	for i := range 65 {
 		t.Run(fmt.Sprintf("workspace-%02d", i), func(t *testing.T) {

@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rjgczp/devpilot/internal/monitor"
 	"github.com/rjgczp/devpilot/internal/monitoring"
 	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
@@ -24,6 +25,10 @@ import (
 	"github.com/rjgczp/devpilot/internal/scheduler"
 	"github.com/rjgczp/devpilot/internal/supervisorfixture"
 )
+
+// Optional observation barrier after independent verification, before the
+// existing settlement transaction. Nil preserves every historical test path.
+var recoveryBeforeSettlement func(*testing.T, *pgxpool.Pool, scheduler.Store, handoff.Lineage)
 
 // Separate recovery orchestration; the original 6.3 driver is unchanged.
 func runRecoveryKernel(t *testing.T) {
@@ -316,6 +321,9 @@ func runRecoveryKernel(t *testing.T) {
 		verified, e := supervisorfixture.VerifyCommittedStopBundle(stopped.Receipt, []byte(catalog.PublicKey), stopped.Bundle, line)
 		if e != nil {
 			t.Fatal("independent stop proof", e)
+		}
+		if recoveryBeforeSettlement != nil {
+			recoveryBeforeSettlement(t, db, store, line)
 		}
 		settlement := supervisorfixture.Settlement{DB: s, Incarnation: si}
 		if _, e = settlement.Accept(ctx, verified); e != nil {

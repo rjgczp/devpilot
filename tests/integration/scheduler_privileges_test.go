@@ -11,7 +11,7 @@ import (
 )
 
 func TestSchedulerRuntimeRolesHaveOnlyNarrowCapabilities(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	// These static LOGIN fixtures exist only in the already-guarded disposable

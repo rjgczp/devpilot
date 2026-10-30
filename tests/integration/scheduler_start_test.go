@@ -46,7 +46,7 @@ func schedulerPreparedDatabaseFixture(t *testing.T, db *pgxpool.Pool, h schedule
 	}
 }
 func TestSchedulerStartRequiresPreparedSupervisorAndConsumesTokens(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m, h := schedulerClaimFixture(t, db)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
@@ -85,7 +85,7 @@ func TestSchedulerStartRequiresPreparedSupervisorAndConsumesTokens(t *testing.T)
 	}
 }
 func TestSchedulerPauseBeforeStartAndWhileWaiting(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	schedulerDatabaseOnlyGate(t, db)
