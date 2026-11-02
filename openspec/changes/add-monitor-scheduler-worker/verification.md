@@ -1050,3 +1050,55 @@ Human reply`call_5e506edea0de4ce78bd5d4912f08b166` separately authorized “授�
 Self-review found the new7.1 writer also needs D5's max(stored time, actual DB now) rule. The same approved function now observes clock_timestamp once after all waits, takes the maximum with original Run/physical-release/Worker clock markers, and rejects >2s divergence as fixed clock_untrusted. This narrows the existing capability; no GRANT, Lease, permit, pause, result fields or7.2 semantics change. A private administrative clock-marker fixture does not change the host clock or fabricate physical proof. It verifies large skew refusal and a committed finish time >= durable marker; the full7.1 matrix is now24cells.
 
 First clock-aware real PG18 cases pass; the24normal/race matrix and complete frozen CI are still pending. Earlier2bbcf58 CI/artifacts must not be substituted for this final code version.7.1 remains unchecked at29/47.
+
+
+## Task8.1 final technical delivery / awaiting final sign-off (2026-11-02)
+
+Frozen implementation `0d2f5677dd6a2439ab010b6a8ec807941b1403cd` has completed Push
+[41402215734](https://github.com/rjgczp/devpilot/actions/runs/41402215734) and PR
+[41402221192](https://github.com/rjgczp/devpilot/actions/runs/41402221192), each attempt1;
+verify/integration/execution-security are all success. Six actual Artifact ZIP digests and
+1439 frozen source entries were checked; current-source inventory is
+`3b618c9b4f16e7fefa48f2e2bb87f338cc10b558758c0c5eed034d14e8ff69be`.
+Legacy c1c9fe4b receipts remain separately identified, never relabeled as current Schema9 code.
+
+The final mapping, exact Artifact IDs/SHA256, coverage inheritance and first5.4/7.3 failures are in
+[Task8.1 final review](../../../docs/monitor-scheduler-task81-final-review.md).
+The5.4 fixture now separates trusted physical release from still-pending started retention;
+the7.3 fixture separately proves the exact permitted pending change and unchanged full remaining
+budget fields, rollback/unknown Commit/repeated recovery and unconfirmed physical quarantine.
+No production/migration/ACL repair was used for either fixture adaptation.
+
+Historical B: the original approximately125ms global-row wait (124.736ms logged wait,
+173.391ms accepted Start span) remains unexplained. Later successful CI/one local observation
+is not proof of its absence or a root-cause repair. Original failed Artifacts, log-only diagnostic
+failure, observer exit2, IPv6/management timeout records and conservative unknown scope remain.
+
+Per the user's explicit final-sign-off gate, technical evidence readiness does not check task8.1:
+progress remains34/47. Final independent approval must precede35/47 and preparation of8.2 design.
+8.2 cleanup and8.3 disk measurements remain unimplemented; no new permission, merge, Archive,
+deployment or production execution is authorized. Earlier29/47 or pending7.1 paragraphs are
+historical records; current task status is governed by tasks.md and this final8.1 entry.
+
+## Task8.1 independent acceptance / Task8.2 design-only preparation (2026-11-02)
+
+The human user's message “DevPilot AI — Task 8.1 正式收尾与 8.2 设计准备” explicitly accepts
+the technical evidence for frozen implementation `0d2f5677dd6a2439ab010b6a8ec807941b1403cd`,
+confirms successful PR run41402221192 and independent review of the historical5.4/7.3 fixture fixes,
+and authorizes marking8.1 complete. This supersedes the pending-sign-off status immediately above;
+it is human independent approval, not agent self-certification. Progress is now35/47.
+
+The [final review and six-Artifact hash index](../../../docs/monitor-scheduler-task81-final-review.md)
+retain both frozen-SHA Push/PR results, source inventory, initial failures and exact scope limits.
+All six cached ZIP SHA256/CRC were rechecked before this documentation commit; the original5.4,
+7.3 and B failed ZIP hashes also remain unchanged. No previous failure log was deleted or overwritten.
+The historical global-budget wait of approximately125ms remains unexplained, not fixed by later green CI.
+Documentation changes do not relabel their own SHA as the frozen implementation tested by those runs.
+
+[Task8.2 preparation](../../../docs/monitor-scheduler-task82-cleanup-plan.md) maps existingD6/D9
+and retention scenarios to parent-first keyset cleanup, <=100 changed rows/2s, atomic pointers,
+trusted physical-proof exclusions and a separate pending Controller-only capability application.
+Current M9 authorization/cooling guards are retained; continuous authorization can conservatively
+block cleanup. This and receipt-retirement/replay boundaries require design review before implementation.
+8.2 stays unchecked. No cleanup code, new migration, DB privilege, production/test implementation,
+merge, Archive, deployment or target-network access was changed or executed in this closeout.

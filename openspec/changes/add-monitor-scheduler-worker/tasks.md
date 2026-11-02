@@ -61,7 +61,8 @@
 
 ## 8. 保留上限与磁盘预算
 
-- [ ] 8.1 实现M100条/7天、W10000、全库100000终态+32活跃、schedule/预算key各10000的原子容量账；并发插入/终态转换/无清理空间测试证明硬cap与retention_capacity，pause/PATCH不受阻，更新容量文档。
+- [x] 8.1 实现M100条/7天、W10000、全库100000终态+32活跃、schedule/预算key各10000的原子容量账；并发插入/终态转换/无清理空间测试证明硬cap与retention_capacity，pause/PATCH不受阻，更新容量文档。
+<!-- 2026-11-02: User independently accepted frozen 0d2f567 technical evidence and historical 5.4/7.3 fixes. 35/47. Scope and retained risks: docs/monitor-scheduler-task81-final-review.md. 8.2 is design preparation only: docs/monitor-scheduler-task82-cleanup-plan.md; no cleanup or permission implementation. -->
 - [ ] 8.2 实现父序keyset清理每事务<=100行/2s及投影指针原子维护；PG并发验证不删active/quarantine/冷却key、不反向锁、无悬空引用；schedule登记回收不得重置仍有run的fence。
 - [ ] 8.3 测量周期负载下表/索引/WAL/vacuum与日志增长，验证1GiB运行预算/10GiB测试盘及80%拒绝新Claim；保留实测预算和运维清理文档，不能把行数cap当物理磁盘保证。
 
