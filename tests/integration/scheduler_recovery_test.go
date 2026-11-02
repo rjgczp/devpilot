@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"reflect"
 	"testing"
 	"time"
 
@@ -60,6 +61,7 @@ func runRecovery(t *testing.T, mode string) {
 	}
 	defer func() {
 		recoveryCheck = nil
+		recoveryBeforeSettlement = nil
 		recoveryPatch = nil
 		recoverySetup = nil
 		recoveryCycles = 1
@@ -73,6 +75,15 @@ func runRecovery(t *testing.T, mode string) {
 	var cp *pgxpool.Pool
 	var firstLine handoff.Lineage
 	var firstNext string
+	var beforeReleaseState string
+	var beforeReleasePending int
+	recoveryBeforeSettlement = func(t *testing.T, db *pgxpool.Pool, _ scheduler.Store, l handoff.Lineage) {
+		recoveryBudget(t, db) // Full snapshot and pending ledger before the trusted receipt.
+		var unreleased bool
+		if err := db.QueryRow(context.Background(), `SELECT r.attempt_state,r.physical_release_confirmed_at IS NULL,b.retention_pending_count FROM monitor_runs r CROSS JOIN scheduler_budget_state b WHERE r.workspace_id=$1 AND r.project_id=$2 AND r.monitor_id=$3 AND r.run_id=$4 AND b.kind='global' AND b.budget_key='global'`, l.WorkspaceID, l.ProjectID, l.MonitorID, l.RunID).Scan(&beforeReleaseState, &unreleased, &beforeReleasePending); err != nil || !unreleased || (beforeReleaseState != "started" && beforeReleaseState != "unknown") {
+			t.Fatal("invalid pre-receipt pending fact", beforeReleaseState, unreleased, err)
+		}
+	}
 	recoveryCheck = func(t *testing.T, stage string, db *pgxpool.Pool, w scheduler.Store, l handoff.Lineage, observed *monitoring.Result) {
 		ctx := context.Background()
 		if stage == "claimed" {
@@ -119,6 +130,16 @@ func runRecovery(t *testing.T, mode string) {
 		}
 		if mode == "no-permit" || mode == "ambiguous-denial" || mode == "quota-denial" || mode == "recorded-denial" || mode == "stop-only" {
 			reason = "egress_unavailable"
+		}
+		if stage == "released" {
+			recoveryBudget(t, db)
+			wantPending := beforeReleasePending
+			if beforeReleaseState == "unknown" {
+				wantPending-- // Only trusted physical release completes this terminal Run's pending predicate.
+			}
+			if queryInt(t, db, `SELECT retention_pending_count FROM scheduler_budget_state WHERE kind='global'`) != wantPending {
+				t.Fatal("physical release pending transition", beforeReleaseState, wantPending)
+			}
 		}
 		if recoveryCycle == 1 {
 			if stage == "before-stop" {
@@ -193,17 +214,21 @@ func runRecovery(t *testing.T, mode string) {
 				recoveryAssert(t, db, l, "started", false)
 			}
 			if mode == "ack" {
+				ackBudget := recoveryBudget(t, db)
 				rollback := controller
 				rollback.DB = workspaceObservedDB{Pool: cp, wrap: func(tx pgx.Tx) pgx.Tx { return workspaceObservedTx{Tx: tx, commitOutcome: "rollback"} }}
 				if _, e := rollback.RecoverStarted(ctx, l, reason); !errors.Is(e, scheduler.ErrCommitUnknown) {
 					t.Fatal("rollback must remain unknown to caller", e)
 				}
 				recoveryAssert(t, db, l, "started", false)
+				recoveryBudgetTransition(t, db, ackBudget, 0)
 				lost := controller
 				lost.DB = workspaceObservedDB{Pool: cp, wrap: func(tx pgx.Tx) pgx.Tx { return workspaceObservedTx{Tx: tx, commitOutcome: "lost"} }}
 				if _, e := lost.RecoverStarted(ctx, l, reason); !errors.Is(e, scheduler.ErrCommitUnknown) {
 					t.Fatal("lost ACK", e)
 				}
+				recoveryAssert(t, db, l, "unknown", false)
+				recoveryBudgetTransition(t, db, ackBudget, 0)
 			}
 			before := recoveryBudget(t, db)
 			outcome, e := controller.RecoverStarted(ctx, l, reason)
@@ -215,6 +240,11 @@ func runRecovery(t *testing.T, mode string) {
 			if recoveryBudget(t, db) != before {
 				t.Fatal("recovery returned/refilled physical budget")
 			}
+			repeated, err := controller.RecoverStarted(ctx, l, reason)
+			if err != nil || !sameRecovery(outcome, repeated) {
+				t.Fatal("unreleased recovery replay", repeated, err)
+			}
+			recoveryBudgetTransition(t, db, before, 0)
 			if queryInt(t, db, `SELECT count(*) FROM scheduler_reservations WHERE run_id=$1 AND reservation_state='quarantined' AND termination_receipt IS NULL`, l.RunID) != 1 {
 				t.Fatal("quarantine lost")
 			}
@@ -227,8 +257,9 @@ func runRecovery(t *testing.T, mode string) {
 		}
 		if stage == "unconfirmed" {
 			recoveryAssert(t, db, l, "unknown", false)
-			if queryInt(t, db, `SELECT in_use FROM scheduler_budget_state WHERE kind='global'`) != 1 {
-				t.Fatal("unconfirmed returned slot")
+			recoveryBudget(t, db)
+			if queryInt(t, db, `SELECT in_use FROM scheduler_budget_state WHERE kind='global'`) != 1 || queryInt(t, db, `SELECT retention_pending_count FROM scheduler_budget_state WHERE kind='global'`) != 1 {
+				t.Fatal("unconfirmed returned physical or pending slot")
 			}
 			return
 		}
@@ -240,8 +271,12 @@ func runRecovery(t *testing.T, mode string) {
 			return
 		}
 		before := recoveryBudget(t, db)
+		pendingDelta := 0
+		if beforeReleaseState == "started" {
+			pendingDelta = -1 // The receipt is already independently verified and committed.
+		}
 		var armedID string
-		if mode == "ack" {
+		if mode == "ack" || mode == "no-permit" {
 			ledger := minimalLedger(t, db)
 			rollback := controller
 			rollback.DB = workspaceObservedDB{Pool: cp, wrap: func(tx pgx.Tx) pgx.Tx { return workspaceObservedTx{Tx: tx, commitOutcome: "rollback"} }}
@@ -251,11 +286,17 @@ func runRecovery(t *testing.T, mode string) {
 			if minimalLedger(t, db) != ledger {
 				t.Fatal("rolled-back future identity leaked")
 			}
+			recoveryAssert(t, db, l, beforeReleaseState, true)
+			recoveryBudgetTransition(t, db, before, 0)
 			lost := controller
 			lost.DB = workspaceObservedDB{Pool: cp, wrap: func(tx pgx.Tx) pgx.Tx { return workspaceObservedTx{Tx: tx, commitOutcome: "lost"} }}
 			if _, err := lost.RecoverStarted(ctx, l, reason); !errors.Is(err, scheduler.ErrCommitUnknown) {
 				t.Fatal("future committed ACK loss", err)
 			}
+			recoveryAssert(t, db, l, "unknown", true)
+			recoveryBudgetTransition(t, db, before, pendingDelta)
+			before = recoveryBudget(t, db)
+			pendingDelta = 0 // A committed-but-unacknowledged recovery cannot consume pending again.
 			if err := db.QueryRow(ctx, `SELECT next_run_id::text FROM monitor_schedules WHERE monitor_id=$1`, l.MonitorID).Scan(&armedID); err != nil || armedID == l.RunID {
 				t.Fatal("future did not actually commit", err)
 			}
@@ -269,9 +310,7 @@ func runRecovery(t *testing.T, mode string) {
 			t.Fatal("ACK retry generated a second future identity")
 		}
 		recoveryAssert(t, db, l, want, true)
-		if recoveryBudget(t, db) != before {
-			t.Fatal("recovery refunded tokens/slots")
-		}
+		recoveryBudgetTransition(t, db, before, pendingDelta)
 		blocked := mode == "pause" || mode == "patch" || mode == "owner" || mode == "expiry"
 		if blocked != (outcome.NextRunID == nil) {
 			t.Fatal("current authorization gate", outcome)
@@ -280,10 +319,12 @@ func runRecovery(t *testing.T, mode string) {
 			t.Fatal("not a new future cycle", outcome)
 		}
 		schedule := minimalLedger(t, db)
+		retryBudget := recoveryBudget(t, db)
 		again, e := controller.RecoverStarted(ctx, l, "emergency_stop")
 		if e != nil || !sameRecovery(outcome, again) || minimalLedger(t, db) != schedule {
 			t.Fatal("recovery replay mutated schedule/terminal fact", again, e)
 		}
+		recoveryBudgetTransition(t, db, retryBudget, 0)
 		if observed != nil {
 			commitCall(t, w, commitArgs(w, l, observed), true, "P0001")
 		}
@@ -332,10 +373,47 @@ func runRecovery(t *testing.T, mode string) {
 func recoveryBudget(t *testing.T, db *pgxpool.Pool) string {
 	t.Helper()
 	var raw []byte
-	if e := db.QueryRow(context.Background(), `SELECT jsonb_agg(to_jsonb(b) ORDER BY kind,budget_key) FROM scheduler_budget_state b`).Scan(&raw); e != nil {
+	var pending, derived int
+	if e := db.QueryRow(context.Background(), `SELECT jsonb_agg(to_jsonb(b) ORDER BY kind,budget_key),(SELECT retention_pending_count FROM scheduler_budget_state WHERE kind='global' AND budget_key='global'),(SELECT count(*) FROM monitor_runs WHERE attempt_state IN ('leased','started') OR physical_release_confirmed_at IS NULL) FROM scheduler_budget_state b`).Scan(&raw, &pending, &derived); e != nil {
 		t.Fatal(e)
 	}
+	if pending != derived || pending < 0 || pending > 32 {
+		t.Fatal("pending ledger differs from actual Run predicates", pending, derived)
+	}
+	t.Log("recovery complete budget snapshot", string(raw))
 	return string(raw)
+}
+
+// Keep every row and every field in the original budget comparison. Only the
+// global pending column may differ, after its exact permitted delta is checked.
+func recoveryBudgetTransition(t *testing.T, db *pgxpool.Pool, before string, pendingDelta int) {
+	t.Helper()
+	if pendingDelta != 0 && pendingDelta != -1 {
+		t.Fatal("invalid pending transition", pendingDelta)
+	}
+	after := recoveryBudget(t, db)
+	var oldRows, newRows []map[string]json.RawMessage
+	if json.Unmarshal([]byte(before), &oldRows) != nil || json.Unmarshal([]byte(after), &newRows) != nil || len(oldRows) != len(newRows) {
+		t.Fatal("recovery changed budget row set", before, after)
+	}
+	global := 0
+	for i, row := range oldRows {
+		if string(row["kind"]) != `"global"` || string(row["budget_key"]) != `"global"` {
+			continue
+		}
+		global++
+		var oldPending, newPending int
+		if json.Unmarshal(row["retention_pending_count"], &oldPending) != nil || json.Unmarshal(newRows[i]["retention_pending_count"], &newPending) != nil || newPending != oldPending+pendingDelta {
+			t.Fatal("pending did not change exactly once as authorized", pendingDelta, before, after)
+		}
+		if pendingDelta == -1 {
+			newRows[i]["retention_pending_count"] = row["retention_pending_count"]
+		}
+	}
+	if global != 1 || !reflect.DeepEqual(oldRows, newRows) {
+		t.Fatal("recovery changed tokens/physical slots/cooling/other budget fields", before, after)
+	}
+	t.Log("recovery budget invariant verified; authorized global pending delta", pendingDelta)
 }
 func sameRecovery(a, b scheduler.Recovery) bool {
 	x, _ := json.Marshal(a)
