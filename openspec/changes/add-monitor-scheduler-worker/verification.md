@@ -1136,3 +1136,17 @@ A no-network UID65534/cap-drop-ALL/no-new-privileges preflight checks read-only 
 waiting. A real Linux volume owner-boundary regression passes; a prior Desktop UID-mapping
 assumption failure is preserved rather than hidden. Local repair receipts remain dirty
 development evidence. New frozen CI is required;8.2 stays unchecked,35/47. No8.3 or new grant.
+
+### Task8.2 targeted missing-ledger review (2026-11-03)
+
+Human independent review of45a2a95 requested only G/W/P/M missing-budget verification.
+Real guarded PG18 reproduced7 of12 missing-ledger combinations returning success: P when
+eligible Runs exist, W/P/M for no selected Run and for empty registration. Existing DELETE
+guards protect referenced budgets, but do not supply all required cleanup existence checks.
+Only three FOUND checks are added after W/P/M locks in Migration10; no new permission,
+trust source, physical release/eligibility change or M1–9 edit. Three focused tests cover
+12 cases per mode; initial normal/race repair tests exit0 and preserve complete protected
+state snapshots. Original expected failures and dirty receipts remain separate from later
+frozen validation. See [targeted review](../../../docs/monitor-scheduler-task82-missing-ledger-review.md).
+PR12 and45a2a95 CI remain unchanged; separate review delivery, no unrelated matrix,8.3,
+merge,Archive or deployment. Task8.2 stays unchecked /35 of47 pending independent sign-off.

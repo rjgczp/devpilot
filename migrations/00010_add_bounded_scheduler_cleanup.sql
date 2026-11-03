@@ -78,8 +78,11 @@ BEGIN
   AND run_id=ANY(ids) ORDER BY run_id FOR UPDATE;
  PERFORM 1 FROM public.scheduler_budget_state WHERE kind='global' AND budget_key='global' FOR UPDATE;
  PERFORM 1 FROM public.scheduler_budget_state WHERE kind='workspace' AND budget_key=p_wid::text FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
  PERFORM 1 FROM public.scheduler_budget_state WHERE kind='project' AND budget_key=p_wid::text||'/'||p_pid::text FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
  PERFORM 1 FROM public.scheduler_budget_state WHERE kind='monitor' AND budget_key=p_wid::text||'/'||p_pid::text||'/'||p_mid::text FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'capacity ledger inconsistent' USING ERRCODE='23514'; END IF;
  FOR keys IN SELECT z.kind,z.budget_key FROM public.scheduler_reservations a
   CROSS JOIN LATERAL jsonb_array_elements(a.target_keys) j
   CROSS JOIN LATERAL (VALUES ('origin'::text,j->>'origin_key'),('ip'::text,j->>'ip_key')) z(kind,budget_key)
