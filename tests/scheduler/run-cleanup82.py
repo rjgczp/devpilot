@@ -33,7 +33,13 @@ class CleanupHarness(RecoveryHarness):
             cmd += ['-v', str(receipt) + ':/retired-proof/old.receipt:ro']
         cmd += ['--entrypoint', '/toolbin/' + self.pg_binary.name, 'devpilot-scheduler-fixture',
                 '-test.run', '^' + test + '$', '-test.v', '-test.failfast', '-test.timeout=120s']
-        result = subprocess.run(cmd, capture_output=True, timeout=120)
+        try:
+            result = subprocess.run(cmd, capture_output=True, timeout=120)
+        except subprocess.TimeoutExpired as error:
+            (self.dest / (test + '.log')).write_bytes((error.stdout or b'') + (error.stderr or b''))
+            self.record(test + '-command', dict(command=cmd, exit_code=124, timed_out=True,
+                        binary_sha256=hashlib.sha256(self.pg_binary.read_bytes()).hexdigest()))
+            raise
         (self.dest / (test + '.log')).write_bytes(result.stdout + result.stderr)
         self.record(test + '-command', dict(command=cmd, exit_code=result.returncode,
                     binary_sha256=hashlib.sha256(self.pg_binary.read_bytes()).hexdigest()))
