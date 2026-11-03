@@ -53,7 +53,7 @@ func TestSchedulerCapacityMigrationLifecycle(t *testing.T) {
 					}
 				}
 			}
-			out := goose(t, target, "up", false)
+			out := goose(t, target, "up-to 9", false)
 			t.Logf("original migration failure: %s", out)
 			want := map[string]string{"open-gate": "closed fixture gate", "ledger-mismatch": "capacity ledger inconsistent", "ddl-failure": "division by zero"}[mode]
 			if !strings.Contains(string(out), want) {
@@ -68,8 +68,8 @@ func TestSchedulerCapacityMigrationLifecycle(t *testing.T) {
 			if _, e := db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true; UPDATE scheduler_budget_state SET terminal_count=0 WHERE kind='global'`); e != nil {
 				t.Fatal(e)
 			}
-			goose(t, dir, "up", true)
-			goose(t, dir, "up", true)
+			goose(t, dir, "up-to 9", true)
+			goose(t, dir, "up-to 9", true)
 			if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 9 {
 				t.Fatal("schema9 missing")
 			}

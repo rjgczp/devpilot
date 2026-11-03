@@ -99,15 +99,16 @@ func TestDormantProductionDependencyAndSchemaBoundary(t *testing.T) {
 		t.Fatal("review worker startup")
 	}
 	files, _ := filepath.Glob("../../migrations/*.sql")
-	// Migration9 is separately approved by Task8.1; no ordinary execution entry.
-	if len(files) != 9 || filepath.Base(files[8]) != "00009_enforce_scheduler_capacity.sql" {
+	// Migration10 adds only the three separately approved Controller cleanup entries.
+	if len(files) != 10 || filepath.Base(files[9]) != "00010_add_bounded_scheduler_cleanup.sql" {
 		t.Fatal("unreviewed migration")
 	}
 	// Startup wiring remains byte-identical. The approved schema8 API additions
 	// are validated by monitor package OpenAPI response/shape contract tests.
 	for p, want := range map[string]string{
-		"internal/app/routes.go":                        "96d4192f3ab0e92ed1b49b4b8cee07393d329cf83d8538b6139ee3844a97fc38",
-		"migrations/00008_create_monitor_scheduler.sql": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+		"internal/app/routes.go":                          "96d4192f3ab0e92ed1b49b4b8cee07393d329cf83d8538b6139ee3844a97fc38",
+		"migrations/00008_create_monitor_scheduler.sql":   "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+		"migrations/00009_enforce_scheduler_capacity.sql": "3ec3404418766ca76492f8f0cd00706d0e8e8bf29cafc47c79050b1fee230d9e",
 	} {
 		b, err := os.ReadFile(filepath.Join("../..", p))
 		if err != nil || fmt.Sprintf("%x", sha256.Sum256(b)) != want {

@@ -1102,3 +1102,21 @@ Current M9 authorization/cooling guards are retained; continuous authorization c
 block cleanup. This and receipt-retirement/replay boundaries require design review before implementation.
 8.2 stays unchecked. No cleanup code, new migration, DB privilege, production/test implementation,
 merge, Archive, deployment or target-network access was changed or executed in this closeout.
+
+## Task8.2 implementation authorization and candidate (2026-11-03)
+
+After the d8667ff design review, the human product owner explicitly answered approval request
+`call_32c1ce81fff84e4f825180556dfaa746`: “批准仅上述8.2范围、三项窄EXECUTE及信任边界”.
+This independently authorizes exactly retention_candidates(uuid,text,integer),
+cleanup_monitor(uuid,uuid,uuid,uuid,timestamptz,uuid,integer), and cleanup_target_key(uuid,text,text),
+all RETURNS jsonb, existing Controller-only EXECUTE and existing nonLOGIN owner. No other privilege
+or trust source is added. This supersedes the preceding design-only status, not any historical result.
+
+Migration10 and fixture-only Store methods implement bounded, parent-first keyset cleanup with
+unchanged M1–9 guards, atomic pointers and record accounting separate from physical release.
+[Task8.2 verification](../../../docs/monitor-scheduler-task82-verification.md) maps actual tests,
+dirty candidate evidence, preserved first anomalies and the remaining frozen-CI gate.
+14 targeted PG18 tests passed normal/race; earlier real signed physical/cooling and unconfirmed
+candidate chains passed, but later joint key/replay assertions still require frozen CI.
+Task8.2 remains unchecked /35 of47 until the complete required validation is observed.
+Historical125ms root cause remains unknown. No8.3 implementation, merge, Archive or production execution.

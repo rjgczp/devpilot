@@ -39,7 +39,7 @@ func budgetDB(t *testing.T) *pgxpool.Pool {
 		}
 		var raw []byte
 		ledger := `SELECT jsonb_build_object('event','held_budget_ledger','at',clock_timestamp(),'budgets',(SELECT jsonb_agg(to_jsonb(b)) FROM scheduler_budget_state b),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r),'reservations',(SELECT jsonb_agg(to_jsonb(q)) FROM scheduler_reservations q))`
-		if strings.HasPrefix(t.Name(), "TestBudgetRetention") {
+		if strings.HasPrefix(t.Name(), "TestBudgetRetention") || strings.HasPrefix(t.Name(), "TestBudgetCleanup") {
 			// Large real row-boundary fixtures must not build an unbounded JSON aggregate.
 			ledger = `SELECT jsonb_build_object('event','retention_ledger','at',clock_timestamp(),'runs',(SELECT count(*) FROM monitor_runs),'pending',(SELECT retention_pending_count FROM scheduler_budget_state WHERE kind='global'),'retained',(SELECT terminal_count FROM scheduler_budget_state WHERE kind='global'),'reservations',(SELECT count(*) FROM scheduler_reservations))`
 		}

@@ -288,9 +288,9 @@ func TestBudgetRetentionACLAndMigration(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	goose(t, dir, "down", true)
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "down-to 8", true)
+	goose(t, dir, "up-to 9", true)
+	goose(t, dir, "up-to 9", true)
 	if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 9 {
 		t.Fatal("not schema9")
 	}
@@ -393,7 +393,7 @@ func TestBudgetRetentionUpgradeInFlight(t *testing.T) {
 	if _, e := db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true`); e != nil {
 		t.Fatal(e)
 	}
-	goose(t, dir, "down", true)
+	goose(t, dir, "down-to 8", true)
 	_, _, h := schedulerClaimFixtureSeconds(t, db, 3600)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	if _, e := db.Exec(ctx, `UPDATE scheduler_control SET gate='fixture',emergency_stop=false,verified_at=clock_timestamp(),expires_at=clock_timestamp()+interval '1 hour',manifest_digest=decode(repeat('ab',32),'hex') WHERE control_id='deployment'`); e != nil {
@@ -404,8 +404,8 @@ func TestBudgetRetentionUpgradeInFlight(t *testing.T) {
 	if _, e = db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'`); e != nil {
 		t.Fatal(e)
 	}
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 9", true)
+	goose(t, dir, "up-to 9", true)
 	retentionLedger(t, db)
 	if queryInt(t, db, `SELECT retention_pending_count FROM scheduler_budget_state WHERE kind='global'`) != 1 {
 		t.Fatal("upgrade lost in-flight capacity")
@@ -424,7 +424,7 @@ func TestBudgetRetentionSevenDayHistoryIsNotFree(t *testing.T) {
 	if _, e := db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true`); e != nil {
 		t.Fatal(e)
 	}
-	goose(t, dir, "down", true)
+	goose(t, dir, "down-to 8", true)
 	f, m, h := schedulerClaimFixtureSeconds(t, db, 3600)
 	// Administrative schema8 import of an old, never-prepared expiry. There is
 	// no Supervisor receipt and no physical execution/release claim in this seed.
@@ -466,7 +466,7 @@ func TestBudgetRetentionSevenDayHistoryIsNotFree(t *testing.T) {
 	if e = tx.Commit(ctx); e != nil {
 		t.Fatal(e)
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 9", true)
 	if _, e = db.Exec(ctx, `UPDATE scheduler_control SET gate='fixture',emergency_stop=false,verified_at=clock_timestamp(),expires_at=clock_timestamp()+interval '1 hour',manifest_digest=decode(repeat('ab',32),'hex') WHERE control_id='deployment'`); e != nil {
 		t.Fatal(e)
 	}
