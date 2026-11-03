@@ -1120,3 +1120,19 @@ dirty candidate evidence, preserved first anomalies and the remaining frozen-CI 
 candidate chains passed, but later joint key/replay assertions still require frozen CI.
 Task8.2 remains unchecked /35 of47 until the complete required validation is observed.
 Historical125ms root cause remains unknown. No8.3 implementation, merge, Archive or production execution.
+
+### Task8.2 first frozen failure / public receipt fixture correction (2026-11-03)
+
+Frozen2baae068290ea1cab95a34ab9bff1df7fbbf8fd2 Push41565714170 and PR41565719152
+both passed verify/integration and all earlier security phases, then failed after real one-hour
+cooling at the new replay test: opening the0600 Authority receipt mount returned EACCES.
+The real cleanup ledger and old Result/Permit rejection had passed, but receipt replay and
+the complete joint matrix had not. Six original ZIPs, hashes and first errors are retained in
+[Task8.2 evidence](../../../docs/monitor-scheduler-task82-verification.md).
+
+Only the new Python fixture changes: export a bounded byte-identical public signed receipt
+read-only; keep Authority journal0600, private key and all DB/Go assertions unchanged.
+A no-network UID65534/cap-drop-ALL/no-new-privileges preflight checks read-only input before
+waiting. A real Linux volume owner-boundary regression passes; a prior Desktop UID-mapping
+assumption failure is preserved rather than hidden. Local repair receipts remain dirty
+development evidence. New frozen CI is required;8.2 stays unchecked,35/47. No8.3 or new grant.

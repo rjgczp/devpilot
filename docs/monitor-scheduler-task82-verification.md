@@ -1,6 +1,7 @@
 # Task8.2 — 实施候选与验收索引
 
-状态：实现候选，冻结提交与完整CI尚待完成；Task8.2未勾选，35/47。
+状态：实现候选；首次冻结2baae06的Push/PR均在新增回执文件读取处失败，
+fixture修正后尚待新冻结CI；Task8.2未勾选，35/47。
 设计基线：`d8667ff7f42876f858cc1dc3b2d25fb95db962d3`。该基线的Push41418393805、
 PR41418399395均success，不把它们作为本轮实现的CI结果。
 
@@ -65,6 +66,51 @@ never_prepared完整字段核对及联合key/replay断言，故最终必须以�
 
 历史5.4、7.3首次失败、IPv6/管理确认超时及约125ms全局预算锁等待证据仍在
 [8.1最终索引](monitor-scheduler-task81-final-review.md)，未改写或删除；125ms根因仍未确定。
+
+## 首次冻结CI失败与fixture修正（2026-11-03）
+
+受测SHA：`2baae068290ea1cab95a34ab9bff1df7fbbf8fd2`，dirty=false，源码清单
+`7bb5ae38ccc2a7271044472bfde511a4ee5f96ecdc01ab91df97a7a310111cf9`。
+[Push41565714170](https://github.com/rjgczp/devpilot/actions/runs/41565714170)与
+[PR41565719152](https://github.com/rjgczp/devpilot/actions/runs/41565719152)：
+verify/integration成功；execution-security失败，没有重跑。每个事件156项PG18 normal与
+156项race、45项Budget normal/race（含14项新清理测试）、旧6.3–7.5安全步骤均通过，
+但这不能代表最后的8.2联合验收成功。
+
+真实一小时冷却后，normal的`TestCleanupPhysicalFinishPG`已完成清理及账本校验：
+retained=99、physical=0、pending=0、scope_mismatch=0，旧Result/Permit均P0001。
+随后`os.ReadFile(/retired-proof/old.receipt)`返回EACCES；旧回执重放断言未执行，
+race及后续失联分支不作为完整通过。原始日志为
+`cleanup82-evidence/normal/TestCleanupPhysicalFinishPG.log`、`cleanup82-meta/physical-cooling.log`。
+
+原脚本直接bind-mount Authority的0600原始回执，而驱动使用cap-drop ALL；该回执应以
+公开签名输入传递，不应扩大Authority日志或私钥权限。修正只在新8.2 Python编排中：
+在冷却前导出不超过65536字节、与真实签名原件完全相同的0444只读副本；原件保持0600，
+不挂载Authority目录或私钥。新增无网络、UID65534、capability全空、no-new-privileges的
+Linux预检，检查副本SHA256一致、可读且只读。原Go回执重放断言、SQL、信任来源、
+120秒Go阶段、一小时等待、2秒事务和250ms锁预算全部不变。
+
+局部Linux原生volume回归证实：owner0/0600原件对UID65534返回EACCES，0444同字节副本
+可读但不可写，cap_eff=0、no_new_privs=1；退出0。原CI未记录原inode UID，不能将猜测
+的具体UID写成事实。首次本地预检曾错误假定Docker Desktop bind-mount保留宿主UID；
+实际其文件UID映射为容器UID65534，原失败log保留。正式预检只挂载公开副本；确定性
+owner边界用Linux原生volume验证，不依赖Desktop映射，不提高权限或跳过断言。
+定向原件：`/Users/sansea/.codex/artifacts/devpilot/task82/receipt-input-repair/`，
+包括`public.input.log`、`linux-owner-boundary.{json,log}`和`linux-public-input-witness.json`。
+定向回执仍为2baae06+dirty=true，不伪装为下一冻结SHA。
+
+六份原始Artifact实际ZIP SHA256均已核对GitHub digest且CRC有效：
+
+| 事件 | Artifact | ID | SHA256 |
+| --- | --- | --- | --- |
+| Push | [execution-security-evidence](https://github.com/rjgczp/devpilot/actions/runs/41565714170/artifacts/13204372002) | 13204372002 | `f4a011f8c79fba90eba7425e80456338584c437a0d8cddb120431bb4928d86fd` |
+| Push | [verify-evidence](https://github.com/rjgczp/devpilot/actions/runs/41565714170/artifacts/13199910353) | 13199910353 | `4e453547f5283bc93cc10a19bafac9edafd52dc2030b0e5937374df2f5215a02` |
+| Push | [integration-and-monitor-network-evidence](https://github.com/rjgczp/devpilot/actions/runs/41565714170/artifacts/13198928256) | 13198928256 | `e6c303bb4343ea86e54b4feb37a92b5238f471e57999342b6f7608bcc6f87b8d` |
+| PR | [execution-security-evidence](https://github.com/rjgczp/devpilot/actions/runs/41565719152/artifacts/13204992407) | 13204992407 | `e9a79fdf4a2bf490a73416749f0f3dfc672a5937436d7f5c0ebc64df1e59ee21` |
+| PR | [verify-evidence](https://github.com/rjgczp/devpilot/actions/runs/41565719152/artifacts/13199495646) | 13199495646 | `d96429275c9933109866bc7b1cacb2f639061d0b8b96b7bcd9157cae6aa0c916` |
+| PR | [integration-and-monitor-network-evidence](https://github.com/rjgczp/devpilot/actions/runs/41565719152/artifacts/13198897975) | 13198897975 | `8fa4b7c0f12b71e7fc078a5387a047a671eddeab6854d691d2941b0428f1b237` |
+
+修正后的完整联合验收必须另取实际冻结SHA结果；不把上述失败或局部成功改写为通过。
 
 ## 运行与人工恢复边界
 

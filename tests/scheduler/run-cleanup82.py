@@ -19,6 +19,49 @@ from recovery_fixture import RecoveryHarness
 cancel = threading.Event()
 
 
+def public_receipt_input(source, destination):
+    # Authority's private journal remains0600. Export only the already-public
+    # signed receipt, byte-for-byte, never its directory or signing key.
+    metadata = source.stat()
+    assert metadata.st_mode & 0o777 == 0o600
+    with source.open('rb') as stream:
+        raw = stream.read(65537)
+    assert 0 < len(raw) <= 65536
+    with destination.open('xb') as stream:
+        stream.write(raw)
+    destination.chmod(0o444)
+    cmd = ['docker', 'run', '--rm', '--network', 'none', '--read-only',
+           '--user', '65534:65534', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges:true',
+           '--memory=128m', '--cpus=1', '--pids-limit=128', '--ulimit', 'nofile=256:256',
+           '-v', str(destination) + ':/proof/public.receipt:ro',
+           '--entrypoint', 'python3', 'devpilot-scheduler-fixture', '-S', '-c', '''
+import errno,hashlib,json,os,pathlib
+p=pathlib.Path('/proof/public.receipt')
+assert os.getuid()==65534
+status=dict(line.split(':',1) for line in pathlib.Path('/proc/self/status').read_text().splitlines() if ':' in line)
+assert int(status['CapEff'].strip(),16)==0 and status['NoNewPrivs'].strip()=='1'
+assert p.stat().st_mode&0o777==0o444
+raw=p.read_bytes()
+try:p.open('wb')
+except OSError as error:assert error.errno in (errno.EACCES,errno.EROFS)
+else:raise AssertionError('public receipt writable')
+print(json.dumps(dict(uid=os.getuid(),public_uid=p.stat().st_uid,public_mode=oct(p.stat().st_mode&0o777),
+ cap_eff=status['CapEff'].strip(),no_new_privs=1,sha256=hashlib.sha256(raw).hexdigest(),public_read_only=True)))
+''']
+    try:
+        result = subprocess.run(cmd, capture_output=True, timeout=30)
+    except subprocess.TimeoutExpired as error:
+        destination.with_suffix('.input.log').write_bytes((error.stdout or b'') + (error.stderr or b''))
+        raise
+    destination.with_suffix('.input.log').write_bytes(result.stdout + result.stderr)
+    assert result.returncode == 0, 'public receipt input failed; no retry'
+    witness = json.loads(result.stdout)
+    assert witness['sha256'] == hashlib.sha256(raw).hexdigest()
+    assert source.stat().st_mode == metadata.st_mode and source.read_bytes() == raw
+    return dict(command=cmd, exit_code=result.returncode, source_uid=metadata.st_uid,
+                source_mode=oct(metadata.st_mode & 0o777), **witness)
+
+
 class CleanupHarness(RecoveryHarness):
     def phase(self, test, receipt=None):
         repo = Path(__file__).resolve().parents[2]
@@ -56,6 +99,10 @@ class CleanupHarness(RecoveryHarness):
         markers = [json.loads(x[len('COOLING82 '):]) for x in output.splitlines() if x.startswith('COOLING82 ')]
         assert len(markers) == 1
         marker = markers[0]
+        source = self.authority.path / (marker['run_id'] + '.receipt')
+        assert source.is_file(), 'independent signed receipt absent'
+        receipt = self.dest / 'retired-public.receipt'
+        self.record('public-receipt-input', public_receipt_input(source, receipt))
         wait = marker['wait_seconds']
         assert 0 <= wait <= 3601
         start = time.monotonic()
@@ -65,8 +112,6 @@ class CleanupHarness(RecoveryHarness):
             if cancel.wait(min(30, max(.001, wait + .05 - (time.monotonic() - start)))):
                 raise RuntimeError('other independent mode failed; stop, no retry')
         self.record('real-cooling-end', dict(elapsed_seconds=time.monotonic() - start))
-        receipt = self.authority.path / (marker['run_id'] + '.receipt')
-        assert receipt.is_file(), 'independent signed receipt absent'
         self.phase('TestCleanupPhysicalFinishPG', receipt)
         assert len(self.events()) == 1, 'cleanup/reconciliation sent another GET'
         after_tcp = len([x for x in self.events('accept') if x['port'] in (80, 443)])
