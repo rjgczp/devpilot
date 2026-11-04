@@ -1150,3 +1150,15 @@ state snapshots. Original expected failures and dirty receipts remain separate f
 frozen validation. See [targeted review](../../../docs/monitor-scheduler-task82-missing-ledger-review.md).
 PR12 and45a2a95 CI remain unchanged; separate review delivery, no unrelated matrix,8.3,
 merge,Archive or deployment. Task8.2 stays unchecked /35 of47 pending independent sign-off.
+
+### Task8.2 approved repair integration / final CI gate (2026-11-04)
+
+The human user independently approved9e68f620cdee067f2b155f880886a0a064d16ab1 and
+authorized integration into PR12, followed by complete Push/PR CI on the new frozen HEAD.
+Production changes remain exactly the three reviewed Migration10 FOUND checks; tests and
+inventory are unchanged from9e68f62. Only evidence/index/handoff documentation is added.
+The G/W/P/M negative scenarios are mapped into the Task8.2 final evidence table. See
+[handoff](../../../docs/monitor-scheduler-task82-handoff.md) and PR12's latest evidence index
+for the final tested SHA, actual run IDs and verified Artifact hashes. Earlier CI is not
+substituted for this gate. Keep8.2 unchecked /35 of47 until ChatGPT's final acceptance;
+no8.3, merge,Archive,deployment,production migration or public-network execution.

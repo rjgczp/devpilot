@@ -1,7 +1,8 @@
 # Task8.2 — 实施候选与验收索引
 
-状态：实现候选；首次冻结2baae06的Push/PR均在新增回执文件读取处失败，
-fixture修正后尚待新冻结CI；Task8.2未勾选，35/47。
+状态：45a2a95完整Push/PR CI已通过；9e68f62缺账修复已获人类独立代码审查认可，
+2026-11-04授权整合到PR12。整合后的新PR HEAD仍须完整Push/PR CI及Artifact核对；
+Task8.2未勾选，35/47，等待最终验收签署。最终运行ID/哈希见PR12最新正文及交接材料。
 设计基线：`d8667ff7f42876f858cc1dc3b2d25fb95db962d3`。该基线的Push41418393805、
 PR41418399395均success，不把它们作为本轮实现的CI结果。
 
@@ -42,6 +43,7 @@ PR41418399395均success，不把它们作为本轮实现的CI结果。
 | Scope、身份、游标、limit及最小权限 | TestBudgetCleanupScopeAndIdentityReject、TargetCoolingReferencesAndACL | normal/race通过；Controller无表DELETE，Worker/Supervisor/API无新EXECUTE |
 | 保守授权/冷却保护 | TestBudgetCleanupConservativeProtection | normal/race通过；保持protected及全部预算 |
 | Migration10/Down/重复Up/中途DDL失败 | TestBudgetCleanupMigrationLifecycle | normal/race通过；失败无部分函数/GRANT，Schema9断言未被替换为Schema10结果 |
+| G/W/P/M缺账：有合格Run、无候选Run、零Run登记；完整状态不变 | TestBudgetCleanupMissingLedgerRuns、NoCandidate、Registration | Retention requirement → Bounded cleanup preserves references / Cleanup cannot keep up → budget-evidence/{normal,race}/*coverage.json及对应测试日志；9e68f62定向normal/race均exit0，每模式12个组合23514，新整合SHA完整CI待核对 |
 | 真实HTTPS、独立停止/可信返槽、完整一小时冷却后清理unknown | 原TestRecoveryPausePG + TestCleanupPhysicalPreparePG/FinishPG | 开发候选normal/race通过；6个Go进程，实际等待约3600秒，原始签名与物理证据独立保存 |
 | Supervisor失联、unknown保留quarantine | 原TestRecoveryUnconfirmedPG + TestCleanupPhysicalRejectPG | 开发候选normal/race通过；4个Go进程，无回执、不删、不返槽 |
 | 冷却后仍被released引用的key不可删；引用退役后才删除；旧permit/Result/Receipt重放 | 最新PhysicalFinishPG及run-cleanup82.py | 新增联合断言，等待冻结CI执行，不用前一候选证明它已通过 |
@@ -129,3 +131,6 @@ owner边界用Linux原生volume验证，不依赖Desktop映射，不提高权限
 
 待完成：当前源码冻结提交、该SHA完整Push/PR CI、实际Artifact与源码清单核对。
 这些通过前8.2保持未勾选。独立代码审查尚未签署；PR12 Open，不合并、Archive、部署或开放生产执行。
+
+2026-11-04的人类消息《Task 8.2 最终交付》只批准整合已审查9e68f62及执行新SHA完整CI；
+不是Task8.2验收签署或8.3实施许可。[交接文档](monitor-scheduler-task82-handoff.md)记录下一对话边界。
