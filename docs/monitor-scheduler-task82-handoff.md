@@ -2,9 +2,17 @@
 
 仓库：rjgczp/devpilot；PR12保持Open。
 开发分支：codex/monitor-execution-status-consistency。
-OpenSpec：add-monitor-scheduler-worker，35/47，8.2保持未勾选，等待ChatGPT最终验收签署。
+8.3独立设计提交分支：codex/task83-storage-design；不更新PR12原分支。
+OpenSpec：add-monitor-scheduler-worker，36/47，8.2已获人类独立技术验收签署。
+验收SHA：0462dc2e65c8ea9edd3948cf6a72d483e93f7510；Push41760964041、PR41760970943六项必需作业均success。
+正式记录：[8.2验收](monitor-scheduler-task82-final-review.md)；当前下一步：[8.3设计待审](monitor-scheduler-task83-storage-plan.md)。
 
 ## 本轮授权与源码
+
+2026-11-04人类消息《DevPilot AI — Task 8.2 验收签署与 8.3 启动》已明确认可上述SHA，
+批准勾选8.2/36 of47、登记验收，并仅开始8.3设计与只读环境评估、准备必要的最小权限申请。
+本轮不修改已验收的8.1/8.2核心实现，不获得8.3实施/新增能力/数据库权限/迁移许可。
+以下整合授权及待验收门禁是此前历史，最终验收状态以上述新消息为准。
 
 人类消息《Task 8.2 最终交付》已确认9e68f620cdee067f2b155f880886a0a064d16ab1
 缺账修复通过独立代码审查，批准整合至PR12并验证新PR HEAD的完整Push/PR CI。
@@ -44,7 +52,8 @@ OpenSpec：add-monitor-scheduler-worker，35/47，8.2保持未勾选，等待Cha
 
 ## 新对话的下一步
 
-先核对PR12实际HEAD、工作区和最终CI/Artifact，整理并等待ChatGPT对8.2验收签署。
-取得明确签署后，才按人类当次授权处理8.2勾选/36 of47或下一任务。
-目前不允许自动实施8.3，或合并PR12、Archive、部署、生产Migration及真实公网执行。
+8.2已验收，后续接续前仍应核对PR12实际HEAD、工作区与该验收SHA的差异。
+8.3方案完成后停止，交由ChatGPT独立设计审查；方案中的权限及前向迁移均为待批准申请。
+设计主文档及[精确权限申请](monitor-scheduler-task83-capability-request.md)仅按人类《Task 8.3 设计提交》授权commit/push。
+目前不允许实施8.3，或合并PR12、Archive、部署、生产Migration及真实公网执行。
 生产执行保持硬关闭。本文件不会自行授予任何后续实施或数据库权限。

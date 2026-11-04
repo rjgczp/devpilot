@@ -1,5 +1,33 @@
 # Verification — add-monitor-scheduler-worker
 
+## Current gate — Task8.2 independently accepted / Task8.3 design only (2026-11-04)
+
+The human user's message “DevPilot AI — Task 8.2 验收签署与 8.3 启动” explicitly accepts
+`0462dc2e65c8ea9edd3948cf6a72d483e93f7510`, after independent verification of Push41760964041
+and PR41760970943, each with verify/integration/execution-security success. Task8.2 is checked;
+progress is36/47. This human sign-off supersedes all earlier pending8.2 paragraphs below.
+[Acceptance record](../../../docs/monitor-scheduler-task82-final-review.md) binds the exact SHA,
+six jobs, source inventory and six-Artifact index; accepted-SHA evidence is not relabeled as
+validation of this later documentation change. All first failures and unresolved risks remain.
+
+The same message authorizes only8.3 design, readonly environment assessment and preparation of
+the minimum capability request. [Storage plan](../../../docs/monitor-scheduler-task83-storage-plan.md)
+records the current unverified disk input, trusted-source/freshness gap, actual environment limits,
+proposed separate budgets and future measurement/admission tests. No workload, database change,
+new permission or production migration was run.8.3 remains unchecked; stop for independent design
+review. PR12 stays Open; no merge, Archive, deployment or production internet execution.
+
+### Task8.3 documentation submission authorization (2026-11-04)
+
+The human message “DevPilot AI — Task 8.3 设计提交” authorizes a separate documentation-only
+commit/push on codex/task83-storage-design, based on accepted0462dc2. The
+[exact capability request](../../../docs/monitor-scheduler-task83-capability-request.md) lists the
+two proposed bounded tables, Reporter identity, two runtime EXECUTEs, private helper/API-owner ACL,
+seven existing function gate locations and OS metadata/provisioning limits. These are proposals,
+not applied privileges or SQL. Readonly review confirms authorize is still M8 and status is M9 Up.
+No M1–10/core/fixture/workflow change, PR12 head update, load run or8.3 acceptance is authorized.
+The submission keeps36/47 and stops for independent design review; its SHA is not runtime CI evidence.
+
 ## Task8.1 implementation candidate — acceptance pending (2026-10-30)
 
 The user formally accepted Task7.5 at c31478b (implementation4434303) and approved

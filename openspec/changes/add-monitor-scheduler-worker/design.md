@@ -241,6 +241,27 @@ HMAC预算不是完整反滥用证明：域名别名/共享CDN/多IP/恶意DNS�
 
 容量不足时先回滚Claim，再以新的父序清理事务释放可删终态；不能持global预算锁反向寻找/锁Monitor。冷却预算key若被TTL清除，新建key的初始token须等价于已过完整补充窗口；active/quarantine及未过最大1h安全保留的目标key不能逐出。Migration不为所有旧Monitor回填schedule行；仅首次明确授权时延迟登记，schedule总行数硬限10000。没有schedule即没有执行授权，旧g变更对不存在schedule只需维持无许可。无授权/无活跃资源且冷却已过完整1h的登记可在父序下清理；有run未清理时不删除schedule，以免重置fence。原配置数量不作为安全升级的拒绝条件。
 
+#### D9.1 Task8.3存储准入细化候选（2026-11-04，待独立设计审查）
+
+Task8.2已独立验收0462dc2，36/47；本轮仅8.3设计/只读评估，不实施。
+[存储方案与最小权限申请](../../../docs/monitor-scheduler-task83-storage-plan.md)细化D9与Retention场景：
+1GiB调度关系实际total（含索引/TOAST）与WAL/日志/temp独立预算、10GiB实际设备空间分开核验；
+任一适用预算/设备达到80%即拒绝新Claim。宿主df、累计WAL或SQL行数不能替代实际来源。
+现有disk_used_bytes默认0且未找到运行采集/刷新/独立时效协议，不能声称已有可信存储保护。
+
+待审方案采用独立受限Reporter、DB挑战与固定来源manifest；候选每1s采样、2s发布截止、5s有效期，
+缺失/失效/来源不可信保守拒绝。业务仍在末段control等待后新SPI判定，Reporter不进入业务父链。
+拒绝准入不阻断Pause/PATCH、unknown/结果/可信物理返槽，不解除其他gate或放宽M9/M10。
+恢复需所有量低于70%且连续两份有效新样本；采样窗口/在途写入不被宣称为物理硬配额。
+数据库墙钟任意冻结/回拨的绝对TTL不能只靠SQL时间保证，可信单调看门狗/停止通道列为独立验证门禁。
+
+新增Reporter身份、两项窄EXECUTE、内部boolean helper调用授权、两个有界元数据表、设备metadata ACL，
+以及未来前向Migration11中原disk门控位置的收紧均只是申请。本轮M1–10/生产Go/fixture代码不改。
+必须在设计和精确权限/实施另获批准后才能执行；真实负载/专盘证据未获得，8.3保持未勾选。
+独立分支codex/task83-storage-design仅提交文档；
+[精确差异申请](../../../docs/monitor-scheduler-task83-capability-request.md)逐项列出拟议对象/ACL和七个门控位置，
+明确授权不得只设置permitted=false后仍授予，status/Claim对账保留同语句只读快照。
+
 ### D10. 生产出口候选架构与禁止上线条件
 
 A只实现测试拓扑。B候选为专用Linux执行节点：API及PG在控制网；Controller/Worker只通过TLS访问最小数据库函数；独立Supervisor位于受信节点管理域，通过专用控制pipe给每run创建无凭据sandbox；Probe只拥有两个方向的受限匿名pipe与本run namespace。没有Docker socket传入；容器权限和宿主防火墙由独立基础设施管理，不把NET_ADMIN给Probe。
