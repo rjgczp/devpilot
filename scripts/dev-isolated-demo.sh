@@ -16,6 +16,9 @@ umask 077
 export PYTHONDONTWRITEBYTECODE=1
 mkdir -p .devpilot-isolated-demo/tools
 state="$repo/.devpilot-isolated-demo"
+# Only public executable artifacts are shared with caps0/UID65534 containers.
+# The parent and credential files retain0700/0600; never broaden those modes.
+chmod 0755 "$state/tools"
 evidence=${DEVPILOT_DEMO_EVIDENCE:-"$state/$(date +%Y%m%d-%H%M%S)-$$"}
 stop_file="$state/stop-$$"
 credentials="$state/credentials-$$.json"

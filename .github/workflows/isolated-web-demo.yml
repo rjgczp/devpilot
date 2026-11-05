@@ -35,9 +35,12 @@ jobs:
           DEVPILOT_DEMO_EVIDENCE="$RUNNER_TEMP/demo-evidence" ./scripts/dev-isolated-demo.sh > "$RUNNER_TEMP/demo.log" 2>&1 &
           echo $! > "$RUNNER_TEMP/demo.pid"
           python3 - <<'PY'
-          import pathlib,time
+          import os,pathlib,time
           for _ in range(360):
             if list(pathlib.Path('.devpilot-isolated-demo').glob('credentials-*.json')):break
+            pid=int((pathlib.Path(os.environ['RUNNER_TEMP'])/'demo.pid').read_text())
+            try:os.kill(pid,0)
+            except ProcessLookupError:raise SystemExit('demo process exited before ready; inspect original log')
             time.sleep(1)
           else:raise SystemExit('demo setup exceeded360s; inspect original log')
           PY

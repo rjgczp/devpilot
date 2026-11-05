@@ -11,7 +11,7 @@
 ```
 
 1. 等待“隔离演示已就绪”，打开 <http://127.0.0.1:5174>。原普通 Dashboard 的5173和独立开发库不受此入口操作。
-2. 在本机读取终端指出的 `.devpilot-isolated-demo/credentials-<PID>.json`，使用临时 Owner 邮箱/随机密码登录。文件600，目录/文件被git忽略，Vite禁止读取；密码不打印到证据、argv或环境。无需注册新的账号。
+2. 在本机读取终端指出的 `.devpilot-isolated-demo/credentials-<PID>.json`，使用临时 Owner 邮箱/随机密码登录。文件600，私有父目录700；仅可执行工具子目录755供受限容器遍历。目录/文件被git忽略，Vite禁止读取；密码不打印到证据、argv或环境。无需注册新的账号。
 3. 选择已有 Workspace/Project，固定 Monitor 名为“本地演示 · 隔离 HTTPS fixture”。初始未授权、无Run。点击“授权激活”，查看固定目标，勾选确认，再提交现有900秒有限期 Owner 授权。没有自动授权或伪造会话。
 4. 点击“历史”并停留页面：真实检查每60秒一个周期，状态轮询每10秒；新Run/Result会自动刷新演示历史及趋势。只展示实际最小结果，不注入投影行。默认做3个周期，随后关闭执行gate，保留真实API/记录供查看；整个演示最长15分钟。
 5. 可使用原暂停接口停止新的批准；周期之间暂停将结束本次有界演示执行并保留查看，重新演示需重启脚本。已开始的检查仍可能完成。固定目标配置只读，创建、编辑、删除均禁用且服务端拒绝。授权/暂停与物理执行相竞时原门控优先；若fixture无法继续确认，演示保守停止，不扩展超时、不自动重发GET或冒充物理释放。它不是常驻调度服务。
@@ -23,7 +23,7 @@
 - 复用原TargetDirectory，目录仅绑定完整W/P/M及固定配置版本、URL和地址；原完整DNS验证、Target Permit、Fence、单次输入、拒绝重放、物理pidfd/reap/namespace退休及签名验收全部保留。两个Worker的既有LOGIN、EXECUTE、2秒事务/250ms锁预算不变。没有生产Go、迁移、基础角色或表列授权变更。
 - 演示API复用原认证、Workspace/Project/Monitor处理器和本次私有PG18；只在可信协调器的loopback监听。外层限制仅允许登录/退出和固定Monitor的既有Owner授权/暂停写入，其他写操作403；正式鉴权、CSRF和ETag仍由原处理器验证。UI标记不是权限边界；直接调用API也不能创建/修改任意URL。
 - PG/Worker/API控制容器仅在原internal双栈网络，**不发布端口、不加外联桥或上游路由**。Probe仍network-none数据平面、caps0、无DB/源码/Docker挂载；私钥仅在原可信宿主Authority。API无法调用执行管理路径。
-- 浏览器入口仅127.0.0.1:5174。host侧::1网关通过已有宿主Docker管理权限的私有stdin/stdout调用协调器内固定loopback HTTP客户端；该客户端唯一目的地127.0.0.1:5174，不接受目标URL、主机或端口。Cookie/请求体不落日志。网关限4并发、16KiB请求、2MiB响应；无Docker socket下放。它只桥接本地演示API，不是通用公网代理。
+- 浏览器入口仅127.0.0.1:5174。host侧::1网关通过已有宿主Docker管理权限的私有stdin/stdout调用协调器内固定loopback HTTP客户端；该客户端唯一目的地127.0.0.1:5174，不接受目标URL、主机或端口。Cookie/请求体不落日志。网关限4个同时进行的Docker转发、16KiB请求、2MiB响应；无Docker socket下放。它只桥接本地演示API，不是通用公网代理。
 - 预置Owner密码经真实密码Hasher写入演示账号；用户真实登录后由原Cookie/CSRF/If-Match/有限期同意协议授权。没有新增数据库角色或权限；仅复用9.1既有临时角色和非生产协调器管理身份。
 
 ## 本轮定向验收
