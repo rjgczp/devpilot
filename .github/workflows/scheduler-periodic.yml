@@ -1,0 +1,33 @@
+name: Scheduler periodic fixture
+
+on:
+  push:
+    branches: [codex/task91-isolated-periodic]
+  pull_request:
+    branches: [codex/task83-storage-design]
+
+permissions:
+  contents: read
+
+jobs:
+  periodic-pg18:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Verify frozen source and fixture transport
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+          python3 -m unittest discover -s tests/scheduler -p 'test_*.py' -v
+          git diff --exit-code
+      - name: Three real60s cycles with two Workers (normal and race)
+        run: sh tests/scheduler/run-docker.sh "$RUNNER_TEMP/task91-evidence" both
+      - name: Upload this SHA's raw timeline and receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: task91-periodic-evidence
+          path: ${{ runner.temp }}/task91-evidence/
+          if-no-files-found: error

@@ -403,7 +403,8 @@ func TestBudgetCleanupMigrationLifecycle(t *testing.T) {
 	if _, e := db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true`); e != nil {
 		t.Fatal(e)
 	}
-	goose(t, dir, "down", true)
+	// This is specifically Migration10's lifecycle, even after later forward fixes.
+	goose(t, dir, "down-to 9", true)
 	if queryInt(t, db, `SELECT count(*) FROM pg_proc WHERE proname IN ('retention_candidates','cleanup_monitor','cleanup_target_key')`) != 0 {
 		t.Fatal("Down kept capabilities")
 	}
@@ -431,8 +432,8 @@ func TestBudgetCleanupMigrationLifecycle(t *testing.T) {
 	if !strings.Contains(string(failed), "division by zero") || queryInt(t, db, `SELECT count(*) FROM pg_proc WHERE proname IN ('retention_candidates','cleanup_monitor','cleanup_target_key')`) != 0 || queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 9 {
 		t.Fatal("partial migration/capability survived")
 	}
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 10", true)
+	goose(t, dir, "up-to 10", true)
 	if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 10 {
 		t.Fatal("not schema10")
 	}

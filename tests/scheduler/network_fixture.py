@@ -21,7 +21,7 @@ import time
 import uuid
 
 
-IMAGE = 'devpilot-scheduler-fixture'
+IMAGE = 'devpilot-scheduler-fixture:latest'
 HERE = Path(__file__).resolve().parent
 ALIASES4 = ['93.184.216.35', '192.0.2.53', '169.254.169.254', '10.0.0.9', '11.0.0.9']
 ALIASES6 = ['2001:4860:ffff::35', 'fd64:53::53', 'fd64:bad::254', '64:ff9b::5db8:d822', '2002:5db8:d822::1']
