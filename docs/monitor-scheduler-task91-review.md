@@ -1,7 +1,8 @@
 # Task9.1 review / MVP follow-up
 
-Scope: isolated multi-instance periodic execution only;36/47 remains unchanged,
-Task9.1 awaits independent acceptance. Task8.3 is deferred and unchecked. No
+Scope: isolated multi-instance periodic execution only. Task9.1 independently
+accepted at00569ebc82fceb41f76d984c02c64c13cd8b53ef;37/47.
+Push41959496018 and PR41959501533 both success; originals remain preserved. Task8.3 is deferred and unchecked. No
 Migration11, production migration, deployment, merge, Archive or public egress.
 Parent: `e969fafa272d1d33bab3a303bfaa1619f552ffc5` on the approved design branch;
 accepted8.2 runtime remains `0462dc2e65c8ea9edd3948cf6a72d483e93f7510`.

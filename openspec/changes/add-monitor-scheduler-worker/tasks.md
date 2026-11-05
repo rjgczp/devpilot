@@ -72,7 +72,8 @@
 
 ## 9. 多实例周期与故障集成验收
 
-- [ ] 9.1 交付可复验tests/scheduler/run-docker.sh及README，创建独立PG控制网、两个以上Worker、可信Supervisor和无上游双栈fixture网；以真实Owner授权和60s interval连续至少三个周期验收最小结果/下一due，不连接真实公网目标。
+- [x] 9.1 交付可复验tests/scheduler/run-docker.sh及README，创建独立PG控制网、两个以上Worker、可信Supervisor和无上游双栈fixture网；以真实Owner授权和60s interval连续至少三个周期验收最小结果/下一due，不连接真实公网目标。
+<!-- 2026-11-05 human independent technical acceptance: Task9.1 accepted at00569ebc82fceb41f76d984c02c64c13cd8b53ef; Push41959496018/PR41959501533 success.37/47.8.3 deferred. Web Dashboard separately authorized without9.2--10.5 prerequisites. -->
 <!-- 2026-11-05 Task9.1 implementation authorized, MVP-first. Real first-cycle NULL-due defect prompted separate explicit approval for forward Migration12, disposable PG18 only, no new ACL or M1--10 edits. Review: docs/monitor-scheduler-task91-review.md. Keep unchecked/36 of47 until independent acceptance; no9.2--9.5 implementation authority. -->
 - [ ] 9.2 在七个暂停/PATCH阶段建立事务/网络屏障，保存PG锁及独立接收端GET时间线；验证1–3阻止Start、4–7准确承认在途窗口、旧结果隔离，禁止用sleep-only或CAS断言物理停止。
 - [ ] 9.3 真实注入Claim前崩溃/三种Commit丢ACK、GET后SIGKILL、DB分区/重连、租约过期僵尸/节点重建；观测同run无自动再发送、unknown可丢结果、无终止证明槽不返回，恢复后只有正常新周期。

@@ -1,6 +1,11 @@
 # devpilot
 DevPilot AI 是一个基于 Go + Python 的多租户 SaaS 监控与 AI 故障诊断平台。
 
+本地 Web MVP：运行 `./scripts/dev-dashboard.sh`，打开
+**http://127.0.0.1:5173**，即可注册/登录、选择 Workspace/Project、创建编辑 Monitor、
+确认有限授权、暂停和查看权威状态。见[一键启动和演示说明](docs/web-dashboard.md)。
+普通本地环境的生产公网执行保持关闭，不会因保存配置或授权而探测目标。
+
 ## 用户注册
 
 在启动 Go API 前，按[数据库迁移说明](docs/database-migrations.md)安装固定版本 Goose 并显式执行 migration up。API 不自动修改 Schema，原有 `/healthz` 与 `/readyz` 语义保持不变。

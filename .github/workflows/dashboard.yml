@@ -1,0 +1,61 @@
+name: Web Dashboard
+on:
+  push:
+    branches: [codex/mvp-web-dashboard]
+  pull_request:
+    branches: [codex/task91-isolated-periodic]
+permissions:
+  contents: read
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: Build and test Dashboard
+        run: |
+          npm ci --prefix web
+          npm run --prefix web build
+          npm run --prefix web test
+          cd web && npx playwright install --with-deps chromium
+      - name: Start local API and dedicated PG18
+        run: |
+          ./scripts/dev-dashboard.sh > "$RUNNER_TEMP/dashboard-dev.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/dashboard-dev.pid"
+          python3 - <<'PY'
+          import time,urllib.request
+          opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+          for _ in range(240):
+            try:
+              with opener.open('http://127.0.0.1:5173',timeout=1) as response:
+                if response.status==200:break
+            except OSError:pass
+            time.sleep(.5)
+          else:raise SystemExit('Dashboard startup exceeded120s; inspect uploaded log')
+          PY
+      - name: Real Cookie/CSRF/PG browser workflow and state regressions
+        run: npm run --prefix web test:e2e
+      - name: Stop local stack
+        if: always()
+        run: |
+          if test -f "$RUNNER_TEMP/dashboard-dev.pid"; then kill -TERM "$(cat "$RUNNER_TEMP/dashboard-dev.pid")" || true; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dashboard-browser-evidence
+          path: |
+            web/test-results/
+            web/playwright-report/
+            ${{ runner.temp }}/dashboard-dev.log
+          if-no-files-found: error
