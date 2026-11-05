@@ -31,8 +31,9 @@ class DemoHarness(PeriodicHarness):
             self.gateway = serve(name)
             self.metadata = payload
             private = self.credentials
-            private.write_text(json.dumps(dict(email=payload['email'],password=self.password),indent=2)+'\n')
-            private.chmod(0o600)
+            fd=os.open(private,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+            with os.fdopen(fd,'w') as stream:
+                stream.write(json.dumps(dict(email=payload['email'],password=self.password),indent=2)+'\n')
             self.record('demo',dict(**payload,url='http://127.0.0.1:5174',isolated=True,cycles=3,interval_seconds=60))
             print('隔离演示已就绪：http://127.0.0.1:5174\n临时 Owner 登录信息：'+str(private)+'\n请登录并点击“授权激活”。只允许固定无上游 fixture；三次真实60秒周期后停止新执行。',flush=True)
             return dict(event='demo_ready')
@@ -86,7 +87,10 @@ class DemoHarness(PeriodicHarness):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--tools',type=Path,required=True);p.add_argument('--evidence',type=Path,required=True);p.add_argument('--credentials',type=Path,required=True);p.add_argument('--stop-file',type=Path,required=True);a=p.parse_args()
-    os.umask(0o077)
+    # Match the accepted fixture's public artifact modes: caps0 Probe must read
+    # its public CA/config. Credentials use explicit0600 in a0700 parent; the
+    # original Authority keeps its private key/journal private independently.
+    os.umask(0o022)
     h=DemoHarness(a.evidence.resolve(),a.tools.resolve(),'normal')
     h.credentials=a.credentials.resolve();h.stop_file=a.stop_file.resolve()
     def stop(*_):raise KeyboardInterrupt
