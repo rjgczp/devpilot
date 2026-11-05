@@ -36,6 +36,6 @@ npm run --prefix web test
 npm run --prefix web test:e2e
 ```
 
-PG脚本自建自毁独立PG18 Linux容器/网络/数据库，不接受调用者 DATABASE_URL；端口仅绑定 loopback，无 Worker/Scheduler 或目标执行能力。测试覆盖受限真实 LOGIN 的20/50上限、并列时间、分页期间新插入、独立游标位置、筛选、unknown/null、Owner/Member、混合scope/跨租户/会话及成员撤销、精确字段和函数ACL、禁止直接读取Run表；分别 normal/race，使用独立 `integration,historyfixture` 标签；因投影保留记录不能走历史全库回退，该测试仅在专用一次性集群中执行。投影行保留原物理安全约束，结束仅回退本轮只读函数后销毁集群，不强行回退既有迁移。Linux 上还定向执行已有 Migration12 的独立往返用例，仅固定该用例自己的版本范围，原断言不变，不运行周期负载。浏览器真实API用例检查环境关闭的空历史，模拟数据用例检查筛选/分页/未知优先/趋势/失败清空。
+PG脚本自建自毁独立PG18 Linux容器/网络/数据库，不接受调用者 DATABASE_URL；端口仅绑定 loopback，无 Worker/Scheduler 或目标执行能力。测试覆盖受限真实 LOGIN 的20/50上限、并列时间、分页期间新插入、独立游标位置、筛选、unknown/null、Owner/Member、混合scope/跨租户/会话及成员撤销、精确字段和函数ACL、禁止直接读取Run表；分别 normal/race，使用独立 `integration,historyfixture` 标签；因投影保留记录不能走历史全库回退，该测试仅在专用一次性集群中执行。投影行保留原物理安全约束，结束仅回退本轮只读函数后销毁集群，不强行回退既有迁移。本轮直接比较 Migration13 前后原 commit_result 定义、owner及ACL，确认只读迁移不改变已验收执行入口。既有 Migration12 往返用例固定自身版本范围，原断言和已验收 fixture 前置条件不变，本轮不重跑该物理 fixture。浏览器真实API用例检查环境关闭的空历史，模拟数据用例检查筛选/分页/未知优先/趋势/失败清空。
 
 不重新执行完整调度矩阵，不把本轮投影测试当作真实周期、容量或物理证明。Task8.3及9.2–10.5状态不变；生产公网执行继续关闭。

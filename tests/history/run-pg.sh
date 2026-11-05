@@ -17,11 +17,6 @@ for mode in normal race; do
   if [ "$mode" = race ]; then
     go test -race -tags=integration,historyfixture ./tests/integration -run '^TestMonitorHistoryReadOnlyPG$' -count=1 -v
   else
-    if [ "$(uname -s)" = Linux ]; then
-      # Only the affected migration lifecycle, not the real scheduling matrix.
-      GOOSE_DRIVER=postgres GOOSE_DBSTRING="$TEST_DATABASE_URL" goose -env=none -dir migrations up
-      go test -tags=integration,schedulerfixture,budgetfixture,networkfixture,releasefixture,jointfixture,periodicfixture ./tests/integration -run '^TestPeriodicMigrationRoundTripPG$' -count=1 -v
-    fi
     go test -tags=integration,historyfixture ./tests/integration -run '^TestMonitorHistoryReadOnlyPG$' -count=1 -v
   fi
   compose down -v

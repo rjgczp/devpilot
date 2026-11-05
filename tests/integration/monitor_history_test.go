@@ -48,11 +48,30 @@ func historySeed(t *testing.T, db *pgxpool.Pool, m monitor.Public, v, g, ep int6
 
 func TestMonitorHistoryReadOnlyPG(t *testing.T) {
 	db := openDB(t)
+	goose(t, root()+"/migrations", "up-to 12", true)
+	signature := "scheduler_private.commit_result(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,uuid,integer,integer,boolean,text)"
+	original := func() string {
+		t.Helper()
+		var value string
+		if err := db.QueryRow(context.Background(), `SELECT jsonb_build_object('definition',pg_get_functiondef(oid),'owner',proowner,'acl',proacl,'config',proconfig)::text FROM pg_proc WHERE oid=$1::regprocedure`, signature).Scan(&value); err != nil {
+			t.Fatal(err)
+		}
+		return value
+	}
+	accepted := original()
 	goose(t, root()+"/migrations", "up", true)
 	goose(t, root()+"/migrations", "up", true)
+	if original() != accepted {
+		t.Fatal("history migration altered accepted completion function/ACL")
+	}
 	// Projection rows are not physical evidence. Only undo this read function;
 	// retain all existing physical/retention guards and destroy this test cluster.
-	t.Cleanup(func() { goose(t, root()+"/migrations", "down-to 12", true) })
+	t.Cleanup(func() {
+		goose(t, root()+"/migrations", "down-to 12", true)
+		if original() != accepted {
+			t.Error("history rollback altered accepted completion function/ACL")
+		}
+	})
 	ctx := context.Background()
 	api := status74API(t, db)
 	f, m, v, g, ep := status74Authorized(t, db)
@@ -199,10 +218,10 @@ func TestMonitorHistoryReadOnlyPG(t *testing.T) {
 	if !errors.As(e, &pe) || pe.Code != "42501" {
 		t.Fatal("API gained table access", e)
 	}
-	signature := "scheduler_private.monitor_history(bytea,uuid,uuid,uuid,integer,text,timestamptz,uuid,timestamptz,uuid)"
+	historySignature := "scheduler_private.monitor_history(bytea,uuid,uuid,uuid,integer,text,timestamptz,uuid,timestamptz,uuid)"
 	for _, role := range []string{"devpilot_scheduler_api", "devpilot_scheduler_worker", "devpilot_scheduler_controller", "devpilot_scheduler_supervisor", "public"} {
 		var yes bool
-		if e := db.QueryRow(ctx, `SELECT has_function_privilege($1,$2,'EXECUTE')`, role, signature).Scan(&yes); e != nil || yes != (role == "devpilot_scheduler_api") {
+		if e := db.QueryRow(ctx, `SELECT has_function_privilege($1,$2,'EXECUTE')`, role, historySignature).Scan(&yes); e != nil || yes != (role == "devpilot_scheduler_api") {
 			t.Fatal("history ACL", role, yes, e)
 		}
 	}
