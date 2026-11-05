@@ -5,6 +5,9 @@ test "$(uname -s)" = Linux
 : "${PERIODIC91_TOOLS:?absolute output directory required}"
 case "$PERIODIC91_TOOLS" in /*) ;; *) exit 2;; esac
 test "$(go env GOVERSION)" = go1.24.3
+# Read-only host checkouts can belong to the runner UID rather than container
+# root. Trust only this explicitly mounted repository; retain VCS stamping.
+git config --global --add safe.directory "$(pwd)"
 mkdir -p "$PERIODIC91_TOOLS"
 export GOTOOLCHAIN=local
 CGO_ENABLED=0 go build -tags=schedulerfixture -o "$PERIODIC91_TOOLS/networksupervisorfixture" ./cmd/networksupervisorfixture
