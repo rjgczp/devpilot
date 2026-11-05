@@ -38,3 +38,4 @@ web/playwright-report/
 # Editor/IDE
 # .idea/
 # .vscode/
+.devpilot-isolated-demo/

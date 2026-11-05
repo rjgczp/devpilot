@@ -1228,3 +1228,6 @@ label.consent {
 .response-trend svg { display: block; width: 100%; max-height: 240px; }
 .response-trend .field-help { margin-bottom: 0; }
 .history-footer { padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.demo-banner { padding: 16px 20px; margin-bottom: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--green-soft); }
+.demo-banner strong { color: var(--green); font-size: 13px; }
+.demo-banner p { color: var(--muted); font-size: 12px; line-height: 1.8; margin: 8px 0 0; }

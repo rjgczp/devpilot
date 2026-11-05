@@ -68,6 +68,8 @@ export interface ExecutionStatus {
 }
 
 const errors: Record<string, string> = {
+  isolated_demo_readonly:
+    "隔离演示只允许固定 Monitor，不能创建或修改目标配置。",
   invalid_credentials: "邮箱或密码不正确。",
   email_conflict: "该邮箱已注册，请登录。",
   unauthenticated: "登录已过期，请重新登录。",
