@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+    environment:
+      POSTGRES_USER: devpilot_test
+      POSTGRES_PASSWORD: disposable_history_only
+      POSTGRES_DB: devpilot_registration_test
+    ports: ["127.0.0.1::5432"]
+    networks: [control]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devpilot_test -d devpilot_registration_test"]
+      interval: 1s
+      timeout: 2s
+      retries: 30
+networks:
+  control:
+    driver: bridge

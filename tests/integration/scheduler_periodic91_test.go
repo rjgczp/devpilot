@@ -526,6 +526,7 @@ func TestPeriodicMigrationRoundTripPG(t *testing.T) {
 	db := openDB(t)
 	ctx := context.Background()
 	dir := root() + "/migrations"
+	goose(t, dir, "down-to 12", true) // Pin this existing lifecycle assertion to its own migration.
 	signature := "scheduler_private.commit_result(uuid,uuid,uuid,uuid,uuid,bigint,bigint,bigint,bigint,uuid,uuid,uuid,integer,integer,boolean,text)"
 	snapshot := func() (string, string) {
 		t.Helper()
@@ -551,8 +552,8 @@ func TestPeriodicMigrationRoundTripPG(t *testing.T) {
 	if strings.Contains(old, "next_due_at=GREATEST") || identity != oldIdentity || queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 10 {
 		t.Fatal("Down did not restore accepted function/ACL")
 	}
-	goose(t, dir, "up", true)
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 12", true)
+	goose(t, dir, "up-to 12", true)
 	current, currentIdentity := snapshot()
 	if current != definition || currentIdentity != identity || queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 12 || queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=11 AND is_applied`) != 0 {
 		t.Fatal("forward/up-up changed definition or privilege boundary")

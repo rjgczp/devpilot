@@ -1,9 +1,9 @@
 name: Web Dashboard
 on:
   push:
-    branches: [codex/mvp-web-dashboard]
+    branches: [codex/mvp-web-dashboard, codex/mvp-monitor-history]
   pull_request:
-    branches: [codex/task91-isolated-periodic]
+    branches: [codex/task91-isolated-periodic, codex/mvp-web-dashboard]
 permissions:
   contents: read
 jobs:
@@ -44,6 +44,10 @@ jobs:
             time.sleep(.5)
           else:raise SystemExit('Dashboard startup exceeded120s; inspect uploaded log')
           PY
+      - name: Restricted history API on disposable PG18 (normal and race)
+        run: |
+          go test ./internal/monitor
+          ./tests/history/run-pg.sh > "$RUNNER_TEMP/history-pg.log" 2>&1
       - name: Real Cookie/CSRF/PG browser workflow and state regressions
         run: npm run --prefix web test:e2e
       - name: Stop local stack
@@ -58,4 +62,5 @@ jobs:
             web/test-results/
             web/playwright-report/
             ${{ runner.temp }}/dashboard-dev.log
+            ${{ runner.temp }}/history-pg.log
           if-no-files-found: error
