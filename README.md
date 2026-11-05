@@ -337,3 +337,5 @@ rollout, these intents must be cleared with generation advancement and the curre
 Owner must confirm again. Production egress has not been approved by this feature.
 
 Monitor 检查历史：登录本地 Dashboard，点击监控行“历史”；接口、分页、权限和复验方式见 [历史说明](docs/monitor-history.md)。
+
+本地端到端隔离演示：`./scripts/dev-isolated-demo.sh`，打开 <http://127.0.0.1:5174>。固定无上游fixture、真实Owner授权和3个60秒周期，见 [演示说明](docs/isolated-web-demo.md)。

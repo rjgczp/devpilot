@@ -1,0 +1,63 @@
+name: Isolated Web demo
+on:
+  push:
+    branches: [codex/mvp-isolated-web-demo]
+  pull_request:
+    branches: [codex/mvp-monitor-history]
+permissions:
+  contents: read
+jobs:
+  web-demo-pg18:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build and targeted UI tests
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+          python3 -m unittest discover -s tests/demo -p 'test_*.py' -v
+          python3 -m unittest discover -s tests/scheduler -p 'test_*.py' -v
+          npm ci --prefix web
+          npm run --prefix web build
+          npm run --prefix web test
+          cd web && npx playwright install --with-deps chromium
+      - name: Start real isolated demo (no published control ports)
+        run: |
+          DEVPILOT_DEMO_EVIDENCE="$RUNNER_TEMP/demo-evidence" ./scripts/dev-isolated-demo.sh > "$RUNNER_TEMP/demo.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/demo.pid"
+          python3 - <<'PY'
+          import pathlib,time
+          for _ in range(360):
+            if list(pathlib.Path('.devpilot-isolated-demo').glob('credentials-*.json')):break
+            time.sleep(1)
+          else:raise SystemExit('demo setup exceeded360s; inspect original log')
+          PY
+      - name: Owner browser authorization and three real60s cycles
+        run: npm run --prefix web test:demo
+      - name: Stop owned demo
+        if: always()
+        run: |
+          if test -f "$RUNNER_TEMP/demo.pid"; then
+            pid=$(cat "$RUNNER_TEMP/demo.pid")
+            for i in $(seq 1 30); do kill -0 "$pid" 2>/dev/null || break; sleep 1; done
+            kill -TERM "$pid" 2>/dev/null || true
+            for i in $(seq 1 20); do kill -0 "$pid" 2>/dev/null || break; sleep 1; done
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: isolated-web-demo-evidence
+          path: |
+            ${{ runner.temp }}/demo-evidence/
+            ${{ runner.temp }}/demo.log
+            web/test-results/
+          if-no-files-found: error

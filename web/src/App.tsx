@@ -12,6 +12,7 @@ import {
   type User,
   type Workspace,
 } from "./api";
+import { isolatedDemo } from "./environment";
 import { MonitorHistory } from "./MonitorHistory";
 import { AuthorizeForm, MonitorForm } from "./MonitorForm";
 import { formatTime, presentStatus, validScope } from "./status";
@@ -328,6 +329,7 @@ function WorkspaceApp({
           )}
           <button
             className="text-button small"
+            disabled={isolatedDemo}
             onClick={() => setCreating("workspace")}
           >
             <Icon name="plus" size={14} />
@@ -343,7 +345,7 @@ function WorkspaceApp({
         <div className="sidebar-note">
           <span className="small-dot" />
           <div>
-            <strong>本地开发环境</strong>
+            <strong>{isolatedDemo ? "隔离演示" : "本地开发环境"}</strong>
             <p>生产公网执行保持关闭</p>
           </div>
         </div>
@@ -377,6 +379,15 @@ function WorkspaceApp({
           {themeButton}
         </header>
         <main className="content">
+          {isolatedDemo && (
+            <div className="demo-banner" role="status">
+              <strong>本地演示 · 无公网出口</strong>
+              <p>
+                仅固定 HTTPS fixture，配置只读。请以本次临时 Owner
+                登录并授权激活；60秒周期，最多3次真实检查后关闭执行。暂停会停止新的批准，已开始的检查仍可能完成。
+              </p>
+            </div>
+          )}
           {error && <Notice>{error}</Notice>}
           {workspaces.error && (
             <Notice>
@@ -420,6 +431,7 @@ function WorkspaceApp({
             {workspace?.role === "owner" && (
               <button
                 className="text-button"
+                disabled={isolatedDemo}
                 onClick={() => setCreating("project")}
               >
                 <Icon name="plus" size={14} />
@@ -644,6 +656,7 @@ function Dashboard({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState("");
   const owner = workspace.role === "owner";
+  const editable = owner && !isolatedDemo;
   const saved = (text: string) => {
     setModal(null);
     setMessage(text);
@@ -698,8 +711,17 @@ function Dashboard({
     (s) => s.value?.latest_attempt?.attempt_state === "completed",
   ).length;
   const selectedMonitor = monitors.items.find((m) => m.id === selected);
-  const historyMonitor = monitors.items.find(m => m.id === historyID);
-  if (historyMonitor) return <MonitorHistory key={historyMonitor.id} monitor={historyMonitor} path={path} status={statuses[historyMonitor.id]?.value} close={() => setHistoryID(null)} />;
+  const historyMonitor = monitors.items.find((m) => m.id === historyID);
+  if (historyMonitor)
+    return (
+      <MonitorHistory
+        key={historyMonitor.id}
+        monitor={historyMonitor}
+        path={path}
+        status={statuses[historyMonitor.id]?.value}
+        close={() => setHistoryID(null)}
+      />
+    );
   return (
     <>
       <div className="page-heading">
@@ -713,7 +735,7 @@ function Dashboard({
         </div>
         <button
           className="button primary"
-          disabled={!owner}
+          disabled={!editable}
           onClick={() => setModal({ kind: "new", monitor: null })}
         >
           <Icon name="plus" />
@@ -844,11 +866,17 @@ function Dashboard({
                       </td>
                       <td className="align-right">
                         <div className="row-actions">
-                          <button className="button compact" aria-label={`查看 ${m.name} 历史`} onClick={() => setHistoryID(m.id)}>历史</button>
+                          <button
+                            className="button compact"
+                            aria-label={`查看 ${m.name} 历史`}
+                            onClick={() => setHistoryID(m.id)}
+                          >
+                            历史
+                          </button>
                           <button
                             className="button compact"
                             aria-label={`编辑 ${m.name}`}
-                            disabled={!owner || !!busy}
+                            disabled={!editable || !!busy}
                             onClick={() =>
                               setModal({ kind: "edit", monitor: m })
                             }
@@ -945,7 +973,10 @@ function Dashboard({
         <StatusDetail
           monitor={selectedMonitor}
           record={statuses[selectedMonitor.id]}
-          history={() => {setHistoryID(selectedMonitor.id);setSelected(null);}}
+          history={() => {
+            setHistoryID(selectedMonitor.id);
+            setSelected(null);
+          }}
           close={() => setSelected(null)}
         />
       )}
@@ -1062,7 +1093,9 @@ function StatusDetail({
         </p>
       )}
       <footer className="dialog-actions">
-        <button className="button primary" onClick={history}>查看历史</button>
+        <button className="button primary" onClick={history}>
+          查看历史
+        </button>
         <button className="button" onClick={close}>
           关闭
         </button>
