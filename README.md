@@ -1,10 +1,14 @@
 # devpilot
 DevPilot AI 是一个基于 Go + Python 的多租户 SaaS 监控与 AI 故障诊断平台。
 
-本地 Web MVP：运行 `./scripts/dev-dashboard.sh`，打开
-**http://127.0.0.1:5173**，即可注册/登录、选择 Workspace/Project、创建编辑 Monitor、
-确认有限授权、暂停和查看权威状态。见[一键启动和演示说明](docs/web-dashboard.md)。
-普通本地环境的生产公网执行保持关闭，不会因保存配置或授权而探测目标。
+本地 MVP 统一入口：
+
+```sh
+./scripts/mvp.sh manage   # 普通管理，5173，执行关闭（默认模式）
+./scripts/mvp.sh demo     # 固定fixture隔离演示，5174，须Owner明确授权
+```
+
+登录、Workspace/Project/Monitor管理、历史与真实隔离三周期流程，见[本地MVP交付说明](docs/mvp.md)。普通模式不执行任意用户URL；演示使用独立临时库，并行登录两模式请使用独立浏览器配置/无痕会话。生产公网执行保持关闭。
 
 ## 用户注册
 

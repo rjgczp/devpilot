@@ -9,7 +9,7 @@
 在仓库根目录运行：
 
 ```sh
-./scripts/dev-dashboard.sh
+./scripts/mvp.sh manage
 ```
 
 打开 **http://127.0.0.1:5173**，不要替换成其他 hostname。首次启动自动安装固定
@@ -27,8 +27,8 @@ Goose3.26.0/锁定 npm 依赖，创建专用 PG18 本地开发库并应用现有
 6. 可切换 Workspace/Project、搜索/筛选、分页加载及深浅色。Member控件只读，后端仍最终鉴权。
 
 **普通本地 API 不会启动 Worker，执行门仍关闭。** 授权后显示「授权有效 / 执行已阻断」
-和「执行环境未开放」是实际状态，不是目标失败。真正的隔离三周期检查仍使用
-[已验收9.1 runner](../tests/scheduler/README.md)，本轮不把任意用户 URL 接到测试执行器。
+和「执行环境未开放」是实际状态，不是目标失败。真正的隔离三周期检查使用统一入口 `./scripts/mvp.sh demo`（[操作说明](mvp.md)），复用
+[已验收9.1 runner](../tests/scheduler/README.md)，不把任意用户 URL 接到测试执行器。
 有真实 Run 的现有兼容 API 可显示 running/unknown/completed；新 unknown 优先于旧 success，
 状态读取失败显示不可用，不回退旧成功记录。浏览器回归中的状态注入明确只是测试。
 

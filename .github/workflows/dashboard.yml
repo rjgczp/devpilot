@@ -1,9 +1,9 @@
 name: Web Dashboard
 on:
   push:
-    branches: [codex/mvp-web-dashboard, codex/mvp-monitor-history]
+    branches: [codex/mvp-web-dashboard, codex/mvp-monitor-history, codex/mvp-delivery]
   pull_request:
-    branches: [codex/task91-isolated-periodic, codex/mvp-web-dashboard]
+    branches: [codex/task91-isolated-periodic, codex/mvp-web-dashboard, codex/mvp-isolated-web-demo]
 permissions:
   contents: read
 jobs:
@@ -31,7 +31,7 @@ jobs:
           cd web && npx playwright install --with-deps chromium
       - name: Start local API and dedicated PG18
         run: |
-          ./scripts/dev-dashboard.sh > "$RUNNER_TEMP/dashboard-dev.log" 2>&1 &
+          ./scripts/mvp.sh manage > "$RUNNER_TEMP/dashboard-dev.log" 2>&1 &
           echo $! > "$RUNNER_TEMP/dashboard-dev.pid"
           python3 - <<'PY'
           import time,urllib.request

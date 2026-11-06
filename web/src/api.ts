@@ -73,7 +73,7 @@ const errors: Record<string, string> = {
   invalid_credentials: "邮箱或密码不正确。",
   email_conflict: "该邮箱已注册，请登录。",
   unauthenticated: "登录已过期，请重新登录。",
-  csrf_rejected: "请求来源不匹配，请从 http://127.0.0.1:5173 打开应用。",
+  csrf_rejected: "请求来源不匹配，请从本次启动脚本提示的本机入口打开应用。",
   precondition_failed: "资源已被修改，请刷新后重新确认。",
   precondition_required: "缺少资源版本，请刷新后再操作。",
   monitor_forbidden: "只有 Workspace Owner 可以修改监控。",

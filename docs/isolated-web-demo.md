@@ -2,12 +2,14 @@
 
 此入口将已审查 Dashboard、历史 API 与 Task9.1 的 PG18、双 Worker、可信 Supervisor 和无上游双栈 fixture 联通。它是**有界、可销毁演示**，不是公网监控部署，不改变 OpenSpec37/47、延期8.3及9.2–10.5。
 
+统一入口及两模式区别见[本地MVP交付说明](mvp.md)。并行登录普通模式请使用独立浏览器配置或无痕会话，避免同host Cookie覆盖。
+
 ## 启动和操作
 
 准备 Docker/Linux 容器与原9.1所需 NET_ADMIN/IPv6能力、Node24+/npm、Python3、OpenSSL。首次构建会下载固定镜像/构建依赖；实际执行时仍无上游目标网络。
 
 ```
-./scripts/dev-isolated-demo.sh
+./scripts/mvp.sh demo
 ```
 
 1. 等待“隔离演示已就绪”，打开 <http://127.0.0.1:5174>。原普通 Dashboard 的5173和独立开发库不受此入口操作。

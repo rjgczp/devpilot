@@ -222,22 +222,30 @@ function AuthView({
               <Icon name="arrow" size={16} />
             </button>
           </form>
-          <p className="auth-switch">
-            {mode === "login" ? "还没有账号？" : "已有账号？"}
-            <button
-              type="button"
-              className="text-button"
-              disabled={busy}
-              onClick={() => {
-                setMode(mode === "login" ? "register" : "login");
-                setError("");
-                setMessage("");
-                setPassword("");
-              }}
-            >
-              {mode === "login" ? "创建账号" : "返回登录"}
-            </button>
-          </p>
+          {isolatedDemo ? (
+            <p className="field-help">
+              本地隔离演示：请使用启动终端提示的临时 Owner
+              登录资料。账号、Workspace、Project 和固定 Monitor
+              已准备好，无需注册。
+            </p>
+          ) : (
+            <p className="auth-switch">
+              {mode === "login" ? "还没有账号？" : "已有账号？"}
+              <button
+                type="button"
+                className="text-button"
+                disabled={busy}
+                onClick={() => {
+                  setMode(mode === "login" ? "register" : "login");
+                  setError("");
+                  setMessage("");
+                  setPassword("");
+                }}
+              >
+                {mode === "login" ? "创建账号" : "返回登录"}
+              </button>
+            </p>
+          )}
           <p className="auth-security">
             使用安全 Cookie 会话 · 凭据不会写入浏览器存储
           </p>
