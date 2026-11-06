@@ -15,7 +15,9 @@ process budget, not evidence of a stuck DB permission or a reason to weaken time
 The original147-test manifest included all142 tests previously
 selected by `integration`, plus the5 already-reviewed Linux schedulerfixture
 Claim/recovery tests. Task7.4 adds four named HTTP/projection/snapshot/budget tests
-in a separate status74 group, for151 total; none of the147 are removed. Five
+in a separate status74 group, for151 total; none of the147 are removed. Task7.5
+adds four cross-endpoint tests, for155 total. Its real60s expiry test has its
+own process; the other three form the status75 group. No earlier test is removed. Five
 original core groups still contain30/30/30/30/25 tests. The real60s
 authorization and45s Lease tests each own one process. Every process retains
 `-timeout=120s` and `-count=1`; normal and race run serially against the guarded

@@ -11,7 +11,7 @@ import (
 )
 
 func TestCheckpointOneRegistrationCapacityLastSlot(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	s := monitor.Store{Pool: db}
@@ -77,7 +77,7 @@ func TestCheckpointOneRegistrationCapacityLastSlot(t *testing.T) {
 	t.Log("9999 real schedules + two competing grants -> 10000 schedules, one accepted, one retention_capacity; pause/PATCH remain available")
 }
 func TestCheckpointOneEnabledQuotaAndCooling(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	s := monitor.Store{Pool: db}

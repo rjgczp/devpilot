@@ -12,7 +12,7 @@ import (
 )
 
 func TestCheckpointOneLegacyAndAuthorizationSerialize(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	// This is a test profile, not an assertion about deployed historical ACLs.
 	if _, err := db.Exec(ctx, `CREATE ROLE checkpoint1_legacy LOGIN PASSWORD 'disposable_fixture_only';GRANT USAGE ON SCHEMA public TO checkpoint1_legacy;GRANT SELECT,UPDATE ON users,sessions,workspaces,workspace_members,projects,http_monitors,monitor_activation_states TO checkpoint1_legacy`); err != nil {
@@ -96,7 +96,7 @@ func TestCheckpointOneLegacyAndAuthorizationSerialize(t *testing.T) {
 }
 
 func TestCheckpointOneHTTPInventoryBlocksDatabaseAdmission(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	_, m, h := schedulerClaimFixture(t, db)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")

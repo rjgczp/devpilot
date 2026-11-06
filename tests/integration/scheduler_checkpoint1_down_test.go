@@ -12,7 +12,7 @@ import (
 func TestCheckpointOneDownRefusesUnsafeOrExhausted(t *testing.T) {
 	for _, mode := range []string{"open-gate", "unreleased-run", "disabled-overflow", "enabled-overflow"} {
 		t.Run(mode, func(t *testing.T) {
-			db := workspaceDB(t)
+			db := schedulerHistoricalDB(t)
 			ctx := context.Background()
 			f, m, h := schedulerClaimFixture(t, db)
 			switch mode {

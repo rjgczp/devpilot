@@ -113,7 +113,7 @@ func schedulerClaim(t *testing.T, pool *pgxpool.Pool, inc string, h schedulerCla
 	return got, err
 }
 func TestSchedulerClaimAtomicFenceAndSlots(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	_, m, h := schedulerClaimFixture(t, db)
 	worker, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	schedulerDatabaseOnlyGate(t, db)
@@ -147,7 +147,7 @@ func TestSchedulerClaimAtomicFenceAndSlots(t *testing.T) {
 	}
 }
 func TestSchedulerClaimWorkspaceSkipReleasesUser(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	f, _, h := schedulerClaimFixture(t, db)
 	worker, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	schedulerDatabaseOnlyGate(t, db)

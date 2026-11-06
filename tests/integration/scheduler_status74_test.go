@@ -98,7 +98,7 @@ func status74Read(t *testing.T, db *pgxpool.Pool, m monitor.Public, token string
 	return status74Decode(t, raw)
 }
 func TestExecutionStatusHTTPAuthority(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	api := status74API(t, db)
 	ctx := context.Background()
 	for _, kind := range []string{"revoked", "expired", "disabled-user", "removed", "rejoined"} {
@@ -214,7 +214,7 @@ func status74Authorized(t *testing.T, db *pgxpool.Pool) (memberFixture, monitor.
 	return f, m, v, g, ep
 }
 func TestExecutionStatusProjectionIsolation(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	api := status74API(t, db)
 	ctx := context.Background()
 	t.Run("pointer-and-unknown", func(t *testing.T) {
@@ -279,7 +279,7 @@ func TestExecutionStatusProjectionIsolation(t *testing.T) {
 }
 
 func TestExecutionStatusSingleStatementSnapshot(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	api := status74API(t, db)
 	ctx := context.Background()
 	f, m, _, _, _ := status74Authorized(t, db)
@@ -327,7 +327,7 @@ func TestExecutionStatusSingleStatementSnapshot(t *testing.T) {
 }
 
 func TestExecutionStatusHTTPFailuresAndBudget(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	api := status74API(t, db)
 	f, m := monitorFixture(t, db)
 	ctx := context.Background()

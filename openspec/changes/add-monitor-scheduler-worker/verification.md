@@ -1,5 +1,44 @@
 # Verification — add-monitor-scheduler-worker
 
+## Task8.1 implementation candidate — acceptance pending (2026-10-30)
+
+The user formally accepted Task7.5 at c31478b (implementation4434303) and approved
+the exact Task8.1 design a0273be, including Migration9/internal Trigger/column ACL.
+Only8.1 is in scope; no8.2/8.3, new runtime EXECUTE, production execution or merge.
+Migration1–8 remain byte-identical. Current technical scope, Requirement/Test map,
+schema8 historical isolation versus real schema9 coverage, first failures and raw
+receipts are in [Task8.1 verification](../../../docs/monitor-scheduler-task81-verification.md).
+Local Budget31 normal/race and complete integration156 normal/race passed in real
+protected PG18. Schema9 physical12/12, API zero-target audit80/0 and unit/race/vet
+also passed. Frozen CI still requires actual results;
+no independent8.1 approval or task checkbox is asserted here. Progress34/47.
+
+## Task7.5 technical verification complete — 34/47 (2026-10-29)
+
+Implementation/test SHA4434303831467630a969b12609f32d5b929143e1 has actual
+[Push40816288586](https://github.com/rjgczp/devpilot/actions/runs/40816288586) and
+[PR40816345802](https://github.com/rjgczp/devpilot/actions/runs/40816345802)
+verify/integration/execution-security all successful. Only after both completed,
+Task7.5 was checked:34/47. Independent Task7.5 code review is still pending.
+The follow-up acceptance commit changes records only; no implementation/test or
+permission change. Its own CI is reported by the PR checks, not predeclared here.
+
+Each frozen workflow executed155 PG18 tests normal and155 race, API audit80
+approved control connections/0 unapproved targets, the new12-cell real physical
+consistency matrix and all preserved security regressions. Local directed7x2,
+physical12/12, prior7.4 regression6/6, unit/race/vet and Change strict also passed.
+Only tests/CI and the optional nil-default test observation barrier were added;
+production Go, Migration1–8, roles/functions/EXECUTE/table ACL and networking
+policy are unchanged. No production feature defect was found.
+
+PR11 was staged-merged at5905f518 and main CI40669015064 succeeded. Older PR11
+Open/pending paragraphs below remain historical. This batch uses a fresh branch
+from that main, codex/monitor-execution-status-consistency. Exact commands,
+first failures, raw archive and Requirement/Scenario/Test/CI Artifact mapping:
+[Task7.5 verification](../../../docs/monitor-scheduler-task75-verification.md).
+No8.1, merge, Archive, deployment or production execution. Historical negative
+evidence and conservative unknown remain unchanged.
+
 ## Task7.4 CI delivery — separately approved historical fixture repair
 
 The first frozen99497c3 Push40656977308 failed historical Activation expiry
@@ -1011,3 +1050,115 @@ Human reply`call_5e506edea0de4ce78bd5d4912f08b166` separately authorized “授�
 Self-review found the new7.1 writer also needs D5's max(stored time, actual DB now) rule. The same approved function now observes clock_timestamp once after all waits, takes the maximum with original Run/physical-release/Worker clock markers, and rejects >2s divergence as fixed clock_untrusted. This narrows the existing capability; no GRANT, Lease, permit, pause, result fields or7.2 semantics change. A private administrative clock-marker fixture does not change the host clock or fabricate physical proof. It verifies large skew refusal and a committed finish time >= durable marker; the full7.1 matrix is now24cells.
 
 First clock-aware real PG18 cases pass; the24normal/race matrix and complete frozen CI are still pending. Earlier2bbcf58 CI/artifacts must not be substituted for this final code version.7.1 remains unchecked at29/47.
+
+
+## Task8.1 final technical delivery / awaiting final sign-off (2026-11-02)
+
+Frozen implementation `0d2f5677dd6a2439ab010b6a8ec807941b1403cd` has completed Push
+[41402215734](https://github.com/rjgczp/devpilot/actions/runs/41402215734) and PR
+[41402221192](https://github.com/rjgczp/devpilot/actions/runs/41402221192), each attempt1;
+verify/integration/execution-security are all success. Six actual Artifact ZIP digests and
+1439 frozen source entries were checked; current-source inventory is
+`3b618c9b4f16e7fefa48f2e2bb87f338cc10b558758c0c5eed034d14e8ff69be`.
+Legacy c1c9fe4b receipts remain separately identified, never relabeled as current Schema9 code.
+
+The final mapping, exact Artifact IDs/SHA256, coverage inheritance and first5.4/7.3 failures are in
+[Task8.1 final review](../../../docs/monitor-scheduler-task81-final-review.md).
+The5.4 fixture now separates trusted physical release from still-pending started retention;
+the7.3 fixture separately proves the exact permitted pending change and unchanged full remaining
+budget fields, rollback/unknown Commit/repeated recovery and unconfirmed physical quarantine.
+No production/migration/ACL repair was used for either fixture adaptation.
+
+Historical B: the original approximately125ms global-row wait (124.736ms logged wait,
+173.391ms accepted Start span) remains unexplained. Later successful CI/one local observation
+is not proof of its absence or a root-cause repair. Original failed Artifacts, log-only diagnostic
+failure, observer exit2, IPv6/management timeout records and conservative unknown scope remain.
+
+Per the user's explicit final-sign-off gate, technical evidence readiness does not check task8.1:
+progress remains34/47. Final independent approval must precede35/47 and preparation of8.2 design.
+8.2 cleanup and8.3 disk measurements remain unimplemented; no new permission, merge, Archive,
+deployment or production execution is authorized. Earlier29/47 or pending7.1 paragraphs are
+historical records; current task status is governed by tasks.md and this final8.1 entry.
+
+## Task8.1 independent acceptance / Task8.2 design-only preparation (2026-11-02)
+
+The human user's message “DevPilot AI — Task 8.1 正式收尾与 8.2 设计准备” explicitly accepts
+the technical evidence for frozen implementation `0d2f5677dd6a2439ab010b6a8ec807941b1403cd`,
+confirms successful PR run41402221192 and independent review of the historical5.4/7.3 fixture fixes,
+and authorizes marking8.1 complete. This supersedes the pending-sign-off status immediately above;
+it is human independent approval, not agent self-certification. Progress is now35/47.
+
+The [final review and six-Artifact hash index](../../../docs/monitor-scheduler-task81-final-review.md)
+retain both frozen-SHA Push/PR results, source inventory, initial failures and exact scope limits.
+All six cached ZIP SHA256/CRC were rechecked before this documentation commit; the original5.4,
+7.3 and B failed ZIP hashes also remain unchanged. No previous failure log was deleted or overwritten.
+The historical global-budget wait of approximately125ms remains unexplained, not fixed by later green CI.
+Documentation changes do not relabel their own SHA as the frozen implementation tested by those runs.
+
+[Task8.2 preparation](../../../docs/monitor-scheduler-task82-cleanup-plan.md) maps existingD6/D9
+and retention scenarios to parent-first keyset cleanup, <=100 changed rows/2s, atomic pointers,
+trusted physical-proof exclusions and a separate pending Controller-only capability application.
+Current M9 authorization/cooling guards are retained; continuous authorization can conservatively
+block cleanup. This and receipt-retirement/replay boundaries require design review before implementation.
+8.2 stays unchecked. No cleanup code, new migration, DB privilege, production/test implementation,
+merge, Archive, deployment or target-network access was changed or executed in this closeout.
+
+## Task8.2 implementation authorization and candidate (2026-11-03)
+
+After the d8667ff design review, the human product owner explicitly answered approval request
+`call_32c1ce81fff84e4f825180556dfaa746`: “批准仅上述8.2范围、三项窄EXECUTE及信任边界”.
+This independently authorizes exactly retention_candidates(uuid,text,integer),
+cleanup_monitor(uuid,uuid,uuid,uuid,timestamptz,uuid,integer), and cleanup_target_key(uuid,text,text),
+all RETURNS jsonb, existing Controller-only EXECUTE and existing nonLOGIN owner. No other privilege
+or trust source is added. This supersedes the preceding design-only status, not any historical result.
+
+Migration10 and fixture-only Store methods implement bounded, parent-first keyset cleanup with
+unchanged M1–9 guards, atomic pointers and record accounting separate from physical release.
+[Task8.2 verification](../../../docs/monitor-scheduler-task82-verification.md) maps actual tests,
+dirty candidate evidence, preserved first anomalies and the remaining frozen-CI gate.
+14 targeted PG18 tests passed normal/race; earlier real signed physical/cooling and unconfirmed
+candidate chains passed, but later joint key/replay assertions still require frozen CI.
+Task8.2 remains unchecked /35 of47 until the complete required validation is observed.
+Historical125ms root cause remains unknown. No8.3 implementation, merge, Archive or production execution.
+
+### Task8.2 first frozen failure / public receipt fixture correction (2026-11-03)
+
+Frozen2baae068290ea1cab95a34ab9bff1df7fbbf8fd2 Push41565714170 and PR41565719152
+both passed verify/integration and all earlier security phases, then failed after real one-hour
+cooling at the new replay test: opening the0600 Authority receipt mount returned EACCES.
+The real cleanup ledger and old Result/Permit rejection had passed, but receipt replay and
+the complete joint matrix had not. Six original ZIPs, hashes and first errors are retained in
+[Task8.2 evidence](../../../docs/monitor-scheduler-task82-verification.md).
+
+Only the new Python fixture changes: export a bounded byte-identical public signed receipt
+read-only; keep Authority journal0600, private key and all DB/Go assertions unchanged.
+A no-network UID65534/cap-drop-ALL/no-new-privileges preflight checks read-only input before
+waiting. A real Linux volume owner-boundary regression passes; a prior Desktop UID-mapping
+assumption failure is preserved rather than hidden. Local repair receipts remain dirty
+development evidence. New frozen CI is required;8.2 stays unchecked,35/47. No8.3 or new grant.
+
+### Task8.2 targeted missing-ledger review (2026-11-03)
+
+Human independent review of45a2a95 requested only G/W/P/M missing-budget verification.
+Real guarded PG18 reproduced7 of12 missing-ledger combinations returning success: P when
+eligible Runs exist, W/P/M for no selected Run and for empty registration. Existing DELETE
+guards protect referenced budgets, but do not supply all required cleanup existence checks.
+Only three FOUND checks are added after W/P/M locks in Migration10; no new permission,
+trust source, physical release/eligibility change or M1–9 edit. Three focused tests cover
+12 cases per mode; initial normal/race repair tests exit0 and preserve complete protected
+state snapshots. Original expected failures and dirty receipts remain separate from later
+frozen validation. See [targeted review](../../../docs/monitor-scheduler-task82-missing-ledger-review.md).
+PR12 and45a2a95 CI remain unchanged; separate review delivery, no unrelated matrix,8.3,
+merge,Archive or deployment. Task8.2 stays unchecked /35 of47 pending independent sign-off.
+
+### Task8.2 approved repair integration / final CI gate (2026-11-04)
+
+The human user independently approved9e68f620cdee067f2b155f880886a0a064d16ab1 and
+authorized integration into PR12, followed by complete Push/PR CI on the new frozen HEAD.
+Production changes remain exactly the three reviewed Migration10 FOUND checks; tests and
+inventory are unchanged from9e68f62. Only evidence/index/handoff documentation is added.
+The G/W/P/M negative scenarios are mapped into the Task8.2 final evidence table. See
+[handoff](../../../docs/monitor-scheduler-task82-handoff.md) and PR12's latest evidence index
+for the final tested SHA, actual run IDs and verified Artifact hashes. Earlier CI is not
+substituted for this gate. Keep8.2 unchecked /35 of47 until ChatGPT's final acceptance;
+no8.3, merge,Archive,deployment,production migration or public-network execution.

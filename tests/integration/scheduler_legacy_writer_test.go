@@ -91,7 +91,7 @@ func TestSchedulerLegacyDatabaseWriterAcrossMigration(t *testing.T) {
 }
 
 func TestExecutionAuthorizationScheduleFailureRollsBackIntent(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	a := activationRead(t, db, f.od, m)

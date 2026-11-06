@@ -35,7 +35,7 @@ func schedulerSupervisorLogin(t *testing.T, db *pgxpool.Pool) (*pgxpool.Pool, st
 	return p, inc
 }
 func TestSchedulerSupervisorOwnsOneInputCapability(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	_, _, h := schedulerClaimFixture(t, db)
 	worker, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")

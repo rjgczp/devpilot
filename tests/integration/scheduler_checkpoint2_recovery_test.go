@@ -20,7 +20,7 @@ func checkpointTwoHint(h schedulerClaimHint) scheduler.Hint {
 func TestCheckpointTwoClaimLostAcknowledgement(t *testing.T) {
 	for _, outcome := range []string{"lost", "rollback"} {
 		t.Run(outcome, func(t *testing.T) {
-			db := workspaceDB(t)
+			db := schedulerHistoricalDB(t)
 			_, _, h := schedulerClaimFixture(t, db)
 			w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 			w2, inc2 := schedulerWorkerLogin(t, db, "scheduler_claim_worker2")
@@ -63,7 +63,7 @@ func TestCheckpointTwoClaimLostAcknowledgement(t *testing.T) {
 }
 
 func TestCheckpointTwoUnstartedRealLeaseExpiry(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	schedulerDatabaseOnlyGate(t, db)
@@ -180,7 +180,7 @@ func TestCheckpointTwoUnstartedRealLeaseExpiry(t *testing.T) {
 }
 
 func TestCheckpointTwoUnlockedHintsAreNotAuthority(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	_, _, h := schedulerClaimFixture(t, db)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
@@ -212,7 +212,7 @@ func TestCheckpointTwoUnlockedHintsAreNotAuthority(t *testing.T) {
 }
 
 func TestCheckpointTwoNarrowRecoveryCapabilities(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	_, _, h := schedulerClaimFixture(t, db)
 	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")

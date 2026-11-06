@@ -69,7 +69,7 @@ func TestSchedulerMigrationRetiresAllLegacyTags(t *testing.T) {
 			t.Fatal("upgrade granted work", table)
 		}
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 8", true) // Repeat the historical migration8, not migration9.
 	if activationRead(t, db, f.od, enabled).ActivationGeneration != "3" {
 		t.Fatal("repeat up consumed generation")
 	}
@@ -86,7 +86,7 @@ func TestSchedulerMigrationRetiresAllLegacyTags(t *testing.T) {
 	if a.DesiredState != "disabled" || a.ActivationGeneration != "4" || a.NextEnableAllowedAt == nil {
 		t.Fatal("unsafe down")
 	}
-	goose(t, dir, "up", true)
+	goose(t, dir, "up-to 8", true) // Re-up the same historical representation protocol.
 	if activationRead(t, db, f.od, enabled).ActivationGeneration != "5" {
 		t.Fatal("re-up failed to retire representation")
 	}

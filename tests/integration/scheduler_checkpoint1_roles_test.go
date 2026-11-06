@@ -10,7 +10,7 @@ import (
 )
 
 func TestCheckpointOneControllerPublicAndIncarnation(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	if _, err := db.Exec(ctx, `CREATE ROLE checkpoint1_controller LOGIN PASSWORD 'disposable_fixture_only' IN ROLE devpilot_scheduler_controller;CREATE ROLE checkpoint1_public LOGIN PASSWORD 'disposable_fixture_only'`); err != nil {
 		t.Fatal(err)

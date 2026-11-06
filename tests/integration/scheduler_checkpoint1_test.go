@@ -24,7 +24,7 @@ func checkpointReject(t *testing.T, err error, code string) {
 	t.Logf("database rejected SQLSTATE=%s constraint=%s", p.Code, p.ConstraintName)
 }
 func TestCheckpointOnePersistenceConstraints(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	if _, err := db.Exec(ctx, `INSERT INTO monitor_schedules(workspace_id,project_id,monitor_id) VALUES($1,$2,$3)`, m.WorkspaceID, m.ProjectID, m.ID); err != nil {
@@ -107,7 +107,7 @@ func TestCheckpointOneSchemaSevenFailsClosed(t *testing.T) {
 }
 
 func TestCheckpointOneConfigurationRevokeRollback(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	s := monitor.Store{Pool: db}
@@ -136,7 +136,7 @@ func TestCheckpointOneConfigurationRevokeRollback(t *testing.T) {
 }
 
 func TestCheckpointOneRealExpiryExplicitRenewal(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	s := monitor.Store{Pool: db}

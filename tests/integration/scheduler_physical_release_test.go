@@ -299,6 +299,47 @@ func TestBudgetPhysicalReleasePG(t *testing.T) {
 	}
 	budgetSQLState(t, <-second, "P0001")
 	cr1, cr2 := <-candidate1, <-candidate2
+	// Schema9 separates physical slots from pending retention. A released
+	// started Run is still pending until conservative recovery terminalizes it.
+	for _, cr := range []schedulerClaimResult{cr1, cr2} {
+		budgetSQLState(t, cr.err, "P0001")
+		if !strings.Contains(cr.err.Error(), "retention_capacity") {
+			t.Fatal("pending capacity must reject before admitting another Run", cr.err)
+		}
+	}
+	if queryInt(t, db, `SELECT count(*) FROM scheduler_budget_state WHERE kind='global' AND in_use=31 AND active_count=31 AND retention_pending_count=32 AND terminal_count=32`) != 1 || queryInt(t, db, `SELECT count(*) FROM monitor_runs`) != 32 || queryInt(t, db, `SELECT count(*) FROM scheduler_reservations`) != 32 {
+		t.Fatal("physical release must not consume pending retention twice or admit a new Run")
+	}
+	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE run_id=$1 AND attempt_state='started' AND configuration_version=$2 AND activation_generation=$3 AND scheduler_epoch=$4 AND physical_release_confirmed_at IS NOT NULL AND http_status IS NULL AND success IS NULL AND failure_code IS NULL AND result_commit_id IS NULL`, h.r, h.v, h.g, h.e) != 1 {
+		t.Fatal("physical receipt fabricated a network result or rewrote old lineage")
+	}
+	// Use the already-approved Controller identity, real expired lease, and
+	// independently verified physical receipt. No database fixture UPDATE.
+	_, e = c.Exec(ctx, `SELECT scheduler_private.recover_started($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::bigint,$7::bigint,$8::bigint,$9::bigint,$10::uuid,$11::uuid,'lease_expired')`, ci, h.w, h.p, h.m, h.r, h.v, h.g, h.e, lease.FencingToken, ns, si)
+	budgetSQLState(t, e, "00000")
+	if queryInt(t, db, `SELECT count(*) FROM scheduler_budget_state WHERE kind='global' AND in_use=31 AND active_count=31 AND retention_pending_count=31 AND terminal_count=32`) != 1 {
+		t.Fatal("recovery must release only pending retention")
+	}
+	// A second independent barrier proves one newly available admission slot.
+	// These candidates previously rolled back; no execution input is reissued.
+	capacityGate, e := db.Begin(ctx)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer capacityGate.Rollback(ctx)
+	if _, e = capacityGate.Exec(ctx, `SELECT 1 FROM scheduler_budget_state WHERE kind='global' AND budget_key='global' FOR UPDATE`); e != nil {
+		t.Fatal(e)
+	}
+	p3, candidate1 = startSchedulerClaim(t, w, wi, fill[31])
+	waitActivationBlock(t, db, p3)
+	p4, candidate2 = startSchedulerClaim(t, w2, i2, fill[32])
+	waitActivationBlock(t, db, p4)
+	capacityLocks := schedulerLockSnapshot(t, db, "physical-release-then-unknown-last-pending-slot", p3, p4)
+	if e = capacityGate.Commit(ctx); e != nil {
+		t.Fatal(e)
+	}
+	t.Log(string(capacityLocks))
+	cr1, cr2 = <-candidate1, <-candidate2
 	success := 0
 	for _, cr := range []schedulerClaimResult{cr1, cr2} {
 		if cr.err == nil {
@@ -307,7 +348,7 @@ func TestBudgetPhysicalReleasePG(t *testing.T) {
 			budgetSQLState(t, cr.err, "P0001")
 		}
 	}
-	if success != 1 || queryInt(t, db, `SELECT in_use FROM scheduler_budget_state WHERE kind='global'`) != 32 {
+	if success != 1 || queryInt(t, db, `SELECT count(*) FROM scheduler_budget_state WHERE kind='global' AND in_use=32 AND active_count=32 AND retention_pending_count=32 AND terminal_count=33`) != 1 || queryInt(t, db, `SELECT count(*) FROM monitor_runs`) != 33 || queryInt(t, db, `SELECT count(*) FROM scheduler_reservations`) != 33 {
 		t.Fatal("last slot double returned or not atomically claimable")
 	}
 	reconciled, e := (supervisorfixture.Settlement{DB: s, Incarnation: si}).Reconcile(ctx, verified)
@@ -320,7 +361,7 @@ func TestBudgetPhysicalReleasePG(t *testing.T) {
 	if stable != releaseState(t, db, h) {
 		t.Fatal("duplicate receipt changed ledger")
 	}
-	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE run_id=$1 AND attempt_state='started' AND configuration_version=$2 AND activation_generation=$3 AND scheduler_epoch=$4 AND physical_release_confirmed_at IS NOT NULL AND http_status IS NULL AND success IS NULL AND failure_code IS NULL AND result_commit_id IS NULL`, h.r, h.v, h.g, h.e) != 1 {
+	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE run_id=$1 AND attempt_state='unknown' AND configuration_version=$2 AND activation_generation=$3 AND scheduler_epoch=$4 AND physical_release_confirmed_at IS NOT NULL AND http_status IS NULL AND success IS NULL AND failure_code IS NULL AND result_commit_id IS NULL`, h.r, h.v, h.g, h.e) != 1 {
 		t.Fatal("physical receipt fabricated a network result or rewrote old lineage")
 	}
 	if queryInt(t, db, `SELECT sum(in_use) FROM scheduler_budget_state WHERE kind IN ('origin','ip')`) != 0 {

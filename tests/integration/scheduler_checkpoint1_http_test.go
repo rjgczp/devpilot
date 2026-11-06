@@ -81,7 +81,7 @@ func checkpointHTTP(t *testing.T, c *http.Client, server, method, path, body, to
 	return resp.StatusCode, resp.Header, raw
 }
 func TestCheckpointOneAuthorizationRealHTTPStrictContract(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m := monitorFixture(t, db)
 	server, client, logs := checkpointHTTPServer(t, db)

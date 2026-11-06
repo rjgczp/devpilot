@@ -19,10 +19,17 @@ import (
 	"github.com/rjgczp/devpilot/internal/workspace"
 )
 
-func workspaceDB(t *testing.T) *pgxpool.Pool {
+func workspaceDB(t *testing.T) *pgxpool.Pool { return workspaceDBAt(t, "up") }
+
+// Historical schema8 Run-projection/Down fixtures must not fabricate physical
+// proofs or delete retained schema9 records just to tear down. New capacity and
+// real physical suites use isolated schema9 databases; no assertion is skipped.
+func schedulerHistoricalDB(t *testing.T) *pgxpool.Pool { return workspaceDBAt(t, "up-to 8") }
+
+func workspaceDBAt(t *testing.T, command string) *pgxpool.Pool {
 	t.Helper()
 	db := openDB(t)
-	migrate(t)
+	goose(t, filepath.Join(root(), "migrations"), command, true)
 	t.Cleanup(func() { goose(t, filepath.Join(root(), "migrations"), "down-to 0", true) })
 	return db
 }

@@ -64,7 +64,7 @@ func checkpointProjectionGet(t *testing.T, c *http.Client, server, path, token s
 }
 
 func TestCheckpointOneHTTPIntentStatusContract(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	server, client, _ := checkpointHTTPServer(t, db)
 	for _, state := range []string{"disabled", "blocked", "authorized_waiting", "due", "leased", "started", "unknown", "completed", "configuration_changed", "expired"} {
@@ -311,7 +311,7 @@ func TestCheckpointOneHTTPCutoverAllTagsAndRollback(t *testing.T) {
 }
 
 func TestCheckpointOneProjectionRetirementKeepsSchemaEight(t *testing.T) {
-	db := workspaceDB(t)
+	db := schedulerHistoricalDB(t)
 	ctx := context.Background()
 	f, m, h := schedulerClaimFixture(t, db)
 	script, err := os.ReadFile(filepath.Join(root(), "tests/scheduler/retire-projection-fixture.sql"))

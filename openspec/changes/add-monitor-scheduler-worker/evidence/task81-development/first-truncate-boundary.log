@@ -1,0 +1,11 @@
+=== RUN   TestBudgetRetentionACLAndMigration
+    scheduler_retention_capacity_test.go:283: native Goose up expected-success=true: verified
+    scheduler_retention_capacity_test.go:291: native Goose down expected-success=true: verified
+    scheduler_retention_capacity_test.go:292: native Goose up expected-success=true: verified
+    scheduler_retention_capacity_test.go:293: native Goose up expected-success=true: verified
+    scheduler_retention_capacity_test.go:308: SQLSTATE=23514 error=ERROR: new row for relation "scheduler_budget_state" violates check constraint "scheduler_retention_pending_cap" (SQLSTATE 23514)
+    scheduler_retention_capacity_test.go:310: SQLSTATE=0A000 error=ERROR: cannot truncate a table referenced in a foreign key constraint (SQLSTATE 0A000)
+    scheduler_retention_capacity_test.go:310: wanted 23514 got 0A000: ERROR: cannot truncate a table referenced in a foreign key constraint (SQLSTATE 0A000)
+    scheduler_budget_fixture_test.go:49: {"at": "2026-10-30T06:53:29.261824+00:00", "runs": 0, "event": "retention_ledger", "pending": 0, "retained": 0, "reservations": 0}
+--- FAIL: TestBudgetRetentionACLAndMigration (0.10s)
+FAIL

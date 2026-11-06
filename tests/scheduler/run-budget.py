@@ -20,6 +20,8 @@ p.add_argument('--binary', required=True, type=Path)
 p.add_argument('--evidence', required=True, type=Path)
 p.add_argument('--name', required=True)
 p.add_argument('--mode', required=True, choices=['normal', 'race'])
+p.add_argument('--test-prefix', choices=['TestBudget', 'TestBudgetCleanup'], default='TestBudget',
+               help='Explicit targeted task8.2 selection; CI default still runs the entire inventory')
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
 binary = a.binary.resolve()
@@ -28,6 +30,7 @@ assert (binary.parent / 'goose').is_file()
 assert re.fullmatch('[a-zA-Z0-9_-]+', a.name)
 a.evidence.mkdir(parents=True, exist_ok=False)
 expected = json.loads((repo / 'tests/scheduler/budget-tests.json').read_text())
+expected = [name for name in expected if name.startswith(a.test_prefix)]
 assert binary.name == ('budget-pg-race.test' if a.mode == 'race' else 'budget-pg.test')
 build = subprocess.check_output(['go', 'version', '-m', str(binary)], text=True)
 (a.evidence / 'build.txt').write_text(build)
@@ -42,14 +45,14 @@ def runner(container):
             '-e', 'PATH=/toolbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
             '-e', 'TEST_DATABASE_URL=postgres://devpilot_fixture:devpilot_fixture_only@127.0.0.1:5432/devpilot_registration_test?sslmode=disable',
             '--entrypoint', '/toolbin/' + binary.name, 'devpilot-scheduler-fixture']
-listing = runner(None) + ['-test.list', '^TestBudget']
+listing = runner(None) + ['-test.list', '^' + a.test_prefix]
 result = subprocess.run(listing, capture_output=True, text=True)
 (a.evidence / 'inventory.log').write_text(result.stdout + result.stderr)
 (a.evidence / 'inventory-command.json').write_text(json.dumps(dict(command=listing, exit_code=result.returncode), indent=2) + '\n')
 assert result.returncode == 0
 listed = result.stdout.splitlines()
 assert len(listed) == len(set(listed)) and set(listed) == set(expected), listed
-manifest = {'mode': a.mode, 'complete': False, 'binary_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(), 'tests': listed, 'runs': []}
+manifest = {'mode': a.mode, 'selection': a.test_prefix, 'complete': False, 'binary_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(), 'tests': listed, 'runs': []}
 for i, test in enumerate(listed):
     label = 'devpilot-budget-' + uuid.uuid4().hex[:12]
     create = ['docker', 'run', '-d', '--name', label, '--label', 'devpilot.disposable.budget=' + label,
@@ -87,6 +90,8 @@ for i, test in enumerate(listed):
         (a.evidence/(prefix+'-inspect.json')).write_text(json.dumps(json.loads(subprocess.check_output(['docker', 'inspect', cid]))[0], indent=2)+'\n')
         # Capture the ledger without raw configuration, network data or secrets.
         sql = "SELECT jsonb_build_object('at',clock_timestamp(),'budgets',(SELECT jsonb_agg(to_jsonb(b)) FROM scheduler_budget_state b),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r),'reservations',(SELECT jsonb_agg(to_jsonb(q)) FROM scheduler_reservations q),'locks',(SELECT jsonb_agg(to_jsonb(l)) FROM pg_locks l),'waits',(SELECT jsonb_agg(jsonb_build_object('pid',pid,'wait',wait_event,'blockers',pg_blocking_pids(pid))) FROM pg_stat_activity WHERE datname=current_database()))"
+        if test.startswith(('TestBudgetRetention', 'TestBudgetCleanup')):
+            sql = "SELECT jsonb_build_object('at',clock_timestamp(),'runs',(SELECT count(*) FROM monitor_runs),'global',(SELECT to_jsonb(b) FROM scheduler_budget_state b WHERE kind='global'),'states',(SELECT jsonb_agg(to_jsonb(s)) FROM (SELECT attempt_state,count(*) FROM monitor_runs GROUP BY attempt_state)s),'locks',(SELECT jsonb_agg(to_jsonb(l)) FROM pg_locks l),'waits',(SELECT jsonb_agg(jsonb_build_object('pid',pid,'wait',wait_event,'blockers',pg_blocking_pids(pid))) FROM pg_stat_activity WHERE datname=current_database()))"
         receipt = subprocess.run(['docker','exec',cid,'psql','-U','devpilot_fixture','-d','devpilot_registration_test','-At','-c',sql],capture_output=True)
         (a.evidence/(prefix+'-ledger.log')).write_bytes(receipt.stdout+receipt.stderr)
         # Only destroy the exact freshly-created, labeled disposable test server.
