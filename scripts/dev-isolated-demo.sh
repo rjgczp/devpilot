@@ -3,7 +3,7 @@
 set -eu
 repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$repo"
-for tool in docker npm python3 openssl; do command -v "$tool" >/dev/null; done
+for tool in docker node npm python3 openssl; do command -v "$tool" >/dev/null; done
 python3 - <<'PY'
 import socket
 for family,host in [(socket.AF_INET,'127.0.0.1'),(socket.AF_INET6,'::1')]:

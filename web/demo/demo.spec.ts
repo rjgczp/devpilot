@@ -23,6 +23,10 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
   await page.goto("/");
   const privateFile = resolve(state, credentialName);
   expect((await page.request.get("/@fs" + privateFile)).status()).toBe(403);
+  await expect(
+    page.getByRole("button", { name: "创建账号", exact: true }),
+  ).toHaveCount(0);
+  await expect(page.getByText(/临时 Owner 登录资料/)).toBeVisible();
   await page.getByLabel("邮箱", { exact: true }).fill(credentials.email);
   await page.getByLabel("密码", { exact: true }).fill(credentials.password);
   await page.getByRole("button", { name: "登录", exact: true }).click();
@@ -38,6 +42,9 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
     `/api/v1/workspaces/${ws.id}/projects`,
   );
   const project = (await projects.json()).data[0];
+  await page.getByLabel("Workspace", { exact: true }).selectOption(ws.id);
+  await page.getByLabel("Project", { exact: true }).selectOption(project.id);
+  await expect(row).toBeVisible();
   const path = `/api/v1/workspaces/${ws.id}/projects/${project.id}/monitors`;
   const monitors = await page.request.get(path);
   const monitor = (await monitors.json()).data[0];

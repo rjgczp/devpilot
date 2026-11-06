@@ -3,13 +3,14 @@
 set -eu
 repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$repo"
-for tool in docker go npm python3 openssl; do
+for tool in docker go node npm python3 openssl; do
   command -v "$tool" >/dev/null || { echo "Missing prerequisite: $tool" >&2; exit 1; }
 done
 python3 - <<'PY'
 import socket
 for family,host in [(socket.AF_INET,'127.0.0.1'),(socket.AF_INET6,'::1')]:
  with socket.socket(family) as s:
+  s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
   try:s.bind((host,5173))
   except OSError:raise SystemExit(f'Loopback {host}:5173 is unavailable. Stop its owner or enable local IPv6 before starting.')
 PY
@@ -37,7 +38,7 @@ cluster=$(compose exec -T postgres psql -U devpilot_dashboard -d devpilot_dashbo
 test "$cluster" = devpilot-dashboard-local
 export DATABASE_URL="postgres://devpilot_dashboard:$POSTGRES_PASSWORD@127.0.0.1:55432/devpilot_dashboard?sslmode=disable"
 export AUTH_MODE=development AUTH_ORIGIN=http://127.0.0.1:5173 HTTP_ADDR='[::1]:5173'
-export SESSION_TTL=24h GOTOOLCHAIN=local
+export SESSION_TTL=24h GOTOOLCHAIN=local DEVPILOT_ISOLATED_DEMO=0
 if [ ! -x .devpilot-dashboard/bin/goose ]; then
   GOBIN="$repo/.devpilot-dashboard/bin" go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.26.0
 fi
