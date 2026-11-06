@@ -80,7 +80,7 @@ internet execution remains hard closed. Task8.3 is deferred: disk_used_bytes is
 not a verified live measurement, and this is **not** proof of1GiB capacity,
 10GiB filesystem isolation or80% real-disk denial. Historical125ms lock wait,
 IPv6 and management-timeout causes remain unknown; later success does not resolve
-them. Task9.1 stays unchecked/36 of47 until independent acceptance.
+them. Task9.1 was independently accepted at00569eb;37 of47. Task8.3 stays deferred.
 
 ## Existing component fixtures
 

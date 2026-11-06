@@ -1,0 +1,21 @@
+# Local Dashboard only. No Worker, Supervisor or production execution entry.
+services:
+  postgres:
+    image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+    environment:
+      POSTGRES_USER: devpilot_dashboard
+      POSTGRES_DB: devpilot_dashboard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Use scripts/dev-dashboard.sh}
+    command: [postgres, -c, cluster_name=devpilot-dashboard-local]
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - dashboard_data:/var/lib/postgresql
+    healthcheck:
+      test:
+        [CMD-SHELL, "pg_isready -U devpilot_dashboard -d devpilot_dashboard"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+volumes:
+  dashboard_data:
