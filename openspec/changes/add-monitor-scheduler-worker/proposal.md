@@ -37,3 +37,13 @@
 后续 Apply 涉及独立 Controller/Worker 控制面、复用 `internal/monitoring/` 的隔离 Probe、Monitor 授权/状态路由、Migration8、PG 最小权限函数、专用 Linux 验收与 CI；不引入 Redis/Kafka。Migration1–7 字节固定。A 预估 20–30 工程日加 5–8 日独立安全/故障验收（单人顺序工作，非承诺工期）；依赖 PG18/Goose3.26.0、Go1.24.3、具 IPv6/NET_ADMIN 的独立 Linux runner、接收端观测和出口监督器。
 
 本次仅 Propose：只写本目录规划工件及 CLI 元数据。不写业务代码或 SQL、不迁移、不启动 Worker、不探测公网、不创建实现 PR、不部署/合并/归档。独立设计审查及产品对范围、暂停语义、网络条件明确批准后才可另行 Apply；生产开放仍需独立部署级授权。
+
+## Current scoped follow-up (2026-11-04)
+
+上段为原始Propose门禁历史。后续单独授权的实施已推进至Task8.2，验收SHA0462dc2，
+人类独立签署后36/47，见[验收登记](../../../docs/monitor-scheduler-task82-final-review.md)。
+本轮仅细化既有Retention/D9的8.3存储测量与可信准入设计，
+见[方案和待批最小权限](../../../docs/monitor-scheduler-task83-storage-plan.md)。
+独立Reporter及来源/时效是待审的新信任和能力，现有默认disk数值不构成可信采集证明。
+未修改已验收核心、未执行8.3负载/迁移/授权；方案完成后停止等待独立设计审查。
+不改变方案A的fixture-only/生产硬关闭范围，不授权合并PR12、Archive或部署。

@@ -313,6 +313,11 @@ func runCommit(t *testing.T, mode string) {
 		if got := queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND latest_result_run_id=$2`, l.MonitorID, l.RunID); got != want {
 			t.Fatal("current projection", got, want)
 		}
+		if mode == "patch" || mode == "pause" {
+			if queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1 AND next_due_at IS NULL AND authorized_configuration_version IS NULL AND authorized_activation_generation IS NULL`, l.MonitorID) != 1 {
+				t.Fatal("old completion rearmed revoked authorization")
+			}
+		}
 		if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE run_id=$1 AND attempt_state='completed' AND configuration_version=$2 AND activation_generation=$3 AND scheduler_epoch=$4 AND physical_release_confirmed_at IS NOT NULL`, l.RunID, l.ConfigurationVersion, l.ActivationGeneration, l.SchedulerEpoch) != 1 {
 			t.Fatal("original result audit")
 		}

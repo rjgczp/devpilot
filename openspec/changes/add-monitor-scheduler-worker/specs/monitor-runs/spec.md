@@ -107,3 +107,15 @@ run保留 SHALL 同时限制每Monitor100条终态/7天、每Workspace10000条�
 #### Scenario: Security - Disk growth is measured separately from row limits
 - **WHEN** 长时间周期运行或模拟24h积压
 - **THEN** 测量关系/索引/WAL/vacuum增长，运行数据预算1GiB、独立10GiB测试盘，空间80%拒绝新Claim；日志/WAL/备份有独立预算，不以行数宣称磁盘无风险
+
+#### Scenario: Security - Storage admission requires a trusted fresh source
+- **WHEN** 存储样本缺失、过期、采集失败、设备或数据库实例代次不符、报告乱序重放或时钟不可信
+- **THEN** 拒绝新Claim并保守显示retention_capacity；不能将默认0、Worker自报值或部署登记期限视为新鲜磁盘事实；缺样本不无限期沿用last-good，不能恢复任何网络或授权能力
+
+#### Scenario: Exception - Independent storage budgets stop admission safely
+- **WHEN** 实测调度关系含索引和TOAST达到1GiB预算的80%，或任一必需设备的块或inode耗用达到80%，或独立WAL/日志预算耗尽
+- **THEN** 拒绝新Claim而不修改容量账或丢弃quarantine；保留Pause/PATCH、结果/unknown与可信物理返槽路径；设备实际容量、当前WAL分配与累计WAL生成分别登记，清理提交不证明文件空间已经释放
+
+#### Scenario: Concurrency - Storage freshness is checked after control waits
+- **WHEN** Claim等待父资源或末段control期间样本到期，或可信Reporter先提交高水位/失效状态
+- **THEN** 最终新SQL快照与等待后数据库时间拒绝提交新Claim并整体回滚；发布者不反向获取业务父链；低于恢复水位的新样本只恢复storage eligible，不解除部署停止、续授权或重发旧run

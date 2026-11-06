@@ -63,13 +63,17 @@
 
 - [x] 8.1 实现M100条/7天、W10000、全库100000终态+32活跃、schedule/预算key各10000的原子容量账；并发插入/终态转换/无清理空间测试证明硬cap与retention_capacity，pause/PATCH不受阻，更新容量文档。
 <!-- 2026-11-02: User independently accepted frozen 0d2f567 technical evidence and historical 5.4/7.3 fixes. 35/47. Scope and retained risks: docs/monitor-scheduler-task81-final-review.md. 8.2 is design preparation only: docs/monitor-scheduler-task82-cleanup-plan.md; no cleanup or permission implementation. -->
-- [ ] 8.2 实现父序keyset清理每事务<=100行/2s及投影指针原子维护；PG并发验证不删active/quarantine/冷却key、不反向锁、无悬空引用；schedule登记回收不得重置仍有run的fence。
+- [x] 8.2 实现父序keyset清理每事务<=100行/2s及投影指针原子维护；PG并发验证不删active/quarantine/冷却key、不反向锁、无悬空引用；schedule登记回收不得重置仍有run的fence。
 <!-- Implementation separately authorized by human reply call_32c1ce81fff84e4f825180556dfaa746: only three Controller EXECUTEs. Candidate implemented; frozen CI and full joint evidence pending. See docs/monitor-scheduler-task82-verification.md. Keep unchecked until verified; no 8.3 work. -->
+<!-- 2026-11-04: Human independent technical sign-off accepts 0462dc2e65c8ea9edd3948cf6a72d483e93f7510, Push41760964041 / PR41760970943 (six required jobs success). This supersedes the preceding pending gate: 36/47. See docs/monitor-scheduler-task82-final-review.md. Only8.3 design/readonly assessment and a pending minimum-capability request are authorized; no Apply, merge, Archive, deployment or production execution. -->
 - [ ] 8.3 测量周期负载下表/索引/WAL/vacuum与日志增长，验证1GiB运行预算/10GiB测试盘及80%拒绝新Claim；保留实测预算和运维清理文档，不能把行数cap当物理磁盘保证。
+<!-- 2026-11-05 product decision: real storage/load proof deferred, not accepted. Keep all8.3 designs/E0 failures/risks; no Migration11. Task9.1 may proceed independently in the existing isolated fixture. -->
+<!-- Design-only candidate: docs/monitor-scheduler-task83-storage-plan.md. Current disk_used_bytes is not a verified live measurement; sampling/freshness/admission changes and forward migration require separate approval. No8.3 implementation or load test has run in this round. -->
 
 ## 9. 多实例周期与故障集成验收
 
 - [ ] 9.1 交付可复验tests/scheduler/run-docker.sh及README，创建独立PG控制网、两个以上Worker、可信Supervisor和无上游双栈fixture网；以真实Owner授权和60s interval连续至少三个周期验收最小结果/下一due，不连接真实公网目标。
+<!-- 2026-11-05 Task9.1 implementation authorized, MVP-first. Real first-cycle NULL-due defect prompted separate explicit approval for forward Migration12, disposable PG18 only, no new ACL or M1--10 edits. Review: docs/monitor-scheduler-task91-review.md. Keep unchecked/36 of47 until independent acceptance; no9.2--9.5 implementation authority. -->
 - [ ] 9.2 在七个暂停/PATCH阶段建立事务/网络屏障，保存PG锁及独立接收端GET时间线；验证1–3阻止Start、4–7准确承认在途窗口、旧结果隔离，禁止用sleep-only或CAS断言物理停止。
 - [ ] 9.3 真实注入Claim前崩溃/三种Commit丢ACK、GET后SIGKILL、DB分区/重连、租约过期僵尸/节点重建；观测同run无自动再发送、unknown可丢结果、无终止证明槽不返回，恢复后只有正常新周期。
 - [ ] 9.4 运行24h级虚拟时间积压和1000W同时到期/同目标压力测试，另保留真实时间周期；证明无逐interval补偿/每Monitor goroutine，记录p95、公平轮转、资源/磁盘界限而不宣称无限租户严格公平。
