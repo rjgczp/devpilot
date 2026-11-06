@@ -79,6 +79,10 @@ func (h *Handler) ServeHTTP(out http.ResponseWriter, r *http.Request) {
 	_ = http.NewResponseController(w).SetReadDeadline(deadline)
 	// Keep the transport's implicit body drain bounded on ALL early exits too.
 	parts := strings.Split(strings.TrimPrefix(r.URL.Path, collection), "/")
+	if len(parts) == 6 && parts[5] == "history" {
+		h.serveHistory(w, r, ctx, parts)
+		return
+	}
 	if len(parts) == 6 && parts[5] == "execution-status" {
 		h.serveExecutionStatus(w, r, ctx, parts)
 		return

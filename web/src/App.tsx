@@ -12,6 +12,7 @@ import {
   type User,
   type Workspace,
 } from "./api";
+import { MonitorHistory } from "./MonitorHistory";
 import { AuthorizeForm, MonitorForm } from "./MonitorForm";
 import { formatTime, presentStatus, validScope } from "./status";
 import { Dialog, Icon, Notice } from "./ui";
@@ -638,6 +639,7 @@ function Dashboard({
     monitor: Monitor | null;
   } | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  const [historyID, setHistoryID] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState("");
@@ -696,6 +698,8 @@ function Dashboard({
     (s) => s.value?.latest_attempt?.attempt_state === "completed",
   ).length;
   const selectedMonitor = monitors.items.find((m) => m.id === selected);
+  const historyMonitor = monitors.items.find(m => m.id === historyID);
+  if (historyMonitor) return <MonitorHistory key={historyMonitor.id} monitor={historyMonitor} path={path} status={statuses[historyMonitor.id]?.value} close={() => setHistoryID(null)} />;
   return (
     <>
       <div className="page-heading">
@@ -840,6 +844,7 @@ function Dashboard({
                       </td>
                       <td className="align-right">
                         <div className="row-actions">
+                          <button className="button compact" aria-label={`查看 ${m.name} 历史`} onClick={() => setHistoryID(m.id)}>历史</button>
                           <button
                             className="button compact"
                             aria-label={`编辑 ${m.name}`}
@@ -940,6 +945,7 @@ function Dashboard({
         <StatusDetail
           monitor={selectedMonitor}
           record={statuses[selectedMonitor.id]}
+          history={() => {setHistoryID(selectedMonitor.id);setSelected(null);}}
           close={() => setSelected(null)}
         />
       )}
@@ -948,12 +954,14 @@ function Dashboard({
 }
 
 function StatusDetail({
+  history,
   monitor,
   record,
   close,
 }: {
   monitor: Monitor;
   record?: { value?: ExecutionStatus; error?: string; at: string };
+  history: () => void;
   close: () => void;
 }) {
   const s = record?.value;
@@ -1050,10 +1058,11 @@ function StatusDetail({
       </dl>
       {a && (
         <p className="field-help">
-          最近尝试属于其原始配置与授权，不会用旧结果推断当前目标健康。完整历史查询暂未提供。
+          最近尝试属于其原始配置与授权，不会用旧结果推断当前目标健康。可通过历史记录查看每一次检查。
         </p>
       )}
       <footer className="dialog-actions">
+        <button className="button primary" onClick={history}>查看历史</button>
         <button className="button" onClick={close}>
           关闭
         </button>

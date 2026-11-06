@@ -9087,6 +9087,269 @@
           }
         }
       }
+    },
+    "/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/history": {
+      "get": {
+        "operationId": "listMonitorHistory",
+        "summary": "Read recent started HTTP checks using stable scoped keyset pagination",
+        "description": "Cookie-only live Workspace Owner/Member and the complete Workspace/Project/Monitor scope are rechecked in one SQL snapshot on every page. Default20/max50. Order: immutable claimed_at DESC, run_id DESC; checked_at is actual Start time. The opaque cursor contains a scoped/filter-bound position and upper bound, never read authority. Newer claims above that bound are excluded until refresh; retention and status changes remain live, not a cross-request MVCC snapshot. Started/unknown checks never inherit an older success. Only eight public minimal fields; no physical/security metadata or free text errors. No body or conditional headers.5s HTTP/2s DB; no target networking. Current health remains the separate execution-status authority.",
+        "security": [
+          {
+            "SessionCookie": []
+          },
+          {
+            "DevelopmentSessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase hyphenated UUID; malformed selector is scoped404 after live identity."
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canonical lowercase UUID scoped to workspace_id."
+          },
+          {
+            "name": "monitor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must belong to the requested Workspace; UUID alone is never authority."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "success",
+                "failure",
+                "unknown",
+                "running",
+                "canceled",
+                "expired"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "description": "Opaque next_after from the preceding page with identical full scope and state. Refresh without cursor to see newer checks."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed success.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorHistoryPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_invalid_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_unauthenticated"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_monitor_not_found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_method_not_allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitorError_internal_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Fixed safe error; no ETag/Location/Set-Cookie. Unknown mutation outcome is not proof of rollback.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "X-Content-Type-Options": {
+                "schema": {
+                  "type": "string",
+                  "const": "nosniff"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MonitorError_service_unavailable"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MonitorError_database_timeout"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -12015,6 +12278,124 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/MonitorExecutionStatus"
+          }
+        }
+      },
+      "MonitorHistoryItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "configuration_version",
+          "checked_at",
+          "finished_at",
+          "status",
+          "http_status",
+          "duration_ms",
+          "failure_code"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "configuration_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "failure",
+              "unknown",
+              "running",
+              "canceled",
+              "expired"
+            ]
+          },
+          "http_status": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 200,
+            "maximum": 599
+          },
+          "duration_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 30000
+          },
+          "failure_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              null,
+              "dns_failed",
+              "blocked_target",
+              "connect_failed",
+              "tls_failed",
+              "timeout",
+              "canceled",
+              "response_limit",
+              "protocol_error",
+              "unexpected_status"
+            ]
+          }
+        },
+        "description": "Only started checks. success/failure are completed minimal Results. Unknown/running have null HTTP, duration and failure fields. failure_code is an allowlisted class, never raw exception or target address. Historical versions remain labeled and cannot determine current health."
+      },
+      "MonitorHistoryPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "configuration_version",
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "configuration_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          },
+          "data": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/MonitorHistoryItem"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "next_after"
+            ],
+            "properties": {
+              "next_after": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
           }
         }
       }
