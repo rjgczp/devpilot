@@ -98,10 +98,31 @@ func TestDormantProductionDependencyAndSchemaBoundary(t *testing.T) {
 	if !strings.Contains(string(b), "Workers:         []func(context.Context){cleanup.Run}") {
 		t.Fatal("review worker startup")
 	}
-	files, _ := filepath.Glob("../../migrations/*.sql")
-	// Migration10 adds only the three separately approved Controller cleanup entries.
-	if len(files) != 10 || filepath.Base(files[9]) != "00010_add_bounded_scheduler_cleanup.sql" {
-		t.Fatal("unreviewed migration")
+	// Only Migration1–10 and the separately approved Migration12 are allowed.
+	wantMigrations := map[string]struct{}{
+		"00001_create_users.sql":                      {},
+		"00002_create_sessions.sql":                   {},
+		"00003_create_workspaces.sql":                 {},
+		"00004_create_workspace_invitations.sql":      {},
+		"00005_create_projects.sql":                   {},
+		"00006_create_http_monitors.sql":              {},
+		"00007_create_monitor_activation_states.sql":  {},
+		"00008_create_monitor_scheduler.sql":          {},
+		"00009_enforce_scheduler_capacity.sql":        {},
+		"00010_add_bounded_scheduler_cleanup.sql":     {},
+		"00012_advance_completed_scheduler_cycle.sql": {},
+	}
+	files, err := filepath.Glob("../../migrations/*.sql")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(files) != len(wantMigrations) {
+		t.Fatalf("migration inventory: got %d files, want %d", len(files), len(wantMigrations))
+	}
+	for _, p := range files {
+		if _, ok := wantMigrations[filepath.Base(p)]; !ok {
+			t.Fatal("unreviewed migration", p)
+		}
 	}
 	// Startup wiring remains byte-identical. The approved schema8 API additions
 	// are validated by monitor package OpenAPI response/shape contract tests.
