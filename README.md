@@ -335,3 +335,5 @@ reason/actor/time is retained internally, not a complete audit history; actor an
 URL are absent from the activation response. Before any future approved Worker
 rollout, these intents must be cleared with generation advancement and the current
 Owner must confirm again. Production egress has not been approved by this feature.
+
+Monitor 检查历史：登录本地 Dashboard，点击监控行“历史”；接口、分页、权限和复验方式见 [历史说明](docs/monitor-history.md)。

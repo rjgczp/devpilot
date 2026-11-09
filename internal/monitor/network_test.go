@@ -10,10 +10,11 @@ import (
 )
 
 // Import and call allowlists keep new outbound capabilities review-visible.
+// encoding/base64 is pure cursor serialization; every target-network symbol remains forbidden.
 // Runtime syscall auditing is separately required; AST review is not that proof.
 func TestMonitorHasNoTargetNetworkCapability(t *testing.T) {
 	allowed := map[string]bool{}
-	for _, s := range []string{"context", "encoding/json", "errors", "io", "log/slog", "mime", "net/http", "net/netip", "net/url", "path", "strconv", "strings", "time", "unicode", "unicode/utf8", "github.com/jackc/pgx/v5", "github.com/rjgczp/devpilot/internal/auth", "github.com/rjgczp/devpilot/internal/config", "github.com/rjgczp/devpilot/internal/credentials", "github.com/rjgczp/devpilot/internal/session", "github.com/rjgczp/devpilot/internal/user", "golang.org/x/net/idna"} {
+	for _, s := range []string{"context", "encoding/base64", "encoding/json", "errors", "io", "log/slog", "mime", "net/http", "net/netip", "net/url", "path", "strconv", "strings", "time", "unicode", "unicode/utf8", "github.com/jackc/pgx/v5", "github.com/rjgczp/devpilot/internal/auth", "github.com/rjgczp/devpilot/internal/config", "github.com/rjgczp/devpilot/internal/credentials", "github.com/rjgczp/devpilot/internal/session", "github.com/rjgczp/devpilot/internal/user", "golang.org/x/net/idna"} {
 		allowed[s] = true
 	}
 	entries, err := os.ReadDir(".")

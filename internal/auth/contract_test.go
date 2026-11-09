@@ -76,6 +76,7 @@ func TestOpenAPIAuthenticationContract(t *testing.T) {
 		t.Fatal("registration contract changed")
 	}
 	allowed := map[string][]string{
+		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/history":                 {"get"},
 		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/execution-authorization": {"put"},
 		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/execution-status":        {"get"},
 		"/api/v1/workspaces/{workspace_id}/projects/{project_id}/monitors/{monitor_id}/activation":              {"get", "put"},
