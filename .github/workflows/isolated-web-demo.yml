@@ -1,9 +1,9 @@
 name: Isolated Web demo
 on:
   push:
-    branches: [codex/mvp-isolated-web-demo]
+    branches: [codex/mvp-isolated-web-demo, codex/mvp-delivery]
   pull_request:
-    branches: [codex/mvp-monitor-history]
+    branches: [codex/mvp-monitor-history, codex/mvp-isolated-web-demo]
 permissions:
   contents: read
 jobs:
@@ -32,7 +32,7 @@ jobs:
           cd web && npx playwright install --with-deps chromium
       - name: Start real isolated demo (no published control ports)
         run: |
-          DEVPILOT_DEMO_EVIDENCE="$RUNNER_TEMP/demo-evidence" ./scripts/dev-isolated-demo.sh > "$RUNNER_TEMP/demo.log" 2>&1 &
+          DEVPILOT_DEMO_EVIDENCE="$RUNNER_TEMP/demo-evidence" ./scripts/mvp.sh demo > "$RUNNER_TEMP/demo.log" 2>&1 &
           echo $! > "$RUNNER_TEMP/demo.pid"
           python3 - <<'PY'
           import os,pathlib,time
