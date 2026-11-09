@@ -48,12 +48,8 @@ func budgetDB(t *testing.T) *pgxpool.Pool {
 		} else {
 			t.Log(string(raw))
 		}
-		if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE physical_release_confirmed_at IS NULL`) > 0 {
-			goose(t, filepath.Join(root(), "migrations"), "down", false)
-			if queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=8 AND is_applied`) != 1 {
-				t.Error("unsafe down destroyed ledger")
-			}
-		}
+		// Keep all Run, Reservation and capacity facts for the external evidence capture.
+		// run-budget.py destroys this test's isolated cluster; rollback has its own lifecycle test.
 	})
 	return db
 }
@@ -183,6 +179,51 @@ func TestBudgetGlobalLastSlot(t *testing.T) {
 		t.Fatal("failed claim leaked row")
 	}
 }
+
+func TestBudgetMigration12LifecycleRefusesUnreleasedRun(t *testing.T) {
+	db := budgetDB(t)
+	ctx := context.Background()
+	dir := filepath.Join(root(), "migrations")
+	if _, err := db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'`); err != nil {
+		t.Fatal(err)
+	}
+	// Establish the protected migration's baseline before creating any Run.
+	// Later read-only migrations may roll back safely; they are not this assertion's target.
+	goose(t, dir, "down-to 12", true)
+	if queryInt(t, db, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`) != 12 {
+		t.Fatal("lifecycle requires schema12")
+	}
+	_, _, h := schedulerClaimFixtureSeconds(t, db, 3600)
+	w, inc := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
+	if _, err := db.Exec(ctx, `UPDATE scheduler_control SET gate='fixture',emergency_stop=false WHERE control_id='deployment'`); err != nil {
+		t.Fatal(err)
+	}
+	_, err := schedulerClaim(t, w, inc, h)
+	budgetSQLState(t, err, "00000")
+	if _, err := db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'`); err != nil {
+		t.Fatal(err)
+	}
+	const snapshot = `SELECT jsonb_build_object('version',(SELECT max(version_id) FROM goose_db_version WHERE is_applied),'budgets',(SELECT jsonb_agg(to_jsonb(b) ORDER BY b.kind,b.budget_key) FROM scheduler_budget_state b),'runs',(SELECT jsonb_agg(to_jsonb(r) ORDER BY r.run_id) FROM monitor_runs r),'reservations',(SELECT jsonb_agg(to_jsonb(q) ORDER BY q.run_id) FROM scheduler_reservations q))::text`
+	var before, after string
+	if err := db.QueryRow(ctx, snapshot).Scan(&before); err != nil {
+		t.Fatal(err)
+	}
+	failed := goose(t, dir, "down", false)
+	if !strings.Contains(string(failed), "scheduler downgrade requires closed gate and physical stop") || !strings.Contains(string(failed), "55000") {
+		t.Fatal("Down failed before the physical-stop guard")
+	}
+	if err := db.QueryRow(ctx, snapshot).Scan(&after); err != nil || after != before {
+		t.Fatal("rejected Down changed migration or execution facts", err)
+	}
+	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE physical_release_confirmed_at IS NULL`) != 1 {
+		t.Fatal("lifecycle lost its unproven Run")
+	}
+	if queryInt(t, db, `SELECT count(*) FROM goose_db_version WHERE version_id=8 AND is_applied`) != 1 {
+		t.Fatal("unsafe down destroyed ledger")
+	}
+	t.Log("Migration12 Down rejected with55000; unproven Run, Reservation, budget ledger and version unchanged")
+}
+
 func TestBudgetScopedSlots(t *testing.T) {
 	db := budgetDB(t)
 	f, m, h := schedulerClaimFixtureSeconds(t, db, 3600)
