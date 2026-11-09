@@ -98,7 +98,7 @@ func TestDormantProductionDependencyAndSchemaBoundary(t *testing.T) {
 	if !strings.Contains(string(b), "Workers:         []func(context.Context){cleanup.Run}") {
 		t.Fatal("review worker startup")
 	}
-	// Only Migration1–10 and the separately approved Migration12 are allowed.
+	// Only Migration1–10 and the separately approved Migration12/13 are allowed.
 	wantMigrations := map[string]struct{}{
 		"00001_create_users.sql":                      {},
 		"00002_create_sessions.sql":                   {},
@@ -111,6 +111,7 @@ func TestDormantProductionDependencyAndSchemaBoundary(t *testing.T) {
 		"00009_enforce_scheduler_capacity.sql":        {},
 		"00010_add_bounded_scheduler_cleanup.sql":     {},
 		"00012_advance_completed_scheduler_cycle.sql": {},
+		"00013_add_monitor_history_read.sql":          {},
 	}
 	files, err := filepath.Glob("../../migrations/*.sql")
 	if err != nil {
