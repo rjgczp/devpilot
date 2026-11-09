@@ -21,6 +21,7 @@
   "TestBudgetGlobalLastSlot",
   "TestBudgetGlobalRateConcurrentStarts",
   "TestBudgetInputCommitAcknowledgements",
+  "TestBudgetMigration12LifecycleRefusesUnreleasedRun",
   "TestBudgetMonitorCoolingAcrossVersionAndRestart",
   "TestBudgetRetentionACLAndMigration",
   "TestBudgetRetentionFirstClaimAndRollback",
