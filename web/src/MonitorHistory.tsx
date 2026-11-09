@@ -1,3 +1,4 @@
+import { isolatedDemo } from "./environment";
 import { useEffect, useState } from "react";
 import {
   aborted,
@@ -92,7 +93,7 @@ export function MonitorHistory({
           </label>
         </div>
         <HistoryRows
-          key={`${path}/${monitor.id}/${filter}/${refresh}`}
+          key={`${path}/${monitor.id}/${filter}/${refresh}/${isolatedDemo ? `${status?.latest_attempt?.run_id}:${status?.latest_attempt?.attempt_state}:${status?.latest_attempt?.finished_at}` : ""}`}
           path={`${path}/${monitor.id}/history`}
           filter={filter}
         />

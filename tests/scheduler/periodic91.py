@@ -190,32 +190,7 @@ class PeriodicHarness(RecoveryHarness):
 
     def pg(self, binary, mode):
         self.pg_binary = binary
-        self.control = self.prefix+'-control'
-        self.run(['docker', 'network', 'create', '--internal', '--ipv6', '--label', LABEL+'='+self.prefix, self.control])
-        self.networks.append(self.control)
-        network = json.loads(self.run(['docker', 'network', 'inspect', self.control]))[0]
-        assert network['Internal'] and network['EnableIPv6'] and not network['Ingress']
-        self.record('control-network', network)
-        cmd = ['docker', 'run', '-d', '--name', self.prefix+'-pg', '--label', LABEL+'='+self.prefix,
-               '--network', self.control, '--network-alias', 'pg', '--cap-drop', 'ALL',
-               '--cap-add', 'CHOWN', '--cap-add', 'DAC_OVERRIDE', '--cap-add', 'FOWNER', '--cap-add', 'SETUID', '--cap-add', 'SETGID',
-               '--security-opt', 'no-new-privileges:true', '--memory=512m', '--cpus=1', '--pids-limit=128',
-               '-e', 'POSTGRES_USER=devpilot_fixture', '-e', 'POSTGRES_PASSWORD='+self.pg_password,
-               '-e', 'POSTGRES_DB=devpilot_registration_test', PG, 'postgres', '-c', 'cluster_name=devpilot-budget-disposable',
-               '-c', 'log_lock_waits=on', '-c', 'deadlock_timeout=100ms']
-        cid = self.run(cmd).decode().strip()
-        self.pg_id = cid
-        self.control_ids.add(cid)
-        self.containers.append(cid)
-        # PG entrypoint needs only the existing filesystem/UID startup caps.
-        # It has no NET_ADMIN, host path, host port or data-plane connection.
-        self.record('postgres-container', json.loads(self.run(['docker', 'inspect', cid]))[0])
-        until = time.monotonic()+30
-        while subprocess.run(['docker', 'exec', cid, 'pg_isready', '-U', 'devpilot_fixture', '-d', 'devpilot_registration_test'], capture_output=True).returncode:
-            if time.monotonic()>until:
-                raise RuntimeError('fresh PG18 unavailable after30s')
-            time.sleep(.2)
-        self.setup_receiver()
+        self.setup_control()
         driver_cmd = self.control_command(self.prefix+'-coordinator', binary.name, 'TestPeriodicSchedulerPG|TestPeriodicMigrationRoundTripPG|TestBudgetCleanupMigrationLifecycle', source=True)
         driver = subprocess.Popen(driver_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         self.processes.append(driver)
@@ -255,6 +230,34 @@ class PeriodicHarness(RecoveryHarness):
             sql = "SELECT jsonb_build_object('at',clock_timestamp(),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r),'schedules',(SELECT jsonb_agg(to_jsonb(s)) FROM monitor_schedules s),'reservations',(SELECT jsonb_agg(to_jsonb(q)) FROM scheduler_reservations q))"
             r = subprocess.run(['docker', 'exec', cid, 'psql', '-U', 'devpilot_fixture', '-d', 'devpilot_registration_test', '-At', '-c', sql], capture_output=True)
             (self.dest/'postgres-final-ledger.log').write_bytes(r.stdout+r.stderr)
+
+    def setup_control(self):
+        self.control = self.prefix+'-control'
+        self.run(['docker', 'network', 'create', '--internal', '--ipv6', '--label', LABEL+'='+self.prefix, self.control])
+        self.networks.append(self.control)
+        network = json.loads(self.run(['docker', 'network', 'inspect', self.control]))[0]
+        assert network['Internal'] and network['EnableIPv6'] and not network['Ingress']
+        self.record('control-network', network)
+        cmd = ['docker', 'run', '-d', '--name', self.prefix+'-pg', '--label', LABEL+'='+self.prefix,
+               '--network', self.control, '--network-alias', 'pg', '--cap-drop', 'ALL',
+               '--cap-add', 'CHOWN', '--cap-add', 'DAC_OVERRIDE', '--cap-add', 'FOWNER', '--cap-add', 'SETUID', '--cap-add', 'SETGID',
+               '--security-opt', 'no-new-privileges:true', '--memory=512m', '--cpus=1', '--pids-limit=128',
+               '-e', 'POSTGRES_USER=devpilot_fixture', '-e', 'POSTGRES_PASSWORD='+self.pg_password,
+               '-e', 'POSTGRES_DB=devpilot_registration_test', PG, 'postgres', '-c', 'cluster_name=devpilot-budget-disposable',
+               '-c', 'log_lock_waits=on', '-c', 'deadlock_timeout=100ms']
+        cid = self.run(cmd).decode().strip()
+        self.pg_id = cid
+        self.control_ids.add(cid)
+        self.containers.append(cid)
+        # PG entrypoint needs only the existing filesystem/UID startup caps.
+        # It has no NET_ADMIN, host path, host port or data-plane connection.
+        self.record('postgres-container', json.loads(self.run(['docker', 'inspect', cid]))[0])
+        until = time.monotonic()+30
+        while subprocess.run(['docker', 'exec', cid, 'pg_isready', '-U', 'devpilot_fixture', '-d', 'devpilot_registration_test'], capture_output=True).returncode:
+            if time.monotonic()>until:
+                raise RuntimeError('fresh PG18 unavailable after30s')
+            time.sleep(.2)
+        self.setup_receiver()
 
 
 def main():
