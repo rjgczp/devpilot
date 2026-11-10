@@ -116,7 +116,7 @@ export function Notice({
   kind = "error",
 }: {
   children: ReactNode;
-  kind?: "error" | "info";
+  kind?: "error" | "info" | "note";
 }) {
   return (
     <div

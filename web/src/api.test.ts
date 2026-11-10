@@ -1,18 +1,35 @@
 import { afterEach, expect, it, vi } from "vitest";
-import { api, strongTag } from "./api";
+import { api, strongTag, ApiError, errorText } from "./api";
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
-it("uses only same-origin cookies, CSRF and the exact captured ETag for writes", async () => {
-  const fetcher = vi
-    .fn()
-    .mockResolvedValue(
-      new Response('{"data":{}}', {
-        status: 200,
-        headers: { ETag: '"monitor:m1:2"' },
+it("explains known field validation errors without exposing raw server details", () => {
+  expect(
+    errorText(
+      new ApiError(422, "validation_failed", { url: "invalid_format" }),
+    ),
+  ).toContain("HTTP(S) 域名和默认端口");
+  expect(
+    errorText(
+      new ApiError(422, "validation_failed", { password: "invalid_length" }),
+    ),
+  ).toContain("15–128");
+  expect(
+    errorText(
+      new ApiError(422, "validation_failed", {
+        internal_field: "private server detail",
       }),
-    );
+    ),
+  ).not.toContain("private server detail");
+});
+it("uses only same-origin cookies, CSRF and the exact captured ETag for writes", async () => {
+  const fetcher = vi.fn().mockResolvedValue(
+    new Response('{"data":{}}', {
+      status: 200,
+      headers: { ETag: '"monitor:m1:2"' },
+    }),
+  );
   vi.stubGlobal("fetch", fetcher);
   const result = await api("/api/v1/workspaces/w1/projects/p1/monitors/m1", {
     method: "PATCH",

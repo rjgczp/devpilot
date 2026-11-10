@@ -122,6 +122,14 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
   expect(times[0] - times[1]).toBeGreaterThanOrEqual(60000);
   expect(times[1] - times[2]).toBeGreaterThanOrEqual(60000);
   await expect(page.locator(".response-trend circle")).toHaveCount(3);
+  await expect(
+    page.getByText(
+      "执行环境未开放。隔离演示当前不再开始新的检查；已有历史仍可查看。",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("alert").filter({ hasText: "执行环境未开放" }),
+  ).toHaveCount(0);
   expect(targets).toEqual([]);
   await page.screenshot({
     path: "test-results/real-isolated-history.png",

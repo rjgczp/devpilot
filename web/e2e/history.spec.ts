@@ -59,6 +59,7 @@ test("history is read-only, paginates, filters and never replaces new unknown wi
 }) => {
   const historyQueries: URL[] = [];
   let fail = false;
+  let failNextPage = true;
   await page.route("**/api/v1/**", async (route) => {
     expect(route.request().method()).toBe("GET");
     const url = new URL(route.request().url());
@@ -72,6 +73,10 @@ test("history is read-only, paginates, filters and never replaces new unknown wi
         });
       const state = url.searchParams.get("state");
       const after = url.searchParams.get("after");
+      if (after && failNextPage) {
+        failNextPage = false;
+        return route.fulfill({ status: 503, json: { error: { code: "service_unavailable" } } });
+      }
       const data =
         state === "failure"
           ? [rows[2]]
@@ -127,6 +132,10 @@ test("history is read-only, paginates, filters and never replaces new unknown wi
   await expect(page.getByRole("img", { name: /响应时间趋势图/ })).toBeVisible();
   await expect(page.locator(".response-trend circle")).toHaveCount(19);
   await page.getByRole("button", { name: "加载更早记录" }).click();
+  await expect(page.getByText(/历史读取失败/)).toBeVisible();
+  await expect(page.getByLabel("检查历史")).toContainText("已加载 20 条");
+  await expect(page.locator('.history-table tbody tr')).toHaveCount(20);
+  await page.getByRole('button', { name: '重试读取历史' }).click();
   await expect(page.getByLabel("检查历史")).toContainText("已加载 21 条");
   expect(historyQueries.at(-1)!.searchParams.get("after")).toBe(
     "opaque-cursor-with-fixed-window",
@@ -147,10 +156,17 @@ test("history is read-only, paginates, filters and never replaces new unknown wi
     fullPage: true,
   });
   await page.setViewportSize({ width: 390, height: 844 });
+  const durationCaption = await page.locator('.history-table td[data-label="响应时间"]').first().evaluate(el => getComputedStyle(el, '::before').content);
+  expect(durationCaption).toContain('响应时间');
+  expect(durationCaption).not.toContain('下一次到期');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({
     path: "test-results/history-mobile.png",
     fullPage: true,
   });
+  await page.setViewportSize({ width: 320, height: 740 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: 'test-results/history-mobile-320.png', fullPage: true });
   await page.getByLabel("历史状态筛选").selectOption("running");
   await expect(
     page.getByRole("heading", { name: "没有符合筛选条件的检查" }),

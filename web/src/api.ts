@@ -78,6 +78,9 @@ const errors: Record<string, string> = {
   precondition_required: "缺少资源版本，请刷新后再操作。",
   monitor_forbidden: "只有 Workspace Owner 可以修改监控。",
   project_forbidden: "只有 Owner 可以创建 Project。",
+  workspace_not_found: "Workspace 不存在或已失去访问权限，请重新选择空间。",
+  project_not_found: "Project 不存在或已失去访问权限，请重新选择 Project。",
+  monitor_not_found: "监控不存在或已失去访问权限，请刷新列表核对。",
   validation_failed: "请检查输入内容。",
   activation_rate_limited: "仍在授权冷却期，请稍后再试。",
   activation_limit_reached: "启用数量已达到 Workspace 上限。",
@@ -162,9 +165,31 @@ export function errorText(error: unknown) {
       timeout_seconds: "超时",
       expected_status: "预期状态码",
     };
-    return `${error.message}（${Object.keys(error.fields)
-      .map((key) => fields[key] ?? key)
-      .join("、")}）`;
+    const hints: Record<string, Record<string, string>> = {
+      name: {
+        required: "请输入名称",
+        invalid_length: "名称不能超过 100 个字符",
+        invalid_format: "请检查首尾空格，名称不支持控制字符",
+      },
+      email: { required: "请输入邮箱", invalid_format: "请输入有效的邮箱地址" },
+      password: {
+        required: "请输入密码",
+        invalid_length: "密码需要 15–128 个字符",
+      },
+      url: {
+        required: "请输入目标 URL",
+        invalid_format: "请使用 HTTP(S) 域名和默认端口；不支持本机或私网目标",
+        invalid_length: "目标 URL 过长",
+      },
+      timeout_seconds: { invalid_value: "超时应为 1–30 秒" },
+      expected_status: { invalid_value: "预期状态码应为 200–599" },
+    };
+    return `${error.message} ${Object.entries(error.fields)
+      .map(
+        ([key, reason]) =>
+          `${fields[key] ?? "输入项"}：${hints[key]?.[reason] ?? "请检查此项内容"}`,
+      )
+      .join("；")}。`;
   }
   return error instanceof Error
     ? error.message

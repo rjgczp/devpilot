@@ -15,7 +15,12 @@ import {
 import { isolatedDemo } from "./environment";
 import { MonitorHistory } from "./MonitorHistory";
 import { AuthorizeForm, MonitorForm } from "./MonitorForm";
-import { formatTime, presentStatus, validScope } from "./status";
+import {
+  executionSummary,
+  formatTime,
+  presentStatus,
+  validScope,
+} from "./status";
 import { Dialog, Icon, Notice } from "./ui";
 import { usePage } from "./usePage";
 
@@ -118,6 +123,7 @@ function AuthView({
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(initialError);
   const [message, setMessage] = useState("");
@@ -133,6 +139,7 @@ function AuthView({
         body: JSON.stringify({ email, password }),
       });
       setPassword("");
+      setShowPassword(false);
       if (mode === "register") {
         setMode("login");
         setMessage("账号已创建，请使用刚才的密码登录。");
@@ -193,6 +200,7 @@ function AuthView({
               邮箱
               <input
                 autoComplete="username"
+                disabled={busy}
                 type="email"
                 required
                 value={email}
@@ -200,22 +208,36 @@ function AuthView({
                 placeholder="you@example.com"
               />
             </label>
-            <label>
-              密码
-              <input
-                type="password"
-                autoComplete={
-                  mode === "login" ? "current-password" : "new-password"
-                }
-                required
-                minLength={mode === "register" ? 15 : 1}
-                maxLength={128}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </label>
+            <div className="password-field">
+              <label>
+                密码
+                <input
+                  type={showPassword ? "text" : "password"}
+                  disabled={busy}
+                  autoComplete={
+                    mode === "login" ? "current-password" : "new-password"
+                  }
+                  required
+                  minLength={mode === "register" ? 15 : 1}
+                  maxLength={128}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                className="text-button"
+                disabled={busy}
+                aria-label={showPassword ? "隐藏密码" : "显示密码"}
+                onClick={() => setShowPassword((value) => !value)}
+              >
+                {showPassword ? "隐藏" : "显示"}
+              </button>
+            </div>
             {mode === "register" && (
-              <p className="field-help">15–128 个字符，不裁剪或归一化密码。</p>
+              <p className="field-help">
+                15–128 个字符，建议使用易记的长密码或短语。
+              </p>
             )}
             <button className="button primary full" disabled={busy}>
               {busy ? "正在处理…" : mode === "login" ? "登录" : "注册账号"}
@@ -240,6 +262,7 @@ function AuthView({
                   setError("");
                   setMessage("");
                   setPassword("");
+                  setShowPassword(false);
                 }}
               >
                 {mode === "login" ? "创建账号" : "返回登录"}
@@ -310,6 +333,7 @@ function WorkspaceApp({
             <select
               aria-label="Workspace"
               value={workspace?.id ?? ""}
+              disabled={workspaces.loading || !workspaces.items.length}
               onChange={(e) => {
                 setWid(e.target.value);
                 setPid("");
@@ -317,7 +341,7 @@ function WorkspaceApp({
               }}
             >
               <option value="" disabled>
-                选择 Workspace
+                {workspaces.loading ? "正在加载…" : "选择 Workspace"}
               </option>
               {workspaces.items.map((w) => (
                 <option key={w.id} value={w.id}>
@@ -362,9 +386,11 @@ function WorkspaceApp({
           <div>
             <strong title={user.email}>{user.email}</strong>
             <span>
-              {workspace?.role === "owner"
-                ? "Workspace Owner"
-                : "Workspace Member"}
+              {!workspace
+                ? "未选择 Workspace"
+                : workspace.role === "owner"
+                  ? "Workspace Owner"
+                  : "Workspace Member"}
             </span>
           </div>
           <button
@@ -379,7 +405,7 @@ function WorkspaceApp({
       </aside>
       <div className="main-column">
         <header className="topbar">
-          <span>
+          <span title={workspace?.name}>
             {workspace?.name ?? "Workspace"}
             <Icon name="arrow" size={14} />
             <strong>HTTP 监控</strong>
@@ -390,9 +416,19 @@ function WorkspaceApp({
           {isolatedDemo && (
             <div className="demo-banner" role="status">
               <strong>本地演示 · 无公网出口</strong>
+              <span className="environment-tag">隔离演示</span>
               <p>
                 仅固定 HTTPS fixture，配置只读。请以本次临时 Owner
                 登录并授权激活；60秒周期，最多3次真实检查后关闭执行。暂停会停止新的批准，已开始的检查仍可能完成。
+              </p>
+            </div>
+          )}
+          {!isolatedDemo && (
+            <div className="environment-banner" aria-label="执行环境">
+              <strong>普通管理 · 执行关闭</strong>
+              <p>
+                可管理配置、授权并查看历史；此环境不会发起 HTTP
+                检查。授权成功不代表已开始执行。
               </p>
             </div>
           )}
@@ -408,17 +444,28 @@ function WorkspaceApp({
               </button>
             </Notice>
           )}
-          {projects.error && <Notice>{projects.error}</Notice>}
+          {projects.error && (
+            <Notice>
+              {projects.error}
+              <button
+                className="text-button"
+                onClick={() => setRefresh((x) => x + 1)}
+              >
+                重试读取
+              </button>
+            </Notice>
+          )}
           <div className="project-bar">
             <label>
               PROJECT
               <select
                 aria-label="Project"
                 value={project?.id ?? ""}
+                disabled={projects.loading || !projects.items.length}
                 onChange={(e) => setPid(e.target.value)}
               >
                 <option disabled value="">
-                  选择 Project
+                  {projects.loading ? "正在加载…" : "选择 Project"}
                 </option>
                 {projects.items.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -454,8 +501,23 @@ function WorkspaceApp({
               project={project}
               identity={user.id}
             />
+          ) : workspaces.error || projects.error ? (
+            <section className="empty onboarding">
+              <h1>暂时无法读取工作台</h1>
+              <p>
+                数据尚未确认，请使用上方的“重试读取”。读取失败不代表尚未创建
+                Workspace 或 Project。
+              </p>
+            </section>
           ) : (
             <section className="empty onboarding">
+              <ol className="setup-steps" aria-label="首次设置步骤">
+                <li className={workspace ? "done" : "current"}>
+                  1 · Workspace
+                </li>
+                <li className={workspace ? "current" : ""}>2 · Project</li>
+                <li>3 · HTTP 监控</li>
+              </ol>
               <span className="empty-icon">
                 <Icon name="pulse" size={32} />
               </span>
@@ -463,16 +525,21 @@ function WorkspaceApp({
                 {workspaces.loading || projects.loading
                   ? "正在加载工作台…"
                   : workspace
-                    ? "为服务创建一个 Project"
+                    ? workspace.role === "owner"
+                      ? "为服务创建一个 Project"
+                      : "等待 Owner 添加 Project"
                     : "你的监控工作台，从这里开始"}
               </h1>
               <p>
                 {workspace
-                  ? "Project 用于组织相关的服务与 HTTP 监控。"
-                  : "创建 Workspace，然后添加 Project 与第一个监控。"}
+                  ? workspace.role === "owner"
+                    ? "Project 用于组织相关的服务。创建后即可添加第一个 HTTP 监控。"
+                    : "此 Workspace 尚无可查看的 Project，请联系 Owner 创建。"
+                  : "Workspace 是你的团队空间。创建后添加一个 Project，用于归类服务与监控。"}
               </p>
               {!workspaces.loading &&
                 !projects.loading &&
+                !isolatedDemo &&
                 (!workspace || workspace.role === "owner") && (
                   <button
                     className="button primary"
@@ -556,6 +623,7 @@ function NameForm({
           名称
           <input
             autoFocus
+            disabled={busy}
             required
             maxLength={100}
             value={name}
@@ -718,6 +786,9 @@ function Dashboard({
   const completed = Object.values(statuses).filter(
     (s) => s.value?.latest_attempt?.attempt_state === "completed",
   ).length;
+  const readable = Object.values(statuses).filter((s) => s.value).length;
+  const statusReady =
+    readable === monitors.items.length && !monitors.loading && !monitors.error;
   const selectedMonitor = monitors.items.find((m) => m.id === selected);
   const historyMonitor = monitors.items.find((m) => m.id === historyID);
   if (historyMonitor)
@@ -737,7 +808,9 @@ function Dashboard({
           <span className="eyebrow">MONITORING</span>
           <h1>
             HTTP 监控
-            <span className="heading-count">{monitors.items.length}</span>
+            <span className="heading-count">
+              {monitors.loading || monitors.error ? "—" : monitors.items.length}
+            </span>
           </h1>
           <p>管理服务检查，掌握每一次执行的真实状态。</p>
         </div>
@@ -752,10 +825,14 @@ function Dashboard({
       </div>
       <section className="stats" aria-label="监控概览">
         {[
-          ["已加载监控", monitors.items.length, "neutral"],
-          ["正在检查", active, "active"],
-          ["结果未知", unknown, "warn"],
-          ["最近已完成", completed, "good"],
+          [
+            "已加载监控",
+            monitors.loading || monitors.error ? "—" : monitors.items.length,
+            "neutral",
+          ],
+          ["正在检查", statusReady ? active : "—", "active"],
+          ["结果未知", statusReady ? unknown : "—", "warn"],
+          ["最近已完成", statusReady ? completed : "—", "neutral"],
         ].map(([label, value, tone]) => (
           <div className="stat" key={label}>
             <span>
@@ -768,7 +845,17 @@ function Dashboard({
       </section>
       {message && <Notice kind="info">{message}</Notice>}
       {error && <Notice>{error}</Notice>}
-      {monitors.error && <Notice>{monitors.error}</Notice>}
+      {monitors.error && (
+        <Notice>
+          {monitors.error}
+          <button
+            className="text-button"
+            onClick={() => setRefresh((x) => x + 1)}
+          >
+            重试读取监控
+          </button>
+        </Notice>
+      )}
       {!owner && (
         <Notice kind="info">
           当前为 Member，只读查看监控与状态。创建、编辑和授权由 Owner 操作。
@@ -810,14 +897,29 @@ function Dashboard({
             </button>
           </div>
         </div>
+        {!!monitors.items.length && (
+          <p className="status-coverage">
+            已读取 {readable} / {monitors.items.length} 个监控状态 ·
+            已完成不等于检查成功
+            {Object.values(statuses).some((s) => s.error)
+              ? " · 部分状态读取失败，请刷新重试"
+              : ""}
+          </p>
+        )}
         {monitors.loading && !monitors.items.length ? (
           <p className="loading">正在读取监控…</p>
+        ) : monitors.error && !monitors.items.length ? (
+          <div className="empty">
+            <h2>监控列表暂不可用</h2>
+            <p>读取失败不代表没有监控，请重试读取。</p>
+          </div>
         ) : items.length ? (
           <div className="table-scroll">
-            <table>
+            <table className="monitor-table">
               <thead>
                 <tr>
                   <th>监控</th>
+                  <th>启用与授权</th>
                   <th>执行状态</th>
                   <th>检查间隔</th>
                   <th>下一次到期</th>
@@ -827,12 +929,13 @@ function Dashboard({
               <tbody>
                 {items.map((m) => {
                   const s = statuses[m.id];
-                  const view = presentStatus(s?.value);
+                  const view = executionSummary(s?.value);
                   return (
                     <tr key={m.id}>
                       <td>
                         <button
                           className="monitor-name"
+                          title={m.name}
                           onClick={() => setSelected(m.id)}
                         >
                           <span className={`service-icon ${view.tone}`}>
@@ -844,10 +947,15 @@ function Dashboard({
                           </span>
                         </button>
                       </td>
-                      <td>
-                        <span className={`badge ${view.tone}`}>
-                          <i className="dot" />
-                          {s ? view.label : "正在读取"}
+                      <td data-label="启用与授权">
+                        <span className="badge">
+                          {s?.value
+                            ? s.value.desired_state === "enabled"
+                              ? "意图已启用"
+                              : "意图已暂停"
+                            : s?.error
+                              ? "状态不可用"
+                              : "正在读取"}
                         </span>
                         <small className="status-sub">
                           {s?.value?.authorization_state === "valid"
@@ -856,20 +964,30 @@ function Dashboard({
                               ? "授权已过期"
                               : s?.value
                                 ? "未授权"
-                                : s?.error
-                                  ? "读取失败"
-                                  : "—"}
-                          {s?.value?.desired_state === "disabled"
-                            ? " · 意图已暂停"
-                            : ""}
+                                : "授权状态尚未确认"}
                         </small>
                       </td>
-                      <td className="mono">
+                      <td data-label="执行状态">
+                        <span className={`badge ${view.tone}`}>
+                          <i className="dot" />
+                          {s ? view.label : "正在读取"}
+                        </span>
+                        <small className="status-sub">
+                          {s?.error
+                            ? "读取失败，请刷新重试"
+                            : !s?.value
+                              ? "正在确认真实执行状态…"
+                              : !s.value.latest_attempt
+                                ? "尚无真实检查"
+                                : view.detail}
+                        </small>
+                      </td>
+                      <td className="mono" data-label="检查间隔">
                         {m.interval_seconds < 60
                           ? `${m.interval_seconds} 秒`
                           : `${m.interval_seconds / 60} 分钟`}
                       </td>
-                      <td className="time-cell">
+                      <td className="time-cell" data-label="下一次到期">
                         {formatTime(s?.value?.next_due)}
                       </td>
                       <td className="align-right">
@@ -928,10 +1046,27 @@ function Dashboard({
             </h2>
             <p>
               {query || filter !== "all"
-                ? "尝试其他名称或状态筛选。"
-                : "添加服务地址，配置检查间隔，再确认执行授权。"}
+                ? monitors.next
+                  ? "当前只筛选已加载的监控。可点击下方“加载更多监控”，再查找其他记录。"
+                  : "尝试其他名称或状态筛选。"
+                : isolatedDemo
+                  ? "固定演示监控尚未就绪，请确认演示环境已完成启动。"
+                  : owner
+                    ? "添加服务地址与检查间隔。保存后再确认授权；本地普通管理环境不会发起检查。"
+                    : "此 Project 尚无监控，请联系 Owner 添加。"}
             </p>
-            {owner && !query && filter === "all" && (
+            {(query || filter !== "all") && (
+              <button
+                className="button"
+                onClick={() => {
+                  setQuery("");
+                  setFilter("all");
+                }}
+              >
+                清除搜索与筛选
+              </button>
+            )}
+            {editable && !query && filter === "all" && (
               <button
                 className="button"
                 onClick={() => setModal({ kind: "new", monitor: null })}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Attempt, ExecutionStatus, Monitor } from "./api";
-import { presentStatus, validScope } from "./status";
+import { executionSummary, presentStatus, validScope } from "./status";
 
 const attempt: Attempt = {
   run_id: "run-1",
@@ -36,6 +36,32 @@ const base: ExecutionStatus = {
 };
 
 describe("authoritative execution presentation", () => {
+  it("separates paused intent from actual execution without inventing health", () => {
+    const paused = {
+      ...base,
+      desired_state: "disabled",
+      authorization_state: "none",
+    };
+    expect(executionSummary({ ...paused, latest_attempt: null }).label).toBe(
+      "尚无检查",
+    );
+    expect(executionSummary(paused)).toMatchObject({
+      label: "已完成",
+      tone: "neutral",
+    });
+    expect(
+      executionSummary({
+        ...paused,
+        latest_attempt: { ...attempt, attempt_state: "unknown" },
+      }),
+    ).toMatchObject({ label: "结果未知", tone: "warn" });
+    expect(
+      executionSummary({
+        ...paused,
+        latest_attempt: { ...attempt, attempt_state: "started" },
+      }),
+    ).toMatchObject({ label: "检查中", tone: "active" });
+  });
   it("never masks a newer unknown with an old success", () => {
     const view = presentStatus({
       ...base,

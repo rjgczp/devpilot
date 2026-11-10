@@ -10,6 +10,7 @@ import {
 } from "./api";
 import { Dialog, Notice } from "./ui";
 import { formatTime } from "./status";
+import { isolatedDemo } from "./environment";
 
 export function MonitorForm({
   wid,
@@ -114,6 +115,7 @@ export function MonitorForm({
           <label>
             监控名称
             <input
+              disabled={busy}
               autoFocus
               required
               maxLength={100}
@@ -125,7 +127,10 @@ export function MonitorForm({
           <label>
             目标 URL
             <input
+              disabled={busy}
               type="url"
+              autoCapitalize="none"
+              spellCheck={false}
               required
               maxLength={2048}
               value={input.url}
@@ -140,6 +145,7 @@ export function MonitorForm({
             <label>
               检查间隔
               <select
+                disabled={busy}
                 value={input.interval_seconds}
                 onChange={(e) =>
                   setInput({ ...input, interval_seconds: +e.target.value })
@@ -161,6 +167,7 @@ export function MonitorForm({
             <label>
               超时（秒）
               <input
+                disabled={busy}
                 type="number"
                 min="1"
                 max="30"
@@ -174,6 +181,7 @@ export function MonitorForm({
             <label>
               预期状态码
               <input
+                disabled={busy}
                 type="number"
                 min="200"
                 max="599"
@@ -301,6 +309,7 @@ export function AuthorizeForm({
           <label>
             本次授权时长
             <select
+              disabled={busy}
               value={seconds}
               onChange={(e) => setSeconds(+e.target.value)}
             >
@@ -317,6 +326,7 @@ export function AuthorizeForm({
           )}
           <label className="consent">
             <input
+              disabled={busy}
               type="checkbox"
               checked={consent}
               onChange={(e) => setConsent(e.target.checked)}
@@ -327,7 +337,9 @@ export function AuthorizeForm({
             </span>
           </label>
           <Notice kind="info">
-            本地普通环境保持执行出口关闭。授权不会绕过隔离、停止或资源门控。
+            {isolatedDemo
+              ? "隔离演示仅执行固定测试目标，授权不会开放任意 URL 或公网访问。"
+              : "普通管理环境执行关闭；授权只保存启用意图，不会开始 HTTP 检查。"}
           </Notice>
           <footer className="dialog-actions">
             <button

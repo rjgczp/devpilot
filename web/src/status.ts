@@ -112,3 +112,24 @@ export function presentStatus(s?: ExecutionStatus | null): {
 }
 export const formatTime = (value?: string | null) =>
   value ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "—";
+
+// The list shows execution facts separately from enable/authorization intent.
+// Keep the authoritative newest-attempt priority and never infer old health.
+export function executionSummary(s?: ExecutionStatus) {
+  const view = presentStatus(s);
+  if (!["已暂停", "未授权", "授权已过期"].includes(view.label)) return view;
+  if (!s?.latest_attempt) return { ...view, label: "尚无检查" };
+  const terminal: Record<string, string> = {
+    completed: "已完成",
+    canceled: "已取消",
+    expired: "已过期",
+  };
+  const label = terminal[s.latest_attempt.attempt_state];
+  return label
+    ? {
+        label,
+        tone: "neutral" as const,
+        detail: "最近一次检查已结束，启用与授权状态单独显示。",
+      }
+    : view;
+}

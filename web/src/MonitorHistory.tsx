@@ -68,9 +68,15 @@ export function MonitorHistory({
         <span className="muted">{presentStatus(status).detail}</span>
       </div>
       {status?.blocked_reason && (
-        <Notice>
+        <Notice
+          kind={
+            status.blocked_reason === "scheduler_unavailable" ? "note" : "error"
+          }
+        >
           {reasons[status.blocked_reason] ?? "当前执行条件尚未满足"}
-          。历史记录不代表当前执行环境已开放。
+          {isolatedDemo && status.blocked_reason === "scheduler_unavailable"
+            ? "。隔离演示当前不再开始新的检查；已有历史仍可查看。"
+            : "。历史记录不代表当前执行环境已开放。"}
         </Notice>
       )}
       <section className="monitor-panel" aria-label="检查历史">
@@ -106,6 +112,7 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
   const [after, setAfter] = useState<string | null>(null);
+  const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
     let alive = true;
@@ -124,7 +131,7 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
       })
       .catch((e) => {
         if (alive && !aborted(e)) {
-          setPage(null);
+          if (!after) setPage(null);
           setError(errorText(e));
         }
       })
@@ -135,16 +142,27 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
       alive = false;
       controller.abort();
     };
-  }, [path, filter, after]);
+  }, [path, filter, after, retry]);
   const rows = page?.data ?? [];
   return (
     <div aria-busy={busy}>
-      {error ? (
-        <Notice>历史读取失败：{error} 请使用“刷新历史”重新读取。</Notice>
-      ) : (
+      {error && (
+        <Notice>
+          历史读取失败：{error}{" "}
+          <button
+            className="text-button"
+            disabled={busy}
+            onClick={() => setRetry((x) => x + 1)}
+          >
+            重试读取历史
+          </button>
+          {rows.length ? " 已加载记录仍保留，尚未加载更多记录。" : ""}
+        </Notice>
+      )}
+      {
         <>
           {!!rows.length && <ResponseTrend rows={rows} />}
-          {!rows.length && (
+          {!rows.length && !error && (
             <div className="empty-state">
               <h3>
                 {busy
@@ -154,13 +172,19 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
                     : "没有符合筛选条件的检查"}
               </h3>
               <p>
-                只展示已开始的真实检查记录。授权或启用意图不会生成检查结果。
+                {busy
+                  ? "正在获取当前监控的真实记录，请稍候。"
+                  : filter !== "all"
+                    ? "可切换到全部状态，查看其他检查记录。"
+                    : isolatedDemo
+                      ? "请返回监控，由临时 Owner 确认目标并授权。只有真实检查开始后才会产生历史。"
+                      : "普通管理环境不发起检查，暂无历史属于正常情况。已有历史只展示真实检查，授权本身不会生成结果。"}
               </p>
             </div>
           )}
           {!!rows.length && (
             <div className="table-scroll">
-              <table>
+              <table className="history-table">
                 <thead>
                   <tr>
                     <th>检查时间</th>
@@ -173,7 +197,7 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
                 <tbody>
                   {rows.map((row) => (
                     <tr key={row.id}>
-                      <td className="time-cell">
+                      <td className="time-cell" data-label="检查时间">
                         {formatTime(row.checked_at)}
                         <small className="status-sub">
                           配置 v{row.configuration_version}
@@ -183,20 +207,22 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
                             : ""}
                         </small>
                       </td>
-                      <td>
+                      <td data-label="结果">
                         <span
                           className={`badge ${row.status === "success" ? "good" : row.status === "failure" ? "bad" : row.status === "unknown" ? "warn" : "neutral"}`}
                         >
                           {labels[row.status] ?? "状态不可用"}
                         </span>
                       </td>
-                      <td className="mono">{row.http_status ?? "—"}</td>
-                      <td className="mono">
+                      <td className="mono" data-label="HTTP 状态">
+                        {row.http_status ?? "—"}
+                      </td>
+                      <td className="mono" data-label="响应时间">
                         {row.duration_ms === null
                           ? "—"
                           : `${row.duration_ms} ms`}
                       </td>
-                      <td className="muted">
+                      <td className="muted" data-label="说明">
                         {row.status === "unknown"
                           ? "结果未确认，不自动重发"
                           : row.failure_code
@@ -212,8 +238,12 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
             </div>
           )}
           <div className="history-footer">
-            <span className="muted">已加载 {rows.length} 条 · 每页 20 条</span>
-            {page?.pagination.next_after && (
+            <span className="muted">
+              {busy && !page
+                ? "正在读取…"
+                : `已加载 ${rows.length} 条 · 每页 20 条`}
+            </span>
+            {!error && page?.pagination.next_after && (
               <button
                 className="button"
                 disabled={busy}
@@ -224,7 +254,7 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
             )}
           </div>
         </>
-      )}
+      }
     </div>
   );
 }
