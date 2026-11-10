@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import unittest
 
-from run_integration import check_plan, check_results
+from run_integration import check_plan, check_results, listed_tests
 
 
 class IntegrationCoverageContract(unittest.TestCase):
@@ -28,6 +28,39 @@ class IntegrationCoverageContract(unittest.TestCase):
         with self.assertRaises(ValueError):
             check_plan(groups, self.names)
 
+    def test_module_download_notices_preserve_complete_inventory(self):
+        notices = '\n'.join([
+            'go: downloading github.com/jackc/pgx/v5 v5.8.0',
+            'go: downloading golang.org/x/net v0.49.0',
+            'go: downloading golang.org/x/sys v0.41.0',
+            'go: downloading golang.org/x/crypto v0.48.0',
+            'go: downloading golang.org/x/text v0.34.0',
+            'go: downloading golang.org/x/sync v0.19.0',
+        ])
+        events = [json.dumps({'Action': 'output', 'Package': 'pkg', 'Output': name + '\n'})
+                  for name in self.names]
+        found = listed_tests(notices + '\n' + '\n'.join(events))
+        self.assertEqual(found, {'pkg': self.names})
+        self.assertEqual(check_plan(self.groups, found['pkg']), self.names)
+        missing = listed_tests(notices + '\n' + '\n'.join(events[1:]))
+        with self.assertRaises(ValueError):
+            check_plan(self.groups, missing['pkg'])
+
+    def test_inventory_rejects_unknown_output_and_corrupt_events(self):
+        for line in [
+            '{"Action":"output","Package":"pkg","Output":"TestRequired\\n"',
+            '{"Action":"fail",',
+            'go: downloading github.com/jackc/pgx/v5 v5.8.0 {"Action":"fail"}',
+            'go: downloading github.com/jackc/pgx/v5',
+            'go: downloading github.com/jackc/pgx/v5 v5.8.0 trailing garbage',
+            'go: warning: unexpected diagnostic',
+            '',
+        ]:
+            with self.subTest(line=line), self.assertRaises(json.JSONDecodeError):
+                listed_tests(line + '\n')
+        with self.assertRaises(KeyError):
+            listed_tests('{"Package":"pkg","Output":"TestRequired\\n"}')
+
     def test_skip_or_zero_test_success_cannot_pass(self):
         expected = {'pkg': ['TestRequired']}
         def events(*actions):
@@ -41,6 +74,14 @@ class IntegrationCoverageContract(unittest.TestCase):
                 check_results(log, expected)
         with self.assertRaises(ValueError):
             check_results(events(run, passed, {'Action': 'skip', 'Package': 'pkg', 'Test': 'TestRequired/subcase'}, package), expected)
+        for log in [
+            events(run, {'Action': 'fail', 'Package': 'pkg', 'Test': 'TestRequired'}, package),
+            events(run, passed, {'Action': 'fail', 'Package': 'pkg'}),
+        ]:
+            with self.assertRaises(ValueError):
+                check_results(log, expected)
+        with self.assertRaises(json.JSONDecodeError):
+            check_results(events(run, passed, package) + '\n{"Action":"pass",', expected)
 
 
 if __name__ == '__main__':

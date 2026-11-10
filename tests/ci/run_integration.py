@@ -12,6 +12,10 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = Path(__file__).with_name('integration-groups.json')
 TEST_NAME = re.compile(r'(?:Test|Fuzz|Example)[A-Za-z0-9_]*\Z')
+GO_MODULE_DOWNLOAD = re.compile(
+    r'go: downloading [A-Za-z0-9][A-Za-z0-9._~!/+\-]* '
+    r'v[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?\Z'
+)
 
 
 def check_plan(groups, discovered):
@@ -32,6 +36,10 @@ def check_plan(groups, discovered):
 def listed_tests(log):
     found = {}
     for line in log.splitlines():
+        # The recorder preserves stderr alongside stdout. A cold module cache
+        # emits these Go notices before JSON; every other line must decode.
+        if GO_MODULE_DOWNLOAD.fullmatch(line):
+            continue
         event = json.loads(line)
         if event['Action'] == 'output':
             name = event.get('Output', '').strip()
