@@ -1,7 +1,7 @@
 name: Web Dashboard
 on:
   push:
-    branches: [codex/mvp-web-dashboard, codex/mvp-monitor-history, codex/mvp-delivery]
+    branches: [codex/mvp-web-dashboard, codex/mvp-monitor-history, codex/mvp-delivery, codex/mvp-first-use-experience]
   pull_request:
     branches: [codex/task91-isolated-periodic, codex/mvp-web-dashboard, codex/mvp-isolated-web-demo]
 permissions:
