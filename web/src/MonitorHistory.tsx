@@ -70,13 +70,13 @@ export function MonitorHistory({
       {status?.blocked_reason && (
         <Notice
           kind={
-            !isolatedDemo && status.blocked_reason === "scheduler_unavailable"
-              ? "note"
-              : "error"
+            status.blocked_reason === "scheduler_unavailable" ? "note" : "error"
           }
         >
           {reasons[status.blocked_reason] ?? "当前执行条件尚未满足"}
-          。历史记录不代表当前执行环境已开放。
+          {isolatedDemo && status.blocked_reason === "scheduler_unavailable"
+            ? "。隔离演示当前不再开始新的检查；已有历史仍可查看。"
+            : "。历史记录不代表当前执行环境已开放。"}
         </Notice>
       )}
       <section className="monitor-panel" aria-label="检查历史">
