@@ -1,0 +1,99 @@
+# Dedicated private management only. No Worker, Probe or Supervisor.
+services:
+  postgres:
+    image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+    environment:
+      POSTGRES_USER: devpilot_migrator
+      POSTGRES_DB: devpilot_private
+      POSTGRES_PASSWORD_FILE: /run/secrets/migration_password
+    secrets: [migration_password]
+    networks: [database]
+    volumes: [data:/var/lib/postgresql]
+    shm_size: 128m
+    mem_limit: 1g
+    pids_limit: 128
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U devpilot_migrator -d devpilot_private']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    logging: &logs
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+  migrate:
+    profiles: [tools]
+    build:
+      context: ${PRIVATE_SOURCE_DIR:-../..}
+      dockerfile: deploy/private/Dockerfile.api
+      target: migrate
+    command: [check]
+    networks: [database]
+    secrets: [migration_password, app_password]
+    volumes: [./provision.sql:/provision.sql:ro]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      postgres: {condition: service_healthy}
+    logging: *logs
+  api:
+    build:
+      context: ${PRIVATE_SOURCE_DIR:-../..}
+      dockerfile: deploy/private/Dockerfile.api
+      target: api
+    environment:
+      DATABASE_URL_FILE: /run/secrets/app_url
+      AUTH_MODE: production
+      AUTH_ORIGIN: https://${PRIVATE_HOST:?Set the private DNS name}:${PRIVATE_HTTPS_PORT:-443}
+      HTTP_ADDR: ':8080'
+      SESSION_TTL: 24h
+      LOG_LEVEL: info
+    secrets: [app_url]
+    networks: [ingress, database]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    cpus: 1
+    pids_limit: 64
+    restart: unless-stopped
+    depends_on:
+      postgres: {condition: service_healthy}
+    logging: *logs
+  web:
+    build:
+      context: ${PRIVATE_SOURCE_DIR:-../..}
+      dockerfile: deploy/private/Dockerfile.web
+    ports:
+      - '${PRIVATE_BIND_IP:?Set a specific VPN IP}:${PRIVATE_HTTPS_PORT:-443}:8443'
+    networks: [entry, ingress]
+    sysctls:
+      net.ipv4.ip_forward: '0'
+    secrets: [tls_cert, tls_key]
+    volumes: [./.runtime:/etc/nginx/private:ro]
+    read_only: true
+    tmpfs: ['/tmp:uid=101,gid=101,mode=0700']
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 64
+    restart: unless-stopped
+    depends_on: [api]
+    logging: *logs
+networks:
+  # Only the fixed HTTPS proxy has a routable ingress attachment. API and PG
+  # remain on internal networks; the proxy cannot route packets between them.
+  entry: {}
+  ingress: {internal: true}
+  database: {internal: true}
+volumes:
+  data:
+secrets:
+  migration_password: {file: ./.secrets/migration_password}
+  app_password: {file: ./.secrets/app_password}
+  app_url: {file: ./.secrets/app_url}
+  tls_cert: {file: ./.secrets/tls.crt}
+  tls_key: {file: ./.secrets/tls.key}
