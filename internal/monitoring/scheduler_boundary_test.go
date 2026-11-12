@@ -25,43 +25,68 @@ func TestFixtureSchedulerBuildBoundary(t *testing.T) {
 			t.Fatal("release execution dependency", name)
 		}
 	}
-	for _, dir := range []string{"internal/scheduler", "cmd/schedulerfixture", "cmd/probeinputfixture", "cmd/schedulerprobefixture", "internal/monitoring/handoff", "internal/monitoring/probesandbox", "internal/monitoring/targetpermit"} {
+	shared := map[string]bool{
+		"internal/scheduler/doc.go":                      true,
+		"internal/scheduler/input_linux.go":              true,
+		"internal/scheduler/recover_started_linux.go":    true,
+		"internal/scheduler/recovery_linux.go":           true,
+		"internal/scheduler/result_commit_linux.go":      true,
+		"internal/scheduler/result_linux.go":             true,
+		"internal/scheduler/retention_linux.go":          true,
+		"internal/scheduler/start_linux.go":              true,
+		"internal/scheduler/store_linux.go":              true,
+		"internal/scheduler/target_linux.go":             true,
+		"internal/scheduler/target_permit_linux.go":      true,
+		"internal/scheduler/worker_linux.go":             true,
+		"internal/scheduler/worker_closed_linux_test.go": true,
+		"internal/monitoring/handoff/wire_linux.go":      true,
+		"internal/monitoring/targetpermit/pipe_linux.go": true,
+	}
+	for _, dir := range []string{"cmd/privateworker", "internal/workerruntime", "internal/scheduler", "cmd/schedulerfixture", "cmd/probeinputfixture", "cmd/schedulerprobefixture", "internal/monitoring/handoff", "internal/monitoring/probesandbox", "internal/monitoring/targetpermit"} {
 		files, err := filepath.Glob(filepath.Join("../..", dir, "*.go"))
 		if err != nil || len(files) == 0 {
 			t.Fatal("fixture boundary missing")
 		}
 		for _, file := range files {
 			b, err := os.ReadFile(file)
-			if err != nil || !strings.HasPrefix(string(b), "//go:build schedulerfixture && linux\n") {
-				t.Fatal("ordinary build can compile fixture entry", file)
+			tag := "schedulerfixture && linux"
+			if shared[filepath.ToSlash(strings.TrimPrefix(file, "../../"))] {
+				tag = "(schedulerfixture || privateworker) && linux"
+			} else if dir == "cmd/privateworker" || dir == "internal/workerruntime" {
+				tag = "privateworker && linux"
+			}
+			if err != nil || !strings.HasPrefix(string(b), "//go:build "+tag+"\n") {
+				t.Fatal("execution build boundary changed", file)
 			}
 		}
 	}
-	for _, tags := range []string{"", "schedulerfixture"} {
-		args := []string{"list", "-e", "-json"}
-		if tags != "" {
-			args = append(args, "-tags", tags)
-		}
-		args = append(args, "./cmd/schedulerfixture")
-		cmd = exec.Command("go", args...)
-		cmd.Dir = "../.."
-		cmd.Env = append(os.Environ(), "GOOS=linux", "CGO_ENABLED=0")
-		b, err = cmd.Output()
-		if err != nil {
-			t.Fatal("fixture inventory failed")
-		}
-		var pkg struct {
-			GoFiles []string
-			Error   *struct{ Err string }
-		}
-		if json.Unmarshal(b, &pkg) != nil {
-			t.Fatal("invalid inventory")
-		}
-		if tags == "" && (len(pkg.GoFiles) != 0 || pkg.Error == nil) {
-			t.Fatal("fixture command exists in ordinary Linux build")
-		}
-		if tags != "" && (len(pkg.GoFiles) == 0 || pkg.Error != nil) {
-			t.Fatal("explicit fixture build unavailable")
+	for _, entry := range []struct{ path, tag string }{{"./cmd/schedulerfixture", "schedulerfixture"}, {"./cmd/privateworker", "privateworker"}} {
+		for _, tags := range []string{"", "schedulerfixture", "privateworker"} {
+			args := []string{"list", "-e", "-json"}
+			if tags != "" {
+				args = append(args, "-tags", tags)
+			}
+			args = append(args, entry.path)
+			cmd = exec.Command("go", args...)
+			cmd.Dir = "../.."
+			cmd.Env = append(os.Environ(), "GOOS=linux", "CGO_ENABLED=0")
+			b, err = cmd.Output()
+			if err != nil {
+				t.Fatal("fixture inventory failed")
+			}
+			var pkg struct {
+				GoFiles []string
+				Error   *struct{ Err string }
+			}
+			if json.Unmarshal(b, &pkg) != nil {
+				t.Fatal("invalid inventory")
+			}
+			if tags != entry.tag && (len(pkg.GoFiles) != 0 || pkg.Error == nil) {
+				t.Fatal("command exists without its explicit Linux build tag", entry.path, tags)
+			}
+			if tags == entry.tag && (len(pkg.GoFiles) == 0 || pkg.Error != nil) {
+				t.Fatal("explicit execution build unavailable", entry.path, tags)
+			}
 		}
 	}
 }

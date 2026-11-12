@@ -10,7 +10,7 @@ CGO_ENABLED=0 go test -c -tags="$tags" -o "$PERIODIC91_TOOLS/private-worker-pg.t
 go test -tags=privateworker ./internal/scheduler ./internal/workerruntime -count=1
 go test -race -tags=privateworker ./internal/scheduler ./internal/workerruntime -count=1
 go vet -tags=privateworker ./cmd/privateworker ./internal/scheduler ./internal/workerruntime
-go test ./internal/monitoring -run 'TestDormantProductionDependencyAndSchemaBoundary|TestReleaseArtifactAndProbeTestBoundary' -count=1
+go test ./internal/monitoring -run 'TestDormantProductionDependencyAndSchemaBoundary|TestFixtureSchedulerBuildBoundary|TestReleaseArtifactAndProbeTestBoundary' -count=1
 if go list -tags=privateworker -deps ./cmd/api | grep -Eq '/internal/(scheduler|workerruntime|monitoring)(/|$)'; then
   echo 'API acquired an execution dependency' >&2; exit 1
 fi
