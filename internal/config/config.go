@@ -2,9 +2,11 @@ package config
 
 import (
 	"fmt"
+	"io"
 	"log/slog"
 	"net"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -51,6 +53,21 @@ func Load(getenv func(string) string) (Config, error) {
 	}
 
 	dsn := getenv("DATABASE_URL")
+	if file := getenv("DATABASE_URL_FILE"); file != "" {
+		if dsn != "" {
+			return Config{}, fmt.Errorf("DATABASE_URL: cannot combine with DATABASE_URL_FILE")
+		}
+		f, err := os.Open(file)
+		if err != nil {
+			return Config{}, fmt.Errorf("DATABASE_URL_FILE: cannot read secret")
+		}
+		b, err := io.ReadAll(io.LimitReader(f, 8193))
+		_ = f.Close()
+		dsn = strings.TrimSpace(string(b))
+		if err != nil || len(b) > 8192 || dsn == "" || strings.ContainsAny(dsn, "\r\n") {
+			return Config{}, fmt.Errorf("DATABASE_URL_FILE: invalid secret")
+		}
+	}
 	if dsn == "" {
 		return Config{}, fmt.Errorf("DATABASE_URL: required")
 	}
