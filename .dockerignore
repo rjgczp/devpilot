@@ -4,6 +4,8 @@
 !cmd
 !cmd/api
 !cmd/api/**
+!cmd/privateworker
+!cmd/privateworker/**
 !internal
 !internal/**
 !migrations
@@ -21,3 +23,5 @@
 !deploy/private/Dockerfile*
 !deploy/private/migrate.sh
 !deploy/private/provision.sql
+!deploy/privateworker
+!deploy/privateworker/Dockerfile

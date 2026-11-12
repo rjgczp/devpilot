@@ -187,6 +187,7 @@ func TestPeriodicWorkerProcess(t *testing.T) {
 	}
 	periodicEmit(t, "ready", map[string]any{"pid": os.Getpid(), "backend": backend, "login": login})
 	store := scheduler.Store{DB: pool, Incarnation: boot.Incarnation}
+	worker := scheduler.NewFixtureWorker(store)
 	var claimed periodicTick
 	for {
 		if !pipe.in.Scan() {
@@ -197,7 +198,7 @@ func TestPeriodicWorkerProcess(t *testing.T) {
 		switch cmd.Op {
 		case "tick":
 			v := periodicTick{PID: os.Getpid(), Backend: backend, Login: login}
-			hs, err := store.Candidates(ctx, "")
+			hs, err := worker.Candidates(ctx, "")
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -206,7 +207,7 @@ func TestPeriodicWorkerProcess(t *testing.T) {
 			}
 			if len(hs) == 1 {
 				v.Hint = hs[0]
-				lease, err := store.Claim(ctx, hs[0])
+				lease, err := worker.Claim(ctx, hs[0])
 				if err == nil {
 					v.Lease = &lease
 					claimed = v
@@ -221,7 +222,7 @@ func TestPeriodicWorkerProcess(t *testing.T) {
 			if claimed.Lease == nil || exec.Line.RunID != claimed.Lease.RunID {
 				t.Fatal("execution without confirmed Claim")
 			}
-			periodicExecute(t, pipe, store, claimed, exec.Line, boot.IP)
+			periodicExecute(t, pipe, store, worker, claimed, exec.Line, boot.IP)
 			claimed = periodicTick{}
 			periodicEmit(t, "done", nil)
 		case "stop":
@@ -240,9 +241,9 @@ func periodicEmit(t *testing.T, op string, payload any) {
 	}
 	fmt.Println("PERIODIC " + string(raw))
 }
-func periodicExecute(t *testing.T, p *periodicPipe, store scheduler.Store, v periodicTick, line handoff.Lineage, address string) {
+func periodicExecute(t *testing.T, p *periodicPipe, store scheduler.Store, worker *scheduler.Worker, v periodicTick, line handoff.Lineage, address string) {
 	ctx := context.Background()
-	snapshot, e := store.Start(ctx, v.Hint, *v.Lease)
+	snapshot, e := worker.Start(ctx, v.Hint, *v.Lease)
 	if e != nil {
 		t.Fatal("confirmed Start required", e)
 	}
@@ -303,10 +304,10 @@ func periodicExecute(t *testing.T, p *periodicPipe, store scheduler.Store, v per
 	if e != nil {
 		t.Fatal(e)
 	}
-	if e = store.CommitResult(ctx, commit); e != nil {
+	if e = worker.CommitResult(ctx, commit); e != nil {
 		t.Fatal("Result Commit not confirmed", e)
 	}
-	if ok, e := store.ReconcileResult(ctx, commit); e != nil || !ok {
+	if ok, e := worker.ReconcileResult(ctx, commit); e != nil || !ok {
 		t.Fatal("fixed Result identity not observed", e)
 	}
 }
@@ -334,9 +335,16 @@ func periodicPrivateLogin(t *testing.T, admin, old *pgxpool.Pool) *pgxpool.Pool 
 	return pool
 }
 
-func TestPeriodicSchedulerPG(t *testing.T) {
+func TestPeriodicSchedulerPG(t *testing.T) { runPeriodicSchedulerPG(t, false) }
+
+func runPeriodicSchedulerPG(t *testing.T, privateRuntime bool) {
 	db := budgetDB(t)
 	ctx := context.Background()
+	if privateRuntime {
+		if _, err := db.Exec(ctx, `REVOKE TEMP ON DATABASE devpilot_registration_test FROM PUBLIC`); err != nil {
+			t.Fatal(err)
+		}
+	}
 	w1, i1 := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
 	w2, i2 := schedulerWorkerLogin(t, db, "scheduler_claim_worker2")
 	s, si := schedulerSupervisorLogin(t, db)
@@ -474,6 +482,28 @@ func TestPeriodicSchedulerPG(t *testing.T) {
 				}()
 				answer.Event = "input_committed"
 			case "finish":
+				if privateRuntime && cycle == 0 {
+					var before, after string
+					const state = `SELECT jsonb_build_object('run',to_jsonb(r),'reservation',(SELECT to_jsonb(q) FROM scheduler_reservations q WHERE q.run_id=r.run_id),'budgets',(SELECT jsonb_agg(to_jsonb(b) ORDER BY kind,budget_key) FROM scheduler_budget_state b))::text FROM monitor_runs r WHERE r.run_id=$1`
+					if err := db.QueryRow(ctx, state, line.RunID).Scan(&before); err != nil {
+						t.Fatal(err)
+					}
+					if _, err := supervisorfixture.VerifyCommittedStopBundle([]byte(`{"physical_release":true}`), []byte(catalog.PublicKey), []byte(`{}`), line); err == nil {
+						t.Fatal("untrusted stop assertion accepted")
+					}
+					if _, err := (supervisorfixture.Settlement{DB: s, Incarnation: si}).Accept(ctx, supervisorfixture.VerifiedStop{}); err == nil {
+						t.Fatal("unverified stop released resources")
+					}
+					_, err := []*pgxpool.Pool{w1, w2}[winner].Exec(ctx, `UPDATE monitor_runs SET physical_release_confirmed_at=clock_timestamp() WHERE run_id=$1`, line.RunID)
+					var denied *pgconn.PgError
+					if !errors.As(err, &denied) || denied.Code != "42501" {
+						t.Fatal("Worker acquired physical release authority")
+					}
+					p.exchange("worker-private-runtime", boots[winner])
+					if err := db.QueryRow(ctx, state, line.RunID).Scan(&after); err != nil || before != after {
+						t.Fatal("closed Worker exit/restart changed Run or reservation")
+					}
+				}
 				_, e = c.Exec(ctx, quarantinePhysicalSQL, ci, line.WorkspaceID, line.ProjectID, line.MonitorID, line.RunID, line.FencingToken)
 				if e != nil {
 					t.Fatal(e)

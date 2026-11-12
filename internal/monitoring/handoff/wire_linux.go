@@ -1,4 +1,4 @@
-//go:build schedulerfixture && linux
+//go:build (schedulerfixture || privateworker) && linux
 
 // Package handoff is a bounded anonymous-pipe protocol, with no execution entry.
 package handoff

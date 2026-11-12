@@ -1,0 +1,16 @@
+-- INACTIVE review candidate. Not a Goose migration; no startup script applies it.
+-- New dedicated DB only; administrator must separately approve/apply offline.
+-- No new gate value, function, field or grant to an existing runtime role.
+BEGIN;
+CREATE ROLE devpilot_private_worker LOGIN INHERIT NOSUPERUSER NOCREATEDB
+  NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+-- No password in source/argv. Authentication must be provisioned out-of-band.
+GRANT CONNECT ON DATABASE devpilot_private TO devpilot_private_worker;
+GRANT devpilot_scheduler_worker TO devpilot_private_worker;
+ALTER ROLE devpilot_private_worker SET statement_timeout='2s';
+ALTER ROLE devpilot_private_worker SET transaction_timeout='2s';
+ALTER ROLE devpilot_private_worker SET lock_timeout='250ms';
+COMMIT;
+-- Reuses existing Worker functions only. No API/Controller/Supervisor/owner
+-- membership, direct DML or new EXECUTE grant. Do NOT open fixture/private gate.
+-- Trusted incarnation/egress provisioning and a private gate are future review.

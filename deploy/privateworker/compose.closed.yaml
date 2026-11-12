@@ -1,0 +1,29 @@
+# No DB provisioning/migration, gate update, Probe or management socket.
+services:
+  worker:
+    image: devpilot-privateworker:local
+    build:
+      context: ../..
+      dockerfile: deploy/privateworker/Dockerfile
+    command: [--database-url-file, /run/secrets/worker_url, --incarnation, '${WORKER_INCARNATION:?Set an offline assigned UUID}']
+    secrets: [worker_url]
+    networks: [control]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    cpus: 1
+    pids_limit: 128
+    ulimits:
+      nofile: {soft: 256, hard: 256}
+    restart: 'no'
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '2'}
+networks:
+  control:
+    external: true
+    name: ${WORKER_CONTROL_NETWORK:?Use an existing INTERNAL PG-only network}
+secrets:
+  worker_url:
+    file: ${WORKER_DATABASE_URL_FILE:?Restricted Worker DSN file; not API/admin identity}

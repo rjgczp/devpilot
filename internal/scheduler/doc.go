@@ -1,5 +1,5 @@
-//go:build schedulerfixture && linux
+//go:build (schedulerfixture || privateworker) && linux
 
-// Package scheduler implements the isolated Linux fixture controller. It is
-// excluded from ordinary builds. It must never be imported by the HTTP API.
+// Package scheduler contains the shared bounded Linux scheduling protocol.
+// Only explicit schedulerfixture/privateworker builds include it. It must never be imported by the HTTP API.
 package scheduler
