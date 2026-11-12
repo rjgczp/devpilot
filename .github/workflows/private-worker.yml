@@ -1,0 +1,27 @@
+name: Private Worker foundation
+on:
+  pull_request:
+    branches: [main]
+    paths: ['cmd/privateworker/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'internal/monitoring/handoff/**', 'internal/monitoring/targetpermit/**', 'tests/privateworker/**', 'tests/integration/scheduler_periodic91_test.go', 'tests/integration/private_worker_runtime_test.go', 'tests/scheduler/periodic91.py', 'scripts/private-worker.sh', 'deploy/privateworker/**', '.dockerignore', '.github/workflows/private-worker.yml']
+permissions:
+  contents: read
+jobs:
+  private-worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Closed private Worker and existing isolated lifecycle (no internet targets)
+        run: sh tests/privateworker/run.sh "$RUNNER_TEMP/private-worker"
+      - name: Standalone Linux image and closed deployment configuration
+        run: |
+          sh scripts/private-worker.sh build
+          WORKER_CONTROL_NETWORK=not-created WORKER_INCARNATION=00000000-0000-4000-8000-000000000001 WORKER_DATABASE_URL_FILE=/not-mounted docker compose -f deploy/privateworker/compose.closed.yaml config --quiet
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: private-worker
+          path: ${{ runner.temp }}/private-worker/
+          if-no-files-found: error

@@ -191,7 +191,7 @@ class PeriodicHarness(RecoveryHarness):
     def pg(self, binary, mode):
         self.pg_binary = binary
         self.setup_control()
-        driver_cmd = self.control_command(self.prefix+'-coordinator', binary.name, 'TestPeriodicSchedulerPG|TestPeriodicMigrationRoundTripPG|TestBudgetCleanupMigrationLifecycle', source=True)
+        driver_cmd = self.control_command(self.prefix+'-coordinator', binary.name, getattr(self, 'pg_test_pattern', 'TestPeriodicSchedulerPG|TestPeriodicMigrationRoundTripPG|TestBudgetCleanupMigrationLifecycle'), source=True)
         driver = subprocess.Popen(driver_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         self.processes.append(driver)
         log = []
@@ -226,9 +226,9 @@ class PeriodicHarness(RecoveryHarness):
             (self.dest/'pg-driver.log').write_bytes(b''.join(log))
             self.record('pg-driver-command', dict(command=driver_cmd, exit_code=status, binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest()))
             self.record('worker-protocol', self.worker_log)
-            (self.dest/'postgres.log').write_bytes(subprocess.check_output(['docker', 'logs', cid], stderr=subprocess.STDOUT))
+            (self.dest/'postgres.log').write_bytes(subprocess.check_output(['docker', 'logs', self.pg_id], stderr=subprocess.STDOUT))
             sql = "SELECT jsonb_build_object('at',clock_timestamp(),'runs',(SELECT jsonb_agg(to_jsonb(r)) FROM monitor_runs r),'schedules',(SELECT jsonb_agg(to_jsonb(s)) FROM monitor_schedules s),'reservations',(SELECT jsonb_agg(to_jsonb(q)) FROM scheduler_reservations q))"
-            r = subprocess.run(['docker', 'exec', cid, 'psql', '-U', 'devpilot_fixture', '-d', 'devpilot_registration_test', '-At', '-c', sql], capture_output=True)
+            r = subprocess.run(['docker', 'exec', self.pg_id, 'psql', '-U', 'devpilot_fixture', '-d', 'devpilot_registration_test', '-At', '-c', sql], capture_output=True)
             (self.dest/'postgres-final-ledger.log').write_bytes(r.stdout+r.stderr)
 
     def setup_control(self):
