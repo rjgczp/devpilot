@@ -1,0 +1,23 @@
+name: Private HTTPS boundary
+on:
+  pull_request:
+    branches: [main]
+    paths: ['cmd/privateprobe/**', 'cmd/privatenetwork/**', 'internal/probenetwork/**', 'internal/supervisorfixture/**', 'internal/monitoring/**', 'tests/privateprobe/**', 'tests/scheduler/joint_fixture.py', 'tests/scheduler/network_fixture.py', 'deploy/privateprobe/**', '.github/workflows/private-probe.yml']
+permissions:
+  contents: read
+jobs:
+  private-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Private binaries, default deny and guarded PG18 lifecycle
+        run: sh tests/privateprobe/run.sh "$RUNNER_TEMP/private-probe"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: private-probe
+          path: ${{ runner.temp }}/private-probe/
+          if-no-files-found: error

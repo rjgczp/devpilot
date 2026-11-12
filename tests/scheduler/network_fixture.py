@@ -103,7 +103,7 @@ class Harness:
         proof = json.loads(self.run(['docker', 'inspect', cid]))[0]
         assert not proof['HostConfig']['Privileged'] and not proof['HostConfig']['PortBindings']
         assert [x.removeprefix('CAP_') for x in (proof['HostConfig']['CapAdd'] or [])] == (['NET_ADMIN'] if admin else [])
-        assert not any('docker.sock' in m.get('Source', '') or 'devpilot' in m.get('Source', '') and not m.get('Source', '').endswith('networksupervisorfixture') for m in proof['Mounts'])
+        assert not any('docker.sock' in m.get('Source', '') or 'devpilot' in m.get('Source', '') and Path(m.get('Source','')).resolve()!=self.binary.resolve() for m in proof['Mounts'])
         self.record(suffix+'-container', proof)
         return cid
 
@@ -359,6 +359,7 @@ class Instance:
         for role, cid in (('gateway', self.gateway), ('run', self.run)):
             fp = json.loads(self.h.exec(cid, '/usr/local/bin/networksupervisorfixture', 'fingerprint'))
             cfg = dict(lineage=self.identity, role=role, **fp, probe4=self.probe4, probe6=self.probe6, host='a.fixture.example.com', hard_deadline=until)
+            if hasattr(self.h, 'network_config'):cfg=self.h.network_config(cfg)
             proc = subprocess.Popen(['docker', 'exec', '-i', cid, '/usr/local/bin/networksupervisorfixture'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                     stderr=open(self.h.dest/(self.name+'-'+role+'.stderr'), 'wb'))
             self.h.processes.append(proc)

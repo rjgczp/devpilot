@@ -50,7 +50,9 @@ class JointLifecycle(Lifecycle):
   # Exactly the existing physical stop helper definitions, not a substitute
   # kill/reap implementation. The new source only adapts launch/pipe plumbing.
   definitions=(HERE/'termination_init.py').read_text().split('assert os.getpid()==1')[0]
-  init=definitions+'\nBOOTSTRAP_SOURCE='+repr((HERE/'joint_bootstrap.py').read_text())+'\n'+(HERE/'joint_init.py').read_text()
+  bootstrap=(HERE/'joint_bootstrap.py').read_text(); lifecycle=(HERE/'joint_init.py').read_text()
+  if hasattr(h,'private_sources'):bootstrap,lifecycle=h.private_sources(bootstrap,lifecycle)
+  init=definitions+'\nBOOTSTRAP_SOURCE='+repr(bootstrap)+'\n'+lifecycle
   cert=h.dest/'public-fixture-ca.crt';cert.write_text(h.certificate)
   cmd=['docker','run','--rm','-i','--name',h.prefix+'-'+instance.name+'-joint','--label',LABEL+'='+h.prefix,
        '--network','container:'+instance.run,'--cap-drop','ALL','--cap-add','KILL','--cap-add','SETUID','--cap-add','SETGID','--cap-add','SETPCAP',

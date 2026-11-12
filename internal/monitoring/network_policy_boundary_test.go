@@ -9,7 +9,7 @@ import (
 )
 
 func TestNetworkSupervisorFixtureIsAbsentFromRelease(t *testing.T) {
-	for _, path := range []string{"./cmd/networksupervisorfixture", "./internal/supervisorfixture"} {
+	for _, path := range []string{"./cmd/networksupervisorfixture", "./internal/supervisorfixture", "./internal/probenetwork", "./cmd/privateprobe", "./cmd/privatenetwork"} {
 		cmd := exec.Command("go", "list", "-e", "-json", path)
 		cmd.Dir = "../.."
 		cmd.Env = append(os.Environ(), "GOOS=linux", "CGO_ENABLED=0", "EGRESS_APPROVED=1", "DEVPILOT_SCHEDULER_ENABLED=true")
@@ -32,7 +32,7 @@ func TestNetworkSupervisorFixtureIsAbsentFromRelease(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	if strings.Contains(string(out), "devpilot/internal/supervisorfixture") {
+	if strings.Contains(string(out), "devpilot/internal/supervisorfixture") || strings.Contains(string(out), "devpilot/internal/probenetwork") {
 		t.Fatal("API gained network management dependency")
 	}
 }

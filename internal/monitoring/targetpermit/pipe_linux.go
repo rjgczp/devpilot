@@ -1,4 +1,4 @@
-//go:build (schedulerfixture || privateworker) && linux
+//go:build (schedulerfixture || privateworker || privateprobe) && linux
 
 // Package targetpermit carries one bounded, credential-free request/reply over
 // two trusted anonymous pipes. It installs no rules and has no networking entry.

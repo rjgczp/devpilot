@@ -1,8 +1,8 @@
-//go:build schedulerfixture && linux
+//go:build (schedulerfixture || privateprobe) && linux
 
-// Package supervisorfixture manages only the reviewed, no-upstream Linux test
-// topology. It is excluded from ordinary builds and is not a production service.
-package supervisorfixture
+// Package probenetwork contains the bounded default-deny namespace policy.
+// Ordinary API/Worker builds exclude all network administration.
+package probenetwork
 
 import (
 	"bytes"
@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/rjgczp/devpilot/internal/credentials"
+	"github.com/rjgczp/devpilot/internal/monitoring"
 	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
 	"github.com/rjgczp/devpilot/internal/monitoring/targetpermit"
 )
@@ -56,6 +57,8 @@ const kernelCommandBudget = 2 * time.Second
 // attests that there is no host interface, bridge, or published port.
 // Route hashes bind the actual allocated namespace, not an environment flag.
 type Config struct {
+	Target       netip.Addr      `json:"target,omitempty"`
+	Denied       []netip.Prefix  `json:"denied,omitempty"`
 	Lineage      handoff.Lineage `json:"lineage"`
 	Role         string          `json:"role"`
 	Namespace    string          `json:"namespace"`
@@ -174,11 +177,14 @@ func Fingerprints(ctx context.Context) (string, string, error) {
 }
 
 func validConfig(c Config, now time.Time) bool {
+	return c.Host == "a.fixture.example.com" && validBaseConfig(c, now)
+}
+func validBaseConfig(c Config, now time.Time) bool {
 	return c.Lineage.Valid() && (c.Role == "run" || c.Role == "gateway") &&
 		strings.HasPrefix(c.Namespace, "net:[") && strings.HasSuffix(c.Namespace, "]") &&
 		len(c.RouteHash) == 64 && len(c.AddressHash) == 64 && c.Probe4.Is4() && c.Probe6.Is6() && !c.Probe6.Is4In6() &&
 		netip.MustParsePrefix("198.19.64.0/23").Contains(c.Probe4) && netip.MustParsePrefix("fd64:64::/32").Contains(c.Probe6) &&
-		c.Host == "a.fixture.example.com" && c.HardDeadline.After(now) && !c.HardDeadline.After(now.Add(35*time.Second))
+		c.HardDeadline.After(now) && !c.HardDeadline.After(now.Add(35*time.Second))
 }
 
 // Only these pre-registered addresses exist on the isolated receiver wire.
@@ -258,13 +264,14 @@ type Policy struct {
 	c        Config
 	ready    Ready
 	hardMono time.Time
+	private  bool
 	used     atomic.Bool
 	target   targetpermit.Request
 }
 
-func Boot(ctx context.Context, c Config) (*Policy, error) {
+func boot(ctx context.Context, c Config, private bool) (*Policy, error) {
 	now := time.Now()
-	if !validConfig(c, now) || os.Geteuid() != 0 {
+	if !(private && validPrivateConfig(c, now) || !private && validConfig(c, now)) || os.Geteuid() != 0 {
 		return nil, ErrDenied
 	}
 	status, e := os.ReadFile("/proc/self/status")
@@ -289,7 +296,8 @@ func Boot(ctx context.Context, c Config) (*Policy, error) {
 	if e != nil || ns != c.Namespace {
 		return nil, ErrDenied
 	}
-	p := &Policy{c: c, hardMono: now.Add(c.HardDeadline.Sub(now))}
+	c.Denied = append([]netip.Prefix(nil), c.Denied...)
+	p := &Policy{c: c, private: private, hardMono: now.Add(c.HardDeadline.Sub(now))}
 	if p.topology(ctx) != nil {
 		return nil, ErrDenied
 	}
@@ -531,7 +539,7 @@ func (p *Policy) Install(ctx context.Context, x Install) (targetpermit.Confirmat
 		return targetpermit.Confirmation{}, errConsumed
 	}
 	r := x.Request
-	if !r.Valid() || r.Lineage != p.c.Lineage || r.Host != p.c.Host || !fixtureTarget(r.IP) || r.Deadline.After(p.c.HardDeadline) || !p.hardMono.After(time.Now()) ||
+	if !r.Valid() || r.Lineage != p.c.Lineage || r.Host != p.c.Host || !p.allowedTarget(r) || r.Deadline.After(p.c.HardDeadline) || !p.hardMono.After(time.Now()) ||
 		x.CommittedAt.IsZero() || x.PermitDeadline.Before(r.Deadline) || !validPermitID(x.PermitID) || ctx.Err() != nil {
 		return targetpermit.Confirmation{}, errBinding
 	}
@@ -649,3 +657,29 @@ func uniqueJSON(d *json.Decoder, depth int) error {
 	}
 	return nil
 }
+
+// BootPrivate never accepts a fixture gate/flag. A trusted allocator must bind
+// exactly one HTTPS host/literal and explicit host/control exclusions offline.
+func BootPrivate(ctx context.Context, c Config) (*Policy, error) { return boot(ctx, c, true) }
+func validPrivateConfig(c Config, now time.Time) bool {
+	return validBaseConfig(c, now) && len(c.Denied) > 0 && monitoring.PrivateTargetAllowed(c.Host, c.Target, c.Denied)
+}
+func (p *Policy) allowedTarget(r targetpermit.Request) bool {
+	if !p.private {
+		return fixtureTarget(r.IP)
+	}
+	return r.Scheme == "https" && r.Port == 443 && r.IP == p.c.Target && monitoring.PrivateTargetAllowed(r.Host, r.IP, p.c.Denied)
+}
+
+// Close removes network permission only. It never releases a DB reservation or
+// creates a physical-stop receipt. Kernel expiry also survives SIGKILL.
+func (p *Policy) Close(ctx context.Context) error {
+	if p == nil {
+		return ErrDenied
+	}
+	_, e := command(ctx, "flush set inet dp_run target4\nflush set inet dp_run target6\nflush set inet dp_run resolver4\nflush set inet dp_run resolver6\n", "/usr/sbin/nft", "-f", "-")
+	return e
+}
+
+// UniqueJSON is the existing strict proof decoder, shared without relaxing it.
+func UniqueJSON(d *json.Decoder, depth int) error { return uniqueJSON(d, depth) }

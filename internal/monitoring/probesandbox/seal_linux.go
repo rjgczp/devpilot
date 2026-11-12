@@ -1,4 +1,4 @@
-//go:build schedulerfixture && linux
+//go:build (schedulerfixture || privateprobe) && linux
 
 // Package probesandbox seals offline and independently default-denied fixture
 // processes. It grants no destination permission or administrative lifecycle.
@@ -68,13 +68,15 @@ func statusOK(path string) bool {
 	}
 	return fields["NoNewPrivs"] == "1" && fields["Seccomp"] == "2"
 }
-func Seal() (Proof, error) { return seal(false) }
+func Seal() (Proof, error) { return seal(false, 4) }
 
 // SealNetwork is only for the independently default-denied fixture namespace.
 // It permits TCP sockets, never UDP/raw/UNIX or administration. Seal stays offline.
-func SealNetwork() (Proof, error) { return seal(true) }
+func SealNetwork() (Proof, error) { return seal(true, 6) }
 
-func seal(network bool) (Proof, error) {
+func SealPrivateNetwork() (Proof, error) { return seal(true, 7) }
+
+func seal(network bool, inherited int) (Proof, error) {
 	// Enforce fixed inherited identity; never silently downgrade a root Probe.
 	if os.Getuid() != 65534 || os.Geteuid() != 65534 || os.Getgid() != 65534 {
 		return Proof{}, ErrBoundary
@@ -145,7 +147,7 @@ func seal(network bool) (Proof, error) {
 		if err != nil {
 			return Proof{}, ErrBoundary
 		}
-		if fd <= 4 || network && fd <= 6 {
+		if fd <= inherited {
 			continue
 		}
 		target, err := os.Readlink("/proc/self/fd/" + entry.Name())
