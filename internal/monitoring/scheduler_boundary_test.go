@@ -59,7 +59,7 @@ func TestFixtureSchedulerBuildBoundary(t *testing.T) {
 				tag = "(schedulerfixture || privateprobe) && linux"
 			} else if dir == "cmd/privateprobe" || dir == "cmd/privatenetwork" {
 				tag = "privateprobe && linux"
-			} else if dir == "cmd/privateworker" || dir == "internal/workerruntime" {
+			} else if dir == "cmd/privateworker" || dir == "internal/workerruntime" || strings.HasPrefix(filepath.Base(file), "worker_private_") {
 				tag = "privateworker && linux"
 			}
 			if err != nil || !strings.HasPrefix(string(b), "//go:build "+tag+"\n") {

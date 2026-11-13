@@ -5,7 +5,8 @@ import { resolve } from "node:path";
 test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles -> live history", async ({
   page,
 }) => {
-  const state = resolve(process.cwd(), "..", ".devpilot-isolated-demo");
+  const privateLoop = process.env.DEVPILOT_PRIVATE_LOOP === "1";
+  const state = resolve(process.cwd(), "..", privateLoop ? ".devpilot-private-loop" : ".devpilot-isolated-demo");
   const credentialName = readdirSync(state).find((n) =>
     /^credentials-[0-9]+\.json$/.test(n),
   );
@@ -30,10 +31,10 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
   await page.getByLabel("邮箱", { exact: true }).fill(credentials.email);
   await page.getByLabel("密码", { exact: true }).fill(credentials.password);
   await page.getByRole("button", { name: "登录", exact: true }).click();
-  await expect(page.getByText("本地演示 · 无公网出口")).toBeVisible();
+  await expect(page.getByText(privateLoop ? "私人隔离闭环 · 无公网出口" : "本地演示 · 无公网出口")).toBeVisible();
   const row = page
     .getByRole("row")
-    .filter({ hasText: "本地演示 · 隔离 HTTPS fixture" });
+    .filter({ hasText: privateLoop ? "私人隔离闭环 · HTTPS fixture" : "本地演示 · 隔离 HTTPS fixture" });
   await expect(row).toContainText("未授权");
   await expect(row.getByRole("button", { name: /编辑/ })).toBeDisabled();
   const listing = await page.request.get("/api/v1/workspaces");
@@ -97,6 +98,15 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
       intervals: [2000],
     })
     .toBe(3);
+  // History correctly includes started Runs. A third row is not a completed
+  // Result; wait for settlement without replacing running/unknown with success.
+  await expect
+    .poll(async () => {
+      const response = await page.request.get(`${path}/${monitor.id}/history`);
+      expect(response.status()).toBe(200);
+      return (await response.json()).data.map((r: { status: string }) => r.status);
+    }, { timeout: 15000, intervals: [500] })
+    .toEqual(["success", "success", "success"]);
   const response = await page.request.get(`${path}/${monitor.id}/history`);
   const raw = await response.text();
   const history = JSON.parse(raw);

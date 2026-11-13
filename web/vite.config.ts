@@ -2,9 +2,11 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
 const demo = process.env.DEVPILOT_ISOLATED_DEMO === "1";
-const port = demo ? 5174 : 5173;
+const privateLoop = process.env.DEVPILOT_PRIVATE_LOOP === "1";
+const port = demo || privateLoop ? 5174 : 5173;
 export default defineConfig({
   define: {
+    "import.meta.env.VITE_PRIVATE_LOOP": JSON.stringify(privateLoop ? "true" : "false"),
     "import.meta.env.VITE_ISOLATED_DEMO": JSON.stringify(
       demo ? "true" : "false",
     ),
@@ -20,6 +22,7 @@ export default defineConfig({
         ".env.*",
         "*.{crt,pem}",
         "**/.devpilot-isolated-demo/**",
+        "**/.devpilot-private-loop/**",
         "**/.devpilot-dashboard/**",
         "**/.devpilot-dashboard.env",
       ],

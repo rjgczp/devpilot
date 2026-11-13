@@ -1,0 +1,67 @@
+name: Private HTTP loop
+on:
+  pull_request:
+    branches: [main]
+    paths: ['cmd/privateworker/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'tests/privateloop/**', 'tests/integration/private_loop_test.go', 'deploy/privateloop/**', 'scripts/dev-private-loop.sh', 'web/**', '.github/workflows/private-loop.yml']
+permissions:
+  contents: read
+jobs:
+  private-loop-pg18:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build and targeted UI tests
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+          python3 tests/privateloop/build_candidate.py --check
+          npm ci --prefix web
+          npm run --prefix web build
+          npm run --prefix web test
+          cd web && npx playwright install --with-deps chromium
+      - name: Actual private Gate, two native Workers, three60s cycles and directed refusals
+        run: sh tests/privateloop/run.sh "$RUNNER_TEMP/private-loop"
+      - name: Start interactive private loop (no published control ports)
+        run: |
+          DEVPILOT_PRIVATE_LOOP_EVIDENCE="$RUNNER_TEMP/demo-evidence" ./scripts/mvp.sh private > "$RUNNER_TEMP/demo.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/demo.pid"
+          python3 - <<'PY'
+          import os,pathlib,time
+          for _ in range(360):
+            if list(pathlib.Path('.devpilot-private-loop').glob('credentials-*.json')):break
+            pid=int((pathlib.Path(os.environ['RUNNER_TEMP'])/'demo.pid').read_text())
+            try:os.kill(pid,0)
+            except ProcessLookupError:raise SystemExit('demo process exited before ready; inspect original log')
+            time.sleep(1)
+          else:raise SystemExit('demo setup exceeded360s; inspect original log')
+          PY
+      - name: Owner browser authorization and three real60s cycles
+        run: DEVPILOT_PRIVATE_LOOP=1 npm run --prefix web test:demo
+      - name: Stop owned demo
+        if: always()
+        run: |
+          if test -f "$RUNNER_TEMP/demo.pid"; then
+            pid=$(cat "$RUNNER_TEMP/demo.pid")
+            for i in $(seq 1 30); do kill -0 "$pid" 2>/dev/null || break; sleep 1; done
+            kill -TERM "$pid" 2>/dev/null || true
+            for i in $(seq 1 20); do kill -0 "$pid" 2>/dev/null || break; sleep 1; done
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: private-loop-evidence
+          path: |
+            ${{ runner.temp }}/demo-evidence/
+            ${{ runner.temp }}/private-loop/
+            ${{ runner.temp }}/demo.log
+            web/test-results/
+          if-no-files-found: error

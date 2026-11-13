@@ -218,9 +218,10 @@ class PeriodicHarness(RecoveryHarness):
                     answer = self.pg_operation(None, op, payload, None, mode)
                 self.send(driver, answer)
             status = driver.wait(timeout=5)
-            assert status == 0 and len(self.completed) == 3, 'actual three-cycle PG18/Linux verification failed'
-            assert len([x for x in self.receiver_events if x['kind']=='get']) == 3
-            self.record('result', dict(task='9.1', exit_code=0, cycles=3, workers=2, real_interval_seconds=60,
+            expected_cycles=getattr(self,'expected_cycles',3)
+            assert status == 0 and len(self.completed) == expected_cycles, 'actual bounded PG18/Linux verification failed'
+            assert len([x for x in self.receiver_events if x['kind']=='get']) == getattr(self,'expected_gets',3)
+            self.record('result', dict(task=getattr(self,'task_name','9.1'), exit_code=0, cycles=expected_cycles, workers=2, real_interval_seconds=60,
                                       original_kernel=True, production_execution=False, storage_capacity_verified=False))
         finally:
             (self.dest/'pg-driver.log').write_bytes(b''.join(log))

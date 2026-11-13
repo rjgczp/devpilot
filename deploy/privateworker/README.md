@@ -1,17 +1,20 @@
-# Private Worker foundation — always closed
+# Private Worker foundation — closed by default
 
 This is a separate Linux `cmd/privateworker` program, not a renamed fixture/test
 binary. The existing Store, Owner/Start/Fence/Result SQL, single-use input codec,
 target permit and result types are shared by explicit `privateworker` and
 `schedulerfixture` builds. Ordinary API builds still import neither execution
-package. Only the fixture build has `NewFixtureWorker`; the private entry can
-construct only `NewClosedWorker`. Database `fixture` gate and execution-looking
+package. Only the fixture build has `NewFixtureWorker`; the private entry defaults to
+`NewClosedWorker`. The explicitly gated isolated path is documented in
+[the private loop](../privateloop/README.md). Database `fixture` gate and execution-looking
 environment flags cannot turn it into an executor.
 
-This round implements closed startup, real effective-LOGIN validation and safe
+The default path implements closed startup, real effective-LOGIN validation and safe
 shutdown/restart, plus a common one-Claim/one-Start Worker driver used by the old
-fixture. **It cannot poll/Claim/Start jobs or launch a Probe in private mode.**
-There is no enable flag, privileged socket, public route manager, fake release,
+fixture. It cannot poll/Claim/Start jobs without the separately approved private Gate
+and inherited Supervisor IPC (`--private-isolated`); environment flags or the
+fixture Gate cannot open that path. There is no privileged socket, public route
+manager, fake release,
 automatic Claim/Start retry or reconstruction of a started Run. A validated
 frozen Result can still use the original commit/reconcile path while admission
 is closed; SQL continues to require independent physical release first.
@@ -73,7 +76,7 @@ PUBLIC TEMP/CREATE restrictions must remain. Login authentication and a future
 trusted incarnation are separately provisioned; no password is embedded here.
 The API role cannot be reused because it lacks Worker functions and has business
 data access a Worker must not hold. No existing role gains a privilege; no new
-function EXECUTE, field, table, index or gate value is proposed in this round.
+function EXECUTE, field, table, index or gate value is proposed by this PR21 LOGIN candidate.
 
 The candidate has **not** been applied, including in tests. Integration reuses
 the original fixture Worker LOGINs/ACLs, tightening only disposable PUBLIC TEMP.
@@ -102,7 +105,8 @@ real60s cycles complete with minimal Results/history projection/due checks.
 The original fixture entry is also run in normal mode. There is no public
 target, new grant, changed timeout, historical full matrix or capacity claim.
 
-Runtime data-plane execution remains unavailable. Future public egress,
+Real Internet execution remains unavailable. The isolated private lifecycle is
+documented separately above. Future public egress,
 Supervisor activation/stop proof and private Gate review remain P0; continuous
 retention/storage admission remains P1; extreme/load/storage stress is deferred.
 OpenSpec stays37/47. No deployment, production migration or Archive is performed.

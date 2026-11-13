@@ -19,6 +19,7 @@ type Worker struct {
 	store          Store
 	mu             sync.Mutex
 	admission      bool
+	privateMode    bool
 	hint           Hint
 	lease          *Lease
 	startAttempted bool
@@ -34,7 +35,7 @@ func NewClosedWorker(store Store) *Worker { return &Worker{store: store} }
 func (w *Worker) Candidates(ctx context.Context, after string) ([]Hint, error) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	if !w.admission {
+	if !w.allowed(ctx) {
 		return nil, ErrClosed
 	}
 	if w.lease != nil || w.uncertain {
@@ -46,7 +47,7 @@ func (w *Worker) Candidates(ctx context.Context, after string) ([]Hint, error) {
 func (w *Worker) Claim(ctx context.Context, h Hint) (Lease, error) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	if !w.admission {
+	if !w.allowed(ctx) {
 		return Lease{}, ErrClosed
 	}
 	if w.lease != nil || w.uncertain {
@@ -67,7 +68,7 @@ func (w *Worker) Claim(ctx context.Context, h Hint) (Lease, error) {
 func (w *Worker) Start(ctx context.Context, h Hint, l Lease) (StartSnapshot, error) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	if !w.admission {
+	if !w.allowed(ctx) {
 		return StartSnapshot{}, ErrClosed
 	}
 	if w.lease == nil || h != w.hint || l != *w.lease || w.startAttempted {
@@ -107,4 +108,15 @@ func (w *Worker) complete(c ResultCommit) {
 		w.lease = nil
 		w.startAttempted = false
 	}
+}
+
+// Admission-only: never used by Result/reconciliation or physical settlement.
+func (w *Worker) allowed(ctx context.Context) bool {
+	if !w.privateMode {
+		return w.admission
+	}
+	ctx, cancel := context.WithTimeout(ctx, transactionBudget)
+	defer cancel()
+	var ready bool
+	return w.store.DB != nil && w.store.DB.QueryRow(ctx, `SELECT scheduler_private.private_worker_ready($1::uuid)`, w.store.Incarnation).Scan(&ready) == nil && ready
 }

@@ -37,7 +37,7 @@ docker run --rm -v "$repo:$repo:ro" -v "$state/tools:/tools" -w "$repo" \
  -e PERIODIC91_TOOLS=/tools -e GOTOOLCHAIN=local \
  golang:1.24.3-bookworm@sha256:29d97266c1d341b7424e2f5085440b74654ae0b61ecdba206bc12d6264844e21 sh tests/scheduler/build-periodic91.sh
 npm ci --prefix web
-DEVPILOT_ISOLATED_DEMO=1 node web/node_modules/vite/bin/vite.js web --config web/vite.config.ts --host 127.0.0.1 --strictPort > "$state/vite.log" 2>&1 &
+DEVPILOT_ISOLATED_DEMO=1 DEVPILOT_PRIVATE_LOOP=0 node web/node_modules/vite/bin/vite.js web --config web/vite.config.ts --host 127.0.0.1 --strictPort > "$state/vite.log" 2>&1 &
 ui_pid=$!
 python3 tests/demo/demo.py --tools "$state/tools" --evidence "$evidence" --credentials "$credentials" --stop-file "$stop_file" &
 runner_pid=$!
