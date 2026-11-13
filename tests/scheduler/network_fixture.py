@@ -293,6 +293,12 @@ class Harness:
         return dict(fixture_teardown_complete=True)
 
 
+def backend_addresses(index, base=66):
+    if index < 0 or not 0 <= base + index//64 <= 255:
+        raise ValueError('fixture address range exhausted')
+    return (f'198.19.{base+index//64}.{(index%64)*4+1}',
+            f'198.19.{base+index//64}.{(index%64)*4+2}')
+
 class Instance:
     def __init__(self, h, index, identity):
         self.h, self.index, self.identity = h, index, identity
@@ -302,8 +308,7 @@ class Instance:
         self.gate4 = f'198.19.{base}.{last+3}'
         self.probe6 = f'fd64:64:{index+1:x}::2'
         self.gate6 = f'fd64:64:{index+1:x}::3'
-        self.back4 = f'198.19.66.{index*4+1}'
-        self.receiver4 = f'198.19.66.{index*4+2}'
+        self.back4, self.receiver4 = backend_addresses(index, getattr(h,'backend4_base',66))
         self.back6 = f'fd64:65:{index+1:x}::1'
         self.receiver6 = f'fd64:65:{index+1:x}::2'
         self.name = f'run-{index}'

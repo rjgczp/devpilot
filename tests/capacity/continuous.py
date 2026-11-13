@@ -9,8 +9,8 @@ from network_fixture import IMAGE,LABEL
 
 class CapacityHarness(LoopHarness):
  def __init__(self,*a):
-  super().__init__(*a);self.worker_bootstrap=HERE/'worker_bootstrap.py';self.pg_deadline_seconds=10800
-  self.expected_cycles=105;self.expected_gets=105;self.task_name='continuous-capacity'
+  super().__init__(*a);self.worker_bootstrap=HERE/'worker_bootstrap.py';self.worker_prelude=(HERE/'framing.py').read_text()+'\n';self.pg_deadline_seconds=10800
+  self.expected_cycles=105;self.expected_gets=105;self.task_name='continuous-capacity';self.backend4_base=128
   self.lock=threading.RLock();self.source_stop=threading.Event();self.sources=[];self.snapshots=[]
  def send(self,proc,value):
   with self.lock:return super().send(proc,value)
@@ -23,7 +23,7 @@ class CapacityHarness(LoopHarness):
   url=Path(self.private_files.name)/name;url.write_text(dsn+'\n');url.chmod(0o444)
   cmd=['docker','run','-i','--name',self.prefix+'-'+name,'--label',LABEL+'='+self.prefix,'--network',self.control,'--user','65534:65534','--cap-drop','ALL','--security-opt','no-new-privileges:true','--read-only','--memory=128m','--memory-swap=128m','--cpus=1','--pids-limit=64','--ulimit','nofile=256:256','-v',str(self.tools)+':/toolbin:ro','-v',str(url)+':/run/source-url:ro']
   if kind=='sampler':cmd+=['-v',self.volume+':/storage:ro','-v',self.logdir+':/logs-metadata:ro','-v',str(self.binding_file)+':/run/bindings:ro']
-  cmd+=['--entrypoint','python3',IMAGE,'-S','-u','-c',(HERE/'source_bootstrap.py').read_text(),kind,inc]
+  cmd+=['--entrypoint','python3',IMAGE,'-S','-u','-c',(HERE/'framing.py').read_text()+'\n'+(HERE/'source_bootstrap.py').read_text(),kind,inc]
   proc=subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=open(self.dest/(name+'.stderr'),'wb'))
   self.processes.append(proc);self.sources.append(proc)
   cid=self.prefix+'-'+name;self.containers.append(cid);self.control_ids.add(cid)

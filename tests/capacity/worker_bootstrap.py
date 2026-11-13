@@ -5,6 +5,7 @@ owns anonymous IPC; requests go to the independently trusted outer Supervisor.
 """
 import base64,fcntl,json,os,select,subprocess,sys
 assert os.getuid()==65534
+stdin_reader=Reader(sys.stdin.fileno())
 original=[]
 for _ in range(3):original+=list(os.pipe())
 rr,rw,qr,qw,gr,gw=[fcntl.fcntl(fd,fcntl.F_DUPFD_CLOEXEC,20) for fd in original]
@@ -17,20 +18,19 @@ request=bytearray();event=bytearray()
 while True:
  ready=select.select([sys.stdin,qr,child.stdout],[],[],1)[0]
  if sys.stdin in ready:
-  line=sys.stdin.buffer.readline(65537)
-  if not line:break
-  assert len(line)<=65536 and line.endswith(b'\n')
-  value=json.loads(line)
-  if value.get('op')=='stop':child.terminate();break
-  if 'guard' in value:
-   beat=base64.b64decode(value['guard']);assert len(beat)==8
-   if gw is not None:os.write(gw,beat)
-   continue
-  if value.get('storage_lost'):
-   if gw is not None:os.close(gw);gw=None
-   continue
-  assert set(value)=={'reply'}
-  raw=json.dumps(value['reply']).encode()+b'\n';assert len(raw)<=65536;os.write(rw,raw)
+  values=stdin_reader.read()
+  if values is None:break
+  for value in values:
+   if value.get('op')=='stop':child.terminate();continue
+   if 'guard' in value:
+    beat=base64.b64decode(value['guard']);assert len(beat)==8
+    if gw is not None:os.write(gw,beat)
+    continue
+   if value.get('storage_lost'):
+    if gw is not None:os.close(gw);gw=None
+    continue
+   assert set(value)=={'reply'}
+   raw=json.dumps(value['reply']).encode()+b'\n';assert len(raw)<=65536;os.write(rw,raw)
  if qr in ready:
   data=os.read(qr,1)
   if data:request+=data

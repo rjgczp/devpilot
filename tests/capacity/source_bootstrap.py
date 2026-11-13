@@ -1,6 +1,7 @@
 """Non-root control-only relay; native sampler/watchdog remain separate processes."""
 import base64,fcntl,json,os,select,subprocess,sys
 assert os.getuid()==65534
+stdin_reader=Reader(sys.stdin.fileno())
 kind,inc=sys.argv[1:];count=1 if kind=='sampler' else 3
 original=[]
 for _ in range(count):original+=list(os.pipe())
@@ -19,13 +20,13 @@ for fd in set(fds+list(passed)):
 while child.poll() is None:
  ready=select.select([sys.stdin,*reads],[],[],.2)[0]
  if sys.stdin in ready:
-  raw=sys.stdin.buffer.readline(8193)
-  if not raw:child.terminate();break
-  value=json.loads(raw)
-  if value.get('op')=='stop':child.terminate();break
-  if kind=='watchdog':
-   if value.get('source_closed'):os.close(write);break
-   pulse=base64.b64decode(value['pulse']);assert len(pulse)==8;os.write(write,pulse)
+  values=stdin_reader.read()
+  if values is None:child.terminate();break
+  for value in values:
+   if value.get('op')=='stop':child.terminate();continue
+   if kind=='watchdog':
+    if value.get('source_closed'):os.close(write);break
+    pulse=base64.b64decode(value['pulse']);assert len(pulse)==8;os.write(write,pulse)
  for fd,index in reads.items():
   if fd not in ready:continue
   pulse=os.read(fd,8)

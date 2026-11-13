@@ -6,6 +6,7 @@ test ! -e "$1"
 repo=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 cd "$repo"
 python3 tests/capacity/build_candidate.py --check
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/capacity -p 'test_*.py' -v
 mkdir -p "$1/tools"
 export PYTHONDONTWRITEBYTECODE=1
 python3 tests/scheduler/record.py --evidence "$1" --name image-build -- docker build -t devpilot-scheduler-fixture -f tests/scheduler/Dockerfile .
