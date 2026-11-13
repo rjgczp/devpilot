@@ -101,3 +101,13 @@ Directed PG18 validation also reproduced NULL Reporter incarnation bypassing
 the two equality checks. The separately approved78a2ac0 candidate uses
 IS DISTINCT FROM in exactly those two predicates; NULL/wrong identities are
 rejected without any ACL or budget expansion. Originalf6 and failed logs remain.
+
+The78a2ac0 run completed31 real cycles, then the32nd Probe source exceeded the
+existing198.19.64.0/23 policy. Original Artifact #14026013811, SHA256
+`d3681a2ec63112ce2c9d5561906b7fac289c5bc11de116ab8ba67caab1e54d0a`,
+is retained. Capacity now keeps the unknown's source pair separate and reuses
+one allowed source pair only after the previous completed Run's original
+trusted release and owned namespace removal. Namespace/Run/fence/Permit and
+IPv6 identities remain fresh; backend links remain distinct. No network policy
+or production Go was widened. Allocation tests cover all106 namespaces and
+refuse reuse before settlement or while an earlier namespace remains present.

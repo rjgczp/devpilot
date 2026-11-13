@@ -293,6 +293,13 @@ class Harness:
         return dict(fixture_teardown_complete=True)
 
 
+def probe_addresses(index):
+    # The accepted private policy permits exactly198.19.64.0/23.
+    if not 0 <= index < 32:
+        raise ValueError('fixture Probe address outside existing policy')
+    return (f'198.19.{64+index//16}.{(index%16)*16+2}',
+            f'198.19.{64+index//16}.{(index%16)*16+3}')
+
 def backend_addresses(index, base=66):
     if index < 0 or not 0 <= base + index//64 <= 255:
         raise ValueError('fixture address range exhausted')
@@ -302,10 +309,8 @@ def backend_addresses(index, base=66):
 class Instance:
     def __init__(self, h, index, identity):
         self.h, self.index, self.identity = h, index, identity
-        base = 64+index//16
-        last = (index % 16)*16
-        self.probe4 = f'198.19.{base}.{last+2}'
-        self.gate4 = f'198.19.{base}.{last+3}'
+        probe_index = h.probe4_index(index) if hasattr(h,'probe4_index') else index
+        self.probe4, self.gate4 = probe_addresses(probe_index)
         self.probe6 = f'fd64:64:{index+1:x}::2'
         self.gate6 = f'fd64:64:{index+1:x}::3'
         self.back4, self.receiver4 = backend_addresses(index, getattr(h,'backend4_base',66))

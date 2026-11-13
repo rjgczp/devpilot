@@ -15,6 +15,13 @@ class CapacityHarness(LoopHarness):
   self.pulses=collections.deque(maxlen=60)
  def send(self,proc,value):
   with self.lock:return super().send(proc,value)
+ def probe4_index(self,index):
+  if index==0:return 0 # The unreleased unknown domain keeps its own address.
+  assert index==len(self.completed)+1,'cannot reuse before original settlement'
+  if index>1:
+   previous=self.instances[-1]
+   assert previous.index==index-1 and previous.run not in self.containers and previous.gateway not in self.containers,'previous namespace cleanup incomplete'
+  return 1 # Sequential only, after trusted release and owned namespace removal.
  def control_command(self,*a,**kw):
   cmd=super().control_command(*a,**kw)
   if kw.get('source'):cmd[-1]='-test.timeout=10800s'
