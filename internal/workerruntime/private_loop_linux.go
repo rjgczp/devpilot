@@ -46,9 +46,15 @@ func (Call) Format(f fmt.State, _ rune)  { _, _ = io.WriteString(f, "<private Su
 func (Reply) Format(f fmt.State, _ rune) { _, _ = io.WriteString(f, "<private Supervisor reply>") }
 
 type PrivateLoop struct {
-	store  scheduler.Store
-	worker *scheduler.Worker
+	store        scheduler.Store
+	worker       *scheduler.Worker
+	storageGuard func() bool
 }
+
+// RequireStorageGuard adds a deny-only inherited monotonic watchdog. It grants
+// no SQL authority and is never consulted by Result/physical settlement.
+func (l *PrivateLoop) RequireStorageGuard(alive func() bool) { l.storageGuard = alive }
+func (l *PrivateLoop) storageAlive() bool                    { return l.storageGuard == nil || l.storageGuard() }
 
 func OpenPrivate(ctx context.Context, cfg *pgxpool.Config, incarnation string) (*PrivateLoop, func(), error) {
 	pool, e := openPool(ctx, cfg, incarnation)
@@ -76,11 +82,17 @@ func (l *PrivateLoop) Run(ctx context.Context, sup Supervisor, directory schedul
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}
+		if !l.storageAlive() {
+			return fmt.Errorf("storage watchdog before candidates: %w", scheduler.ErrClosed)
+		}
 		hints, e := l.worker.Candidates(ctx, "")
 		if e != nil && !errors.Is(e, scheduler.ErrClosed) {
 			return e
 		}
 		for _, h := range hints {
+			if !l.storageAlive() {
+				return fmt.Errorf("storage watchdog before claim: %w", scheduler.ErrClosed)
+			}
 			lease, e := l.worker.Claim(ctx, h)
 			if errors.Is(e, scheduler.ErrCandidate) || errors.Is(e, scheduler.ErrCapacity) {
 				continue
@@ -117,6 +129,9 @@ func (l *PrivateLoop) execute(ctx context.Context, sup Supervisor, directory sch
 	if prepared.Event != "prepared" || !matches(line, lease) {
 		return ErrBoundary
 	}
+	if !l.storageAlive() {
+		return fmt.Errorf("storage watchdog before start: %w", scheduler.ErrClosed)
+	}
 	snapshot, e := l.worker.Start(ctx, h, lease)
 	if e != nil {
 		return e
@@ -144,7 +159,7 @@ func (l *PrivateLoop) execute(ctx context.Context, sup Supervisor, directory sch
 		return e
 	}
 	if next.Event == "target_request" {
-		controller := snapshot.TargetController(l.store, h, directory, targetSupervisor{sup: sup, line: line})
+		controller := snapshot.TargetController(l.store, h, directory, targetSupervisor{sup: sup, line: line, storageAlive: l.storageAlive})
 		reply, e := targetReply(ctx, next.Frame, controller.Authorize)
 		// A refusal is a zero-byte EOF, not an invented success/HTTP observation.
 		if e != nil {
@@ -203,11 +218,15 @@ func matches(line handoff.Lineage, l scheduler.Lease) bool {
 }
 
 type targetSupervisor struct {
-	sup  Supervisor
-	line handoff.Lineage
+	sup          Supervisor
+	line         handoff.Lineage
+	storageAlive func() bool
 }
 
 func (s targetSupervisor) InstallTarget(ctx context.Context, r targetpermit.Request, p scheduler.TargetPermit) (targetpermit.Confirmation, error) {
+	if s.storageAlive != nil && !s.storageAlive() {
+		return targetpermit.Confirmation{}, targetpermit.ErrDenied
+	}
 	if r.Lineage != s.line {
 		return targetpermit.Confirmation{}, ErrBoundary
 	}

@@ -1,0 +1,25 @@
+name: Continuous capacity
+on:
+  pull_request:
+    branches: [main]
+    paths: ['cmd/privateworker/**', 'cmd/storagereporter/**', 'cmd/retentioncontroller/**', 'internal/storagecontrol/**', 'internal/retentioncontrol/**', 'internal/workerruntime/**', 'tests/capacity/**', 'tests/integration/capacity*', 'tests/integration/private_loop_test.go', 'deploy/capacity/**', '.github/workflows/continuous-capacity.yml']
+permissions:
+  contents: read
+jobs:
+  continuous-capacity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Exact approved isolated schema, real statfs and105 sequential physical lifecycles
+        run: sh tests/capacity/run.sh "$RUNNER_TEMP/continuous-capacity"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: continuous-capacity
+          path: ${{ runner.temp }}/continuous-capacity/
+          if-no-files-found: error

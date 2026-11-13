@@ -1,0 +1,8 @@
+{
+  "candidate_sha256": "78a2ac0e388ea0d4fb46e046b624315a88f07b82b58fe5784e246815197fa212",
+  "private_mode_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a",
+  "approved_on": "2026-11-13",
+  "scope": "Disposable PG18/Linux no-upstream only; corrected empty-history return; 105 real60s cycles, existing API finite3h Owner authorization,4h test session/control registrations; no clock/due/cooldown mutation; SQL2s and lock250ms unchanged; two Reporter incarnation comparisons reject NULL; exact correction independently approved",
+  "production": false,
+  "internet": false
+}
