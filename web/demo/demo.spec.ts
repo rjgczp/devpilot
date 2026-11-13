@@ -98,6 +98,15 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
       intervals: [2000],
     })
     .toBe(3);
+  // History correctly includes started Runs. A third row is not a completed
+  // Result; wait for settlement without replacing running/unknown with success.
+  await expect
+    .poll(async () => {
+      const response = await page.request.get(`${path}/${monitor.id}/history`);
+      expect(response.status()).toBe(200);
+      return (await response.json()).data.map((r: { status: string }) => r.status);
+    }, { timeout: 15000, intervals: [500] })
+    .toEqual(["success", "success", "success"]);
   const response = await page.request.get(`${path}/${monitor.id}/history`);
   const raw = await response.text();
   const history = JSON.parse(raw);

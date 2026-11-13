@@ -51,3 +51,6 @@ trusted allocator deployment, separately authorized real egress, actual VPN/TLS/
 firewall/key-file boundaries. Disk capacity proof remains deferred (Task8.3).
 Historical55P03/lock-wait, IPv6 and management-timeout uncertainty is retained;
 passing these directed tests does not establish their root causes. OpenSpec37/47.
+P2: interrupting a failed browser run can race the inherited fixture cleanup
+against the auto-removed control coordinator. Inspect the owned run label for
+leftover disposable resources; a cleanup error or deletion never proves release.
