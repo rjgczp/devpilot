@@ -1,0 +1,7 @@
+# Fresh, allocator-owned namespace only. Do not apply on the host network.
+# Bootstrap has no DNS, target, conntrack-established or forwarding exception.
+table inet dp_run {
+  chain input { type filter hook input priority -150; policy drop; }
+  chain output { type filter hook output priority -150; policy drop; }
+  chain forward { type filter hook forward priority -150; policy drop; }
+}

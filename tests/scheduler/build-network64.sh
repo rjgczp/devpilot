@@ -5,6 +5,9 @@ test "$(uname -s)" = Linux
 : "${NETWORK64_TOOLS:?dedicated absolute tools directory required}"
 case "$NETWORK64_TOOLS" in /*) ;; *) exit 2;; esac
 mkdir -p "$NETWORK64_TOOLS"
+# Policy assertions moved with the shared code; retain them in this original entry.
+GOTOOLCHAIN=local go test -tags=schedulerfixture ./internal/probenetwork -count=1
+GOTOOLCHAIN=local go test -race -tags=schedulerfixture ./internal/probenetwork -count=1
 GOTOOLCHAIN=local go vet -tags=integration,schedulerfixture,budgetfixture,networkfixture ./internal/supervisorfixture ./cmd/networksupervisorfixture ./tests/integration
 GOTOOLCHAIN=local CGO_ENABLED=0 go build -tags=schedulerfixture -o "$NETWORK64_TOOLS/networksupervisorfixture" ./cmd/networksupervisorfixture
 GOTOOLCHAIN=local CGO_ENABLED=0 go test -c -tags=schedulerfixture -o "$NETWORK64_TOOLS/supervisorfixture.test" ./internal/supervisorfixture

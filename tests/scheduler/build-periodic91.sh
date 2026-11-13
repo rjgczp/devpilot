@@ -13,10 +13,10 @@ export GOTOOLCHAIN=local
 CGO_ENABLED=0 go build -tags=schedulerfixture -o "$PERIODIC91_TOOLS/networksupervisorfixture" ./cmd/networksupervisorfixture
 CGO_ENABLED=0 go build -tags=schedulerfixture -o "$PERIODIC91_TOOLS/schedulerprobefixture" ./cmd/schedulerprobefixture
 tags=integration,schedulerfixture,budgetfixture,networkfixture,releasefixture,jointfixture,resultfixture,periodicfixture
-go vet -tags="$tags" ./internal/scheduler ./internal/supervisorfixture ./tests/integration
+go vet -tags="$tags" ./internal/scheduler ./internal/supervisorfixture ./internal/probenetwork ./tests/integration
 CGO_ENABLED=0 go test -c -tags="$tags" -o "$PERIODIC91_TOOLS/periodic-pg.test" ./tests/integration
 CGO_ENABLED=1 go test -c -race -tags="$tags" -o "$PERIODIC91_TOOLS/periodic-pg-race.test" ./tests/integration
 CGO_ENABLED=0 GOBIN="$PERIODIC91_TOOLS" go install -tags='no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb' github.com/pressly/goose/v3/cmd/goose@v3.26.0
-go test -tags=schedulerfixture ./internal/scheduler ./internal/supervisorfixture -count=1
-go test -race -tags=schedulerfixture ./internal/scheduler ./internal/supervisorfixture -count=1
+go test -tags=schedulerfixture ./internal/scheduler ./internal/supervisorfixture ./internal/probenetwork -count=1
+go test -race -tags=schedulerfixture ./internal/scheduler ./internal/supervisorfixture ./internal/probenetwork -count=1
 go version -m "$PERIODIC91_TOOLS/periodic-pg.test" "$PERIODIC91_TOOLS/periodic-pg-race.test" "$PERIODIC91_TOOLS/networksupervisorfixture" "$PERIODIC91_TOOLS/schedulerprobefixture" "$PERIODIC91_TOOLS/goose"

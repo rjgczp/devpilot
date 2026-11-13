@@ -42,7 +42,7 @@ func TestFixtureSchedulerBuildBoundary(t *testing.T) {
 		"internal/monitoring/handoff/wire_linux.go":      true,
 		"internal/monitoring/targetpermit/pipe_linux.go": true,
 	}
-	for _, dir := range []string{"cmd/privateworker", "internal/workerruntime", "internal/scheduler", "cmd/schedulerfixture", "cmd/probeinputfixture", "cmd/schedulerprobefixture", "internal/monitoring/handoff", "internal/monitoring/probesandbox", "internal/monitoring/targetpermit"} {
+	for _, dir := range []string{"cmd/privateprobe", "cmd/privatenetwork", "cmd/privateworker", "internal/workerruntime", "internal/scheduler", "cmd/schedulerfixture", "cmd/probeinputfixture", "cmd/schedulerprobefixture", "internal/monitoring/handoff", "internal/monitoring/probesandbox", "internal/monitoring/targetpermit"} {
 		files, err := filepath.Glob(filepath.Join("../..", dir, "*.go"))
 		if err != nil || len(files) == 0 {
 			t.Fatal("fixture boundary missing")
@@ -52,6 +52,13 @@ func TestFixtureSchedulerBuildBoundary(t *testing.T) {
 			tag := "schedulerfixture && linux"
 			if shared[filepath.ToSlash(strings.TrimPrefix(file, "../../"))] {
 				tag = "(schedulerfixture || privateworker) && linux"
+				if dir == "internal/monitoring/handoff" || dir == "internal/monitoring/targetpermit" {
+					tag = "(schedulerfixture || privateworker || privateprobe) && linux"
+				}
+			} else if dir == "internal/monitoring/probesandbox" {
+				tag = "(schedulerfixture || privateprobe) && linux"
+			} else if dir == "cmd/privateprobe" || dir == "cmd/privatenetwork" {
+				tag = "privateprobe && linux"
 			} else if dir == "cmd/privateworker" || dir == "internal/workerruntime" {
 				tag = "privateworker && linux"
 			}
@@ -60,8 +67,8 @@ func TestFixtureSchedulerBuildBoundary(t *testing.T) {
 			}
 		}
 	}
-	for _, entry := range []struct{ path, tag string }{{"./cmd/schedulerfixture", "schedulerfixture"}, {"./cmd/privateworker", "privateworker"}} {
-		for _, tags := range []string{"", "schedulerfixture", "privateworker"} {
+	for _, entry := range []struct{ path, tag string }{{"./cmd/schedulerfixture", "schedulerfixture"}, {"./cmd/privateworker", "privateworker"}, {"./cmd/privateprobe", "privateprobe"}, {"./cmd/privatenetwork", "privateprobe"}} {
+		for _, tags := range []string{"", "schedulerfixture", "privateworker", "privateprobe"} {
 			args := []string{"list", "-e", "-json"}
 			if tags != "" {
 				args = append(args, "-tags", tags)

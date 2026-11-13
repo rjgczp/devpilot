@@ -1,6 +1,6 @@
 //go:build schedulerfixture && linux
 
-package supervisorfixture
+package probenetwork
 
 import (
 	"context"

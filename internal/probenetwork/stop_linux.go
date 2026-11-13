@@ -1,6 +1,6 @@
-//go:build schedulerfixture && linux
+//go:build (schedulerfixture || privateprobe) && linux
 
-package supervisorfixture
+package probenetwork
 
 import (
 	"context"
