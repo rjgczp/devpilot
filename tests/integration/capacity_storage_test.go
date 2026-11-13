@@ -86,6 +86,12 @@ func TestCapacityAdmissionPG(t *testing.T) {
 	capacitySchema(t, db)
 	ctx := context.Background()
 	r, inc := capacityReporter(t, db, `[{"device":"1:2","fsid":"fixture"}]`)
+	for _, rejected := range []any{nil, "00000000-0000-0000-0000-000000000001"} {
+		_, err := r.Exec(ctx, `SELECT scheduler_private.storage_begin($1::uuid)`, rejected)
+		budgetSQLState(t, err, "42501")
+		_, err = r.Exec(ctx, `SELECT scheduler_private.storage_report($1::uuid,NULL::uuid,NULL::jsonb)`, rejected)
+		budgetSQLState(t, err, "42501")
+	}
 	client := storagecontrol.Client{DB: r, Incarnation: inc}
 	allowed := func(want bool) {
 		t.Helper()

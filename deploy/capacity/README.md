@@ -96,3 +96,8 @@ SQL/GET behavior; sustained interruption still fails closed. The fixture also
 drains coalesced relay frames and allocates106 disjoint internal backend links.
 These repairs require the final HEAD's own105-cycle CI; they do not establish
 the root cause of every historical refusal or lock-wait failure.
+
+Directed PG18 validation also reproduced NULL Reporter incarnation bypassing
+the two equality checks. The separately approved78a2ac0 candidate uses
+IS DISTINCT FROM in exactly those two predicates; NULL/wrong identities are
+rejected without any ACL or budget expansion. Originalf6 and failed logs remain.

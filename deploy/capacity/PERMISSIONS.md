@@ -81,7 +81,18 @@ Pause/PATCH, Result, quarantine, trusted release and recovery are not gated by
 this new storage helper. Existing budget/physical guards remain. No permission
 is applied until the exact candidate hash and this scope are approved.
 
-Corrected candidate SHA256: `f6eaa65dfd8a7178e7ba4473f1262e5f2710db1d8cae98bed61e6196575c1928`.
+Previously approved corrected candidate SHA256: `f6eaa65dfd8a7178e7ba4473f1262e5f2710db1d8cae98bed61e6196575c1928`.
 The only SQL difference from approved79c2db9 is the empty-scope early return
 above. That original candidate and failed CI artifact are retained. The corrected exact hash and real-interval test scope were independently
 approved on2026-11-13 and are recorded in isolated-test-approval.json.
+
+Independently approved source-binding correction SHA256:
+`78a2ac0e388ea0d4fb46e046b624315a88f07b82b58fe5784e246815197fa212`.
+Disposable PG18 reproduced `storage_begin(NULL::uuid)` succeeding (00000) where
+42501 was required. SQL three-valued comparison did not reject a NULL supplied
+incarnation for the registered Reporter LOGIN. The sole candidate differences
+are two `r.incarnation<>p_incarnation` comparisons becoming
+`r.incarnation IS DISTINCT FROM p_incarnation` in storage_begin/storage_report.
+No roles, GRANT, gate, threshold, lock order or timeout changes. The product owner separately approved this exact SHA on2026-11-13 for the same
+isolated-only scope; approval JSON now binds78a2ac0. Production remains closed. Original
+f6 bytes and the failed directed fixture are retained outside the repository.

@@ -47,7 +47,7 @@ LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_
 DECLARE r scheduler_private.storage_registration%ROWTYPE;s scheduler_private.storage_state%ROWTYPE;n timestamptz;
 BEGIN
  SELECT * INTO r FROM scheduler_private.storage_registration WHERE singleton FOR SHARE;
- IF NOT FOUND OR r.login_name<>session_user OR r.incarnation<>p_incarnation OR NOT pg_has_role(session_user,'devpilot_storage_reporter','MEMBER')
+ IF NOT FOUND OR r.login_name<>session_user OR r.incarnation IS DISTINCT FROM p_incarnation OR NOT pg_has_role(session_user,'devpilot_storage_reporter','MEMBER')
  THEN RAISE EXCEPTION 'storage identity rejected' USING ERRCODE='42501'; END IF;
  SELECT * INTO s FROM scheduler_private.storage_state WHERE singleton FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'storage not provisioned' USING ERRCODE='55000'; END IF;
@@ -73,7 +73,7 @@ BEGIN
  -- No business parents, Run, capacity budget or Reservation locks are acquired.
  PERFORM 1 FROM public.scheduler_control WHERE control_id='deployment' FOR UPDATE;
  SELECT * INTO r FROM scheduler_private.storage_registration WHERE singleton FOR SHARE;
- IF NOT FOUND OR r.login_name<>session_user OR r.incarnation<>p_incarnation OR NOT pg_has_role(session_user,'devpilot_storage_reporter','MEMBER')
+ IF NOT FOUND OR r.login_name<>session_user OR r.incarnation IS DISTINCT FROM p_incarnation OR NOT pg_has_role(session_user,'devpilot_storage_reporter','MEMBER')
  THEN RAISE EXCEPTION 'storage identity rejected' USING ERRCODE='42501'; END IF;
  SELECT * INTO s FROM scheduler_private.storage_state WHERE singleton FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'storage not provisioned' USING ERRCODE='55000'; END IF;
