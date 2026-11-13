@@ -120,11 +120,12 @@ class CapacityHarness(LoopHarness):
    if p.exists():shutil.copy2(p,dest/name)
   # All physical stop proofs were accepted before cycle-completed. Removing
   # those owned namespace containers now is cleanup, never a release proof.
-  prefix=self.prefix+'-'+self.active.name+'-'
-  for cid in list(self.containers):
-   if cid.startswith(prefix):
-    info=json.loads(self.run(['docker','inspect',cid]))[0];assert info['Config']['Labels'][LABEL]==self.prefix
-    self.run(['docker','rm','-f',cid]);self.containers.remove(cid)
+  for cid,suffix in [(self.active.actor_container,'-child'),(self.active.gateway,'-guard'),(self.active.run,'')]:
+   if cid is None:continue
+   assert cid in self.containers
+   info=json.loads(self.run(['docker','inspect',cid]))[0]
+   assert info['Config']['Labels'][LABEL]==self.prefix and info['Name']=='/'+self.prefix+'-'+self.active.name+suffix
+   self.run(['docker','rm','-f',cid]);self.containers.remove(cid)
  def close(self):
   self.source_stop.set()
   if hasattr(self,'thread'):self.thread.join(timeout=2)

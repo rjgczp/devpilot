@@ -111,3 +111,9 @@ trusted release and owned namespace removal. Namespace/Run/fence/Permit and
 IPv6 identities remain fresh; backend links remain distinct. No network policy
 or production Go was widened. Allocation tests cover all106 namespaces and
 refuse reuse before settlement or while an earlier namespace remains present.
+The new guard subsequently exposed a fixture teardown bug: Docker IDs were
+compared to name prefixes, so released namespace containers had not been
+removed. Cleanup now uses the recorded IDs and checks each exact name/owner
+label, leaving the unknown domain untouched. A directed cleanup regression
+covers this distinction. Original Artifact #14026484948 has SHA256
+`e9a5062b5318164abcc3c22f2778e5bf6cb61c0da53b89622ef055b2adee9c09`.
