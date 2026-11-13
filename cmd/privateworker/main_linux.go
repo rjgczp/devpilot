@@ -60,7 +60,13 @@ func run() int {
 			if !guard.Alive() {
 				return 2
 			}
-			loop.RequireStorageGuard(guard.Alive)
+			loop.RequireStorageGuard(func() bool {
+				alive := guard.Alive()
+				if !alive && guard.Rejection() != nil {
+					fmt.Fprintln(os.Stderr, guard.Rejection())
+				}
+				return alive
+			})
 		}
 		if *check {
 			fmt.Println(`{"event":"worker_checked","gate":"private-isolated"}`)

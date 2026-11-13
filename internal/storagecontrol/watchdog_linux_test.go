@@ -7,9 +7,51 @@ import (
 	"encoding/binary"
 	"golang.org/x/sys/unix"
 	"os"
+	"runtime"
 	"testing"
 	"time"
 )
+
+func TestGuardSustainedFreshPulses(t *testing.T) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+	tid := unix.Gettid()
+	done := make(chan struct{})
+	defer close(done)
+	go func() {
+		tick := time.NewTicker(time.Millisecond)
+		defer tick.Stop()
+		for {
+			select {
+			case <-done:
+				return
+			case <-tick.C:
+			}
+			_ = unix.Tgkill(os.Getpid(), tid, unix.SIGURG)
+		}
+	}()
+	r, w, e := os.Pipe()
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer r.Close()
+	defer w.Close()
+	g := NewGuard(r)
+	end := time.Now().Add(2 * time.Second)
+	for time.Now().Before(end) {
+		b, e := pulse()
+		if e != nil {
+			t.Fatal(e)
+		}
+		if _, e = w.Write(b); e != nil {
+			t.Fatal(e)
+		}
+		if !g.Alive() {
+			t.Fatal("fresh admission rejected", g.Rejection())
+		}
+		runtime.Gosched()
+	}
+}
 
 type denyPublisher struct{ deny chan bool }
 

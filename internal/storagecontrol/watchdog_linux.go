@@ -5,6 +5,7 @@ package storagecontrol
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"golang.org/x/sys/unix"
 	"io"
 	"os"
@@ -98,10 +99,11 @@ func Watch(ctx context.Context, p Publisher, in *os.File, guards []*os.File) err
 }
 
 type Guard struct {
-	mu     sync.Mutex
-	file   *os.File
-	last   []byte
-	closed bool
+	mu      sync.Mutex
+	file    *os.File
+	last    []byte
+	closed  bool
+	failure error
 }
 
 func NewGuard(f *os.File) *Guard { return &Guard{file: f} }
@@ -118,22 +120,50 @@ func (g *Guard) Alive() bool {
 	buf := make([]byte, 4096)
 	for {
 		fds := []unix.PollFd{{Fd: int32(fd), Events: unix.POLLIN | unix.POLLHUP}}
-		_, e := unix.Poll(fds, 0)
-		if e != nil || fds[0].Revents&(unix.POLLHUP|unix.POLLERR|unix.POLLNVAL) != 0 {
+		// SIGURG/runtime preemption can interrupt ppoll even for a fresh pipe.
+		// Retry only EINTR, at most four calls; EOF and all other errors close.
+		var e error
+		for attempt := 0; attempt < 4; attempt++ {
+			_, e = unix.Poll(fds, 0)
+			if e != unix.EINTR {
+				break
+			}
+		}
+		if e != nil {
+			g.failure = fmt.Errorf("admission poll: %w", e)
+			g.closed = true
+			return false
+		}
+		if fds[0].Revents&(unix.POLLHUP|unix.POLLERR|unix.POLLNVAL) != 0 {
+			g.failure = fmt.Errorf("admission pipe closed: %d", fds[0].Revents)
 			g.closed = true
 			return false
 		}
 		if fds[0].Revents&unix.POLLIN == 0 {
 			break
 		}
-		n, e := unix.Read(fd, buf)
+		var n int
+		for attempt := 0; attempt < 4; attempt++ {
+			n, e = unix.Read(fd, buf)
+			if e != unix.EINTR {
+				break
+			}
+		}
 		if e != nil || n == 0 || n%8 != 0 {
+			g.failure = fmt.Errorf("admission read: bytes=%d error=%v", n, e)
 			g.closed = true
 			return false
 		}
 		g.last = append(g.last[:0], buf[n-8:n]...)
 	}
 	return fresh(g.last)
+}
+
+// Rejection exposes only local IPC diagnostics, never database or target data.
+func (g *Guard) Rejection() error {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return g.failure
 }
 func (g *Guard) Close() {
 	if g != nil && g.file != nil {

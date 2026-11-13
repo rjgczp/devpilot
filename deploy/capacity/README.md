@@ -83,3 +83,13 @@ returns no_history for empty scopes; populated missing-ledger rejection remains.
 The scale case now waits all105 real intervals, preserving all original guards.
 Original CI artifact #14018253332 is retained with SHA256
 `feef5d6e79bec46a6580e94308d0c52cea820963b1ae0d7955c79e11968e6c27`.
+
+Subsequent failed native attempts are retained in their original CI artifacts
+#14020640973, #14021516463 and #14021344084. The last captured healthy SQL state
+and fresh forwarded pulses while a local Guard refused admission. A directed
+Linux SIGURG test reproduced EINTR permanently burning the Guard. Poll/read
+now retry only EINTR, at most four calls, without changing the3s pulse age or any
+SQL/GET behavior; sustained interruption still fails closed. The fixture also
+drains coalesced relay frames and allocates106 disjoint internal backend links.
+These repairs require the final HEAD's own105-cycle CI; they do not establish
+the root cause of every historical refusal or lock-wait failure.
