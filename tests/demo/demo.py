@@ -52,9 +52,9 @@ class DemoHarness(PeriodicHarness):
     def demo(self,tools,lifetime):
         self.password=secrets.token_urlsafe(30)
         self.until=time.monotonic()+lifetime
-        self.pg_binary=tools/'periodic-pg.test'
+        self.pg_binary=tools/getattr(self,'demo_binary','periodic-pg.test')
         self.setup_control()
-        cmd=self.control_command(self.prefix+'-coordinator',self.pg_binary.name,'TestWebDemoPG',source=True)
+        cmd=self.control_command(self.prefix+'-coordinator',self.pg_binary.name,getattr(self,'demo_pattern','TestWebDemoPG'),source=True)
         cmd[-1]='-test.timeout=1100s'
         driver=subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         self.processes.append(driver)

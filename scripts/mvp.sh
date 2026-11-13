@@ -3,9 +3,10 @@
 set -eu
 repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 usage() {
-  echo 'Usage: ./scripts/mvp.sh [manage|demo]'
+  echo 'Usage: ./scripts/mvp.sh [manage|demo|private]'
   echo '  manage (default): persistent local management, http://127.0.0.1:5173, execution CLOSED'
   echo '  demo: disposable fixed-fixture demo, http://127.0.0.1:5174, explicit Owner consent, max3 real60s cycles'
+  echo '  private: approved disposable private Gate + native Worker/Probe, same fixed no-upstream fixture and port5174'
   echo 'Use separate browser profiles/incognito sessions when logging in to both modes (Cookies are not port-scoped).'
   echo 'Details: docs/mvp.md'
 }
@@ -13,7 +14,7 @@ if [ "$#" -gt 1 ]; then usage >&2; exit 2; fi
 case "${1:-manage}" in
   manage)
     echo 'MVP: 普通管理模式；持久化本地库；执行保持关闭。'
-    export DEVPILOT_ISOLATED_DEMO=0
+    export DEVPILOT_ISOLATED_DEMO=0 DEVPILOT_PRIVATE_LOOP=0
     exec "$repo/scripts/dev-dashboard.sh"
     ;;
   demo)
@@ -21,6 +22,7 @@ case "${1:-manage}" in
     echo '并行登录普通模式时请使用独立浏览器配置/无痕会话，避免Cookie覆盖。'
     exec "$repo/scripts/dev-isolated-demo.sh"
     ;;
+  private) exec "$repo/scripts/dev-private-loop.sh" ;;
   -h|--help|help) usage ;;
   *) usage >&2; exit 2 ;;
 esac

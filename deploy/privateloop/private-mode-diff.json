@@ -1,0 +1,160 @@
+{
+  "candidate_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a",
+  "new_columns": [
+    "scheduler_control.execution_mode"
+  ],
+  "gate_values_added": [
+    "private-isolated"
+  ],
+  "new_functions": [
+    "private_gate_allows(text,uuid) [owner only]",
+    "private_worker_ready(uuid) [worker boolean]"
+  ],
+  "grants": [
+    "EXECUTE private_worker_ready(uuid) TO devpilot_scheduler_worker"
+  ],
+  "new_roles": [],
+  "direct_table_column_grants": [],
+  "functions": [
+    {
+      "function": "authorize",
+      "source": "migrations/00008_create_monitor_scheduler.sql",
+      "source_sha256": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+      "old_predicate": [
+        [
+          "c.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "NULL::uuid",
+      "predicate_strategy": "inline existing SELECT",
+      "changes": 1
+    },
+    {
+      "function": "execution_status",
+      "source": "migrations/00009_enforce_scheduler_capacity.sql",
+      "source_sha256": "3ec3404418766ca76492f8f0cd00706d0e8e8bf29cafc47c79050b1fee230d9e",
+      "old_predicate": [
+        [
+          "gate",
+          "<>"
+        ]
+      ],
+      "identity_argument": "NULL::uuid",
+      "predicate_strategy": "inline existing SELECT",
+      "changes": 1
+    },
+    {
+      "function": "claim",
+      "source": "migrations/00009_enforce_scheduler_capacity.sql",
+      "source_sha256": "3ec3404418766ca76492f8f0cd00706d0e8e8bf29cafc47c79050b1fee230d9e",
+      "old_predicate": [
+        [
+          "c.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "p_incarnation",
+      "predicate_strategy": "owner-only helper",
+      "changes": 1
+    },
+    {
+      "function": "start_run",
+      "source": "migrations/00008_create_monitor_scheduler.sql",
+      "source_sha256": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+      "old_predicate": [
+        [
+          "c.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "p_incarnation",
+      "predicate_strategy": "owner-only helper",
+      "changes": 1
+    },
+    {
+      "function": "prepare_run",
+      "source": "migrations/00008_create_monitor_scheduler.sql",
+      "source_sha256": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+      "old_predicate": [
+        [
+          "c.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "p_incarnation",
+      "predicate_strategy": "owner-only helper",
+      "changes": 1
+    },
+    {
+      "function": "consume_input",
+      "source": "migrations/00008_create_monitor_scheduler.sql",
+      "source_sha256": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+      "old_predicate": [
+        [
+          "c.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "p_incarnation",
+      "predicate_strategy": "owner-only helper",
+      "changes": 1
+    },
+    {
+      "function": "reconcile_claim",
+      "source": "migrations/00008_create_monitor_scheduler.sql",
+      "source_sha256": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+      "old_predicate": [
+        [
+          "c.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "p_incarnation",
+      "predicate_strategy": "owner-only helper",
+      "changes": 1
+    },
+    {
+      "function": "reserve_target",
+      "source": "migrations/00008_create_monitor_scheduler.sql",
+      "source_sha256": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+      "old_predicate": [
+        [
+          "c.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "p_incarnation",
+      "predicate_strategy": "owner-only helper",
+      "changes": 1
+    },
+    {
+      "function": "commit_result",
+      "source": "migrations/00012_advance_completed_scheduler_cycle.sql",
+      "source_sha256": "2ee7f36a919a2580f0a1f86dd0cd3fc82c280354f15c59c5807700d0962191a5",
+      "old_predicate": [
+        [
+          "d.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "p_incarnation",
+      "predicate_strategy": "owner-only helper",
+      "changes": 1
+    },
+    {
+      "function": "recover_started",
+      "source": "migrations/00008_create_monitor_scheduler.sql",
+      "source_sha256": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+      "old_predicate": [
+        [
+          "d.gate",
+          "="
+        ]
+      ],
+      "identity_argument": "p_incarnation",
+      "predicate_strategy": "owner-only helper",
+      "changes": 1
+    }
+  ]
+}

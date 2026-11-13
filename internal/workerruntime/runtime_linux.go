@@ -157,10 +157,10 @@ func CheckControlBoundary() error {
 
 // OpenClosed verifies effective authority using the actual LOGIN. It does not
 // SET ROLE, register an incarnation, issue a Claim or inspect existing Run rows.
-func OpenClosed(ctx context.Context, cfg *pgxpool.Config, incarnation string) (*scheduler.Worker, func(), error) {
+func openPool(ctx context.Context, cfg *pgxpool.Config, incarnation string) (*pgxpool.Pool, error) {
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
-		return nil, func() {}, ErrConfiguration
+		return nil, ErrConfiguration
 	}
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
@@ -181,7 +181,15 @@ func OpenClosed(ctx context.Context, cfg *pgxpool.Config, incarnation string) (*
  AND NOT has_any_column_privilege(session_user,'public.scheduler_control','UPDATE')`).Scan(&safe)
 	if err != nil || !safe {
 		pool.Close()
-		return nil, func() {}, ErrBoundary
+		return nil, ErrBoundary
+	}
+	return pool, nil
+}
+
+func OpenClosed(ctx context.Context, cfg *pgxpool.Config, incarnation string) (*scheduler.Worker, func(), error) {
+	pool, err := openPool(ctx, cfg, incarnation)
+	if err != nil {
+		return nil, func() {}, err
 	}
 	w := scheduler.NewClosedWorker(scheduler.Store{DB: pool, Incarnation: incarnation})
 	if _, err = w.Candidates(ctx, ""); !errors.Is(err, scheduler.ErrClosed) {

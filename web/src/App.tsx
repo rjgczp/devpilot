@@ -12,7 +12,7 @@ import {
   type User,
   type Workspace,
 } from "./api";
-import { isolatedDemo } from "./environment";
+import { isolatedDemo, isolatedPrivate } from "./environment";
 import { MonitorHistory } from "./MonitorHistory";
 import { AuthorizeForm, MonitorForm } from "./MonitorForm";
 import {
@@ -377,7 +377,7 @@ function WorkspaceApp({
         <div className="sidebar-note">
           <span className="small-dot" />
           <div>
-            <strong>{isolatedDemo ? "隔离演示" : "本地开发环境"}</strong>
+            <strong>{isolatedPrivate ? "私人隔离闭环" : isolatedDemo ? "隔离演示" : "本地开发环境"}</strong>
             <p>生产公网执行保持关闭</p>
           </div>
         </div>
@@ -415,8 +415,8 @@ function WorkspaceApp({
         <main className="content">
           {isolatedDemo && (
             <div className="demo-banner" role="status">
-              <strong>本地演示 · 无公网出口</strong>
-              <span className="environment-tag">隔离演示</span>
+              <strong>{isolatedPrivate ? "私人隔离闭环 · 无公网出口" : "本地演示 · 无公网出口"}</strong>
+              <span className="environment-tag">{isolatedPrivate ? "Private Worker / Probe" : "隔离演示"}</span>
               <p>
                 仅固定 HTTPS fixture，配置只读。请以本次临时 Owner
                 登录并授权激活；60秒周期，最多3次真实检查后关闭执行。暂停会停止新的批准，已开始的检查仍可能完成。

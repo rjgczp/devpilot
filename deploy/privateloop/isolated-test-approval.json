@@ -1,0 +1,9 @@
+{
+  "candidate_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a",
+  "approved_on": "2026-11-13",
+  "approval": "Product owner explicitly approved corrected exact candidate; isolated application validation only",
+  "disposable_pg18_local_and_ci": true,
+  "no_upstream_fixture_only": true,
+  "production": false,
+  "internet_targets": false
+}
