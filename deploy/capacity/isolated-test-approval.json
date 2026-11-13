@@ -1,0 +1,8 @@
+{
+  "candidate_sha256": "79c2db9b3d65a80225a30cfad312f95d9bbe7f7ff31eed5fe8889a9afbfbd768",
+  "private_mode_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a",
+  "approved_on": "2026-11-13",
+  "scope": "Disposable PG18/Linux, no-upstream fixture; test Reporter LOGIN, registration, UID65534 read-only metadata, private Gate; 105 actual fixture HTTP checks with explicit virtual eligibility intervals",
+  "production": false,
+  "internet": false
+}

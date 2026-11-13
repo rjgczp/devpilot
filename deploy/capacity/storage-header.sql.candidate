@@ -1,0 +1,132 @@
+-- INACTIVE future Migration15 candidate. Only after separately approved M14.
+-- Not loaded by Goose; no registration, LOGIN, Gate activation or network grant.
+BEGIN;
+SET LOCAL statement_timeout='2s';
+SET LOCAL transaction_timeout='2s';
+SET LOCAL lock_timeout='250ms';
+DO $$ BEGIN
+ IF NOT EXISTS(SELECT 1 FROM public.scheduler_control WHERE control_id='deployment' AND gate='closed' AND emergency_stop)
+ OR EXISTS(SELECT 1 FROM public.monitor_runs WHERE physical_release_confirmed_at IS NULL)
+ THEN RAISE EXCEPTION 'closed deployment and physical release required' USING ERRCODE='55000'; END IF;
+END $$;
+CREATE ROLE devpilot_storage_reporter NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+GRANT USAGE ON SCHEMA scheduler_private TO devpilot_storage_reporter;
+DO $$ BEGIN EXECUTE format('GRANT CONNECT ON DATABASE %I TO devpilot_storage_reporter',current_database()); END $$;
+CREATE TABLE scheduler_private.storage_registration(
+ singleton boolean PRIMARY KEY CHECK(singleton),login_name name NOT NULL,incarnation uuid NOT NULL,
+ generation bigint NOT NULL CHECK(generation>0),postmaster_started_at timestamptz NOT NULL,
+ expires_at timestamptz NOT NULL,manifest jsonb NOT NULL CHECK(jsonb_typeof(manifest)='array' AND jsonb_array_length(manifest) BETWEEN 1 AND 4 AND octet_length(manifest::text)<=4096)
+);
+CREATE TABLE scheduler_private.storage_state(
+ singleton boolean PRIMARY KEY REFERENCES scheduler_private.storage_registration(singleton),
+ sequence bigint NOT NULL DEFAULT 0 CHECK(sequence>=0),nonce uuid,issued_at timestamptz,deadline timestamptz,
+ accepted_sequence bigint NOT NULL DEFAULT 0 CHECK(accepted_sequence>=0),received_at timestamptz,valid_until timestamptz,
+ relation_bytes bigint CHECK(relation_bytes>=0),metrics jsonb CHECK(octet_length(metrics::text)<=4096),
+ status text NOT NULL DEFAULT 'unavailable' CHECK(status IN ('unavailable','blocked','healthy')),
+ low_samples smallint NOT NULL DEFAULT 0 CHECK(low_samples BETWEEN 0 AND 2),last_gate_at timestamptz NOT NULL DEFAULT '-infinity',
+ CHECK((nonce IS NULL)=(issued_at IS NULL) AND (nonce IS NULL)=(deadline IS NULL))
+);
+ALTER TABLE scheduler_private.storage_registration OWNER TO devpilot_scheduler_owner;
+ALTER TABLE scheduler_private.storage_state OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON scheduler_private.storage_registration,scheduler_private.storage_state FROM PUBLIC;
+
+CREATE FUNCTION scheduler_private.storage_admission(p_now timestamptz) RETURNS boolean
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private AS $$
+ SELECT EXISTS(SELECT 1 FROM scheduler_private.storage_registration r JOIN scheduler_private.storage_state s USING(singleton)
+ WHERE r.singleton AND r.expires_at>p_now AND r.postmaster_started_at=pg_postmaster_start_time()
+ AND s.status='healthy' AND s.valid_until>p_now AND s.received_at<=p_now AND s.last_gate_at<=p_now
+ AND s.received_at>s.valid_until-interval '5 seconds' AND s.received_at<=s.valid_until-interval '3 seconds'
+ AND s.relation_bytes*5::numeric<1073741824::numeric*4)
+$$;
+ALTER FUNCTION scheduler_private.storage_admission(timestamptz) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.storage_admission(timestamptz) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.storage_admission(timestamptz) TO devpilot_scheduler_api_owner;
+
+CREATE FUNCTION scheduler_private.storage_begin(p_incarnation uuid) RETURNS jsonb
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r scheduler_private.storage_registration%ROWTYPE;s scheduler_private.storage_state%ROWTYPE;n timestamptz;
+BEGIN
+ SELECT * INTO r FROM scheduler_private.storage_registration WHERE singleton FOR SHARE;
+ IF NOT FOUND OR r.login_name<>session_user OR r.incarnation<>p_incarnation OR NOT pg_has_role(session_user,'devpilot_storage_reporter','MEMBER')
+ THEN RAISE EXCEPTION 'storage identity rejected' USING ERRCODE='42501'; END IF;
+ SELECT * INTO s FROM scheduler_private.storage_state WHERE singleton FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'storage not provisioned' USING ERRCODE='55000'; END IF;
+ n:=clock_timestamp();
+ IF n<s.last_gate_at OR r.expires_at<=n OR r.postmaster_started_at<>pg_postmaster_start_time() OR s.sequence=9223372036854775807
+ OR current_setting('transaction_isolation')<>'read committed' OR n>transaction_timestamp()+interval '2 seconds' THEN
+  UPDATE scheduler_private.storage_state SET status='unavailable',low_samples=0,valid_until=NULL,nonce=NULL,issued_at=NULL,deadline=NULL WHERE singleton;
+  RETURN '{}'::jsonb;
+ END IF;
+ UPDATE scheduler_private.storage_state SET sequence=sequence+1,nonce=uuidv7(),issued_at=n,deadline=n+interval '2 seconds',last_gate_at=n WHERE singleton RETURNING * INTO s;
+ RETURN jsonb_build_object('nonce',s.nonce,'sequence',s.sequence,'issued_at',n,'deadline',s.deadline,'manifest',r.manifest);
+END $$;
+ALTER FUNCTION scheduler_private.storage_begin(uuid) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.storage_begin(uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.storage_begin(uuid) TO devpilot_storage_reporter;
+
+CREATE FUNCTION scheduler_private.storage_report(p_incarnation uuid,p_nonce uuid,p_payload jsonb) RETURNS jsonb
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog,scheduler_private SET lock_timeout='250ms' AS $$
+DECLARE r scheduler_private.storage_registration%ROWTYPE;s scheduler_private.storage_state%ROWTYPE;n timestamptz;
+ good boolean:=false;low boolean:=false;relation bigint;fs jsonb;bound jsonb;total numeric;used numeric;avail numeric;inodes numeric;free_inodes numeric;seen text[]:='{}';l smallint;
+BEGIN
+ -- Linearize publication/denial against the existing final deployment SHARE.
+ -- No business parents, Run, capacity budget or Reservation locks are acquired.
+ PERFORM 1 FROM public.scheduler_control WHERE control_id='deployment' FOR UPDATE;
+ SELECT * INTO r FROM scheduler_private.storage_registration WHERE singleton FOR SHARE;
+ IF NOT FOUND OR r.login_name<>session_user OR r.incarnation<>p_incarnation OR NOT pg_has_role(session_user,'devpilot_storage_reporter','MEMBER')
+ THEN RAISE EXCEPTION 'storage identity rejected' USING ERRCODE='42501'; END IF;
+ SELECT * INTO s FROM scheduler_private.storage_state WHERE singleton FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'storage not provisioned' USING ERRCODE='55000'; END IF;
+ -- Deny-only is available despite expiry, clock or instance mismatch.
+ IF p_nonce IS NULL THEN
+  UPDATE scheduler_private.storage_state SET status='unavailable',valid_until=NULL,low_samples=0,nonce=NULL,issued_at=NULL,deadline=NULL WHERE singleton;
+  RETURN jsonb_build_object('accepted',true,'status','unavailable');
+ END IF;
+ n:=clock_timestamp();
+ IF s.nonce IS NOT NULL AND p_nonce=s.nonce AND s.deadline>n AND n>=s.issued_at AND n>=s.last_gate_at
+ AND r.expires_at>n AND r.postmaster_started_at=pg_postmaster_start_time()
+ AND current_setting('transaction_isolation')='read committed' AND n<=transaction_timestamp()+interval '2 seconds'
+ AND p_payload IS NOT NULL AND octet_length(p_payload::text)<=4096 AND jsonb_typeof(p_payload)='object' THEN
+ BEGIN
+  good:=((SELECT count(*) FROM jsonb_object_keys(p_payload))=2 AND (p_payload->>'sequence')::bigint=s.sequence
+   AND jsonb_typeof(p_payload->'filesystems')='array' AND jsonb_array_length(p_payload->'filesystems')=jsonb_array_length(r.manifest));low:=good;
+  FOR fs IN SELECT value FROM jsonb_array_elements(p_payload->'filesystems') LOOP
+   SELECT value INTO bound FROM jsonb_array_elements(r.manifest) WHERE value->>'device'=fs->>'device' AND value->>'fsid'=fs->>'fsid';
+   IF bound IS NULL OR fs->>'device'=ANY(seen) OR jsonb_typeof(fs)<>'object' OR (SELECT count(*) FROM jsonb_object_keys(fs))<>7 THEN good:=false;EXIT; END IF;
+   seen:=array_append(seen,fs->>'device');
+   total:=(fs->>'total')::bigint;used:=(fs->>'used')::bigint;avail:=(fs->>'available')::bigint;inodes:=(fs->>'inodes')::bigint;free_inodes:=(fs->>'free_inodes')::bigint;
+   IF total IS NULL OR used IS NULL OR avail IS NULL OR inodes IS NULL OR free_inodes IS NULL
+   OR total<=0 OR used<0 OR avail<0 OR used+avail>total OR inodes<=0 OR free_inodes<0 OR free_inodes>inodes THEN good:=false;EXIT; END IF;
+   good:=good AND used*5<total*4 AND avail*5>total AND free_inodes*5>inodes;
+   low:=low AND used*10<total*7 AND avail*10>total*3 AND free_inodes*10>inodes*3;
+  END LOOP;
+ EXCEPTION WHEN invalid_text_representation OR numeric_value_out_of_range OR invalid_parameter_value THEN good:=false;low:=false;
+ END;
+ ELSE
+  UPDATE scheduler_private.storage_state SET status='unavailable',valid_until=NULL,low_samples=0,nonce=NULL,issued_at=NULL,deadline=NULL WHERE singleton;
+  RETURN jsonb_build_object('accepted',false,'status','unavailable');
+ END IF;
+ -- Fixed scheduler relations only. Each total includes its indexes and TOAST;
+ -- do not add indexes again or add R to filesystem used bytes.
+ SELECT sum(pg_total_relation_size(x))::bigint INTO relation FROM unnest(ARRAY[
+ 'public.monitor_activation_states'::regclass,'public.monitor_schedules'::regclass,'public.monitor_runs'::regclass,
+ 'public.scheduler_reservations'::regclass,'public.scheduler_budget_state'::regclass,'public.scheduler_control'::regclass,
+ 'scheduler_private.storage_registration'::regclass,'scheduler_private.storage_state'::regclass]) x;
+ n:=clock_timestamp();
+ IF n>=s.deadline OR n>transaction_timestamp()+interval '2 seconds' OR r.expires_at<=n OR n<s.last_gate_at THEN
+  UPDATE scheduler_private.storage_state SET status='unavailable',valid_until=NULL,low_samples=0,nonce=NULL,issued_at=NULL,deadline=NULL WHERE singleton;
+  RETURN jsonb_build_object('accepted',false,'status','unavailable');
+ END IF;
+ good:=COALESCE(good AND relation*5::numeric<1073741824::numeric*4,false);
+ low:=COALESCE(low AND relation*10::numeric<1073741824::numeric*7,false);
+ l:=CASE WHEN low THEN LEAST(2,s.low_samples+1) ELSE 0 END;
+ IF s.status<>'healthy' AND l<2 THEN good:=false; END IF;
+ UPDATE scheduler_private.storage_state SET accepted_sequence=s.sequence,received_at=n,valid_until=s.issued_at+interval '5 seconds',
+  relation_bytes=relation,metrics=p_payload,status=CASE WHEN good THEN 'healthy' ELSE 'blocked' END,low_samples=l,
+  nonce=NULL,issued_at=NULL,deadline=NULL,last_gate_at=n WHERE singleton;
+ UPDATE public.scheduler_control SET disk_used_bytes=relation WHERE control_id='deployment';
+ RETURN jsonb_build_object('accepted',true,'status',CASE WHEN good THEN 'healthy' ELSE 'blocked' END);
+END $$;
+ALTER FUNCTION scheduler_private.storage_report(uuid,uuid,jsonb) OWNER TO devpilot_scheduler_owner;
+REVOKE ALL ON FUNCTION scheduler_private.storage_report(uuid,uuid,jsonb) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION scheduler_private.storage_report(uuid,uuid,jsonb) TO devpilot_storage_reporter;

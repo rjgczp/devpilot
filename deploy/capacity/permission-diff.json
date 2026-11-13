@@ -1,0 +1,56 @@
+{
+  "candidate_sha256": "79c2db9b3d65a80225a30cfad312f95d9bbe7f7ff31eed5fe8889a9afbfbd768",
+  "requires_private_mode_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a",
+  "roles": [
+    "devpilot_storage_reporter NOLOGIN"
+  ],
+  "tables": [
+    "scheduler_private.storage_registration",
+    "scheduler_private.storage_state"
+  ],
+  "runtime_grants": [
+    "CONNECT current dedicated database TO devpilot_storage_reporter",
+    "USAGE scheduler_private TO devpilot_storage_reporter",
+    "EXECUTE storage_begin(uuid), storage_report(uuid,uuid,jsonb) TO devpilot_storage_reporter",
+    "EXECUTE storage_admission(timestamptz) TO devpilot_scheduler_api_owner"
+  ],
+  "worker_controller_supervisor_grants": [],
+  "existing_functions": [
+    {
+      "function": "run_capacity_accounting",
+      "source": "migrations/00009_enforce_scheduler_capacity.sql",
+      "source_sha256": "3ec3404418766ca76492f8f0cd00706d0e8e8bf29cafc47c79050b1fee230d9e"
+    },
+    {
+      "function": "cleanup_monitor",
+      "source": "migrations/00010_add_bounded_scheduler_cleanup.sql",
+      "source_sha256": "e87415adc0b15e563cc2b762203291f3ab8d664225097b5e321422e94f060fd5"
+    },
+    {
+      "function": "claim",
+      "source": "deploy/privateloop/private-mode.sql.candidate",
+      "source_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a"
+    },
+    {
+      "function": "start_run",
+      "source": "deploy/privateloop/private-mode.sql.candidate",
+      "source_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a"
+    },
+    {
+      "function": "reserve_target",
+      "source": "deploy/privateloop/private-mode.sql.candidate",
+      "source_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a"
+    },
+    {
+      "function": "private_worker_ready",
+      "source": "deploy/privateloop/private-mode.sql.candidate",
+      "source_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a"
+    },
+    {
+      "function": "execution_status",
+      "source": "deploy/privateloop/private-mode.sql.candidate",
+      "source_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a"
+    }
+  ],
+  "production_activation": false
+}

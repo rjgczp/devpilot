@@ -7,9 +7,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/rjgczp/devpilot/internal/storagecontrol"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/rjgczp/devpilot/internal/workerruntime"
 )
@@ -20,6 +22,7 @@ func run() int {
 	inc := flags.String("incarnation", "", "offline assigned Worker UUID")
 	private := flags.Bool("private-isolated", false, "require separately approved private PG admission and inherited Supervisor IPC")
 	catalog := flags.String("catalog-file", "", "restricted operator target catalog file")
+	storage := flags.Bool("storage-watchdog", false, "require fresh monotonic admission on inherited read-only pipe5")
 	check := flags.Bool("check", false, "validate the closed control boundary and exit")
 	if flags.Parse(os.Args[1:]) != nil || flags.NArg() != 0 {
 		return 2
@@ -43,6 +46,22 @@ func run() int {
 			return 2
 		}
 		defer close()
+		if *storage {
+			fd, err := storagecontrol.InheritedPipe(5, false)
+			if err != nil {
+				return 2
+			}
+			guard := storagecontrol.NewGuard(fd)
+			defer guard.Close()
+			until := time.Now().Add(3 * time.Second)
+			for !guard.Alive() && time.Now().Before(until) && ctx.Err() == nil {
+				time.Sleep(20 * time.Millisecond)
+			}
+			if !guard.Alive() {
+				return 2
+			}
+			loop.RequireStorageGuard(guard.Alive)
+		}
 		if *check {
 			fmt.Println(`{"event":"worker_checked","gate":"private-isolated"}`)
 			return 0
