@@ -208,6 +208,10 @@ BEGIN
   RAISE EXCEPTION 'one cleanup per transaction' USING ERRCODE='25000'; END IF;
  PERFORM scheduler_private.lock_parents(p_wid,p_pid,p_mid,NULL,NULL,false);
  SELECT * INTO s FROM public.monitor_schedules WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid;
+ IF NOT EXISTS(SELECT 1 FROM public.monitor_runs WHERE workspace_id=p_wid AND project_id=p_pid AND monitor_id=p_mid) THEN
+  PERFORM scheduler_private.system_identity('controller',p_incarnation);
+  RETURN jsonb_build_object('deleted_runs',0,'rows_written',0,'reason','no_history','next_finished',NULL,'next_run',NULL);
+ END IF;
  -- Candidate selection is only a hint. Every selected existing Run is locked
  -- before G; no additional Run is acquired while holding budgets/reservations.
  SELECT array_agg(x.run_id) INTO ids FROM (

@@ -34,6 +34,7 @@ type privateWorkerMessage struct {
 
 var privateCapacityHold func(*testing.T, *pgxpool.Pool, *periodicPipe, memberFixture, monitor.Public, *pgxpool.Pool, string, *pgxpool.Pool, string, *pgxpool.Pool, string) string
 var privateCapacityDeny func(*testing.T)
+var privateCapacitySession func(*testing.T, *pgxpool.Pool, *memberFixture)
 
 var privateCapacitySetup func(*testing.T, *pgxpool.Pool, *periodicPipe, *pgxpool.Pool, string, *pgxpool.Pool, string)
 
@@ -107,6 +108,9 @@ func TestPrivateLoopPG(t *testing.T) {
 		privateCapacitySetup(t, db, p, w1, i1, c, ci)
 	}
 	f, m := monitorFixture(t, db)
+	if scenario == "capacity" {
+		privateCapacitySession(t, db, &f)
+	}
 	url := "https://a.fixture.example.com/fixture/private-path-SENTINEL"
 	interval, timeout := int64(60), int64(10)
 	m, e = (monitor.Store{Pool: db}).Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.Input{URL: &url, IntervalSeconds: &interval, TimeoutSeconds: &timeout}, monitor.ETag(m))
@@ -115,6 +119,11 @@ func TestPrivateLoopPG(t *testing.T) {
 	}
 	server, client, _ := checkpointHTTPServer(t, db)
 	defer server.Close()
+	if scenario == "capacity" {
+		if _, e = db.Exec(ctx, `UPDATE scheduler_control SET expires_at=clock_timestamp()+interval '4 hours'`); e != nil {
+			t.Fatal(e)
+		}
+	}
 	interactive := scenario == "web"
 	if interactive {
 		boot := p.exchange("demo-bootstrap", nil)
@@ -152,7 +161,7 @@ func TestPrivateLoopPG(t *testing.T) {
 		a, h, _ := checkpointProjectionGet(t, client, server.URL, status75Base(m), f.ownerToken)
 		seconds := 900
 		if scenario == "capacity" {
-			seconds = 3600
+			seconds = 10800
 		}
 		if scenario == "expiry" {
 			seconds = 60
@@ -228,7 +237,7 @@ func TestPrivateLoopPG(t *testing.T) {
 	seenReady := map[int]bool{}
 	limit := 320 * time.Second
 	if scenario == "capacity" {
-		limit = 35 * time.Minute
+		limit = 170 * time.Minute
 	}
 	for time.Since(began) < limit {
 		msg := p.exchange("worker-private-poll", nil).Worker
@@ -300,22 +309,12 @@ func TestPrivateLoopPG(t *testing.T) {
 					if e = db.QueryRow(ctx, `SELECT (SELECT count(*) FROM monitor_runs WHERE monitor_id=$1),terminal_count FROM scheduler_budget_state WHERE kind='monitor' AND budget_key=$2`, m.ID, m.WorkspaceID+"/"+m.ProjectID+"/"+m.ID).Scan(&retained, &ledger); e != nil || retained != ledger || retained > 100 {
 						t.Fatal("capacity ledger/cap", retained, ledger, e)
 					}
-					p.exchange("worker-capacity-snapshot", map[string]any{"cycle": committed, "retained": retained, "fence": line.FencingToken, "virtual_interval": true})
-					if committed < 105 {
-						// Explicit fixture-only interval advancement. Do not label
-						// these as real60s periods or change any runtime function.
-						if _, e = db.Exec(ctx, `UPDATE monitor_schedules SET next_due_at=clock_timestamp(),next_start_not_before=clock_timestamp()-interval '1 second' WHERE monitor_id=$1`, m.ID); e != nil {
-							t.Fatal(e)
-						}
-						if _, e = db.Exec(ctx, `UPDATE scheduler_budget_state SET tokens=1000000,last_refill_at=clock_timestamp()-interval '60 seconds',not_before=clock_timestamp()-interval '1 second' WHERE kind='monitor' AND budget_key=$1`, m.WorkspaceID+"/"+m.ProjectID+"/"+m.ID); e != nil {
-							t.Fatal(e)
-						}
-						previousDue = nil
-					}
+					p.exchange("worker-capacity-snapshot", map[string]any{"cycle": committed, "retained": retained, "fence": line.FencingToken, "real_interval_seconds": 60})
+
 				}
 				if scenario == "capacity" && committed == want {
 					var protected int
-					if e = db.QueryRow(ctx, `SELECT count(*) FROM monitor_runs r JOIN scheduler_reservations q USING(workspace_id,project_id,monitor_id,run_id) WHERE r.run_id=$1 AND r.attempt_state='unknown' AND r.physical_release_confirmed_at IS NULL AND q.reservation_state='quarantine'`, heldUnknown).Scan(&protected); e != nil || protected != 1 {
+					if e = db.QueryRow(ctx, `SELECT count(*) FROM monitor_runs r JOIN scheduler_reservations q USING(workspace_id,project_id,monitor_id,run_id) WHERE r.run_id=$1 AND r.attempt_state='unknown' AND r.physical_release_confirmed_at IS NULL AND q.reservation_state='quarantined'`, heldUnknown).Scan(&protected); e != nil || protected != 1 {
 						t.Fatal("unknown/unreleased history lost", e)
 					}
 					var storage bool

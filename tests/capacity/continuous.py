@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""105 real no-upstream checks; explicit virtual eligibility intervals only."""
+"""105 real60s no-upstream cycles; no clock or eligibility mutation."""
 import argparse,base64,json,os,select,shutil,subprocess,sys,threading,time
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
@@ -9,14 +9,14 @@ from network_fixture import IMAGE,LABEL
 
 class CapacityHarness(LoopHarness):
  def __init__(self,*a):
-  super().__init__(*a);self.worker_bootstrap=HERE/'worker_bootstrap.py';self.pg_deadline_seconds=2400
-  self.expected_cycles=105;self.expected_gets=105;self.task_name='continuous-capacity';self.virtual_eligibility=True
+  super().__init__(*a);self.worker_bootstrap=HERE/'worker_bootstrap.py';self.pg_deadline_seconds=10800
+  self.expected_cycles=105;self.expected_gets=105;self.task_name='continuous-capacity'
   self.lock=threading.RLock();self.source_stop=threading.Event();self.sources=[];self.snapshots=[]
  def send(self,proc,value):
   with self.lock:return super().send(proc,value)
  def control_command(self,*a,**kw):
   cmd=super().control_command(*a,**kw)
-  if kw.get('source'):cmd[-1]='-test.timeout=2400s'
+  if kw.get('source'):cmd[-1]='-test.timeout=10800s'
   return cmd
  def public_catalog(self,selected):return dict(super().public_catalog(selected),case='capacity')
  def source_command(self,name,dsn,inc,kind):
@@ -117,6 +117,6 @@ def main():
  p=argparse.ArgumentParser();p.add_argument('--tools',type=Path,required=True);p.add_argument('--evidence',type=Path,required=True);a=p.parse_args()
  h=CapacityHarness(a.evidence.resolve(),a.tools.resolve(),'normal');status=1
  try:h.pg(h.tools/'private-loop-pg.test','normal');status=0
- finally:h.record('capacity-result',dict(exit_code=status,cycles=len(h.completed),real_interval=False,virtual_eligibility=True,internet=False,task83_physical_pressure_verified=False));h.close()
+ finally:h.record('capacity-result',dict(exit_code=status,cycles=len(h.completed),real_interval=True,virtual_eligibility=False,internet=False,task83_physical_pressure_verified=False));h.close()
  return status
 if __name__=='__main__':raise SystemExit(main())

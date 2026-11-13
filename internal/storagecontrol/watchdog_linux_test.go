@@ -4,6 +4,7 @@ package storagecontrol
 
 import (
 	"context"
+	"encoding/binary"
 	"golang.org/x/sys/unix"
 	"os"
 	"testing"
@@ -32,6 +33,12 @@ func TestMonotonicGuardRejectsMissingStaleAndEOF(t *testing.T) {
 	w.Close()
 	if g.Alive() {
 		t.Fatal("EOF retained cached availability")
+	}
+	old, _ := bootNow()
+	stale := make([]byte, 8)
+	binary.BigEndian.PutUint64(stale, uint64(old-int64(maxPulseAge)-1))
+	if fresh(stale) {
+		t.Fatal("stale monotonic pulse accepted")
 	}
 	if fresh(make([]byte, 8)) {
 		t.Fatal("zero pulse")

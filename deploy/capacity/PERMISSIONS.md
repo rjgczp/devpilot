@@ -36,6 +36,9 @@ Seven existing functions are replaced, with source hashes in the manifest:
   active authorization/cooling. Keep schedule, fence, budget keys, cooldown and
   current projections. Target-key cooling still governs key deletion separately.
   Unknown stays retained; other old retirement rules remain conservative.
+  An empty scope returns no_history after parent locking and a fresh Controller
+  identity check, without touching budgets. Non-empty missing-ledger failures
+  remain unchanged; this does not delete empty schedules or return slots.
 - `claim`, `start_run`, `reserve_target`: add storage admission to original final
   disk check after existing waits. No signature/Owner/HTTP/Permit policy change.
 - `private_worker_ready`: own boolean also requires storage admission.
@@ -67,10 +70,18 @@ including unchanged M14, M15, a dedicated Reporter test LOGIN/group membership,
 registration, private-isolated test Gate and UID65534 metadata-only read-only
 mounts. No production, privileged mounts, ACL expansion or new physical disk.
 Validation will include actual statfs plus injected threshold/refusal samples,
-and105 sequential actual fixture HTTP Run/Result/physical releases with explicit
-fixture-only virtual due/cooldown advancement. These are not105 real60s periods,
-not Internet GETs, and not Task8.3 physical-pressure acceptance.
+and105 actual60s fixture HTTP Run/Result/physical-release cycles. No clock, due
+or cooldown is mutated. Fixture control/Reporter registrations and an existing
+Owner session last4h; Owner requests a finite3h authorization through the existing
+API (within its existing24h maximum). No authorization rule is changed. The
+new test wall-clock timeout is3h; SQL2s/lock250ms/Lease/Permit limits stay fixed.
+No Internet GETs and no Task8.3 physical-pressure acceptance are implied.
 
 Pause/PATCH, Result, quarantine, trusted release and recovery are not gated by
 this new storage helper. Existing budget/physical guards remain. No permission
 is applied until the exact candidate hash and this scope are approved.
+
+Corrected candidate SHA256: `f6eaa65dfd8a7178e7ba4473f1262e5f2710db1d8cae98bed61e6196575c1928`.
+The only SQL difference from approved79c2db9 is the empty-scope early return
+above. That original candidate and failed CI artifact are retained. The corrected exact hash and real-interval test scope were independently
+approved on2026-11-13 and are recorded in isolated-test-approval.json.

@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rjgczp/devpilot/internal/scheduler"
 	"github.com/rjgczp/devpilot/internal/storagecontrol"
 	"os"
 	"path/filepath"
@@ -94,6 +95,16 @@ func TestCapacityAdmissionPG(t *testing.T) {
 		}
 	}
 	allowed(false)
+	f, m := monitorFixture(t, db)
+	if _, e := db.Exec(ctx, `INSERT INTO monitor_schedules(workspace_id,project_id,monitor_id) VALUES($1,$2,$3)`, m.WorkspaceID, m.ProjectID, m.ID); e != nil {
+		t.Fatal(e)
+	}
+	c, ci := budgetController(t, db)
+	out, e := (scheduler.Store{DB: c, Incarnation: ci}).CleanupMonitor(ctx, scheduler.CleanupHint{WorkspaceID: m.WorkspaceID, ProjectID: m.ProjectID, MonitorID: m.ID}, scheduler.CleanupCursor{}, 8)
+	if e != nil || out.Reason != "no_history" || out.RowsWritten != 0 || queryInt(t, db, `SELECT count(*) FROM monitor_schedules WHERE monitor_id=$1`, m.ID) != 1 {
+		t.Fatal("empty scope maintenance", out, e)
+	}
+	_ = f
 	publish := func(used, avail int64) {
 		t.Helper()
 		ch, e := client.Begin(ctx)
@@ -125,7 +136,7 @@ func TestCapacityAdmissionPG(t *testing.T) {
 	time.Sleep(5100 * time.Millisecond)
 	allowed(false) // real TTL, no clock mutation.
 	w, wi := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
-	_, e := w.Exec(ctx, `SELECT scheduler_private.storage_begin($1::uuid)`, wi)
+	_, e = w.Exec(ctx, `SELECT scheduler_private.storage_begin($1::uuid)`, wi)
 	budgetSQLState(t, e, "42501")
 	_, e = r.Exec(ctx, `SELECT * FROM public.monitor_runs`)
 	budgetSQLState(t, e, "42501")

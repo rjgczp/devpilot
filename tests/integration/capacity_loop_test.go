@@ -11,15 +11,22 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rjgczp/devpilot/internal/monitor"
 	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
+	"github.com/rjgczp/devpilot/internal/password"
 	"github.com/rjgczp/devpilot/internal/scheduler"
+	"github.com/rjgczp/devpilot/internal/session"
 	"github.com/rjgczp/devpilot/internal/storagecontrol"
+	"github.com/rjgczp/devpilot/internal/user"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 )
 
-func init() { privateCapacitySetup = setupPrivateCapacity; privateCapacityHold = holdCapacityUnknown }
+func init() {
+	privateCapacitySetup = setupPrivateCapacity
+	privateCapacityHold = holdCapacityUnknown
+	privateCapacitySession = capacityOwnerSession
+}
 func setupPrivateCapacity(t *testing.T, db *pgxpool.Pool, p *periodicPipe, w *pgxpool.Pool, wi string, c *pgxpool.Pool, ci string) {
 	ctx := context.Background()
 	a, e := os.ReadFile(filepath.Join(root(), "deploy/capacity/isolated-test-approval.json"))
@@ -60,6 +67,9 @@ func setupPrivateCapacity(t *testing.T, db *pgxpool.Pool, p *periodicPipe, w *pg
 	}
 	bindings := p.exchange("capacity-filesystems", nil)
 	reporter, inc := capacityReporter(t, db, string(bindings.Frame))
+	if _, e = db.Exec(ctx, `UPDATE scheduler_private.storage_registration SET expires_at=clock_timestamp()+interval '4 hours'`); e != nil {
+		t.Fatal(e)
+	}
 	privateCapacityDeny = func(t *testing.T) {
 		t.Helper()
 		if e := (storagecontrol.Client{DB: reporter, Incarnation: inc}).Unavailable(context.Background()); e != nil {
@@ -134,4 +144,17 @@ func holdCapacityUnknown(t *testing.T, db *pgxpool.Pool, p *periodicPipe, f memb
 	}
 	p.exchange("worker-capacity-hold-unknown", line)
 	return lease.RunID
+}
+
+func capacityOwnerSession(t *testing.T, db *pgxpool.Pool, f *memberFixture) {
+	t.Helper()
+	secret, digest, e := session.NewTokens().New()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, e = (session.Store{Pool: db}).Create(context.Background(), user.Credentials{Public: f.owner, PasswordHash: password.DummyPHC}, digest, 4*time.Hour); e != nil {
+		t.Fatal(e)
+	}
+	f.ownerToken = secret
+	f.od = digest
 }

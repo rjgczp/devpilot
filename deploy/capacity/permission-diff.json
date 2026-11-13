@@ -1,5 +1,5 @@
 {
-  "candidate_sha256": "79c2db9b3d65a80225a30cfad312f95d9bbe7f7ff31eed5fe8889a9afbfbd768",
+  "candidate_sha256": "f6eaa65dfd8a7178e7ba4473f1262e5f2710db1d8cae98bed61e6196575c1928",
   "requires_private_mode_sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a",
   "roles": [
     "devpilot_storage_reporter NOLOGIN"

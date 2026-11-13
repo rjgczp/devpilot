@@ -58,8 +58,9 @@ simultaneous frozen DB clock and selective watcher partition, is made.
 Evidence distinguishes protocol-injected boundary tests from real kernel
 metadata. The scale test leaves one genuinely started, quarantined unknown
 without release, then performs105 real fixture GET/Result/physical-release
-cycles on another Monitor. It explicitly advances eligibility timestamps only
-inside the disposable fixture; these are not105 real60s periods. It verifies
+cycles on another Monitor, using the actual60s interval without clock/due/cooldown
+mutation. A finite3h Owner authorization and4h fixture session/registration stay
+within existing limits; only the new test process timeout is3h. It verifies
 count ledgers/cap, continued fence/due, retained unknown and safety writes while
 storage is unavailable. No fabricated success or physical release is used.
 
@@ -74,3 +75,11 @@ is unchanged, both remain outside Goose. Production application/identities/Gate
 and real egress still require separate review. Migration11 absent; OpenSpec37/47,
 Task8.3 pressure proof deferred. Historical55P03/lock wait/IPv6/management timeout
 causes and failed-browser cleanup race remain open; no unrelated matrix rerun.
+
+The first native CI exposed two fixture/runtime issues: maintenance selected
+a never-claimed scope without ledgers, and attempted virtual cooldown rollback
+was correctly rejected by the original monotonic guard. The corrected candidate
+returns no_history for empty scopes; populated missing-ledger rejection remains.
+The scale case now waits all105 real intervals, preserving all original guards.
+Original CI artifact #14018253332 is retained with SHA256
+`feef5d6e79bec46a6580e94308d0c52cea820963b1ae0d7955c79e11968e6c27`.
