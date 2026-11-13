@@ -3,7 +3,7 @@
 Only this native Worker gets its restricted DSN and catalog files. The relay
 owns anonymous IPC; requests go to the independently trusted outer Supervisor.
 """
-import base64,fcntl,json,os,select,subprocess,sys
+import base64,fcntl,json,os,select,subprocess,sys,time
 assert os.getuid()==65534
 stdin_reader=Reader(sys.stdin.fileno())
 original=[]
@@ -14,7 +14,7 @@ os.dup2(rr,3,inheritable=True);os.dup2(qw,4,inheritable=True);os.dup2(gr,5,inher
 child=subprocess.Popen(['/toolbin/privateworker','--database-url-file','/run/worker-url','--incarnation',sys.argv[1],'--private-isolated','--storage-watchdog','--catalog-file','/run/worker-catalog'],stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=sys.stderr,close_fds=True,pass_fds=(3,4,5),env={'LANG':'C','TZ':'UTC'},bufsize=0)
 for fd in set([rr,qw,gr,3,4,5]):
  if fd not in [rw,qr,gw]:os.close(fd)
-request=bytearray();event=bytearray()
+request=bytearray();event=bytearray();last_guard=None;guard_count=0
 while True:
  ready=select.select([sys.stdin,qr,child.stdout],[],[],1)[0]
  if sys.stdin in ready:
@@ -24,6 +24,7 @@ while True:
    if value.get('op')=='stop':child.terminate();continue
    if 'guard' in value:
     beat=base64.b64decode(value['guard']);assert len(beat)==8
+    last_guard=int.from_bytes(beat,'big');guard_count+=1
     if gw is not None:os.write(gw,beat)
     continue
    if value.get('storage_lost'):
@@ -40,7 +41,9 @@ while True:
  if child.stdout in ready:
   data=os.read(child.stdout.fileno(),1)
   if not data:
-   status=child.wait(timeout=3);print(json.dumps(dict(kind='exit',exit_code=status)),flush=True);break
+   status=child.wait(timeout=3)
+   print(json.dumps(dict(event='storage-relay-exit',guard_count=guard_count,last_guard_age_ms=None if last_guard is None else (time.clock_gettime_ns(time.CLOCK_BOOTTIME)-last_guard)//1000000)),file=sys.stderr,flush=True)
+   print(json.dumps(dict(kind='exit',exit_code=status)),flush=True);break
   event+=data;assert len(event)<=8192
   if event.endswith(b'\n'):print(json.dumps(dict(kind='event',event=json.loads(event))),flush=True);event.clear()
  if child.poll() is not None and not ready:break

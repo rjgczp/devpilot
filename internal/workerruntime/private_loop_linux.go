@@ -83,7 +83,7 @@ func (l *PrivateLoop) Run(ctx context.Context, sup Supervisor, directory schedul
 			return ctx.Err()
 		}
 		if !l.storageAlive() {
-			return scheduler.ErrClosed
+			return fmt.Errorf("storage watchdog before candidates: %w", scheduler.ErrClosed)
 		}
 		hints, e := l.worker.Candidates(ctx, "")
 		if e != nil && !errors.Is(e, scheduler.ErrClosed) {
@@ -91,7 +91,7 @@ func (l *PrivateLoop) Run(ctx context.Context, sup Supervisor, directory schedul
 		}
 		for _, h := range hints {
 			if !l.storageAlive() {
-				return scheduler.ErrClosed
+				return fmt.Errorf("storage watchdog before claim: %w", scheduler.ErrClosed)
 			}
 			lease, e := l.worker.Claim(ctx, h)
 			if errors.Is(e, scheduler.ErrCandidate) || errors.Is(e, scheduler.ErrCapacity) {
@@ -130,7 +130,7 @@ func (l *PrivateLoop) execute(ctx context.Context, sup Supervisor, directory sch
 		return ErrBoundary
 	}
 	if !l.storageAlive() {
-		return scheduler.ErrClosed
+		return fmt.Errorf("storage watchdog before start: %w", scheduler.ErrClosed)
 	}
 	snapshot, e := l.worker.Start(ctx, h, lease)
 	if e != nil {

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """105 real60s no-upstream cycles; no clock or eligibility mutation."""
-import argparse,base64,json,os,select,shutil,subprocess,sys,threading,time
+import argparse,base64,collections,json,os,select,shutil,subprocess,sys,threading,time
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/'privateloop'))
@@ -12,6 +12,7 @@ class CapacityHarness(LoopHarness):
   super().__init__(*a);self.worker_bootstrap=HERE/'worker_bootstrap.py';self.worker_prelude=(HERE/'framing.py').read_text()+'\n';self.pg_deadline_seconds=10800
   self.expected_cycles=105;self.expected_gets=105;self.task_name='continuous-capacity';self.backend4_base=128
   self.lock=threading.RLock();self.source_stop=threading.Event();self.sources=[];self.snapshots=[]
+  self.pulses=collections.deque(maxlen=60)
  def send(self,proc,value):
   with self.lock:return super().send(proc,value)
  def control_command(self,*a,**kw):
@@ -35,15 +36,19 @@ class CapacityHarness(LoopHarness):
     ready=select.select([self.sampler.stdout,self.watchdog.stdout],[],[],.1)[0]
     if self.sampler.stdout in ready:
      value=json.loads(self.read_bytes(self.sampler,time.monotonic()+2))
+     self.pulses.append(dict(source='sampler',at=time.clock_gettime_ns(time.CLOCK_BOOTTIME),pulse=value.get('pulse')))
      if value.get('lost'):self.send(self.watchdog,dict(source_closed=True));break
      self.send(self.watchdog,value)
     if self.watchdog.stdout in ready:
      value=json.loads(self.read_bytes(self.watchdog,time.monotonic()+2))
+     self.pulses.append(dict(source='watchdog',at=time.clock_gettime_ns(time.CLOCK_BOOTTIME),index=value.get('index'),pulse=value.get('pulse')))
      if value.get('lost'):break
      pending[value['index']]=value['pulse']
     for index,pulse in list(pending.items()):
      if index<len(self.workers):
-      if self.workers[index].poll() is None:self.send(self.workers[index],dict(guard=pulse))
+      if self.workers[index].poll() is None:
+       self.send(self.workers[index],dict(guard=pulse))
+       self.pulses.append(dict(source='forwarded',at=time.clock_gettime_ns(time.CLOCK_BOOTTIME),index=index,pulse=pulse))
       del pending[index]
   except Exception as e:self.record('storage-broker-error',dict(type=type(e).__name__))
   finally:
@@ -107,6 +112,11 @@ class CapacityHarness(LoopHarness):
  def close(self):
   self.source_stop.set()
   if hasattr(self,'thread'):self.thread.join(timeout=2)
+  self.record('storage-pulse-tail',list(self.pulses))
+  if getattr(self,'pg_id',None):
+   sql="SELECT jsonb_build_object('at',clock_timestamp(),'storage',(SELECT jsonb_build_object('sequence',sequence,'accepted_sequence',accepted_sequence,'status',status,'relation_bytes',relation_bytes,'metrics',metrics,'received_at',received_at,'valid_until',valid_until,'issued_at',issued_at,'deadline',deadline,'last_gate_at',last_gate_at) FROM scheduler_private.storage_state))"
+   state=subprocess.run(['docker','exec',self.pg_id,'psql','-U','devpilot_fixture','-d','devpilot_registration_test','-At','-c',sql],capture_output=True,timeout=5)
+   (self.dest/'storage-final-state.log').write_bytes(state.stdout+state.stderr)
   for p in self.sources:
    if p.poll() is None:
     try:self.send(p,dict(op='stop'))
