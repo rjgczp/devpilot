@@ -12,6 +12,32 @@ import (
 	"time"
 )
 
+func TestAdmissionSyscallRetriesOnlyInterruptedAndRemainsBounded(t *testing.T) {
+	calls := 0
+	n, e := admissionSyscall(func() (int, error) {
+		calls++
+		if calls < 4 {
+			return -1, unix.EINTR
+		}
+		return 8, nil
+	})
+	if calls != 4 || n != 8 || e != nil {
+		t.Fatal(calls, n, e)
+	}
+	calls = 0
+	_, e = admissionSyscall(func() (int, error) { calls++; return -1, unix.EINTR })
+	if calls != 4 || e != unix.EINTR {
+		t.Fatal("unbounded interruption", calls, e)
+	}
+	for _, failure := range []error{unix.EIO, unix.EBADF, unix.EAGAIN} {
+		calls = 0
+		_, e = admissionSyscall(func() (int, error) { calls++; return -1, failure })
+		if calls != 1 || e != failure {
+			t.Fatal("non-interruption retried", calls, e)
+		}
+	}
+}
+
 func TestGuardSustainedFreshPulses(t *testing.T) {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()

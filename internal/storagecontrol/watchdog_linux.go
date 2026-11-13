@@ -106,6 +106,18 @@ type Guard struct {
 	failure error
 }
 
+// Interrupted local syscalls carry no commit/HTTP ambiguity. This bound does
+// not apply to, or retry, any database or execution operation.
+func admissionSyscall(call func() (int, error)) (int, error) {
+	for attempt := 0; attempt < 4; attempt++ {
+		n, err := call()
+		if err != unix.EINTR {
+			return n, err
+		}
+	}
+	return 0, unix.EINTR
+}
+
 func NewGuard(f *os.File) *Guard { return &Guard{file: f} }
 func (g *Guard) Alive() bool {
 	if g == nil {
@@ -122,13 +134,7 @@ func (g *Guard) Alive() bool {
 		fds := []unix.PollFd{{Fd: int32(fd), Events: unix.POLLIN | unix.POLLHUP}}
 		// SIGURG/runtime preemption can interrupt ppoll even for a fresh pipe.
 		// Retry only EINTR, at most four calls; EOF and all other errors close.
-		var e error
-		for attempt := 0; attempt < 4; attempt++ {
-			_, e = unix.Poll(fds, 0)
-			if e != unix.EINTR {
-				break
-			}
-		}
+		_, e := admissionSyscall(func() (int, error) { return unix.Poll(fds, 0) })
 		if e != nil {
 			g.failure = fmt.Errorf("admission poll: %w", e)
 			g.closed = true
@@ -142,13 +148,7 @@ func (g *Guard) Alive() bool {
 		if fds[0].Revents&unix.POLLIN == 0 {
 			break
 		}
-		var n int
-		for attempt := 0; attempt < 4; attempt++ {
-			n, e = unix.Read(fd, buf)
-			if e != unix.EINTR {
-				break
-			}
-		}
+		n, e := admissionSyscall(func() (int, error) { return unix.Read(fd, buf) })
 		if e != nil || n == 0 || n%8 != 0 {
 			g.failure = fmt.Errorf("admission read: bytes=%d error=%v", n, e)
 			g.closed = true
