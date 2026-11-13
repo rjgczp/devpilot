@@ -72,6 +72,9 @@ func setupPrivateCapacity(t *testing.T, db *pgxpool.Pool, p *periodicPipe, w *pg
 	}
 	privateCapacityDeny = func(t *testing.T) {
 		t.Helper()
+		// Keep this unavailable window real: a still-running sampler could
+		// restore eligibility before the protected-path assertions finish.
+		p.exchange("worker-capacity-stop-sampling", nil)
 		if e := (storagecontrol.Client{DB: reporter, Incarnation: inc}).Unavailable(context.Background()); e != nil {
 			t.Fatal(e)
 		}

@@ -215,6 +215,7 @@ func TestPrivateLoopPG(t *testing.T) {
 	defer p.exchange("worker-private-stop", nil)
 	lines := map[int]handoff.Lineage{}
 	committed := 0
+	capacityStoppingWorker := -1
 	finishWeb := func() {
 		p.exchange("worker-private-stop", nil)
 		if _, e = db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'`); e != nil {
@@ -342,6 +343,12 @@ func TestPrivateLoopPG(t *testing.T) {
 			continue
 		}
 		if msg.Op == "private-exit" {
+			if scenario == "capacity" && capacityStoppingWorker >= 0 && index != capacityStoppingWorker && message.ExitCode == 2 {
+				// The idle Worker must reject after the real source is stopped;
+				// the in-flight Worker must still finish settlement and Result.
+				p.exchange("worker-capacity-idle-denied", map[string]int{"worker": index})
+				continue
+			}
 			if scenario == "lost" && unknown {
 				pair := status75ReadPair(t, client, server.URL, m, f.ownerToken)
 				if pair.s.CurrentObservation != nil {
@@ -452,6 +459,7 @@ func TestPrivateLoopPG(t *testing.T) {
 					t.Fatal(e)
 				}
 				if scenario == "capacity" && committed == 104 {
+					capacityStoppingWorker = index
 					privateCapacityDeny(t)
 				}
 				if _, e = (supervisorfixture.Settlement{DB: s, Incarnation: si}).Accept(ctx, verified); e != nil {

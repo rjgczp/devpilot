@@ -50,7 +50,8 @@ class CapacityHarness(LoopHarness):
        self.send(self.workers[index],dict(guard=pulse))
        self.pulses.append(dict(source='forwarded',at=time.clock_gettime_ns(time.CLOCK_BOOTTIME),index=index,pulse=pulse))
       del pending[index]
-  except Exception as e:self.record('storage-broker-error',dict(type=type(e).__name__))
+  except Exception as e:
+   if not getattr(self,'sampling_stopping',False):self.record('storage-broker-error',dict(type=type(e).__name__))
   finally:
    for w in self.workers:
     try:self.send(w,dict(storage_lost=True))
@@ -90,8 +91,16 @@ class CapacityHarness(LoopHarness):
    assert not self.events('get');self.record('held-unknown',payload)
    self.event_offset=len(self.receiver_events);self.cycle+=1;self.life=None;self.request_seen=False
    return dict(event='unknown_held_without_release')
+  if op=='worker-capacity-stop-sampling':
+   self.sampling_stopping=True
+   self.send(self.sampler,dict(op='stop'))
+   assert self.sampler.wait(timeout=5)==0
+   self.record('storage-source-stopped',dict(real_sampler_stopped=True,expected_new_admission_closed=True))
+   return dict(event='sampler_stopped')
   if op=='worker-capacity-protected':
    self.record('protected-paths',payload);return dict(event='protected_paths_recorded')
+  if op=='worker-capacity-idle-denied':
+   self.record('storage-idle-worker-denied',payload);return dict(event='denied_recorded')
   if op=='worker-capacity-snapshot':
    self.snapshots.append(payload);self.record('capacity-timeline',self.snapshots);return dict(event='recorded')
   return super().pg_operation(instance,op,payload,selected,mode)

@@ -62,7 +62,10 @@ cycles on another Monitor, using the actual60s interval without clock/due/cooldo
 mutation. A finite3h Owner authorization and4h fixture session/registration stay
 within existing limits; only the new test process timeout is3h. It verifies
 count ledgers/cap, continued fence/due, retained unknown and safety writes while
-storage is unavailable. No fabricated success or physical release is used.
+storage is unavailable: the actual sampler stops after the105th GET, before
+trusted release/Result, and remains stopped through pause/PATCH assertions.
+An idle Worker may deny/exit then; the in-flight Worker must still settle.
+No fabricated success or physical release is used.
 
 Local first attempt correctly stayed closed before any GET: observed effective
 filesystem use was about76.7%, above the70% cold-start recovery threshold. The
