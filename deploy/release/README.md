@@ -2,9 +2,10 @@
 
 Baseline: PR25 `9c497d372661f95722a7176a613579578bcdd02f`, merged as
 `d85204335d101534e4595e64632dd4e36fcd59aa`. This directory adds read-only checks
-and a management-network override. It does not start a process, connect to PG or
+and a management-network override. It does not start a service/execution domain, connect to PG or
 a target, create resources, read credentials/private keys, apply SQL/ACL, or open
-a Gate/route. OpenSpec remains37/47;8.3 and production M14/M15 remain deferred.
+a Gate/route. Bounded OpenSSL/Docker/ip inspection commands may run.
+OpenSpec remains37/47;8.3 and production M14/M15 remain deferred.
 
 ## One preflight entry
 

@@ -172,7 +172,7 @@ def inspect(manifest_path, inspect_host=False, runner=run, root=ROOT):
     report = dict(scope='release-preparation', private_https_release_ready=False,
                   real_https_execution_supported=False, production_gate_observed='unverified',
                   sql_identity_and_registry_verified=False, key_pair_match_verified=False, certificate_chain_trust_verified=False,
-                  processes_started=False, sql_applied=False, egress_opened=False,
+                  services_started=False, sql_applied=False, egress_opened=False,
                   blockers=BLOCKERS, checks=checks)
 
     def check(name, action):
@@ -241,7 +241,7 @@ def main():
     try:
         report = inspect(args.manifest.absolute(), args.inspect_host)
     except (OSError, ValueError, KeyError, TypeError, AssertionError, subprocess.SubprocessError):
-        report = dict(private_https_release_ready=False, processes_started=False, sql_applied=False,
+        report = dict(private_https_release_ready=False, services_started=False, sql_applied=False,
                       egress_opened=False, checks=[dict(name='configuration', status='fail', code='invalid_or_unavailable')], blockers=BLOCKERS)
     print(json.dumps(report, indent=2))
     return 0 if args.config_only and report.get('configuration_structure_valid') else 2
