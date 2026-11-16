@@ -1,0 +1,21 @@
+{
+  "mode": "private-isolated",
+  "runtime_id": "local-service",
+  "image": "sha256:REPLACE_WITH_IMMUTABLE_IMAGE_ID",
+  "control_network": "EXISTING_INTERNAL_DUAL_STACK_NETWORK",
+  "pg_container": "REPLACE_WITH_64_HEX_CONTAINER_ID",
+  "target_container": "REPLACE_WITH_EXISTING_NETWORK_NONE_TARGET_ID",
+  "target_ip": "93.184.216.34",
+  "target_host": "a.fixture.example.com",
+  "workers": [
+    {"database_url_file": "/absolute/worker0/url", "incarnation": "REGISTERED_UUID"},
+    {"database_url_file": "/absolute/worker1/url", "incarnation": "REGISTERED_UUID"}
+  ],
+  "supervisor": {"database_url_file": "/absolute/supervisor/url", "incarnation": "REGISTERED_UUID"},
+  "controller": {"database_url_file": "/absolute/controller/url", "incarnation": "REGISTERED_UUID"},
+  "reporter": {"database_url_file": "/absolute/reporter/url", "incarnation": "REGISTERED_UUID"},
+  "catalog_file": "/absolute/catalog.json",
+  "bindings_file": "/absolute/storage-bindings.json",
+  "ca_file": "/absolute/target-ca.pem",
+  "metadata_mounts": [["EXACT_PG_VOLUME_NAME", "/storage"], ["EXACT_PG_LOG_DIRECTORY", "/logs-metadata"]]
+}
