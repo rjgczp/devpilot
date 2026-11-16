@@ -1,0 +1,7 @@
+# Configuration only. Merge with deploy/private/compose.yaml on a NEW dedicated
+# host/stack after deployment approval. No execution service or route is added.
+networks:
+  database:
+    name: devpilot-private-control
+    internal: true
+    enable_ipv6: true

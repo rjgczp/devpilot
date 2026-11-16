@@ -1,0 +1,37 @@
+-- INACTIVE, NOT a migration. Exact new authority for separate review only.
+-- Requires dedicated devpilot_private at M13 + reviewed M14 then M15.
+-- Supersedes the unapplied single-Worker PR21 LOGIN candidate: do not apply both.
+-- No password, incarnation registration, control UPDATE, Gate opening or DDL at
+-- startup. Runtime preflight does NOT execute this file. Never apply implicitly.
+BEGIN;
+CREATE ROLE devpilot_private_worker LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE devpilot_private_worker2 LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE devpilot_private_supervisor LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE devpilot_private_controller LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE devpilot_private_reporter LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+GRANT CONNECT ON DATABASE devpilot_private TO devpilot_private_worker,devpilot_private_worker2,devpilot_private_supervisor,devpilot_private_controller,devpilot_private_reporter;
+GRANT devpilot_scheduler_worker TO devpilot_private_worker,devpilot_private_worker2;
+GRANT devpilot_scheduler_supervisor TO devpilot_private_supervisor;
+GRANT devpilot_scheduler_controller TO devpilot_private_controller;
+GRANT devpilot_storage_reporter TO devpilot_private_reporter;
+ALTER ROLE devpilot_private_worker SET statement_timeout='2s';
+ALTER ROLE devpilot_private_worker SET transaction_timeout='2s';
+ALTER ROLE devpilot_private_worker SET lock_timeout='250ms';
+ALTER ROLE devpilot_private_worker2 SET statement_timeout='2s';
+ALTER ROLE devpilot_private_worker2 SET transaction_timeout='2s';
+ALTER ROLE devpilot_private_worker2 SET lock_timeout='250ms';
+ALTER ROLE devpilot_private_supervisor SET statement_timeout='2s';
+ALTER ROLE devpilot_private_supervisor SET transaction_timeout='2s';
+ALTER ROLE devpilot_private_supervisor SET lock_timeout='250ms';
+ALTER ROLE devpilot_private_controller SET statement_timeout='2s';
+ALTER ROLE devpilot_private_controller SET transaction_timeout='2s';
+ALTER ROLE devpilot_private_controller SET lock_timeout='250ms';
+ALTER ROLE devpilot_private_reporter SET statement_timeout='2s';
+ALTER ROLE devpilot_private_reporter SET transaction_timeout='2s';
+ALTER ROLE devpilot_private_reporter SET lock_timeout='250ms';
+COMMIT;
+-- These LOGINs have no passwords until separately provisioned offline. Reuse
+-- existing role functions only; no direct table/column, DDL/TEMP, owner/API,
+-- server-file, pg_monitor or additional function EXECUTE privileges are added.
+-- Keep deployment gate=closed, emergency_stop=true. M14 only recognizes
+-- fixture/private-isolated, not real-Internet execution. No activation SQL here.

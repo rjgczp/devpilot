@@ -1,0 +1,8 @@
+{
+  "desired_gate": "closed",
+  "management_env": "../private/.env",
+  "management_secrets": "../private/.secrets",
+  "runtime_config": "../privateservice/service.json",
+  "state_directory": "/var/lib/devpilot-private",
+  "vpn_interface": "wg0"
+}
