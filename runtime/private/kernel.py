@@ -12,6 +12,27 @@ LABEL='devpilot.private.runtime'
 HERE=Path(__file__).resolve().parent
 def utc(delay=0):return (datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(seconds=delay)).isoformat().replace('+00:00','Z')
 
+def project_event(r,line):
+ event=r['event']
+ if event=='sealed':
+  assert set(r)=={'event','proof'}
+  proof=r['proof']
+  assert proof['tcp_only'] and not proof['sockets_denied'] and proof['fd_limit']==256
+  assert all(proof[k] for k in ('no_new_privileges','capabilities_zero','secrets_unavailable'))
+  assert proof['uid']==65534 and proof['gid']==65534
+  return dict(event=event,line=line)
+ if event=='observation':
+  assert set(r)<={'event','result','stop_reason'}
+  return dict(event=event,line=line,observation=r.get('result'))
+ if event=='target_request':
+  assert set(r)=={'event','frame'}
+  return dict(event=event,line=line,frame=r['frame'])
+ if event in ('reply_delivered','reply_denied'):
+  assert set(r)=={'event'}
+  return dict(event=event,line=line)
+ if event=='installed':return dict(r,line=line)
+ raise RuntimeError('unsupported physical lifecycle event')
+
 class Kernel:
  def __init__(self,config,state):
   # Authority refreshes its public PEM; it was read-only in child mounts.
@@ -20,6 +41,8 @@ class Kernel:
   self.cfg=config;self.state=state;self.authority=Authority(state);self.authority.pub.chmod(0o444);self.active={};self.count=0;self.sign_lock=threading.Lock();self.locks=[threading.RLock(),threading.RLock()]
   self.target=config['target_container'];self.image=config['image'];self.prefix='dp-private-'+config['runtime_id']
   self.validate_target()
+ def stderr(self,name):
+  path=self.state/name;file=path.open('ab',buffering=0);path.chmod(0o600);return file
  def run(self,args,data=None):
   p=subprocess.run(args,input=data,capture_output=True,timeout=20)
   if p.returncode:raise RuntimeError('kernel command rejected')
@@ -69,7 +92,7 @@ class Kernel:
   ready=[]
   for role,cid in [('gateway',guard),('run',run)]:
    fp=json.loads(self.exec(cid,'/toolbin/privatenetwork','fingerprint'));cfg=dict(lineage=line,role=role,**fp,probe4=probe4,probe6=probe6,host=self.cfg['target_host'],target=self.cfg['target_ip'],denied=['11.0.0.0/8','2600:dead::/32'],hard_deadline=utc(34));d['configs'][role]=cfg
-   p=subprocess.Popen(['docker','exec','-i',cid,'/toolbin/privatenetwork'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,bufsize=0);d['managers'][role]=p;self.send(p,dict(op='boot',config=cfg));ready.append(self.read(p))
+   p=subprocess.Popen(['docker','exec','-i',cid,'/toolbin/privatenetwork'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(line['run_id']+'-network-'+role+'.stderr'),bufsize=0);d['managers'][role]=p;self.send(p,dict(op='boot',config=cfg));ready.append(self.read(p))
   return dict(event='prepared',line=line,ready=ready)
  def launch(self,d,c):
   core=(HERE/'assets/termination_core.py').read_text();life=(HERE/'assets/lifecycle.py').read_text();bootstrap=(HERE/'assets/probe_bootstrap.py').read_text()
@@ -84,7 +107,7 @@ class Kernel:
   args=['docker','run','--rm','-i','--name',d['name']+'-pid1','--label',LABEL+'='+self.cfg['runtime_id'],'--network','container:'+d['run'],'--cap-drop','ALL']
   for cap in ['KILL','SETUID','SETGID','SETPCAP']:args+=['--cap-add',cap]
   args+=['--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--memory-swap','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','-v',self.cfg['ca_file']+':/etc/ssl/certs/private-target.pem:ro','--entrypoint','python3',self.image,'-S','-u','-c',init]
-  p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,bufsize=0);d['life']=p
+  p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(d['line']['run_id']+'-pid1.stderr'),bufsize=0);d['life']=p
   deadline=int(datetime.datetime.fromisoformat(d['configs']['run']['hard_deadline'].replace('Z','+00:00')).timestamp()*1e9)
   self.send(p,dict(op='boot',lineage=d['line'],deadline_ns=deadline));assert self.read(p)['event']=='lifecycle_ready'
   self.send(p,dict(op='launch',lineage=d['line'],envelope=c['envelope'],receipt=c['receipt']));return self.read(p)
@@ -96,17 +119,22 @@ class Kernel:
   if op=='pending':
    for p in sorted(self.state.glob('*.owner.json')):
     owner=json.loads(p.read_text());line=owner['line'];run=line['run_id']
-    if owner['index']==index and (self.state/(run+'.receipt')).exists() and not (self.state/(run+'.database-accepted')).exists():
+    if owner['index']==index and (self.state/(run+'.receipt')).exists() and not (self.state/(run+'.recovered')).exists():
      return dict(event='pending',line=line,receipt=base64.b64encode((self.state/(run+'.receipt')).read_bytes()).decode(),bundle=base64.b64encode((self.state/(run+'.proofs')).read_bytes()).decode())
    return dict(event='none',line={})
   line=c['line']
-  if op=='accepted':
+  if op in ('accepted','recovered'):
    assert (self.state/(line['run_id']+'.receipt')).exists()
    p=self.state/(line['run_id']+'.database-accepted')
    if not p.exists():
     with p.open('xb') as f:f.write(b'physical receipt accepted; not an HTTP result\n');f.flush();os.fsync(f.fileno())
     sync_directory(self.state)
-   return dict(event='accepted',line=line)
+   if op=='recovered':
+    q=self.state/(line['run_id']+'.recovered')
+    if not q.exists():
+     with q.open('xb') as f:f.write(b'Controller verified terminal state; no GET replay\n');f.flush();os.fsync(f.fileno())
+     sync_directory(self.state)
+   return dict(event=op,line=line)
   if op=='prepare':return self.prepare(index,line)
   d=self.active[index];assert d['line']==line
   if op=='launch':r=self.launch(d,c)
@@ -121,9 +149,7 @@ class Kernel:
    self.send(d['life'],dict(lineage=line,**req));r=self.read(d['life'],12 if op=='next' else 3)
   elif op=='stop':return self.stop(index)
   else:raise RuntimeError('unsupported kernel operation')
-  r['line']=line
-  if 'result' in r:r['observation']=r.pop('result')
-  return r
+  return project_event(r,line)
  def stop(self,index):
   with self.locks[index]:return self._stop(index)
  def _stop(self,index):

@@ -68,7 +68,11 @@ pressure proof; insufficient/stale/missing storage remains closed.
 
 All control children are cap0, read-only, bounded containers on the internal
 control bridge. IPC consists of inherited anonymous pipes with typed bounded
-messages, no SQL transport or listener. Probe is only in its own network domain;
+messages, no SQL transport or listener. Controller has two bound Supervisor
+channels and a separate completion/recovery-only parent channel; Worker logs
+cannot assert a DB result. That channel rechecks the existing SQL state before
+marking a journal terminal. Physical acceptance and terminal recovery are
+separate durable facts, so a lost Result ACK still reconciles on restart. Probe is only in its own network domain;
 the existing per-Run network rules and lifetime pipe remain authoritative.
 
 Supervisor/Reporter/Worker loss closes both Workers' admission. Existing Result
@@ -76,7 +80,9 @@ and stop paths can drain. No result/exit/flag/container deletion is physical
 proof. Supervisor loss first leaves unknown and capacity held; restart can only
 read the immutable signed stop bundle, independently verify it, commit the
 existing termination function, then request existing Controller recovery. It
-never reconstructs/replays the old input or GET. Controller peer loss does not
+never reconstructs/replays the old input or GET. The observation relay can wait for the existing10s HTTP timeout within the
+unchanged35s physical hard deadline; no SQL/lock/Lease/Permit budget grows.
+Controller peer loss does not
 cancel the other peer's ongoing physical/Result settlement.
 
 If the trusted parent itself dies before a complete signed bundle exists,

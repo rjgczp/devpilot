@@ -28,7 +28,7 @@ def load(path):
 class Runtime:
  def __init__(self,c,state):
   self.c=c;self.state=state;self.kernel=Kernel(c,state);self.children={};self.pending={};self.lock=threading.RLock();self.closing=False;self.failed=False
-  self.guard_counts=[0,0];self.latest={};self.hellos={};self.hello_replies={};self.ready=set();self.done=[];self.pool=concurrent.futures.ThreadPoolExecutor(max_workers=2)
+  self.guard_counts=[0,0];self.latest={};self.hellos={};self.hello_replies={};self.ready=set();self.done=[];self.closed_channels=set();self.recoveries=[];self.pool=concurrent.futures.ThreadPoolExecutor(max_workers=2)
  def status(self,event,**values):
   value=dict(event=event,pid=os.getpid(),start_ticks=ticks(os.getpid()),runtime_id=self.c['runtime_id'],mode='private-isolated',production=False,**values)
   with self.lock:
@@ -53,6 +53,8 @@ class Runtime:
  def send(self,name,channel,raw=None,eof=False):
   p=self.children.get(name)
   if p is None or p.poll() is not None:return
+  if (name,channel) in self.closed_channels:return
+  if eof:self.closed_channels.add((name,channel))
   value=dict(channel=channel,eof=True) if eof else dict(channel=channel,bytes=base64.b64encode(raw).decode())
   with self.lock:p.stdin.write(canonical(value)+b'\n');p.stdin.flush()
  def stop_child(self,name):
@@ -68,6 +70,11 @@ class Runtime:
    self.stop_at=time.monotonic();self.closing=True;self.status('stopping',failed=self.failed)
   for i in (0,1):self.send('worker'+str(i),'guard',eof=True)
   self.stop_child('sampler')
+ def recover(self,index,line,finalize=False):
+  if any(x['line']==line for x in self.recoveries):return
+  assert len(self.recoveries)<4
+  self.recoveries.append(dict(index=index,line=line,finalize=finalize,at=time.monotonic()))
+  self.send('controller','recovery',canonical(dict(op='recover',line=line))+b'\n')
  def route(self,name,v):
   if 'exit_code' in v:
    if not self.closing:self.close_admission(True)
@@ -77,10 +84,19 @@ class Runtime:
    if name.startswith('worker') and event['event']=='worker_ready':
     self.ready.add(name)
     if len(self.ready)==2:self.status('running',workers=2)
-   if event['event']=='result_committed':self.done.append(event['run_id']);self.status('stopping' if self.closing else 'running',workers=len(self.ready),completed_runs=len(self.done))
+   if event['event']=='result_committed':
+    run=event['run_id'];assert re.fullmatch('[0-9a-f]{8}-[0-9a-f-]{27}',run)
+    owner=json.loads((self.state/(run+'.owner.json')).read_text())
+    assert owner['index']==int(name[-1]) and (self.state/(run+'.database-accepted')).exists()
+    self.recover(owner['index'],owner['line'],True)
+    self.done.append(run);self.status('stopping' if self.closing else 'running',workers=len(self.ready),completed_runs=len(self.done))
    return
   channel=v['channel']
   if v.get('eof'):
+   if name.startswith('worker'):self.send('supervisor'+name[-1],'worker',eof=True)
+   if name.startswith('supervisor'):
+    self.send('worker'+name[-1],'worker',eof=True)
+    self.send('controller',name[-1],eof=True)
    if not self.closing:self.close_admission(True)
    return
   raw=base64.b64decode(v['bytes'],validate=True);assert len(raw)<=65536
@@ -90,7 +106,13 @@ class Runtime:
    if not self.closing:self.send('worker'+str(i),'guard',raw)
    return
   if name=='controller':
-   self.send('supervisor'+channel,'controller',raw);return
+   if channel=='recovery':
+    reply=json.loads(raw);assert self.recoveries
+    request=self.recoveries.pop(0)
+    assert reply['event']=='recover_ok' and reply['line']==request['line']
+    if request['finalize']:self.kernel.call(request['index'],dict(op='recovered',line=request['line']))
+   else:self.send('supervisor'+channel,'controller',raw)
+   return
   i=int(name[-1]);assert i in (0,1)
   if name.startswith('worker'):
    request=json.loads(raw)
@@ -115,9 +137,11 @@ class Runtime:
    else:raise RuntimeError('unbound control channel')
  def kernel_reply(self,i,future):
   try:self.send('supervisor'+str(i),'kernel',canonical(future.result())+b'\n')
-  except BaseException:
+  except BaseException as error:
+   print('private kernel rejected: '+type(error).__name__,file=sys.stderr)
    self.send('supervisor'+str(i),'kernel',eof=True);self.close_admission(True)
  def poll(self,seconds=.1):
+  if self.recoveries and time.monotonic()-self.recoveries[0]['at']>5:self.close_admission(True)
   live={p.stdout:name for name,p in self.children.items() if p.stdout and not p.stdout.closed}
   for fd in select.select(list(live),[],[],seconds)[0]:
    name=live[fd];raw=os.read(fd.fileno(),65536)
@@ -152,7 +176,7 @@ class Runtime:
   while not self.closing:self.poll()
   # New admission is closed. Existing physical/Result paths retain their
   # original deadline; no transaction/lease/permit budget is extended here.
-  while time.monotonic()-self.stop_at<45 and (self.kernel.active or any(p.poll() is None for n,p in self.children.items() if n.startswith('worker'))):
+  while time.monotonic()-self.stop_at<45 and (self.kernel.active or self.recoveries or any(p.poll() is None for n,p in self.children.items() if n.startswith('worker'))):
    self.poll()
    for i in list(self.kernel.active):
     p=self.children.get('supervisor'+str(i))
@@ -160,14 +184,18 @@ class Runtime:
      line=self.kernel.active[i]['line']
      try:self.kernel.stop(i)
      except BaseException:self.failed=True
-     self.send('controller',str(i),canonical(dict(op='recover',line=line))+b'\n')
+     self.recover(i,line)
   return 2 if self.failed else 0
  def close(self):
   self.close_admission(self.failed)
   for i in list(self.kernel.active):
    try:self.kernel.stop(i)
    except BaseException:self.failed=True
-  for name in list(self.children):self.stop_child(name)
+  for name in list(self.children):
+   if name!='controller':self.stop_child(name)
+  until=time.monotonic()+5
+  while self.recoveries and time.monotonic()<until:self.poll()
+  self.stop_child('controller')
   for p in self.children.values():
    try:p.wait(timeout=5)
    except subprocess.TimeoutExpired:p.terminate()

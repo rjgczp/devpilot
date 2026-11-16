@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/rjgczp/devpilot/internal/credentials"
 	"github.com/rjgczp/devpilot/internal/monitoring"
 	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
@@ -122,6 +123,12 @@ func Serve(ctx context.Context, p *Peer, handle func(context.Context, workerrunt
 		}
 		reply, e := handle(ctx, call)
 		if e != nil {
+			phase := "unsupported"
+			switch call.Op {
+			case "hello", "prepare", "consume", "launch", "next", "reply", "install", "settle", "track", "untrack", "quarantine", "recover":
+				phase = call.Op
+			}
+			fmt.Fprintln(os.Stderr, "private control rejected phase:", phase)
 			return e
 		}
 		raw, e = json.Marshal(reply)

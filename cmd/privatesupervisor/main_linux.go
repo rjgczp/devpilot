@@ -51,8 +51,12 @@ func run() int {
 		if e != nil {
 			return 2
 		}
+		recovery, e := supervisorruntime.InheritedPeer(7, 8)
+		if e != nil {
+			return 2
+		}
 		c := supervisorruntime.Controller{DB: db, Incarnation: *inc}
-		e = c.Run(ctx, []*supervisorruntime.Peer{peer, other})
+		e = c.Run(ctx, []*supervisorruntime.Peer{peer, other, recovery})
 	} else {
 		raw, err := os.ReadFile(*pub)
 		if err != nil || len(raw) > 4096 {

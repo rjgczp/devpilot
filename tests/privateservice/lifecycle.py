@@ -37,7 +37,7 @@ class ServiceHarness(CapacityHarness):
   if self.state.exists():
    dest=self.dest/'service';dest.mkdir(exist_ok=True)
    for p in self.state.iterdir():
-    if p.suffix in ('.stderr','.receipt','.proofs') or p.name=='status.json' or p.name.endswith(('.owner.json','.database-accepted')):shutil.copy2(p,dest/p.name)
+    if p.suffix in ('.stderr','.receipt','.proofs') or p.name=='status.json' or p.name.endswith(('.owner.json','.database-accepted','.recovered')):shutil.copy2(p,dest/p.name)
  def pg_operation(self,instance,op,payload,selected,mode):
   if op=='service-key':
    self.cli('init');return dict(frame=base64.b64encode((self.state/'public.pem').read_bytes()).decode())
@@ -92,6 +92,7 @@ class ServiceHarness(CapacityHarness):
    assert all(v['is_get'] and v['header_only'] and not v['credentials'] for v in gets)
    assert len(list(self.state.glob('*.receipt')))==payload['physical_acceptances']==3
    assert len(list(self.state.glob('*.database-accepted')))==3
+   assert len(list(self.state.glob('*.recovered')))==3
    self.record('lifecycle-result',dict(exit_code=0,workers=2,gets=3,completed=2,unknown=1,all_physical_proofs_verified=True,no_restart_resend=True,reporter_loss_closed=True,internet=False));return dict(event='verified')
   if op=='capacity-filesystems':return super().pg_operation(instance,op,payload,selected,mode)
   raise RuntimeError('fixture must not drive runtime call: '+op)

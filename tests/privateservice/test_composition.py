@@ -4,7 +4,7 @@ ROOT=pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'runtime/private'))
 from unittest import mock
 import launcher
-from kernel import Kernel
+from kernel import Kernel,project_event
 
 class Composition(unittest.TestCase):
  def test_original_stop_algorithm_and_signing_journal_are_reused(self):
@@ -20,6 +20,13 @@ class Composition(unittest.TestCase):
    oldplatform=sys.platform;sys.platform='linux'
    try:self.assertEqual(launcher.main(),0)
    finally:sys.argv=old;sys.platform=oldplatform
+ def test_sealed_proof_is_checked_before_typed_projection(self):
+  line=dict(run_id='fixed-run')
+  proof=dict(tcp_only=True,sockets_denied=False,fd_limit=256,no_new_privileges=True,capabilities_zero=True,secrets_unavailable=True,uid=65534,gid=65534)
+  self.assertEqual(project_event(dict(event='sealed',proof=proof),line),dict(event='sealed',line=line))
+  with self.assertRaises(AssertionError):project_event(dict(event='sealed',proof=dict(proof,tcp_only=False)),line)
+  with self.assertRaises(AssertionError):project_event(dict(event='target_request',frame='test',released=True),line)
+  self.assertEqual(project_event(dict(event='observation',result=None,stop_reason='execution_not_observed'),line),dict(event='observation',line=line,observation=None))
  def test_restart_can_refresh_public_key_without_changing_private_key(self):
   with tempfile.TemporaryDirectory() as d:
    state=pathlib.Path(d);state.chmod(0o700)
@@ -38,6 +45,7 @@ class Composition(unittest.TestCase):
    (k.state/'fixed-run.receipt').write_bytes(b'signed-receipt');(k.state/'fixed-run.proofs').write_bytes(b'committed-proofs')
    r=k._call(0,dict(op='pending'));self.assertEqual(r['event'],'pending');self.assertEqual(r['line'],line)
    self.assertEqual(k._call(1,dict(op='pending'))['event'],'none')
-   k._call(0,dict(op='accepted',line=line));self.assertEqual(k._call(0,dict(op='pending'))['event'],'none')
+   k._call(0,dict(op='accepted',line=line));self.assertEqual(k._call(0,dict(op='pending'))['event'],'pending')
+   k._call(0,dict(op='recovered',line=line));self.assertEqual(k._call(0,dict(op='pending'))['event'],'none')
 
 if __name__=='__main__':unittest.main()

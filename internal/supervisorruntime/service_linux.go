@@ -77,14 +77,21 @@ func (s *Supervisor) Handle(ctx context.Context, c workerruntime.Call) (workerru
 			if e != nil || old.Line.SupervisorIncarnation != s.Incarnation {
 				return reply, ErrClosed
 			}
-			if _, e = (supervisorfixture.Settlement{DB: s.DB, Incarnation: s.Incarnation}).Accept(ctx, verified); e != nil {
+			settlement := supervisorfixture.Settlement{DB: s.DB, Incarnation: s.Incarnation}
+			out, err := settlement.Reconcile(ctx, verified)
+			if err != nil {
 				return reply, ErrClosed
+			}
+			if out.State == "pending" {
+				if _, err = settlement.Accept(ctx, verified); err != nil {
+					return reply, ErrClosed
+				}
 			}
 			if s.control(ctx, "recover", old.Line) != nil {
 				return reply, ErrClosed
 			}
-			ack, e := s.Kernel.Call(ctx, workerruntime.Call{Op: "accepted", Line: &old.Line})
-			if e != nil || ack.Event != "accepted" {
+			ack, e := s.Kernel.Call(ctx, workerruntime.Call{Op: "recovered", Line: &old.Line})
+			if e != nil || ack.Event != "recovered" {
 				return reply, ErrClosed
 			}
 		} else if old.Event != "none" {
@@ -193,9 +200,8 @@ func (c *Controller) quarantine(ctx context.Context, l handoff.Lineage) error {
 	return e
 }
 func (c *Controller) recover(ctx context.Context, l handoff.Lineage) error {
-	if e := c.quarantine(ctx, l); e != nil {
-		return e
-	}
+	// recover_started itself quarantines unreleased Runs; an already released
+	// receipt must not be sent back through quarantine_physical.
 	_, e := (scheduler.Store{DB: c.DB, Incarnation: c.Incarnation}).RecoverStarted(ctx, l, "worker_lost")
 	return e
 }
@@ -264,17 +270,21 @@ func (c *Controller) Run(ctx context.Context, peers []*Peer) error {
 	go func() {
 		done <- completion{maintenance: true, err: retentioncontrol.Run(ctx, scheduler.Store{DB: c.DB, Incarnation: c.Incarnation})}
 	}()
+	// EOF recovers only that peer. On shutdown, wait for all bounded recovery
+	// transactions before closing the pool; the other peer can still settle.
 	remaining := len(peers)
+	var maintenanceErr error
 	for remaining > 0 {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case r := <-done:
-			if r.maintenance {
-				return r.err
-			}
-			remaining--
+		r := <-done
+		if r.maintenance {
+			maintenanceErr = r.err
+			cancel()
+			continue
 		}
+		remaining--
+	}
+	if maintenanceErr != nil {
+		return maintenanceErr
 	}
 	return ErrClosed
 }

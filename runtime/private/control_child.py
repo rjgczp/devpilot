@@ -7,7 +7,7 @@ import base64,fcntl,json,os,select,subprocess,sys
 role,inc,*extra=sys.argv[1:]
 uids={'worker':(65532,65533),'supervisor':(65531,),'controller':(65530,),'sampler':(65529,),'watchdog':(65529,)}
 assert role in uids and os.getuid() in uids[role]
-pairs={'worker':3,'supervisor':6,'controller':4,'sampler':1,'watchdog':3}[role]
+pairs={'worker':3,'supervisor':6,'controller':6,'sampler':1,'watchdog':3}[role]
 raw=[]
 for _ in range(pairs):raw+=list(os.pipe())
 fds=[fcntl.fcntl(fd,fcntl.F_DUPFD_CLOEXEC,30) for fd in raw]
@@ -27,7 +27,7 @@ elif role=='supervisor':
   writers[label]=w;reads[qr]=label;kept.extend([w,qr]);passed.extend([a,b])
  cmd=['/toolbin/privatesupervisor','--run','--role','supervisor','--database-url-file','/run/own-url','--incarnation',inc,'--worker-incarnation',extra[0],'--stop-public-key-file','/run/stop-public.pem']
 elif role=='controller':
- for offset,a,b,label in [(0,3,4,'0'),(4,5,6,'1')]:request_pair(offset,a,b,label)
+ for offset,a,b,label in [(0,3,4,'0'),(4,5,6,'1'),(8,7,8,'recovery')]:request_pair(offset,a,b,label)
  cmd=['/toolbin/privatesupervisor','--run','--role','controller','--database-url-file','/run/own-url','--incarnation',inc]
 elif role=='sampler':
  r,w=fds;os.dup2(w,3,inheritable=True);reads[r]='pulse';kept.append(r);passed=[3]
