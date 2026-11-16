@@ -98,7 +98,7 @@ class ServiceHarness(CapacityHarness):
  def close(self):
   try:
    if (self.state/'status.json').exists():self.cli('stop');self.stopped();self.collect()
-  finally:super().close()
+  finally:self.collect();super().close()
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('--tools',type=Path,required=True);p.add_argument('--evidence',type=Path,required=True);a=p.parse_args()

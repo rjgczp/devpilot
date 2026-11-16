@@ -2,6 +2,7 @@ import importlib.util,ipaddress,json,pathlib,sys,tempfile,unittest
 
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'runtime/private'))
+from unittest import mock
 import launcher
 from kernel import Kernel
 
@@ -19,6 +20,15 @@ class Composition(unittest.TestCase):
    oldplatform=sys.platform;sys.platform='linux'
    try:self.assertEqual(launcher.main(),0)
    finally:sys.argv=old;sys.platform=oldplatform
+ def test_restart_can_refresh_public_key_without_changing_private_key(self):
+  with tempfile.TemporaryDirectory() as d:
+   state=pathlib.Path(d);state.chmod(0o700)
+   with mock.patch.object(Kernel,'validate_target'):
+    config=dict(target_container='test-only',image='test-only',runtime_id='test')
+    first=Kernel(config,state);key=first.authority.key.read_bytes();public=first.authority.pub.read_bytes()
+    self.assertEqual(first.authority.pub.stat().st_mode&0o777,0o444)
+    again=Kernel(config,state)
+    self.assertEqual(again.authority.key.read_bytes(),key);self.assertEqual(again.authority.pub.read_bytes(),public)
  def test_pending_recovery_reads_only_immutable_proof_and_never_launches(self):
   with tempfile.TemporaryDirectory() as d:
    k=object.__new__(Kernel);k.state=pathlib.Path(d)

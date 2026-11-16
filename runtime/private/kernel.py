@@ -14,6 +14,9 @@ def utc(delay=0):return (datetime.datetime.now(datetime.timezone.utc)+datetime.t
 
 class Kernel:
  def __init__(self,config,state):
+  # Authority refreshes its public PEM; it was read-only in child mounts.
+  public=state/'public.pem'
+  if public.exists():public.chmod(0o600)
   self.cfg=config;self.state=state;self.authority=Authority(state);self.authority.pub.chmod(0o444);self.active={};self.count=0;self.sign_lock=threading.Lock();self.locks=[threading.RLock(),threading.RLock()]
   self.target=config['target_container'];self.image=config['image'];self.prefix='dp-private-'+config['runtime_id']
   self.validate_target()
@@ -29,7 +32,7 @@ class Kernel:
   links=json.loads(self.exec(self.target,'ip','-j','link','show'));assert all(x['ifname']=='lo' for x in links),'target has an unbound upstream/old domain'
   for family in ('-4','-6'):assert not json.loads(self.exec(self.target,'ip',family,'-j','route','show','default'))
  def create(self,name,pid=None):
-  args=['docker','run','-d','--name',name,'--label',LABEL+'='+self.cfg['runtime_id'],'--network','none','--cap-drop','ALL','--cap-add','NET_ADMIN','--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','--sysctl','net.ipv6.conf.all.disable_ipv6=0','--sysctl','net.ipv4.ip_forward='+('1' if name.endswith('-guard') else '0'),'--sysctl','net.ipv6.conf.all.forwarding='+('1' if name.endswith('-guard') else '0')]
+  args=['docker','run','-d','--name',name,'--label',LABEL+'='+self.cfg['runtime_id'],'--network','none','--cap-drop','ALL','--cap-add','NET_ADMIN','--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','--sysctl','net.ipv6.conf.all.disable_ipv6=0','--sysctl','net.ipv6.conf.all.accept_ra=0','--sysctl','net.ipv6.conf.default.accept_ra=0','--sysctl','net.ipv4.ip_forward='+('1' if name.endswith('-guard') else '0'),'--sysctl','net.ipv6.conf.all.forwarding='+('1' if name.endswith('-guard') else '0')]
   if pid:args+=['--pid','container:'+pid]
   return self.run(args+['--entrypoint','sleep',self.image,'infinity']).decode().strip()
  def read(self,proc,seconds=3):
@@ -72,6 +75,10 @@ class Kernel:
   core=(HERE/'assets/termination_core.py').read_text();life=(HERE/'assets/lifecycle.py').read_text();bootstrap=(HERE/'assets/probe_bootstrap.py').read_text()
   # Same accepted private lifetime pipe adaptation, never a second stop engine.
   life=life.replace("cfg=message();assert cfg['op']=='boot'","life_r,life_w=os.pipe();os.dup2(life_r,19,inheritable=True);os.close(life_r)\ncfg=message();assert cfg['op']=='boot'").replace("elif op=='inspect':","elif op=='lose-lifetime':os.close(life_w);emit(dict(event='lifetime_lost'))\n  elif op=='inspect':").replace('close_fds=True,preexec_fn=drop','close_fds=True,pass_fds=(19,),preexec_fn=drop')
+  # Wait only within the original35s hard deadline for the existing10s
+  # HTTP timeout. A lost bridge must not turn a pending observation into a
+  # dead management channel before PID1 can produce its original stop proof.
+  life=life.replace("select.select([child.stdout],[],[],3)","select.select([child.stdout],[],[],min(12,max(0,hard-time.monotonic())))")
   bootstrap=bootstrap.replace('original=[]',"life=fcntl.fcntl(19,fcntl.F_DUPFD_CLOEXEC,30);os.close(19)\noriginal=[]").replace('child=subprocess.Popen(',"os.dup2(life,7,inheritable=True);os.close(life)\nchild=subprocess.Popen(").replace('pass_fds=(3,4,5,6)','pass_fds=(3,4,5,6,7)').replace('for fd in [3,4,5,6,er,ar,qw,rr]','for fd in [3,4,5,6,7,er,ar,qw,rr]').replace('/usr/local/bin/schedulerprobefixture','/toolbin/privateprobe')
   init=core+'\nBOOTSTRAP_SOURCE='+repr(bootstrap)+'\n'+life
   args=['docker','run','--rm','-i','--name',d['name']+'-pid1','--label',LABEL+'='+self.cfg['runtime_id'],'--network','container:'+d['run'],'--cap-drop','ALL']
