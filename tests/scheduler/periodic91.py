@@ -165,7 +165,7 @@ class PeriodicHarness(RecoveryHarness):
             self.completed.append(payload)
             self.record('cycles', self.completed)
             self.record('worker-protocol', self.worker_log)
-            print('cycle %s/3 completed: Run=%s next_due=%s' % (payload['cycle'], payload['run']['run_id'], payload['schedule']['next_due_at']), flush=True)
+            print('cycle %s/%s completed: Run=%s next_due=%s' % (payload['cycle'], getattr(self,'expected_cycles',3), payload['run']['run_id'], payload['schedule']['next_due_at']), flush=True)
             self.archive_cycle()
             self.event_offset = len(self.receiver_events)
             self.cycle += 1
@@ -197,7 +197,7 @@ class PeriodicHarness(RecoveryHarness):
         log = []
         status = None
         try:
-            until = time.monotonic()+300
+            until = time.monotonic()+getattr(self,'pg_deadline_seconds',300)
             while driver.poll() is None or select.select([driver.stdout], [], [], 0)[0]:
                 try:
                     line = self.read_bytes(driver, until)
@@ -221,7 +221,7 @@ class PeriodicHarness(RecoveryHarness):
             expected_cycles=getattr(self,'expected_cycles',3)
             assert status == 0 and len(self.completed) == expected_cycles, 'actual bounded PG18/Linux verification failed'
             assert len([x for x in self.receiver_events if x['kind']=='get']) == getattr(self,'expected_gets',3)
-            self.record('result', dict(task=getattr(self,'task_name','9.1'), exit_code=0, cycles=expected_cycles, workers=2, real_interval_seconds=60,
+            self.record('result', dict(task=getattr(self,'task_name','9.1'), exit_code=0, cycles=expected_cycles, workers=2, configured_interval_seconds=60, real_interval_seconds=None if getattr(self,'virtual_eligibility',False) else 60, virtual_eligibility=getattr(self,'virtual_eligibility',False),
                                       original_kernel=True, production_execution=False, storage_capacity_verified=False))
         finally:
             (self.dest/'pg-driver.log').write_bytes(b''.join(log))

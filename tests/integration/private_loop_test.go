@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rjgczp/devpilot/internal/monitor"
 	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
 	"github.com/rjgczp/devpilot/internal/password"
@@ -30,6 +31,12 @@ type privateWorkerMessage struct {
 	Event    struct{ Event, RunID string } `json:"event"`
 	ExitCode int                           `json:"exit_code"`
 }
+
+var privateCapacityHold func(*testing.T, *pgxpool.Pool, *periodicPipe, memberFixture, monitor.Public, *pgxpool.Pool, string, *pgxpool.Pool, string, *pgxpool.Pool, string) string
+var privateCapacityDeny func(*testing.T)
+var privateCapacitySession func(*testing.T, *pgxpool.Pool, *memberFixture)
+
+var privateCapacitySetup func(*testing.T, *pgxpool.Pool, *periodicPipe, *pgxpool.Pool, string, *pgxpool.Pool, string)
 
 func TestPrivateLoopPG(t *testing.T) {
 	ctx := context.Background()
@@ -94,7 +101,16 @@ func TestPrivateLoopPG(t *testing.T) {
 	if scenario == "" {
 		scenario = "cycles"
 	}
+	if scenario == "capacity" {
+		if privateCapacitySetup == nil {
+			t.Fatal("capacity fixture not compiled")
+		}
+		privateCapacitySetup(t, db, p, w1, i1, c, ci)
+	}
 	f, m := monitorFixture(t, db)
+	if scenario == "capacity" {
+		privateCapacitySession(t, db, &f)
+	}
 	url := "https://a.fixture.example.com/fixture/private-path-SENTINEL"
 	interval, timeout := int64(60), int64(10)
 	m, e = (monitor.Store{Pool: db}).Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.Input{URL: &url, IntervalSeconds: &interval, TimeoutSeconds: &timeout}, monitor.ETag(m))
@@ -103,6 +119,11 @@ func TestPrivateLoopPG(t *testing.T) {
 	}
 	server, client, _ := checkpointHTTPServer(t, db)
 	defer server.Close()
+	if scenario == "capacity" {
+		if _, e = db.Exec(ctx, `UPDATE scheduler_control SET expires_at=clock_timestamp()+interval '4 hours'`); e != nil {
+			t.Fatal(e)
+		}
+	}
 	interactive := scenario == "web"
 	if interactive {
 		boot := p.exchange("demo-bootstrap", nil)
@@ -139,6 +160,9 @@ func TestPrivateLoopPG(t *testing.T) {
 	} else {
 		a, h, _ := checkpointProjectionGet(t, client, server.URL, status75Base(m), f.ownerToken)
 		seconds := 900
+		if scenario == "capacity" {
+			seconds = 10800
+		}
 		if scenario == "expiry" {
 			seconds = 60
 		}
@@ -183,10 +207,15 @@ func TestPrivateLoopPG(t *testing.T) {
 	}
 	budgetSQLState(t, budgetRotate(t, c, ci, 1, []scheduler.CatalogEntry{entry}), "00000")
 	boots := []periodicBoot{{fmt.Sprintf("postgres://scheduler_claim_worker1:%s@pg:5432/devpilot_registration_test?sslmode=disable", w1.Config().ConnConfig.Password), i1, catalog.IP}, {fmt.Sprintf("postgres://scheduler_claim_worker2:%s@pg:5432/devpilot_registration_test?sslmode=disable", w2.Config().ConnConfig.Password), i2, catalog.IP}}
+	heldUnknown := ""
+	if scenario == "capacity" {
+		heldUnknown = privateCapacityHold(t, db, p, f, m, w1, i1, s, si, c, ci)
+	}
 	p.exchange("worker-private-start", boots)
 	defer p.exchange("worker-private-stop", nil)
 	lines := map[int]handoff.Lineage{}
 	committed := 0
+	capacityStoppingWorker := -1
 	finishWeb := func() {
 		p.exchange("worker-private-stop", nil)
 		if _, e = db.Exec(ctx, `UPDATE scheduler_control SET gate='closed',emergency_stop=true WHERE control_id='deployment'`); e != nil {
@@ -196,6 +225,9 @@ func TestPrivateLoopPG(t *testing.T) {
 		p.exchange("demo-view", nil)
 	}
 	want := 3
+	if scenario == "capacity" {
+		want = 105
+	}
 	if scenario == "lost" {
 		want = 1
 	}
@@ -204,7 +236,11 @@ func TestPrivateLoopPG(t *testing.T) {
 	unknown := false
 	var restartedAt time.Time
 	seenReady := map[int]bool{}
-	for time.Since(began) < 320*time.Second {
+	limit := 320 * time.Second
+	if scenario == "capacity" {
+		limit = 170 * time.Minute
+	}
+	for time.Since(began) < limit {
 		msg := p.exchange("worker-private-poll", nil).Worker
 		if msg.Op == "" {
 			if !restartedAt.IsZero() && time.Since(restartedAt) > 3*time.Second {
@@ -261,10 +297,43 @@ func TestPrivateLoopPG(t *testing.T) {
 				p.exchange("cycle-completed", json.RawMessage(evidence))
 				code, _, body := checkpointHTTP(t, client, server.URL, "GET", status75Base(m)+"/history", "", f.ownerToken, "", nil)
 				var page monitor.HistoryPage
-				if code != 200 || json.Unmarshal(body, &page) != nil || len(page.Data) != committed || page.Data[0].Status != "success" || page.Data[0].DurationMS == nil {
+				if code != 200 || json.Unmarshal(body, &page) != nil || len(page.Data) != func() int {
+					if scenario == "capacity" && committed > 20 {
+						return 20
+					}
+					return committed
+				}() || page.Data[0].Status != "success" || page.Data[0].DurationMS == nil {
 					t.Fatal("Dashboard real history", code, string(body))
 				}
-				if (scenario == "cycles" || interactive) && committed == want && len(seenReady) == 2 {
+				if scenario == "capacity" {
+					var retained, ledger int
+					if e = db.QueryRow(ctx, `SELECT (SELECT count(*) FROM monitor_runs WHERE monitor_id=$1),terminal_count FROM scheduler_budget_state WHERE kind='monitor' AND budget_key=$2`, m.ID, m.WorkspaceID+"/"+m.ProjectID+"/"+m.ID).Scan(&retained, &ledger); e != nil || retained != ledger || retained > 100 {
+						t.Fatal("capacity ledger/cap", retained, ledger, e)
+					}
+					p.exchange("worker-capacity-snapshot", map[string]any{"cycle": committed, "retained": retained, "fence": line.FencingToken, "real_interval_seconds": 60})
+
+				}
+				if scenario == "capacity" && committed == want {
+					var protected int
+					if e = db.QueryRow(ctx, `SELECT count(*) FROM monitor_runs r JOIN scheduler_reservations q USING(workspace_id,project_id,monitor_id,run_id) WHERE r.run_id=$1 AND r.attempt_state='unknown' AND r.physical_release_confirmed_at IS NULL AND q.reservation_state='quarantined'`, heldUnknown).Scan(&protected); e != nil || protected != 1 {
+						t.Fatal("unknown/unreleased history lost", e)
+					}
+					var storage bool
+					if e = db.QueryRow(ctx, `SELECT scheduler_private.storage_admission(clock_timestamp())`).Scan(&storage); e != nil || storage {
+						t.Fatal("Result did not settle while storage unavailable", e)
+					}
+					pair := status75ReadPair(t, client, server.URL, m, f.ownerToken)
+					code, _, raw := checkpointHTTP(t, client, server.URL, "PUT", status75Base(m)+"/activation", `{"desired_state":"disabled","configuration_version":"`+m.Version+`"}`, f.ownerToken, pair.tag, nil)
+					if code != 200 {
+						t.Fatal("storage-blocked pause", code, string(raw))
+					}
+					name := "capacity-finished"
+					if _, e = (monitor.Store{Pool: db}).Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.Input{Name: &name}, monitor.ETag(m)); e != nil {
+						t.Fatal("storage-blocked PATCH", e)
+					}
+					p.exchange("worker-capacity-protected", map[string]any{"completed": committed, "unknown_retained": true, "unreleased_retained": true, "pause_patch_result_release_available": true})
+				}
+				if (scenario == "cycles" || scenario == "capacity" || interactive) && committed == want && len(seenReady) == 2 {
 					if interactive {
 						finishWeb()
 					}
@@ -274,6 +343,12 @@ func TestPrivateLoopPG(t *testing.T) {
 			continue
 		}
 		if msg.Op == "private-exit" {
+			if scenario == "capacity" && capacityStoppingWorker >= 0 && index != capacityStoppingWorker && message.ExitCode == 2 {
+				// The idle Worker must reject after the real source is stopped;
+				// the in-flight Worker must still finish settlement and Result.
+				p.exchange("worker-capacity-idle-denied", map[string]int{"worker": index})
+				continue
+			}
 			if scenario == "lost" && unknown {
 				pair := status75ReadPair(t, client, server.URL, m, f.ownerToken)
 				if pair.s.CurrentObservation != nil {
@@ -382,6 +457,10 @@ func TestPrivateLoopPG(t *testing.T) {
 				verified, e := supervisorfixture.VerifyCommittedStopBundle(stopped.Receipt, []byte(catalog.PublicKey), stopped.Bundle, line)
 				if e != nil {
 					t.Fatal(e)
+				}
+				if scenario == "capacity" && committed == 104 {
+					capacityStoppingWorker = index
+					privateCapacityDeny(t)
 				}
 				if _, e = (supervisorfixture.Settlement{DB: s, Incarnation: si}).Accept(ctx, verified); e != nil {
 					t.Fatal(e)
