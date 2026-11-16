@@ -54,6 +54,9 @@ func TestUnknownOrSQLIPCRejected(t *testing.T) {
 	}
 	ctrl := Controller{}
 	line := lineage()
+	if _, e := ctrl.RecoveryHandle(context.Background(), workerruntime.Call{Op: "track", Line: &line}); e == nil {
+		t.Fatal("parent channel accepted non-recovery operation")
+	}
 	if _, e := ctrl.Handle(context.Background(), workerruntime.Call{Op: "quarantine", Line: &line}); e == nil {
 		t.Fatal("untracked quarantine")
 	}

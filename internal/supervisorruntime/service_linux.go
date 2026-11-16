@@ -146,6 +146,9 @@ func (s *Supervisor) Handle(ctx context.Context, c workerruntime.Call) (workerru
 		}
 		reply.Event = "input_committed"
 	case "launch", "next", "reply", "install":
+		if c.Op == "install" && (c.Request == nil || c.Permit == nil || c.Request.Lineage != line) {
+			return reply, ErrClosed
+		}
 		r, e := s.Kernel.Call(ctx, c)
 		if e != nil {
 			return reply, ErrClosed
@@ -240,6 +243,15 @@ func (c *Controller) Handle(ctx context.Context, r workerruntime.Call) (workerru
 	}
 	return workerruntime.Reply{Event: r.Op + "_ok", Line: l}, nil
 }
+
+// RecoveryHandle is the parent's completion channel, never an execution or
+// general management capability. SQL remains authoritative for the Run state.
+func (c *Controller) RecoveryHandle(ctx context.Context, r workerruntime.Call) (workerruntime.Reply, error) {
+	if r.Op != "recover" {
+		return workerruntime.Reply{}, ErrClosed
+	}
+	return c.Handle(ctx, r)
+}
 func (c *Controller) Lost() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -259,13 +271,20 @@ func (c *Controller) Run(ctx context.Context, peers []*Peer) error {
 		err         error
 	}
 	done := make(chan completion, len(peers)+1)
-	for _, p := range peers {
-		go func(p *Peer) {
+	if len(peers) != 3 {
+		return ErrClosed
+	}
+	for index, p := range peers {
+		go func(index int, p *Peer) {
 			local := &Controller{DB: c.DB, Incarnation: c.Incarnation}
-			err := Serve(ctx, p, local.Handle)
+			handler := local.Handle
+			if index == 2 {
+				handler = local.RecoveryHandle
+			}
+			err := Serve(ctx, p, handler)
 			local.Lost()
 			done <- completion{err: err}
-		}(p)
+		}(index, p)
 	}
 	go func() {
 		done <- completion{maintenance: true, err: retentioncontrol.Run(ctx, scheduler.Store{DB: c.DB, Incarnation: c.Incarnation})}

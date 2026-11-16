@@ -4,7 +4,7 @@ ROOT=pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'runtime/private'))
 from unittest import mock
 import launcher
-from kernel import Kernel,project_event
+from kernel import Kernel,project_event,install_command
 
 class Composition(unittest.TestCase):
  def test_original_stop_algorithm_and_signing_journal_are_reused(self):
@@ -20,6 +20,12 @@ class Composition(unittest.TestCase):
    oldplatform=sys.platform;sys.platform='linux'
    try:self.assertEqual(launcher.main(),0)
    finally:sys.argv=old;sys.platform=oldplatform
+ def test_install_uses_existing_flat_lineage_contract(self):
+  line=dict(run_id='fixed-run',fencing_token='2')
+  request=dict(line,host='a.fixture.example.com',ip='93.184.216.34',scheme='https',port=443)
+  permit=dict(permit_id='fixed-permit',committed_at='timestamp',permit_deadline='timestamp')
+  self.assertEqual(install_command(dict(request=request,permit=permit),line),dict(request=request,**permit))
+  with self.assertRaises(AssertionError):install_command(dict(request=dict(request,fencing_token='3'),permit=permit),line)
  def test_sealed_proof_is_checked_before_typed_projection(self):
   line=dict(run_id='fixed-run')
   proof=dict(tcp_only=True,sockets_denied=False,fd_limit=256,no_new_privileges=True,capabilities_zero=True,secrets_unavailable=True,uid=65534,gid=65534)

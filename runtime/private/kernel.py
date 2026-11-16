@@ -4,13 +4,20 @@ No database credential, Worker input reconstruction, deployment or public route.
 The durable journal burns a Run before allocation. Container removal is cleanup,
 never the source of a physical receipt.
 """
-import base64,datetime,hashlib,json,os,select,subprocess,time,threading
+import base64,datetime,hashlib,json,os,secrets,select,subprocess,time,threading
 from pathlib import Path
 from assets.authority import Authority,canonical,sync_directory
 
 LABEL='devpilot.private.runtime'
+SESSION='devpilot.private.session'
 HERE=Path(__file__).resolve().parent
 def utc(delay=0):return (datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(seconds=delay)).isoformat().replace('+00:00','Z')
+
+def install_command(c,line):
+ request=c['request']
+ assert {k:request[k] for k in line}==line
+ permit=c['permit']
+ return dict(request=request,permit_id=permit['permit_id'],committed_at=permit['committed_at'],permit_deadline=permit['permit_deadline'])
 
 def project_event(r,line):
  event=r['event']
@@ -38,7 +45,7 @@ class Kernel:
   # Authority refreshes its public PEM; it was read-only in child mounts.
   public=state/'public.pem'
   if public.exists():public.chmod(0o600)
-  self.cfg=config;self.state=state;self.authority=Authority(state);self.authority.pub.chmod(0o444);self.active={};self.count=0;self.sign_lock=threading.Lock();self.locks=[threading.RLock(),threading.RLock()]
+  self.cfg=config;self.state=state;self.session=secrets.token_hex(16);self.authority=Authority(state);self.authority.pub.chmod(0o444);self.active={};self.count=0;self.sign_lock=threading.Lock();self.locks=[threading.RLock(),threading.RLock()]
   self.target=config['target_container'];self.image=config['image'];self.prefix='dp-private-'+config['runtime_id']
   self.validate_target()
  def stderr(self,name):
@@ -55,7 +62,7 @@ class Kernel:
   links=json.loads(self.exec(self.target,'ip','-j','link','show'));assert all(x['ifname']=='lo' for x in links),'target has an unbound upstream/old domain'
   for family in ('-4','-6'):assert not json.loads(self.exec(self.target,'ip',family,'-j','route','show','default'))
  def create(self,name,pid=None):
-  args=['docker','run','-d','--name',name,'--label',LABEL+'='+self.cfg['runtime_id'],'--network','none','--cap-drop','ALL','--cap-add','NET_ADMIN','--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','--sysctl','net.ipv6.conf.all.disable_ipv6=0','--sysctl','net.ipv6.conf.all.accept_ra=0','--sysctl','net.ipv6.conf.default.accept_ra=0','--sysctl','net.ipv4.ip_forward='+('1' if name.endswith('-guard') else '0'),'--sysctl','net.ipv6.conf.all.forwarding='+('1' if name.endswith('-guard') else '0')]
+  args=['docker','run','-d','--name',name,'--label',LABEL+'='+self.cfg['runtime_id'],'--label',SESSION+'='+self.session,'--network','none','--cap-drop','ALL','--cap-add','NET_ADMIN','--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','--sysctl','net.ipv6.conf.all.disable_ipv6=0','--sysctl','net.ipv6.conf.all.accept_ra=0','--sysctl','net.ipv6.conf.default.accept_ra=0','--sysctl','net.ipv4.ip_forward='+('1' if name.endswith('-guard') else '0'),'--sysctl','net.ipv6.conf.all.forwarding='+('1' if name.endswith('-guard') else '0')]
   if pid:args+=['--pid','container:'+pid]
   return self.run(args+['--entrypoint','sleep',self.image,'infinity']).decode().strip()
  def read(self,proc,seconds=3):
@@ -103,8 +110,9 @@ class Kernel:
   # dead management channel before PID1 can produce its original stop proof.
   life=life.replace("select.select([child.stdout],[],[],3)","select.select([child.stdout],[],[],min(12,max(0,hard-time.monotonic())))")
   bootstrap=bootstrap.replace('original=[]',"life=fcntl.fcntl(19,fcntl.F_DUPFD_CLOEXEC,30);os.close(19)\noriginal=[]").replace('child=subprocess.Popen(',"os.dup2(life,7,inheritable=True);os.close(life)\nchild=subprocess.Popen(").replace('pass_fds=(3,4,5,6)','pass_fds=(3,4,5,6,7)').replace('for fd in [3,4,5,6,er,ar,qw,rr]','for fd in [3,4,5,6,7,er,ar,qw,rr]').replace('/usr/local/bin/schedulerprobefixture','/toolbin/privateprobe')
+  bootstrap=bootstrap.replace(',[],[],2.5)',',[],[],12)')
   init=core+'\nBOOTSTRAP_SOURCE='+repr(bootstrap)+'\n'+life
-  args=['docker','run','--rm','-i','--name',d['name']+'-pid1','--label',LABEL+'='+self.cfg['runtime_id'],'--network','container:'+d['run'],'--cap-drop','ALL']
+  args=['docker','run','--rm','-i','--name',d['name']+'-pid1','--label',LABEL+'='+self.cfg['runtime_id'],'--label',SESSION+'='+self.session,'--network','container:'+d['run'],'--cap-drop','ALL']
   for cap in ['KILL','SETUID','SETGID','SETPCAP']:args+=['--cap-add',cap]
   args+=['--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--memory-swap','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','-v',self.cfg['ca_file']+':/etc/ssl/certs/private-target.pem:ro','--entrypoint','python3',self.image,'-S','-u','-c',init]
   p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(d['line']['run_id']+'-pid1.stderr'),bufsize=0);d['life']=p
@@ -139,8 +147,7 @@ class Kernel:
   d=self.active[index];assert d['line']==line
   if op=='launch':r=self.launch(d,c)
   elif op=='install':
-   assert c['request']['lineage']==line
-   install=dict(request=c['request'],permit_id=c['permit']['permit_id'],committed_at=c['permit']['committed_at'],permit_deadline=c['permit']['permit_deadline'])
+   install=install_command(c,line)
    for role in ['gateway','run']:
     p=d['managers'][role];self.send(p,dict(op='install',install=install));r=self.read(p);assert r['permit_id']==install['permit_id']
    r=dict(event='installed',confirmation=r)

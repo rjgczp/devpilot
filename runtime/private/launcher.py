@@ -6,7 +6,7 @@ role binaries, typed anonymous IPC and the original PID1 proofs do the work.
 """
 import argparse,base64,concurrent.futures,fcntl,json,os,re,select,signal,subprocess,sys,threading,time
 from pathlib import Path
-from kernel import Kernel,LABEL,canonical
+from kernel import Kernel,LABEL,SESSION,canonical
 
 HERE=Path(__file__).resolve().parent
 UIDS={'supervisor':65531,'controller':65530,'sampler':65529,'watchdog':65529}
@@ -36,7 +36,7 @@ class Runtime:
  def child(self,name,role,profile,index=None):
   uid=65532+index if role=='worker' else UIDS[role]
   container=self.kernel.prefix+'-'+name
-  args=['docker','run','-i','--name',container,'--label',LABEL+'='+self.c['runtime_id'],'--network',self.c['control_network'],'--user',f'{uid}:{uid}','--cap-drop','ALL','--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','256m','--memory-swap','256m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','-v',profile['database_url_file']+':/run/own-url:ro']
+  args=['docker','run','-i','--name',container,'--label',LABEL+'='+self.c['runtime_id'],'--label',SESSION+'='+self.kernel.session,'--network',self.c['control_network'],'--user',f'{uid}:{uid}','--cap-drop','ALL','--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','256m','--memory-swap','256m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','-v',profile['database_url_file']+':/run/own-url:ro']
   if role=='worker':args+=['-v',self.c['catalog_file']+':/run/catalog:ro']
   if role=='supervisor':args+=['-v',str(self.state/'public.pem')+':/run/stop-public.pem:ro']
   if role=='sampler':
@@ -203,7 +203,10 @@ class Runtime:
   for name in self.children:
    container=self.kernel.prefix+'-'+name
    try:
-    info=self.kernel.inspect(container);assert info['Config']['Labels'][LABEL]==self.c['runtime_id'];self.kernel.run(['docker','rm','-f',container])
+    info=self.kernel.inspect(container)
+    labels=info['Config']['Labels'] or {}
+    if labels.get(LABEL)!=self.c['runtime_id'] or labels.get(SESSION)!=self.kernel.session:continue
+    self.kernel.run(['docker','rm','-f',container])
    except RuntimeError:pass
   unverified=[p.name for p in self.state.glob('*.owner.json') if not (self.state/(json.loads(p.read_text())['line']['run_id']+'.receipt')).exists()]
   self.status('recovery_required' if unverified else 'stopped',failed=self.failed,unverified_runs=len(unverified),completed_runs=len(self.done))
