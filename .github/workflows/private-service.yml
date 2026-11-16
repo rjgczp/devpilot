@@ -1,0 +1,25 @@
+name: Private service lifecycle
+on:
+  pull_request:
+    branches: [main]
+    paths: ['cmd/privatesupervisor/**', 'internal/supervisorruntime/**', 'internal/supervisorfixture/**', 'internal/workerruntime/**', 'internal/storagecontrol/**', 'internal/retentioncontrol/**', 'internal/probenetwork/**', 'runtime/private/**', 'deploy/privateservice/**', 'scripts/private-service.sh', 'tests/privateservice/**', 'tests/integration/private_service_test.go', '.dockerignore', '.github/workflows/private-service.yml']
+permissions:
+  contents: read
+jobs:
+  private-service:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: New service drives real isolated PG18 lifecycles and recovery
+        run: sh tests/privateservice/run.sh "$RUNNER_TEMP/private-service"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: private-service
+          path: ${{ runner.temp }}/private-service/
+          if-no-files-found: error

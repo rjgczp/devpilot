@@ -1,4 +1,4 @@
-//go:build schedulerfixture && linux
+//go:build (schedulerfixture || (privateworker && privateprobe)) && linux
 
 package supervisorfixture
 

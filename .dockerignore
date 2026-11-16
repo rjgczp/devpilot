@@ -6,6 +6,14 @@
 !cmd/api/**
 !cmd/privateworker
 !cmd/privateworker/**
+!cmd/privatesupervisor
+!cmd/privatesupervisor/**
+!cmd/storagereporter
+!cmd/storagereporter/**
+!cmd/privateprobe
+!cmd/privateprobe/**
+!cmd/privatenetwork
+!cmd/privatenetwork/**
 !internal
 !internal/**
 !migrations
@@ -25,3 +33,8 @@
 !deploy/private/provision.sql
 !deploy/privateworker
 !deploy/privateworker/Dockerfile
+!deploy/privateservice
+!deploy/privateservice/Dockerfile
+!runtime
+!runtime/private
+!runtime/private/control_child.py
