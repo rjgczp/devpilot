@@ -98,3 +98,37 @@ func TestControllerTrackingBoundAndMalformedFrames(t *testing.T) {
 		t.Fatal("typed frame")
 	}
 }
+
+func TestControlFinalizationRequiresAcceptedExactPhysicalLine(t *testing.T) {
+	line := lineage()
+	calls := 0
+	s := Supervisor{Controller: controlFunc(func(_ context.Context, c workerruntime.Call) (workerruntime.Reply, error) {
+		calls++
+		if c.Op != "recover" || c.Line == nil || *c.Line != line {
+			t.Fatal("not exact existing recovery")
+		}
+		return workerruntime.Reply{Event: "recover_ok", Line: line}, nil
+	}), Kernel: backendFunc(func(_ context.Context, c workerruntime.Call) (BackendReply, error) {
+		calls++
+		if c.Op != "recovered" {
+			t.Fatal("finalization attempted execution or release", c.Op)
+		}
+		return BackendReply{Event: "recovered", Line: line}, nil
+	})}
+	if _, e := s.Handle(context.Background(), workerruntime.Call{Op: "finalize_control", Line: &line}); e == nil || calls != 0 {
+		t.Fatal("unverified physical line finalized")
+	}
+	s.settled = &line
+	foreign := line
+	foreign.FencingToken = "99"
+	if _, e := s.Handle(context.Background(), workerruntime.Call{Op: "finalize_control", Line: &foreign}); e == nil || calls != 0 {
+		t.Fatal("foreign fence finalized")
+	}
+	r, e := s.Handle(context.Background(), workerruntime.Call{Op: "finalize_control", Line: &line})
+	if e != nil || r.Event != "control_finalized" || calls != 2 {
+		t.Fatal(r, e, calls)
+	}
+	if _, e = s.Handle(context.Background(), workerruntime.Call{Op: "finalize_control", Line: &line}); e == nil || calls != 2 {
+		t.Fatal("finalization replayed")
+	}
+}

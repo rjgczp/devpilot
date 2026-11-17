@@ -45,8 +45,6 @@ type Reply struct {
 func (Call) Format(f fmt.State, _ rune)  { _, _ = io.WriteString(f, "<private Supervisor request>") }
 func (Reply) Format(f fmt.State, _ rune) { _, _ = io.WriteString(f, "<private Supervisor reply>") }
 
-var errControlResultCommitted = errors.New("private control result committed; Controller finalization required")
-
 type PrivateLoop struct {
 	store        scheduler.Store
 	worker       *scheduler.Worker
@@ -119,12 +117,6 @@ func (l *PrivateLoop) Run(ctx context.Context, sup Supervisor, directory schedul
 				event("claimed", lease.RunID)
 			}
 			if e = l.execute(ctx, sup, directory, h, lease); e != nil {
-				if errors.Is(e, errControlResultCommitted) {
-					if event != nil {
-						event("control_result_committed", lease.RunID)
-					}
-					return scheduler.ErrUnavailable
-				}
 				return e
 			}
 			if event != nil {
@@ -214,7 +206,13 @@ func (l *PrivateLoop) execute(ctx context.Context, sup Supervisor, directory sch
 		if e = l.store.PersistControlResult(ctx, outcome); e != nil {
 			return e
 		}
-		return errControlResultCommitted
+		// Complete control-only state through the same trusted Controller before
+		// exit. A stdout event is not an acknowledged lifecycle operation.
+		done, e := sup.Call(ctx, Call{Op: "finalize_control", Line: &line})
+		if e != nil || done.Event != "control_finalized" || done.Line != line {
+			return ErrBoundary
+		}
+		return scheduler.ErrUnavailable
 	}
 	outcome, e := scheduler.NetworkResult(line, next.Observation)
 	if e != nil {
