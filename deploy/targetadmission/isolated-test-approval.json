@@ -1,0 +1,8 @@
+{
+  "candidate_sha256": "264ddb9bcb8bf48cf305bc81d2ce58434f0e0ff2dac9ad5f2b45ae0210fcf095",
+  "scope": "disposable-pg18-linux-no-upstream",
+  "production": false,
+  "authority": "Product owner explicitly approved this exact candidate for isolated application only, 2026-11-17",
+  "includes": ["existing test identities in private-approved mode", "owned DNS/CNAME and HTTPS target", "private-approved isolated Gate for lifecycle and refusal tests"],
+  "excludes": ["production M14/M15/M16", "production LOGIN or GRANT", "Internet egress", "deployment", "Migration11"]
+}

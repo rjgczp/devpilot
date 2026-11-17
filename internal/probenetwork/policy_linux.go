@@ -57,17 +57,19 @@ const kernelCommandBudget = 2 * time.Second
 // attests that there is no host interface, bridge, or published port.
 // Route hashes bind the actual allocated namespace, not an environment flag.
 type Config struct {
-	Target       netip.Addr      `json:"target,omitempty"`
-	Denied       []netip.Prefix  `json:"denied,omitempty"`
-	Lineage      handoff.Lineage `json:"lineage"`
-	Role         string          `json:"role"`
-	Namespace    string          `json:"namespace"`
-	RouteHash    string          `json:"route_hash"`
-	AddressHash  string          `json:"address_hash"`
-	Probe4       netip.Addr      `json:"probe4"`
-	Probe6       netip.Addr      `json:"probe6"`
-	Host         string          `json:"host"`
-	HardDeadline time.Time       `json:"hard_deadline"`
+	DNSDigest       string          `json:"dns_digest,omitempty"`
+	ApprovalExpires time.Time       `json:"approval_expires,omitempty"`
+	Target          netip.Addr      `json:"target,omitempty"`
+	Denied          []netip.Prefix  `json:"denied,omitempty"`
+	Lineage         handoff.Lineage `json:"lineage"`
+	Role            string          `json:"role"`
+	Namespace       string          `json:"namespace"`
+	RouteHash       string          `json:"route_hash"`
+	AddressHash     string          `json:"address_hash"`
+	Probe4          netip.Addr      `json:"probe4"`
+	Probe6          netip.Addr      `json:"probe6"`
+	Host            string          `json:"host"`
+	HardDeadline    time.Time       `json:"hard_deadline"`
 }
 
 type Install struct {
@@ -662,13 +664,25 @@ func uniqueJSON(d *json.Decoder, depth int) error {
 // exactly one HTTPS host/literal and explicit host/control exclusions offline.
 func BootPrivate(ctx context.Context, c Config) (*Policy, error) { return boot(ctx, c, true) }
 func validPrivateConfig(c Config, now time.Time) bool {
+	if c.DNSDigest != "" {
+		if len(c.DNSDigest) != 64 || !c.ApprovalExpires.After(now) || c.ApprovalExpires.After(now.Add(24*time.Hour)) || c.HardDeadline.After(c.ApprovalExpires) {
+			return false
+		}
+		for _, b := range []byte(c.DNSDigest) {
+			if !(b >= '0' && b <= '9' || b >= 'a' && b <= 'f') {
+				return false
+			}
+		}
+	} else if !c.ApprovalExpires.IsZero() {
+		return false
+	}
 	return validBaseConfig(c, now) && len(c.Denied) > 0 && monitoring.PrivateTargetAllowed(c.Host, c.Target, c.Denied)
 }
 func (p *Policy) allowedTarget(r targetpermit.Request) bool {
 	if !p.private {
 		return fixtureTarget(r.IP)
 	}
-	return r.Scheme == "https" && r.Port == 443 && r.IP == p.c.Target && monitoring.PrivateTargetAllowed(r.Host, r.IP, p.c.Denied)
+	return (p.c.DNSDigest == "" || r.DNSDigest == p.c.DNSDigest && !r.Deadline.After(p.c.ApprovalExpires) && p.c.ApprovalExpires.After(time.Now())) && r.Scheme == "https" && r.Port == 443 && r.IP == p.c.Target && monitoring.PrivateTargetAllowed(r.Host, r.IP, p.c.Denied)
 }
 
 // Close removes network permission only. It never releases a DB reservation or

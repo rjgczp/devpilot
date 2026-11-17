@@ -64,7 +64,7 @@ func (s SchedulerInput) targetHook(client *targetpermit.Client) targetPermitHook
 		}
 		ctx, cancel := context.WithDeadline(ctx, deadline)
 		defer cancel()
-		r := targetpermit.Request{Lineage: s.lineage, Host: c.host, Scheme: c.scheme, IP: c.endpoint.Addr(), Port: c.endpoint.Port(), Deadline: deadline}
+		r := targetpermit.Request{Lineage: s.lineage, DNSDigest: c.dnsDigest, Host: c.host, Scheme: c.scheme, IP: c.endpoint.Addr(), Port: c.endpoint.Port(), Deadline: deadline}
 		if client.Acquire(ctx, r) != nil {
 			return ErrTargetPermit
 		}

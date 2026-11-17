@@ -25,8 +25,10 @@ import (
 // TargetDirectory is an offline, immutable fixture allowlist. It performs no
 // lookup or dial. None of its secrets or raw fixture addresses are serializable.
 type TargetDirectory struct {
-	keys     map[int64][]byte
-	fixtures map[string]map[netip.Addr]bool
+	approved  bool
+	approvals []TargetApproval
+	keys      map[int64][]byte
+	fixtures  map[string]map[netip.Addr]bool
 }
 
 func (TargetDirectory) Format(f fmt.State, _ rune) {

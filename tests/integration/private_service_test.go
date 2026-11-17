@@ -18,10 +18,21 @@ import (
 // The coordinator provisions only a disposable cluster and observes public API
 // and ledger facts. Every execution/stop/recovery call is made by the new service
 // binaries, never by this test. The unchanged approved candidates are hash-bound.
-func TestPrivateServicePG(t *testing.T) {
+func TestPrivateServicePG(t *testing.T) { privateServicePG(t, nil) }
+
+type privateServiceOptions struct {
+	URL, Mode string
+	Refusal   bool
+	Apply     func(*testing.T, *pgxpool.Pool)
+}
+
+func privateServicePG(t *testing.T, options *privateServiceOptions) {
 	ctx := context.Background()
 	db := openDB(t)
 	capacitySchema(t, db)
+	if options != nil {
+		options.Apply(t, db)
+	}
 	if _, e := db.Exec(ctx, `REVOKE TEMP ON DATABASE devpilot_registration_test FROM PUBLIC`); e != nil {
 		t.Fatal(e)
 	}
@@ -47,13 +58,23 @@ func TestPrivateServicePG(t *testing.T) {
 	r = periodicPrivateLogin(t, db, r)
 	f, m := monitorFixture(t, db)
 	url := "https://a.fixture.example.com/fixture/private-path-SENTINEL"
+	if options != nil {
+		url = options.URL
+	}
 	interval, timeout := int64(60), int64(10)
 	var e error
 	m, e = (monitor.Store{Pool: db}).Update(ctx, f.od, m.WorkspaceID, m.ProjectID, m.ID, monitor.Input{URL: &url, IntervalSeconds: &interval, TimeoutSeconds: &timeout}, monitor.ETag(m))
 	if e != nil {
 		t.Fatal(e)
 	}
-	if _, e = db.Exec(ctx, `UPDATE scheduler_control SET execution_mode='private-isolated';UPDATE scheduler_control SET gate='private-isolated',emergency_stop=false,verified_at=clock_timestamp(),expires_at=clock_timestamp()+interval '1 hour',manifest_digest=decode(repeat('ab',32),'hex') WHERE control_id='deployment'`); e != nil {
+	mode := "private-isolated"
+	if options != nil {
+		mode = options.Mode
+	}
+	if _, e = db.Exec(ctx, `UPDATE scheduler_control SET execution_mode=$1`, mode); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = db.Exec(ctx, `UPDATE scheduler_control SET gate='`+mode+`',emergency_stop=false,verified_at=clock_timestamp(),expires_at=clock_timestamp()+interval '1 hour',manifest_digest=decode(repeat('ab',32),'hex') WHERE control_id='deployment'`); e != nil {
 		t.Fatal(e)
 	}
 	server, client, _ := checkpointHTTPServer(t, db)
@@ -77,7 +98,7 @@ func TestPrivateServicePG(t *testing.T) {
 		cc := pool.Config().ConnConfig
 		return map[string]string{"dsn": fmt.Sprintf("postgres://%s:%s@pg:5432/devpilot_registration_test?sslmode=disable", cc.User, cc.Password), "incarnation": inc}
 	}
-	p.exchange("service-config", map[string]any{"workers": []any{profile(w1, i1), profile(w2, i2)}, "supervisor": profile(s, si), "controller": profile(c, ci), "reporter": profile(r, ri), "url": m.URL})
+	p.exchange("service-config", map[string]any{"workers": []any{profile(w1, i1), profile(w2, i2)}, "supervisor": profile(s, si), "controller": profile(c, ci), "reporter": profile(r, ri), "url": m.URL, "scope": map[string]string{"workspace_id": m.WorkspaceID, "project_id": m.ProjectID, "monitor_id": m.ID, "configuration_version": m.Version}})
 	wait := func(name string, seconds int, query string, args ...any) {
 		t.Helper()
 		for end := time.Now().Add(time.Duration(seconds) * time.Second); time.Now().Before(end); time.Sleep(200 * time.Millisecond) {
@@ -106,6 +127,26 @@ func TestPrivateServicePG(t *testing.T) {
 			t.Fatal(e)
 		}
 		p.exchange("service-snapshot", json.RawMessage(raw))
+	}
+	if options != nil && options.Refusal {
+		reply := p.exchange("service-refusal-start", nil)
+		kind := string(reply.Frame)
+		defer p.exchange("service-stop", nil)
+		if kind == "unapproved" || kind == "approval-expired" {
+			time.Sleep(3 * time.Second)
+			if queryInt(t, db, `SELECT count(*) FROM monitor_runs`) != 0 {
+				t.Fatal("unapproved/expired target claimed")
+			}
+		} else {
+			wait("refusal stays unknown and trusted physical release", 45, `SELECT count(*)=1 FROM monitor_runs WHERE attempt_state='unknown' AND physical_release_confirmed_at IS NOT NULL`)
+			if queryInt(t, db, `SELECT in_use FROM scheduler_budget_state WHERE kind='global'`) != 0 {
+				t.Fatal("refusal not settled after physical proof")
+			}
+			history(1, "unknown")
+			snapshot("refused-" + kind)
+		}
+		p.exchange("service-refusal-assert", nil)
+		return
 	}
 	p.exchange("service-start", nil)
 	defer p.exchange("service-stop", nil)

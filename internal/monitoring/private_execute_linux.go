@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/rjgczp/devpilot/internal/monitoring/targetpermit"
 	"golang.org/x/sys/unix"
@@ -38,6 +39,18 @@ func SupervisorAlive(f *os.File) bool {
 // ExecutePrivate preserves the one-use engine and its DNS/literal/TLS policy.
 // No caller-supplied resolver, roots, client, retry or alternate address exists.
 func (s SchedulerInput) ExecutePrivate(ctx context.Context, client *targetpermit.Client, supervisor *os.File) (*Result, error) {
+	return s.executePrivate(ctx, client, supervisor, nil, time.Time{})
+}
+
+// ExecuteApproved only subtracts operator host/control exclusions and expiry.
+// SQL approval, namespace policy and actual validated DNS binding remain separate.
+func (s SchedulerInput) ExecuteApproved(ctx context.Context, client *targetpermit.Client, supervisor *os.File, deny []netip.Prefix, expires time.Time) (*Result, error) {
+	if len(deny) == 0 || !expires.After(time.Now()) || expires.After(time.Now().Add(24*time.Hour)) {
+		return nil, ErrTargetPermit
+	}
+	return s.executePrivate(ctx, client, supervisor, deny, expires)
+}
+func (s SchedulerInput) executePrivate(ctx context.Context, client *targetpermit.Client, supervisor *os.File, deny []netip.Prefix, expires time.Time) (*Result, error) {
 	if !s.Valid() || s.executeAttempt == nil || !s.executeAttempt.CompareAndSwap(false, true) || client == nil || !SupervisorAlive(supervisor) {
 		return nil, ErrTargetPermit
 	}
@@ -47,7 +60,7 @@ func (s SchedulerInput) ExecutePrivate(ctx context.Context, client *targetpermit
 	}
 	ctx, cancel := context.WithDeadline(ctx, s.deadline)
 	defer cancel()
-	engine, e := newEngine(netip.MustParseAddr("192.0.2.53"), nil)
+	engine, e := newEngine(netip.MustParseAddr("192.0.2.53"), deny)
 	if e != nil {
 		return nil, e
 	}
@@ -55,6 +68,9 @@ func (s SchedulerInput) ExecutePrivate(ctx context.Context, client *targetpermit
 	engine.targetPermit = func(c context.Context, r targetCandidate) error {
 		if !SupervisorAlive(supervisor) || r.scheme != "https" || r.endpoint.Port() != 443 {
 			return ErrTargetPermit
+		}
+		if !expires.IsZero() && expires.Before(r.deadline) {
+			r.deadline = expires
 		}
 		if e := acquire(c, r); e != nil {
 			return e

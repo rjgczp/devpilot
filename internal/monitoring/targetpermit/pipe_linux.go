@@ -30,11 +30,12 @@ var ErrDenied = errors.New("target_permit_unavailable")
 
 type Request struct {
 	handoff.Lineage
-	Host     string     `json:"host"`
-	Scheme   string     `json:"scheme"`
-	IP       netip.Addr `json:"ip"`
-	Port     uint16     `json:"port"`
-	Deadline time.Time  `json:"deadline"`
+	DNSDigest string     `json:"dns_digest,omitempty"`
+	Host      string     `json:"host"`
+	Scheme    string     `json:"scheme"`
+	IP        netip.Addr `json:"ip"`
+	Port      uint16     `json:"port"`
+	Deadline  time.Time  `json:"deadline"`
 }
 
 func (Request) Format(f fmt.State, _ rune) { _, _ = io.WriteString(f, "<private target request>") }

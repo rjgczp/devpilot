@@ -20,6 +20,7 @@ type Worker struct {
 	mu             sync.Mutex
 	admission      bool
 	privateMode    bool
+	approvedMode   bool
 	hint           Hint
 	lease          *Lease
 	startAttempted bool
@@ -118,5 +119,9 @@ func (w *Worker) allowed(ctx context.Context) bool {
 	ctx, cancel := context.WithTimeout(ctx, transactionBudget)
 	defer cancel()
 	var ready bool
-	return w.store.DB != nil && w.store.DB.QueryRow(ctx, `SELECT scheduler_private.private_worker_ready($1::uuid)`, w.store.Incarnation).Scan(&ready) == nil && ready
+	sql := `SELECT scheduler_private.private_worker_ready($1::uuid)`
+	if w.approvedMode {
+		sql = `SELECT scheduler_private.approved_worker_ready($1::uuid)`
+	}
+	return w.store.DB != nil && w.store.DB.QueryRow(ctx, sql, w.store.Incarnation).Scan(&ready) == nil && ready
 }

@@ -4,10 +4,14 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/rjgczp/devpilot/internal/credentials"
 	"io"
+	"net/netip"
 	"os"
+	"time"
 
 	"github.com/rjgczp/devpilot/internal/monitoring"
 	"github.com/rjgczp/devpilot/internal/monitoring/handoff"
@@ -39,6 +43,27 @@ func run() error {
 	if !monitoring.SupervisorAlive(supervisor) {
 		return handoff.ErrInput
 	}
+	// Optional deny-only root-owned read-only mount; no DB/key/management input.
+	var policy struct {
+		Denied  []netip.Prefix `json:"denied_prefixes"`
+		Expires time.Time      `json:"expires_at"`
+	}
+	approved := false
+	if f, e := os.Open("/run/private-target.json"); e == nil {
+		b, e := io.ReadAll(io.LimitReader(f, 8193))
+		f.Close()
+		if e != nil || len(b) > 8192 || !credentials.ValidJSON(b) {
+			return handoff.ErrInput
+		}
+		d := json.NewDecoder(bytes.NewReader(b))
+		d.DisallowUnknownFields()
+		if d.Decode(&policy) != nil {
+			return handoff.ErrInput
+		}
+		approved = true
+	} else if !os.IsNotExist(e) {
+		return handoff.ErrInput
+	}
 	proof, err := probesandbox.SealPrivateNetwork()
 	if err != nil {
 		return err
@@ -62,7 +87,12 @@ func run() error {
 	}{"sealed", proof}) != nil {
 		return handoff.ErrInput
 	}
-	result, err := input.ExecutePrivate(context.Background(), targetpermit.NewClient(req, reply), supervisor)
+	var result *monitoring.Result
+	if approved {
+		result, err = input.ExecuteApproved(context.Background(), targetpermit.NewClient(req, reply), supervisor, policy.Denied, policy.Expires)
+	} else {
+		result, err = input.ExecutePrivate(context.Background(), targetpermit.NewClient(req, reply), supervisor)
+	}
 	reason := ""
 	if err != nil {
 		reason = "execution_not_observed"

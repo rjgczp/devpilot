@@ -7,6 +7,7 @@ RUN mkdir /out && \
  CGO_ENABLED=0 go build -buildvcs=false -tags=privateworker -trimpath -o /out/privateworker ./cmd/privateworker && \
  CGO_ENABLED=0 go build -buildvcs=false -tags=privateworker -trimpath -o /out/storagereporter ./cmd/storagereporter && \
  CGO_ENABLED=0 go build -buildvcs=false -tags=privateworker,privateprobe -trimpath -o /out/privatesupervisor ./cmd/privatesupervisor && \
+ CGO_ENABLED=0 go build -buildvcs=false -tags=privateworker,privateprobe -trimpath -o /out/privateapproval ./cmd/privateapproval && \
  CGO_ENABLED=0 go build -buildvcs=false -tags=privateprobe -trimpath -o /out/privateprobe ./cmd/privateprobe && \
  CGO_ENABLED=0 go build -buildvcs=false -tags=privateprobe -trimpath -o /out/privatenetwork ./cmd/privatenetwork
 FROM postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336

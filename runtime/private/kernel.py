@@ -46,7 +46,7 @@ class Kernel:
   public=state/'public.pem'
   if public.exists():public.chmod(0o600)
   self.cfg=config;self.state=state;self.session=secrets.token_hex(16);self.authority=Authority(state);self.authority.pub.chmod(0o444);self.active={};self.count=0;self.sign_lock=threading.Lock();self.locks=[threading.RLock(),threading.RLock()]
-  self.target=config['target_container'];self.image=config['image'];self.prefix='dp-private-'+config['runtime_id']
+  self.approval=config.get('approval');self.target=config['target_container'];self.image=config['image'];self.prefix='dp-private-'+config['runtime_id']
   self.validate_target()
  def stderr(self,name):
   path=self.state/name;file=path.open('ab',buffering=0);path.chmod(0o600);return file
@@ -77,6 +77,9 @@ class Kernel:
  def send(self,p,value):p.stdin.write(canonical(value)+b'\n');p.stdin.flush()
  def prepare(self,index,line):
   assert index not in self.active
+  if self.approval:
+   from approval import bound
+   assert bound(self.approval,line),'operator approval expired or configuration mismatch'
   self.authority.register(line) # O_EXCL+fsync before any allocation/restart.
   owner=self.state/(line['run_id']+'.owner.json')
   with owner.open('xb') as f:f.write(canonical(dict(index=index,line=line)));f.flush();os.fsync(f.fileno())
@@ -93,12 +96,14 @@ class Kernel:
   rm,gm,bm,xm=mac(run,'eth0'),mac(guard,'eth0'),mac(guard,'eth1'),mac(self.target,rx)
   for cid,dev,a,b,m in [(run,'eth0',gate4,gate6,gm),(guard,'eth0',probe4,probe6,rm),(guard,'eth1',rx4,rx6,xm),(self.target,rx,back4,back6,bm)]:
    for family,ip in [('-4',a),('-6',b)]:self.exec(cid,'ip',family,'neigh','replace',ip,'lladdr',m,'nud','permanent','dev',dev)
-  for ip,family,mask in [('93.184.216.34','-4','/32'),('192.0.2.53','-4','/32'),('2001:4860:ffff::34','-6','/128'),('fd64:53::53','-6','/128')]:
+  for ip,family,mask in [(self.cfg['target_ip'],'-6' if ':' in self.cfg['target_ip'] else '-4','/128' if ':' in self.cfg['target_ip'] else '/32'),('192.0.2.53','-4','/32'),('fd64:53::53','-6','/128')]:
    self.exec(run,'ip',family,'route','replace',ip+mask,'via',gate4 if family=='-4' else gate6,'dev','eth0');self.exec(guard,'ip',family,'route','replace',ip+mask,'via',rx4 if family=='-4' else rx6,'dev','eth1')
   for ip,family,via,mask in [(probe4,'-4',back4,'/32'),(probe6,'-6',back6,'/128')]:self.exec(self.target,'ip',family,'route','replace',ip+mask,'via',via,'dev',rx)
   ready=[]
   for role,cid in [('gateway',guard),('run',run)]:
-   fp=json.loads(self.exec(cid,'/toolbin/privatenetwork','fingerprint'));cfg=dict(lineage=line,role=role,**fp,probe4=probe4,probe6=probe6,host=self.cfg['target_host'],target=self.cfg['target_ip'],denied=['11.0.0.0/8','2600:dead::/32'],hard_deadline=utc(34));d['configs'][role]=cfg
+   fp=json.loads(self.exec(cid,'/toolbin/privatenetwork','fingerprint'));cfg=dict(lineage=line,role=role,**fp,probe4=probe4,probe6=probe6,host=self.cfg['target_host'],target=self.cfg['target_ip'],denied=self.cfg.get('denied_prefixes',['11.0.0.0/8','2600:dead::/32']),hard_deadline=utc(34))
+   if self.approval:cfg.update(dns_digest=self.approval['dns_digest'],approval_expires=self.approval['expires_at'])
+   d['configs'][role]=cfg
    p=subprocess.Popen(['docker','exec','-i',cid,'/toolbin/privatenetwork'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(line['run_id']+'-network-'+role+'.stderr'),bufsize=0);d['managers'][role]=p;self.send(p,dict(op='boot',config=cfg));ready.append(self.read(p))
   return dict(event='prepared',line=line,ready=ready)
  def launch(self,d,c):
@@ -115,6 +120,11 @@ class Kernel:
   args=['docker','run','--rm','-i','--name',d['name']+'-pid1','--label',LABEL+'='+self.cfg['runtime_id'],'--label',SESSION+'='+self.session,'--network','container:'+d['run'],'--cap-drop','ALL']
   for cap in ['KILL','SETUID','SETGID','SETPCAP']:args+=['--cap-add',cap]
   args+=['--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--memory-swap','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','-v',self.cfg['ca_file']+':/etc/ssl/certs/private-target.pem:ro','--entrypoint','python3',self.image,'-S','-u','-c',init]
+  if self.approval:
+   policy=self.state/(d['line']['run_id']+'.target-policy.json')
+   with policy.open('x') as f:f.write(json.dumps(dict(denied_prefixes=self.cfg['denied_prefixes'],expires_at=self.approval['expires_at'])))
+   policy.chmod(0o444)
+   at=args.index('--entrypoint');args[at:at]=['-v',str(policy)+':/run/private-target.json:ro']
   p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(d['line']['run_id']+'-pid1.stderr'),bufsize=0);d['life']=p
   deadline=int(datetime.datetime.fromisoformat(d['configs']['run']['hard_deadline'].replace('Z','+00:00')).timestamp()*1e9)
   self.send(p,dict(op='boot',lineage=d['line'],deadline_ns=deadline));assert self.read(p)['event']=='lifecycle_ready'
@@ -148,6 +158,9 @@ class Kernel:
   if op=='launch':r=self.launch(d,c)
   elif op=='install':
    install=install_command(c,line)
+   if self.approval:
+    from approval import permits
+    assert permits(self.approval,line,c['request']),'operator approval mismatch'
    for role in ['gateway','run']:
     p=d['managers'][role];self.send(p,dict(op='install',install=install));r=self.read(p);assert r['permit_id']==install['permit_id']
    r=dict(event='installed',confirmation=r)

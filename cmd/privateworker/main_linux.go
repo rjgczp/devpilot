@@ -21,6 +21,7 @@ func run() int {
 	file := flags.String("database-url-file", "", "restricted Worker DSN secret file")
 	inc := flags.String("incarnation", "", "offline assigned Worker UUID")
 	private := flags.Bool("private-isolated", false, "require separately approved private PG admission and inherited Supervisor IPC")
+	approved := flags.Bool("private-approved", false, "require independent approved-target PG gate and operator approval catalog")
 	catalog := flags.String("catalog-file", "", "restricted operator target catalog file")
 	storage := flags.Bool("storage-watchdog", false, "require fresh monotonic admission on inherited read-only pipe5")
 	check := flags.Bool("check", false, "validate the closed control boundary and exit")
@@ -39,8 +40,17 @@ func run() int {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	if *private {
-		loop, close, e := workerruntime.OpenPrivate(ctx, cfg, *inc)
+	if *private && *approved {
+		return 2
+	}
+	if *private || *approved {
+		open := workerruntime.OpenPrivate
+		mode := "private-isolated"
+		if *approved {
+			open = workerruntime.OpenApproved
+			mode = "private-approved"
+		}
+		loop, close, e := open(ctx, cfg, *inc)
 		if e != nil {
 			fmt.Fprintln(os.Stderr, e)
 			return 2
@@ -69,7 +79,7 @@ func run() int {
 			})
 		}
 		if *check {
-			fmt.Println(`{"event":"worker_checked","gate":"private-isolated"}`)
+			fmt.Printf("{\"event\":\"worker_checked\",\"gate\":%q}\n", mode)
 			return 0
 		}
 		sup, e := workerruntime.InheritedSupervisor()
@@ -79,8 +89,8 @@ func run() int {
 		}
 		defer sup.Close()
 		dir, e := workerruntime.TargetCatalogFile(*catalog)
-		if e != nil {
-			fmt.Fprintln(os.Stderr, e)
+		if e != nil || dir.ApprovedMode() != *approved {
+			fmt.Fprintln(os.Stderr, workerruntime.ErrConfiguration)
 			return 2
 		}
 		hello, e := sup.Call(ctx, workerruntime.Call{Op: "hello"})
@@ -88,7 +98,7 @@ func run() int {
 			fmt.Fprintln(os.Stderr, workerruntime.ErrBoundary)
 			return 2
 		}
-		fmt.Println(`{"event":"worker_ready","gate":"private-isolated","execution_available":true}`)
+		fmt.Printf("{\"event\":\"worker_ready\",\"gate\":%q,\"execution_available\":true}\n", mode)
 		e = loop.Run(ctx, sup, dir, func(event, run string) {
 			b, _ := json.Marshal(map[string]string{"event": event, "run_id": run})
 			fmt.Println(string(b))

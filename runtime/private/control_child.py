@@ -18,7 +18,8 @@ def request_pair(index,readfd,writefd,label):
  writers[label]=w;reads[qr]=label;passed.extend([readfd,writefd]);kept.extend([w,qr])
 if role=='worker':
  request_pair(0,3,4,'worker');gr,gw=fds[4:6];os.dup2(gr,5,inheritable=True);writers['guard']=gw;kept.append(gw);passed.append(5)
- cmd=['/toolbin/privateworker','--database-url-file','/run/own-url','--incarnation',inc,'--private-isolated','--storage-watchdog','--catalog-file','/run/catalog']
+ assert len(extra)==1 and extra[0] in ('private-isolated','private-approved')
+ cmd=['/toolbin/privateworker','--database-url-file','/run/own-url','--incarnation',inc,'--'+extra[0],'--storage-watchdog','--catalog-file','/run/catalog']
 elif role=='supervisor':
  # fd3/4: Worker server; fd5/6: kernel client; fd7/8: Controller client.
  request_pair(0,3,4,'worker')

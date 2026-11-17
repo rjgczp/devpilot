@@ -13,3 +13,8 @@ func NewPrivateWorker(store Store) *Worker { return &Worker{store: store, privat
 func (w *Worker) PrivateReady(ctx context.Context) bool {
 	return w != nil && w.privateMode && w.allowed(ctx)
 }
+
+// NewApprovedWorker cannot admit a fixture/private-isolated incarnation.
+func NewApprovedWorker(store Store) *Worker {
+	return &Worker{store: store, privateMode: true, approvedMode: true}
+}

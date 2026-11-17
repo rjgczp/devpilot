@@ -52,6 +52,9 @@ func (c *TargetController) Authorize(ctx context.Context, r targetpermit.Request
 	if e != nil || u.Hostname() != r.Host || u.Scheme != r.Scheme || u.Host != net.JoinHostPort(r.Host, "443") && u.Host != net.JoinHostPort(r.Host, "80") && u.Host != r.Host {
 		return deny()
 	}
+	if !c.directory.AllowsRequest(c.hint, v.URL, r) {
+		return deny()
+	}
 	entry, e := c.directory.Bind(c.hint, v.URL, r.IP)
 	if e != nil || len(entry.Keys) == 0 {
 		return deny()

@@ -15,9 +15,18 @@ def private_dir(p):
 def ticks(pid):return Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()[19]
 def load(path):
  p=Path(path).resolve();st=p.stat();assert st.st_uid==os.getuid() and st.st_mode&0o077==0
- c=json.loads(p.read_text());assert c['mode']=='private-isolated' and re.fullmatch('[a-z0-9-]{1,32}',c['runtime_id'])
+ c=json.loads(p.read_text());assert c['mode'] in ('private-isolated','private-approved') and re.fullmatch('[a-z0-9-]{1,32}',c['runtime_id'])
  assert re.fullmatch('sha256:[0-9a-f]{64}',c['image']) and re.fullmatch('[0-9a-f]{64}',c['target_container']) and re.fullmatch('[0-9a-f]{64}',c['pg_container'])
- assert c['target_ip'] in ('93.184.216.34','2001:4860:ffff::34') and c['target_host']=='a.fixture.example.com','real egress is not enabled by this entry'
+ if c['mode']=='private-isolated':
+  assert c['target_ip'] in ('93.184.216.34','2001:4860:ffff::34') and c['target_host']=='a.fixture.example.com','real egress is not enabled by this entry'
+ else:
+  from approval import load_approval
+  import ipaddress
+  assert c['denied_prefixes'] and len(c['denied_prefixes'])<=64
+  excluded=[ipaddress.ip_network(x,strict=True) for x in c['denied_prefixes']]
+  c['approval']=load_approval(c['approval_file'],c['target_host'],c['target_ip'])
+  assert not any(ipaddress.ip_address(ip) in subnet for ip in c['approval']['addresses'] for subnet in excluded)
+
  assert len(c['workers'])==2 and c['workers'][0]['incarnation']!=c['workers'][1]['incarnation']
  paths=[x['database_url_file'] for x in c['workers']]+[c[k]['database_url_file'] for k in ('supervisor','controller','reporter')]
  assert len(set(paths))==5
@@ -30,7 +39,7 @@ class Runtime:
   self.c=c;self.state=state;self.kernel=Kernel(c,state);self.children={};self.pending={};self.lock=threading.RLock();self.closing=False;self.failed=False
   self.guard_counts=[0,0];self.latest={};self.hellos={};self.hello_replies={};self.ready=set();self.done=[];self.closed_channels=set();self.recoveries=[];self.pool=concurrent.futures.ThreadPoolExecutor(max_workers=2)
  def status(self,event,**values):
-  value=dict(event=event,pid=os.getpid(),start_ticks=ticks(os.getpid()),runtime_id=self.c['runtime_id'],mode='private-isolated',production=False,**values)
+  value=dict(event=event,pid=os.getpid(),start_ticks=ticks(os.getpid()),runtime_id=self.c['runtime_id'],mode=self.c['mode'],production=False,**values)
   with self.lock:
    tmp=self.state/'status.tmp';tmp.write_bytes(canonical(value));tmp.chmod(0o600);os.replace(tmp,self.state/'status.json')
  def child(self,name,role,profile,index=None):
@@ -44,6 +53,7 @@ class Runtime:
    for src,dst in self.c['metadata_mounts']:args+=['-v',src+':'+dst+':ro']
   args+=['--entrypoint','python3',self.c['image'],'-S','-u','/runtime/control_child.py',role,profile['incarnation']]
   if role=='supervisor':args.append(self.c['workers'][index]['incarnation'])
+  if role=='worker':args.append(self.c['mode'])
   err=open(self.state/(name+'.stderr'),'ab',buffering=0);os.chmod(err.name,0o600)
   p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=err,bufsize=0);err.close()
   self.children[name]=p;self.pending[name]=bytearray()
@@ -223,7 +233,7 @@ def stop(state):
  except ProcessLookupError:return 0
  return 0
 def main():
- p=argparse.ArgumentParser();p.add_argument('action',choices=['init','start','run','stop','status']);p.add_argument('--config',type=Path);p.add_argument('--state',type=Path,required=True);p.add_argument('--run-isolated',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['init','start','run','stop','status']);p.add_argument('--config',type=Path);p.add_argument('--state',type=Path,required=True);p.add_argument('--run-isolated',action='store_true');p.add_argument('--run-approved',action='store_true');a=p.parse_args()
  assert not sys.flags.optimize,'validation requires assertions enabled'
  assert sys.platform=='linux','native Linux host required';state=private_dir(a.state)
  if a.action=='init':
@@ -231,11 +241,12 @@ def main():
   authority=Authority(state);authority.pub.chmod(0o444);print(json.dumps(dict(event='private_state_initialized',public_key_file=str(authority.pub),execution_available=False)));return 0
  if a.action=='status':print((state/'status.json').read_text() if (state/'status.json').exists() else '{"event":"closed"}');return 0
  if a.action=='stop':return stop(state)
- if not a.run_isolated:print('{"event":"private_service_closed","execution_available":false}');return 0
+ if not (a.run_isolated or a.run_approved):print('{"event":"private_service_closed","execution_available":false}');return 0
  c=load(a.config)
+ assert a.run_isolated != a.run_approved and c['mode']==('private-approved' if a.run_approved else 'private-isolated'),'mode/launch binding'
  if a.action=='start':
   log=open(state/'launcher.stderr','ab',buffering=0);os.chmod(log.name,0o600)
-  child=subprocess.Popen([sys.executable,'-S',str(Path(__file__).resolve()),'run','--run-isolated','--config',str(a.config.resolve()),'--state',str(state)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,close_fds=True)
+  child=subprocess.Popen([sys.executable,'-S',str(Path(__file__).resolve()),'run','--run-approved' if a.run_approved else '--run-isolated','--config',str(a.config.resolve()),'--state',str(state)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,close_fds=True)
   end=time.monotonic()+30
   while time.monotonic()<end:
    if child.poll() is not None:return 2

@@ -26,21 +26,23 @@ func TestFixtureSchedulerBuildBoundary(t *testing.T) {
 		}
 	}
 	shared := map[string]bool{
-		"internal/scheduler/doc.go":                      true,
-		"internal/scheduler/input_linux.go":              true,
-		"internal/scheduler/recover_started_linux.go":    true,
-		"internal/scheduler/recovery_linux.go":           true,
-		"internal/scheduler/result_commit_linux.go":      true,
-		"internal/scheduler/result_linux.go":             true,
-		"internal/scheduler/retention_linux.go":          true,
-		"internal/scheduler/start_linux.go":              true,
-		"internal/scheduler/store_linux.go":              true,
-		"internal/scheduler/target_linux.go":             true,
-		"internal/scheduler/target_permit_linux.go":      true,
-		"internal/scheduler/worker_linux.go":             true,
-		"internal/scheduler/worker_closed_linux_test.go": true,
-		"internal/monitoring/handoff/wire_linux.go":      true,
-		"internal/monitoring/targetpermit/pipe_linux.go": true,
+		"internal/scheduler/doc.go":                        true,
+		"internal/scheduler/input_linux.go":                true,
+		"internal/scheduler/recover_started_linux.go":      true,
+		"internal/scheduler/recovery_linux.go":             true,
+		"internal/scheduler/result_commit_linux.go":        true,
+		"internal/scheduler/result_linux.go":               true,
+		"internal/scheduler/retention_linux.go":            true,
+		"internal/scheduler/start_linux.go":                true,
+		"internal/scheduler/store_linux.go":                true,
+		"internal/scheduler/approved_target_linux.go":      true,
+		"internal/scheduler/approved_target_linux_test.go": true,
+		"internal/scheduler/target_linux.go":               true,
+		"internal/scheduler/target_permit_linux.go":        true,
+		"internal/scheduler/worker_linux.go":               true,
+		"internal/scheduler/worker_closed_linux_test.go":   true,
+		"internal/monitoring/handoff/wire_linux.go":        true,
+		"internal/monitoring/targetpermit/pipe_linux.go":   true,
 	}
 	for _, dir := range []string{"cmd/storagereporter", "cmd/retentioncontroller", "cmd/privateprobe", "cmd/privatenetwork", "cmd/privateworker", "internal/workerruntime", "internal/scheduler", "cmd/schedulerfixture", "cmd/probeinputfixture", "cmd/schedulerprobefixture", "internal/monitoring/handoff", "internal/monitoring/probesandbox", "internal/monitoring/targetpermit"} {
 		files, err := filepath.Glob(filepath.Join("../..", dir, "*.go"))
