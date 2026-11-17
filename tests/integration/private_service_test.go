@@ -138,11 +138,18 @@ func privateServicePG(t *testing.T, options *privateServiceOptions) {
 				t.Fatal("unapproved/expired target claimed")
 			}
 		} else {
-			wait("refusal stays unknown and trusted physical release", 45, `SELECT count(*)=1 FROM monitor_runs WHERE attempt_state='unknown' AND physical_release_confirmed_at IS NOT NULL`)
+			state, status := "unknown", "unknown"
+			if kind == "private4" || kind == "private6" {
+				state, status = "completed", "failure"
+			}
+			wait("refusal and trusted physical release", 45, `SELECT count(*)=1 FROM monitor_runs WHERE attempt_state=$1 AND physical_release_confirmed_at IS NOT NULL`, state)
+			if state == "completed" && queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE success=false AND http_status IS NULL AND failure_code='blocked_target'`) != 1 {
+				t.Fatal("DNS safety refusal misclassified")
+			}
 			if queryInt(t, db, `SELECT in_use FROM scheduler_budget_state WHERE kind='global'`) != 0 {
 				t.Fatal("refusal not settled after physical proof")
 			}
-			history(1, "unknown")
+			history(1, status)
 			snapshot("refused-" + kind)
 		}
 		p.exchange("service-refusal-assert", nil)

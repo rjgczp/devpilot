@@ -52,16 +52,16 @@ class ApprovedHarness(ServiceHarness):
    result=super().pg_operation(instance,op,payload,selected,mode)
    c=json.loads(self.config.read_text());review,base,file=self.review(payload)
    a=dict(payload['scope'],url=payload['url'],expires_at=(datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(minutes=10)).isoformat())
-   file.write_text(json.dumps(dict(approval=a,review=review)))
+   file.chmod(0o600);file.write_text(json.dumps(dict(approval=a,review=review)));file.chmod(0o444)
    a=json.loads(self.run(base+['approve','--request-file','/run/request']))
    approval=Path(self.private_files.name)/'operator-approval.json';approval.write_text(json.dumps(a));approval.chmod(0o644)
-   catalog=Path(c['catalog_file']);cat=json.loads(catalog.read_text());cat.pop('targets');cat['approvals']=[a];catalog.write_text(json.dumps(cat))
+   catalog=Path(c['catalog_file']);cat=json.loads(catalog.read_text());cat.pop('targets');cat['approvals']=[a];catalog.chmod(0o600);catalog.write_text(json.dumps(cat));catalog.chmod(0o444)
    c.update(mode='private-approved',target_host=HOST,approval_file=str(approval),denied_prefixes=['11.0.0.0/8','2600:dead::/32']);self.config.write_text(json.dumps(c))
    self.record('approved-binding',dict(scope=payload['scope'],dns_digest=a['dns_digest'],expires_at=a['expires_at'],internet=False))
    return result
   if op=='service-refusal-start':
    if self.case_under_test=='unapproved':
-    c=json.loads(self.config.read_text());p=Path(c['catalog_file']);v=json.loads(p.read_text());v['approvals'][0]['monitor_id']='01900000-0000-7000-8000-000000000099';p.write_text(json.dumps(v));self.cli('start',True)
+    c=json.loads(self.config.read_text());p=Path(c['catalog_file']);v=json.loads(p.read_text());v['approvals'][0]['monitor_id']='01900000-0000-7000-8000-000000000099';p.chmod(0o600);p.write_text(json.dumps(v));p.chmod(0o444);self.cli('start',True)
    elif self.case_under_test=='approval-expired':
     c=json.loads(self.config.read_text());p=Path(c['approval_file']);v=json.loads(p.read_text());v['expires_at']=(datetime.datetime.now(datetime.timezone.utc)-datetime.timedelta(seconds=1)).isoformat();p.write_text(json.dumps(v))
     cmd=['sh',str(ROOT/'scripts/private-service.sh'),'start','--config',str(self.config),'--state',str(self.state),'--run-approved'];r=subprocess.run(cmd,capture_output=True,timeout=15)
