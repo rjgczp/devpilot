@@ -94,12 +94,13 @@ class Runtime:
    if name.startswith('worker') and event['event']=='worker_ready':
     self.ready.add(name)
     if len(self.ready)==2:self.status('running',workers=2)
-   if event['event']=='result_committed':
+   if event['event'] in ('result_committed','control_result_committed'):
     run=event['run_id'];assert re.fullmatch('[0-9a-f]{8}-[0-9a-f-]{27}',run)
     owner=json.loads((self.state/(run+'.owner.json')).read_text())
     assert owner['index']==int(name[-1]) and (self.state/(run+'.database-accepted')).exists()
     self.recover(owner['index'],owner['line'],True)
-    self.done.append(run);self.status('stopping' if self.closing else 'running',workers=len(self.ready),completed_runs=len(self.done))
+    if event['event']=='result_committed':self.done.append(run)
+    self.status('stopping' if self.closing else 'running',workers=len(self.ready),completed_runs=len(self.done))
    return
   channel=v['channel']
   if v.get('eof'):
