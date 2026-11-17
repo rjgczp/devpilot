@@ -1,0 +1,106 @@
+{
+  "runtime_baseline": "9c497d372661f95722a7176a613579578bcdd02f",
+  "merged_main": "d85204335d101534e4595e64632dd4e36fcd59aa",
+  "order": [
+    {
+      "version": 1,
+      "path": "migrations/00001_create_users.sql",
+      "sha256": "e09f6476b25ce0a60cbd6607486a9b4208f2c3413957c83e54110e0e661b5490",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 2,
+      "path": "migrations/00002_create_sessions.sql",
+      "sha256": "27ce132375459ea1e061aac1e2c00de1010c9dc8f94c21489e7c24243f02c96a",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 3,
+      "path": "migrations/00003_create_workspaces.sql",
+      "sha256": "327651e7727c512d80062792bab0ea874f1f63320b98ca6b0491dd8e6f94223d",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 4,
+      "path": "migrations/00004_create_workspace_invitations.sql",
+      "sha256": "0374475bb78a985a9baf3de72055032bcc08e6f18512b850442a59940f20fdfb",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 5,
+      "path": "migrations/00005_create_projects.sql",
+      "sha256": "4715106905a92991c7f1dcb2da08afb7fd93217716bfa83eb4a33bb8145ac519",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 6,
+      "path": "migrations/00006_create_http_monitors.sql",
+      "sha256": "26ac26c66da96b0f16076342f0f11258bb6ea92be5f71a6b015c97a3075ee4e2",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 7,
+      "path": "migrations/00007_create_monitor_activation_states.sql",
+      "sha256": "713c39b60a3ede8156c1163404a6883cea00b6c8979b94b36a96047a5532cfaa",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 8,
+      "path": "migrations/00008_create_monitor_scheduler.sql",
+      "sha256": "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 9,
+      "path": "migrations/00009_enforce_scheduler_capacity.sql",
+      "sha256": "3ec3404418766ca76492f8f0cd00706d0e8e8bf29cafc47c79050b1fee230d9e",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 10,
+      "path": "migrations/00010_add_bounded_scheduler_cleanup.sql",
+      "sha256": "e87415adc0b15e563cc2b762203291f3ab8d664225097b5e321422e94f060fd5",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 12,
+      "path": "migrations/00012_advance_completed_scheduler_cycle.sql",
+      "sha256": "2ee7f36a919a2580f0a1f86dd0cd3fc82c280354f15c59c5807700d0962191a5",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 13,
+      "path": "migrations/00013_add_monitor_history_read.sql",
+      "sha256": "8ddd44357209ffc1723faa10e51170dd5191f678d599a943c9cc378e735f220b",
+      "authorization": "existing migration"
+    },
+    {
+      "version": 14,
+      "path": "deploy/privateloop/private-mode.sql.candidate",
+      "sha256": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a",
+      "authorization": "disposable-only; production NOT approved"
+    },
+    {
+      "version": 15,
+      "path": "deploy/capacity/continuous-capacity.sql.candidate",
+      "sha256": "78a2ac0e388ea0d4fb46e046b624315a88f07b82b58fe5784e246815197fa212",
+      "authorization": "disposable-only; production NOT approved"
+    }
+  ],
+  "identities": {
+    "path": "deploy/release/runtime-identities.sql.proposed",
+    "sha256": "5ad0c907821156a6e9ca1cf76d0d21e6c58323b620cbedeea8d7bb48679dc45c",
+    "authorization": "NOT approved or applied",
+    "logins": {
+      "devpilot_private_worker": "devpilot_scheduler_worker",
+      "devpilot_private_worker2": "devpilot_scheduler_worker",
+      "devpilot_private_supervisor": "devpilot_scheduler_supervisor",
+      "devpilot_private_controller": "devpilot_scheduler_controller",
+      "devpilot_private_reporter": "devpilot_storage_reporter"
+    }
+  },
+  "production_activation": false,
+  "new_gate_values": [],
+  "new_table_column_grants": [],
+  "new_function_execute_grants": []
+}

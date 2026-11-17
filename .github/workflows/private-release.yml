@@ -1,0 +1,23 @@
+name: Private release preparation
+on:
+  pull_request:
+    branches: [main]
+    paths: ['deploy/release/**', 'scripts/private-release.sh', 'tests/release/**', '.github/workflows/private-release.yml']
+permissions:
+  contents: read
+jobs:
+  private-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Read-only source, journal, secret-boundary and real offline certificate tests
+        run: python3 -m unittest discover -s tests/release -v
+      - name: Inspect existing native engine metadata without creating resources
+        run: python3 tests/release/check_host.py
+      - name: Render management overlay without deploying resources
+        run: python3 tests/release/check_compose.py
