@@ -3,10 +3,14 @@
 No role receives another role's secret mount. Outer routing carries only the
 existing bounded control frames; Probe is never in this management domain.
 """
+
+def require(condition, message='private boundary rejected'):
+ if not condition:raise RuntimeError(message)
+
 import base64,fcntl,json,os,select,subprocess,sys
 role,inc,*extra=sys.argv[1:]
 uids={'worker':(65532,65533),'supervisor':(65531,),'controller':(65530,),'sampler':(65529,),'watchdog':(65529,)}
-assert role in uids and os.getuid() in uids[role]
+require(role in uids and os.getuid() in uids[role])
 pairs={'worker':3,'supervisor':6,'controller':6,'sampler':1,'watchdog':3}[role]
 raw=[]
 for _ in range(pairs):raw+=list(os.pipe())
@@ -18,7 +22,7 @@ def request_pair(index,readfd,writefd,label):
  writers[label]=w;reads[qr]=label;passed.extend([readfd,writefd]);kept.extend([w,qr])
 if role=='worker':
  request_pair(0,3,4,'worker');gr,gw=fds[4:6];os.dup2(gr,5,inheritable=True);writers['guard']=gw;kept.append(gw);passed.append(5)
- assert len(extra)==1 and extra[0] in ('private-isolated','private-approved')
+ require(len(extra)==1 and extra[0] in ('private-isolated','private-approved'))
  cmd=['/toolbin/privateworker','--database-url-file','/run/own-url','--incarnation',inc,'--'+extra[0],'--storage-watchdog','--catalog-file','/run/catalog']
 elif role=='supervisor':
  # fd3/4: Worker server; fd5/6: kernel client; fd7/8: Controller client.
@@ -50,15 +54,15 @@ try:
    if not part:break
    stdin+=part
    while b'\n' in stdin:
-    line,_,rest=stdin.partition(b'\n');stdin=bytearray(rest);assert len(line)<=131072;v=json.loads(line)
+    line,_,rest=stdin.partition(b'\n');stdin=bytearray(rest);require(len(line)<=131072);v=json.loads(line)
     if v=={'stop':True}:child.terminate();continue
-    label=v['channel'];assert label in writers
+    label=v['channel'];require(label in writers)
     if v.get('eof'):
      os.close(writers.pop(label));continue
-    data=base64.b64decode(v['bytes'],validate=True);assert len(data)<=65536
-    if label in ('guard','pulse'):assert len(data)==8
+    data=base64.b64decode(v['bytes'],validate=True);require(len(data)<=65536)
+    if label in ('guard','pulse'):require(len(data)==8)
     os.write(writers[label],data)
-   assert len(stdin)<=131072
+   require(len(stdin)<=131072)
   for fd,label in list(reads.items()):
    if fd not in ready:continue
    data=os.read(fd,65536)
@@ -69,17 +73,17 @@ try:
     while len(pending[fd])>=8:
      beat=pending[fd][:8];pending[fd]=pending[fd][8:];emit(dict(channel=label,bytes=base64.b64encode(beat).decode()))
    else:
-    pending[fd]+=data;assert len(pending[fd])<=131072
+    pending[fd]+=data;require(len(pending[fd])<=131072)
     while b'\n' in pending[fd]:
-     line,_,rest=pending[fd].partition(b'\n');pending[fd]=bytearray(rest);assert len(line)<65536
+     line,_,rest=pending[fd].partition(b'\n');pending[fd]=bytearray(rest);require(len(line)<65536)
      emit(dict(channel=label,bytes=base64.b64encode(line+b'\n').decode()))
   if child.stdout in ready:
    data=os.read(child.stdout.fileno(),8192)
    if not data:break
-   stdout+=data;assert len(stdout)<=16384
+   stdout+=data;require(len(stdout)<=16384)
    while b'\n' in stdout:
     line,_,rest=stdout.partition(b'\n');stdout=bytearray(rest);event=json.loads(line)
-    assert set(event)<=set(['event','gate','execution_available','run_id','physical_release'])
+    require(set(event)<=set(['event','gate','execution_available','run_id','physical_release']))
     emit(dict(event=event))
 finally:
  for fd in writers.values():

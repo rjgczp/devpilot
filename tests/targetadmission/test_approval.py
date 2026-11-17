@@ -23,5 +23,5 @@ class Approval(unittest.TestCase):
    p=pathlib.Path(d)/'approval';p.write_text(json.dumps(self.approved()));p.chmod(0o644)
    self.assertEqual(approval.load_approval(str(p),'monitor.owned-test.example.com','93.184.216.34')['monitor_id'],'m')
    p.chmod(0o664)
-   with self.assertRaises(AssertionError):approval.load_approval(str(p),'monitor.owned-test.example.com','93.184.216.34')
+   with self.assertRaises(RuntimeError):approval.load_approval(str(p),'monitor.owned-test.example.com','93.184.216.34')
 if __name__=='__main__':unittest.main()

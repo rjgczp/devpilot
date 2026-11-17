@@ -4,6 +4,10 @@
 Only operator-owned config/secret paths are accepted. Existing Docker isolation,
 role binaries, typed anonymous IPC and the original PID1 proofs do the work.
 """
+
+def require(condition, message='private boundary rejected'):
+ if not condition:raise RuntimeError(message)
+
 import argparse,base64,concurrent.futures,fcntl,json,os,re,select,signal,subprocess,sys,threading,time
 from pathlib import Path
 from kernel import Kernel,LABEL,SESSION,canonical
@@ -11,27 +15,27 @@ from kernel import Kernel,LABEL,SESSION,canonical
 HERE=Path(__file__).resolve().parent
 UIDS={'supervisor':65531,'controller':65530,'sampler':65529,'watchdog':65529}
 def private_dir(p):
- p=Path(p).resolve();p.mkdir(mode=0o700,parents=True,exist_ok=True);s=p.stat();assert s.st_uid==os.getuid() and s.st_mode&0o777==0o700;return p
+ p=Path(p).resolve();p.mkdir(mode=0o700,parents=True,exist_ok=True);s=p.stat();require(s.st_uid==os.getuid() and s.st_mode&0o777==0o700);return p
 def ticks(pid):return Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()[19]
 def load(path):
- p=Path(path).resolve();st=p.stat();assert st.st_uid==os.getuid() and st.st_mode&0o077==0
- c=json.loads(p.read_text());assert c['mode'] in ('private-isolated','private-approved') and re.fullmatch('[a-z0-9-]{1,32}',c['runtime_id'])
- assert re.fullmatch('sha256:[0-9a-f]{64}',c['image']) and re.fullmatch('[0-9a-f]{64}',c['target_container']) and re.fullmatch('[0-9a-f]{64}',c['pg_container'])
+ p=Path(path).resolve();st=p.stat();require(st.st_uid==os.getuid() and st.st_mode&0o077==0)
+ c=json.loads(p.read_text());require(c['mode'] in ('private-isolated','private-approved') and re.fullmatch('[a-z0-9-]{1,32}',c['runtime_id']))
+ require(re.fullmatch('sha256:[0-9a-f]{64}',c['image']) and re.fullmatch('[0-9a-f]{64}',c['target_container']) and re.fullmatch('[0-9a-f]{64}',c['pg_container']))
  if c['mode']=='private-isolated':
-  assert c['target_ip'] in ('93.184.216.34','2001:4860:ffff::34') and c['target_host']=='a.fixture.example.com','real egress is not enabled by this entry'
+  require(c['target_ip'] in ('93.184.216.34','2001:4860:ffff::34') and c['target_host']=='a.fixture.example.com', 'real egress is not enabled by this entry')
  else:
   from approval import load_approval
   import ipaddress
-  assert c['denied_prefixes'] and len(c['denied_prefixes'])<=64
+  require(c['denied_prefixes'] and len(c['denied_prefixes'])<=64)
   excluded=[ipaddress.ip_network(x,strict=True) for x in c['denied_prefixes']]
   c['approval']=load_approval(c['approval_file'],c['target_host'],c['target_ip'])
-  assert not any(ipaddress.ip_address(ip) in subnet for ip in c['approval']['addresses'] for subnet in excluded)
+  require(not any(ipaddress.ip_address(ip) in subnet for ip in c['approval']['addresses'] for subnet in excluded))
 
- assert len(c['workers'])==2 and c['workers'][0]['incarnation']!=c['workers'][1]['incarnation']
+ require(len(c['workers'])==2 and c['workers'][0]['incarnation']!=c['workers'][1]['incarnation'])
  paths=[x['database_url_file'] for x in c['workers']]+[c[k]['database_url_file'] for k in ('supervisor','controller','reporter')]
- assert len(set(paths))==5
+ require(len(set(paths))==5)
  for value in paths+[c['catalog_file'],c['bindings_file'],c['ca_file']]:
-  q=Path(value);assert q.is_absolute() and q.is_file() and not q.is_symlink()
+  q=Path(value);require(q.is_absolute() and q.is_file() and not q.is_symlink())
  return c
 
 class Runtime:
@@ -82,7 +86,7 @@ class Runtime:
   self.stop_child('sampler')
  def recover(self,index,line,finalize=False):
   if any(x['line']==line for x in self.recoveries):return
-  assert len(self.recoveries)<4
+  require(len(self.recoveries)<4)
   self.recoveries.append(dict(index=index,line=line,finalize=finalize,at=time.monotonic()))
   self.send('controller','recovery',canonical(dict(op='recover',line=line))+b'\n')
  def route(self,name,v):
@@ -95,9 +99,9 @@ class Runtime:
     self.ready.add(name)
     if len(self.ready)==2:self.status('running',workers=2)
    if event['event']=='result_committed':
-    run=event['run_id'];assert re.fullmatch('[0-9a-f]{8}-[0-9a-f-]{27}',run)
+    run=event['run_id'];require(re.fullmatch('[0-9a-f]{8}-[0-9a-f-]{27}',run))
     owner=json.loads((self.state/(run+'.owner.json')).read_text())
-    assert owner['index']==int(name[-1]) and (self.state/(run+'.database-accepted')).exists()
+    require(owner['index']==int(name[-1]) and (self.state/(run+'.database-accepted')).exists())
     self.recover(owner['index'],owner['line'],True)
     self.done.append(run);self.status('stopping' if self.closing else 'running',workers=len(self.ready),completed_runs=len(self.done))
    return
@@ -109,21 +113,21 @@ class Runtime:
     self.send('controller',name[-1],eof=True)
    if not self.closing:self.close_admission(True)
    return
-  raw=base64.b64decode(v['bytes'],validate=True);assert len(raw)<=65536
+  raw=base64.b64decode(v['bytes'],validate=True);require(len(raw)<=65536)
   if name=='sampler':self.send('watchdog','pulse',raw);return
   if name=='watchdog':
-   i=int(channel);assert i in (0,1) and len(raw)==8;self.guard_counts[i]+=1;self.latest[i]=raw
+   i=int(channel);require(i in (0,1) and len(raw)==8);self.guard_counts[i]+=1;self.latest[i]=raw
    if not self.closing:self.send('worker'+str(i),'guard',raw)
    return
   if name=='controller':
    if channel=='recovery':
-    reply=json.loads(raw);assert self.recoveries
+    reply=json.loads(raw);require(self.recoveries)
     request=self.recoveries.pop(0)
-    assert reply['event']=='recover_ok' and reply['line']==request['line']
+    require(reply['event']=='recover_ok' and reply['line']==request['line'])
     if request['finalize']:self.kernel.call(request['index'],dict(op='recovered',line=request['line']))
    else:self.send('supervisor'+channel,'controller',raw)
    return
-  i=int(name[-1]);assert i in (0,1)
+  i=int(name[-1]);require(i in (0,1))
   if name.startswith('worker'):
    request=json.loads(raw)
    if request['op']=='hello':
@@ -161,17 +165,17 @@ class Runtime:
     continue
    self.pending[name]+=raw
    while b'\n' in self.pending[name]:
-    line,_,rest=self.pending[name].partition(b'\n');self.pending[name]=bytearray(rest);assert len(line)<=131072;self.route(name,json.loads(line))
-   assert len(self.pending[name])<=131072
+    line,_,rest=self.pending[name].partition(b'\n');self.pending[name]=bytearray(rest);require(len(line)<=131072);self.route(name,json.loads(line))
+   require(len(self.pending[name])<=131072)
  def run(self):
   network=json.loads(self.kernel.run(['docker','network','inspect',self.c['control_network']]))[0]
-  assert network['Internal'] and network['EnableIPv6'] and not network['Ingress']
+  require(network['Internal'] and network['EnableIPv6'] and not network['Ingress'])
   pg=self.kernel.inspect(self.c['pg_container'])
   volumes=[m for m in pg['Mounts'] if m['Destination']=='/var/lib/postgresql']
-  assert len(volumes)==1 and volumes[0]['Type']=='volume'
-  assert pg['HostConfig']['LogConfig']['Type'] in ('json-file','local') and pg['LogPath']
+  require(len(volumes)==1 and volumes[0]['Type']=='volume')
+  require(pg['HostConfig']['LogConfig']['Type'] in ('json-file','local') and pg['LogPath'])
   expected=[[volumes[0]['Name'],'/storage'],[str(Path(pg['LogPath']).parent),'/logs-metadata']]
-  assert self.c['metadata_mounts']==expected,'only actual PG/log metadata mounts allowed'
+  require(self.c['metadata_mounts']==expected, 'only actual PG/log metadata mounts allowed')
   self.status('starting')
   self.child('controller','controller',self.c['controller'])
   for i in (0,1):self.child('supervisor'+str(i),'supervisor',self.c['supervisor'],i)
@@ -228,14 +232,14 @@ def stop(state):
  try:
   fd=os.pidfd_open(pid,0)
   try:
-   assert ticks(pid)==s['start_ticks'];signal.pidfd_send_signal(fd,signal.SIGTERM)
+   require(ticks(pid)==s['start_ticks']);signal.pidfd_send_signal(fd,signal.SIGTERM)
   finally:os.close(fd)
  except ProcessLookupError:return 0
  return 0
 def main():
  p=argparse.ArgumentParser();p.add_argument('action',choices=['init','start','run','stop','status']);p.add_argument('--config',type=Path);p.add_argument('--state',type=Path,required=True);p.add_argument('--run-isolated',action='store_true');p.add_argument('--run-approved',action='store_true');a=p.parse_args()
- assert not sys.flags.optimize,'validation requires assertions enabled'
- assert sys.platform=='linux','native Linux host required';state=private_dir(a.state)
+ require(not sys.flags.optimize, 'optimized launcher startup is disabled')
+ require(sys.platform=='linux', 'native Linux host required');state=private_dir(a.state)
  if a.action=='init':
   from assets.authority import Authority
   authority=Authority(state);authority.pub.chmod(0o444);print(json.dumps(dict(event='private_state_initialized',public_key_file=str(authority.pub),execution_available=False)));return 0
@@ -243,7 +247,7 @@ def main():
  if a.action=='stop':return stop(state)
  if not (a.run_isolated or a.run_approved):print('{"event":"private_service_closed","execution_available":false}');return 0
  c=load(a.config)
- assert a.run_isolated != a.run_approved and c['mode']==('private-approved' if a.run_approved else 'private-isolated'),'mode/launch binding'
+ require(a.run_isolated != a.run_approved and c['mode']==('private-approved' if a.run_approved else 'private-isolated'), 'mode/launch binding')
  if a.action=='start':
   log=open(state/'launcher.stderr','ab',buffering=0);os.chmod(log.name,0o600)
   child=subprocess.Popen([sys.executable,'-S',str(Path(__file__).resolve()),'run','--run-approved' if a.run_approved else '--run-isolated','--config',str(a.config.resolve()),'--state',str(state)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,close_fds=True)
@@ -258,9 +262,9 @@ def main():
  lock=open(state/'launcher.lock','a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  for burned in state.iterdir():
   if re.fullmatch('[0-9a-f]{8}-[0-9a-f-]{27}',burned.name):
-   assert (state/(burned.name+'.owner.json')).exists(),'incomplete durable Run journal: stay closed'
+   require((state/(burned.name+'.owner.json')).exists(), 'incomplete durable Run journal: stay closed')
  for meta in state.glob('*.owner.json'):
-  line=json.loads(meta.read_text())['line'];assert (state/(line['run_id']+'.receipt')).exists(),'unverified physical domain: stay closed, no inferred release'
+  line=json.loads(meta.read_text())['line'];require((state/(line['run_id']+'.receipt')).exists(), 'unverified physical domain: stay closed, no inferred release')
  runtime=Runtime(c,state)
  def closing(*_):runtime.close_admission()
  signal.signal(signal.SIGTERM,closing);signal.signal(signal.SIGINT,closing)
