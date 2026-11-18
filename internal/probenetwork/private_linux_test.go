@@ -49,3 +49,33 @@ func TestPrivateConfigBindsOneHTTPSPublicTarget(t *testing.T) {
 		}
 	}
 }
+
+func TestApprovedNetworkBindsDNSAndExpiry(t *testing.T) {
+	c := testConfig()
+	c.Target = netip.MustParseAddr("93.184.216.34")
+	c.Denied = []netip.Prefix{netip.MustParsePrefix("11.0.0.0/8")}
+	c.DNSDigest = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	c.ApprovalExpires = time.Now().Add(time.Minute)
+	if !validPrivateConfig(c, time.Now()) {
+		t.Fatal("approved policy rejected")
+	}
+	p := &Policy{c: c, private: true}
+	r := targetpermit.Request{Scheme: "https", Port: 443, Host: c.Host, IP: c.Target, DNSDigest: c.DNSDigest, Deadline: time.Now().Add(time.Second)}
+	if !p.allowedTarget(r) {
+		t.Fatal("approved exact DNS policy")
+	}
+	r.DNSDigest = ""
+	if p.allowedTarget(r) {
+		t.Fatal("missing proof accepted")
+	}
+	r.DNSDigest = c.DNSDigest
+	r.Deadline = c.ApprovalExpires.Add(time.Second)
+	if p.allowedTarget(r) {
+		t.Fatal("permit exceeded approval")
+	}
+	p.c.ApprovalExpires = time.Now().Add(-time.Second)
+	r.Deadline = time.Now().Add(time.Second)
+	if p.allowedTarget(r) {
+		t.Fatal("expired approval")
+	}
+}

@@ -134,6 +134,16 @@ class ReleasePreflight(unittest.TestCase):
         self.assertFalse(report['configuration_structure_valid'])
         self.assertNotIn('SENTINEL', json.dumps(report))
 
+    def test_explicit_runtime_guard_error_remains_redacted_structured_refusal(self):
+        with mock.patch.object(sys, 'argv', ['preflight', '--manifest', str(self.manifest)]), mock.patch.object(p, 'inspect', side_effect=RuntimeError('SECRET_SENTINEL')):
+            stream = io.StringIO()
+            with contextlib.redirect_stdout(stream): code = p.main()
+        report = json.loads(stream.getvalue())
+        self.assertEqual(code, 2)
+        self.assertFalse(report['private_https_release_ready'])
+        self.assertFalse(report['services_started'])
+        self.assertNotIn('SENTINEL', stream.getvalue())
+
     def test_cli_requires_explicit_config_only_for_zero_exit_and_has_no_apply_verb(self):
         def invoke(*extra):
             with mock.patch.object(sys, 'argv', ['preflight', '--manifest', str(self.manifest), *extra]), mock.patch.object(p, 'inspect', return_value=self.inspect()):

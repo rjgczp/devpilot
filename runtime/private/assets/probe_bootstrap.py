@@ -4,9 +4,13 @@ Only stdio exists when strace forks. The single-use anonymous descriptors are
 allocated here afterwards, so the tracer cannot keep their writers alive.
 Neither this relay nor Go receives the Supervisor management pipe or secrets.
 """
+
+def require(condition, message='private boundary rejected'):
+ if not condition:raise RuntimeError(message)
+
 import base64,fcntl,json,os,select,subprocess,sys,time
 
-assert sys.flags.no_site==1 and 'site' not in sys.modules,'relay must not initialize user sites/NSS'
+require(sys.flags.no_site==1 and 'site' not in sys.modules, 'relay must not initialize user sites/NSS')
 
 def read_message():
  line=sys.stdin.buffer.readline(8193)
@@ -36,12 +40,12 @@ def deliver_permit(req,fd):
   return 'reply_delivered'
  finally:os.close(fd)
 
-assert os.getuid()==65534 and os.getgid()==65534 and os.getgroups()==[]
+require(os.getuid()==65534 and os.getgid()==65534 and os.getgroups()==[])
 fields=dict((k,v.strip()) for l in open('/proc/self/status') if ':' in l for k,v in [l.split(':',1)])
-assert all(fields[k]=='0000000000000000' for k in ('CapEff','CapPrm','CapBnd','CapInh','CapAmb')) and fields['NoNewPrivs']=='1'
-assert dict(os.environ)=={'LANG':'C','LC_ALL':'C','TZ':'UTC'}
+require(all(fields[k]=='0000000000000000' for k in ('CapEff','CapPrm','CapBnd','CapInh','CapAmb')) and fields['NoNewPrivs']=='1')
+require(dict(os.environ)=={'LANG':'C','LC_ALL':'C','TZ':'UTC'})
 config=read_message();envelope=base64.b64decode(config['envelope'],validate=True);ack=base64.b64decode(config['receipt'],validate=True)
-assert len(envelope)==4096 and len(ack)==1024
+require(len(envelope)==4096 and len(ack)==1024)
 original=[]
 for _ in range(4):original+=list(os.pipe())
 copies=[fcntl.fcntl(fd,fcntl.F_DUPFD_CLOEXEC,20) for fd in original]
@@ -54,7 +58,7 @@ os.write(ew,envelope);os.close(ew);os.write(aw,ack);os.close(aw)
 if not select.select([child.stdout],[],[],2)[0]:raise RuntimeError('bounded_probe_seal')
 line=child.stdout.readline(4097)
 if not line:emit(dict(event='input_rejected'));sys.exit(0)
-sealed=json.loads(line);assert sealed['event']=='sealed';emit(sealed)
+sealed=json.loads(line);require(sealed['event']=='sealed');emit(sealed)
 while True:
  req=read_message()
  if req['op']=='next':
@@ -65,7 +69,7 @@ while True:
    if not select.select([qr],[],[],2)[0] or os.read(qr,1)!=b'':raise RuntimeError('pipe_not_closed')
    os.close(qr);qr=None;emit(dict(event='target_request',frame=base64.b64encode(frame).decode()))
   elif child.stdout in available:
-   observation=json.loads(child.stdout.readline(4097));assert observation['event']=='observation';emit(observation)
+   observation=json.loads(child.stdout.readline(4097));require(observation['event']=='observation');emit(observation)
   else:raise RuntimeError('bounded_probe_event')
  elif req['op'] in ('permit-reply','permit-denied'):
   event=deliver_permit(req,rw);rw=None;emit(dict(event=event))

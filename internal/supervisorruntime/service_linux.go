@@ -32,6 +32,7 @@ type Supervisor struct {
 	Kernel                         Backend
 	Controller                     workerruntime.Supervisor
 	active                         *handoff.Lineage
+	settled                        *handoff.Lineage
 }
 
 func newNamespace() (string, error) {
@@ -100,6 +101,23 @@ func (s *Supervisor) Handle(ctx context.Context, c workerruntime.Call) (workerru
 		reply.Event = "supervisor_ready"
 		return reply, nil
 	}
+	// This capability is set only after original physical verification and PG
+	// acceptance in settle. One exact line, no new SQL/stop/network operation.
+	if c.Op == "finalize_control" {
+		if s.active != nil || s.settled == nil || c.Line == nil || *c.Line != *s.settled || c.Lease != nil || c.Hint != nil || c.Request != nil || c.Permit != nil || len(c.Frame)+len(c.Envelope)+len(c.Receipt) != 0 {
+			return reply, ErrClosed
+		}
+		line := *s.settled
+		s.settled = nil // Unknown ACK never makes it renewable.
+		if s.control(ctx, "recover", line) != nil {
+			return reply, ErrClosed
+		}
+		ack, e := s.Kernel.Call(ctx, workerruntime.Call{Op: "recovered", Line: &line})
+		if e != nil || ack.Event != "recovered" {
+			return reply, ErrClosed
+		}
+		return workerruntime.Reply{Event: "control_finalized", Line: line}, nil
+	}
 	if c.Op == "prepare" {
 		if s.active != nil || c.Lease == nil || c.Hint == nil || c.Line != nil {
 			return reply, ErrClosed
@@ -116,6 +134,7 @@ func (s *Supervisor) Handle(ctx context.Context, c workerruntime.Call) (workerru
 		if !line.Valid() {
 			return reply, ErrClosed
 		}
+		s.settled = nil
 		s.active = &line
 		ready, e := s.Kernel.Call(ctx, workerruntime.Call{Op: "prepare", Line: &line})
 		if e != nil || ready.Event != "prepared" || len(ready.Ready) != 2 {
@@ -181,6 +200,7 @@ func (s *Supervisor) Handle(ctx context.Context, c workerruntime.Call) (workerru
 		}
 		reply.Event = "settled"
 		s.active = nil
+		s.settled = &line
 	default:
 		return reply, ErrClosed
 	}

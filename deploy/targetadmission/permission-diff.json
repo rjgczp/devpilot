@@ -1,0 +1,27 @@
+{
+  "candidate_sha256": "264ddb9bcb8bf48cf305bc81d2ce58434f0e0ff2dac9ad5f2b45ae0210fcf095",
+  "requires": {
+    "deploy/privateloop/private-mode.sql.candidate": "20a4c1b1f7ae9f968984d8c12aba80f3e52a5d85a126c96c21bd953aa9c18a0a",
+    "deploy/capacity/continuous-capacity.sql.candidate": "78a2ac0e388ea0d4fb46e046b624315a88f07b82b58fe5784e246815197fa212"
+  },
+  "new_roles": [],
+  "new_tables": [],
+  "new_columns": [],
+  "gate_value_added": "private-approved",
+  "new_functions": [
+    "approved_worker_ready(uuid) [own boolean]"
+  ],
+  "grants": [
+    "EXECUTE approved_worker_ready(uuid) TO devpilot_scheduler_worker"
+  ],
+  "revokes": [
+    "PUBLIC ALL ON approved_worker_ready(uuid)"
+  ],
+  "table_column_grants": [],
+  "replacements": [
+    "private_gate_allows",
+    "authorize",
+    "execution_status"
+  ],
+  "production_activation": false
+}

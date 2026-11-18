@@ -19,6 +19,7 @@ type targetCandidate struct {
 	scope        Scope
 	version      int64
 	scheme, host string
+	dnsDigest    string
 	endpoint     netip.AddrPort
 	deadline     time.Time
 }

@@ -122,16 +122,25 @@ func TargetCatalogFile(path string) (scheduler.TargetDirectory, error) {
 		return scheduler.TargetDirectory{}, ErrConfiguration
 	}
 	var c struct {
-		Generation int64                     `json:"generation"`
-		Key        []byte                    `json:"key"`
-		Targets    []scheduler.FixtureTarget `json:"targets"`
+		Generation int64                      `json:"generation"`
+		Key        []byte                     `json:"key"`
+		Targets    []scheduler.FixtureTarget  `json:"targets"`
+		Approvals  []scheduler.TargetApproval `json:"approvals,omitempty"`
 	}
 	d := json.NewDecoder(bytes.NewReader(raw))
 	d.DisallowUnknownFields()
 	if d.Decode(&c) != nil {
 		return scheduler.TargetDirectory{}, ErrConfiguration
 	}
-	dir, e := scheduler.NewTargetDirectory(map[int64][]byte{c.Generation: c.Key}, c.Targets)
+	var dir scheduler.TargetDirectory
+	if len(c.Approvals) > 0 {
+		if len(c.Targets) > 0 {
+			return dir, ErrConfiguration
+		}
+		dir, e = scheduler.NewApprovedDirectory(map[int64][]byte{c.Generation: c.Key}, c.Approvals)
+	} else {
+		dir, e = scheduler.NewTargetDirectory(map[int64][]byte{c.Generation: c.Key}, c.Targets)
+	}
 	if e != nil {
 		return scheduler.TargetDirectory{}, ErrConfiguration
 	}

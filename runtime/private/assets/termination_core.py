@@ -5,6 +5,10 @@ execs with all capability sets empty. PIDfds retain identity across PID reuse;
 PID1 adopts orphan descendants. A bounded scan/stop/kill/reap must reach zero
 processes before an empty-domain proof. No Worker callback participates.
 """
+
+def require(condition, message='private boundary rejected'):
+ if not condition:raise RuntimeError(message)
+
 import base64,ctypes,hashlib,json,os,pathlib,resource,select,signal,subprocess,sys,time
 
 
@@ -71,7 +75,7 @@ def stop():
    if not select.select([fd],[],[],0)[0]:raise RuntimeError('pidfd_not_exited')
    exits.append(dict(pid=pid,start_ticks=ticks,pidfd_exited=True))
   # The domain is closed, so there is no remaining process that could fork.
-  assert not pids()
+  require(not pids())
   proof=dict(event='processes_terminated',lineage=identity,net_namespace=os.readlink('/proc/self/ns/net'),
              pid_namespace=os.readlink('/proc/self/ns/pid'),pids=exits,remaining_pids=[],
              launch_consumed=True,at_ns=time.time_ns(),started_monotonic_ns=started,finished_monotonic_ns=time.monotonic_ns())

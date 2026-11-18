@@ -4,6 +4,10 @@ PID1 remains untraced. Only its capability-free child domain is traced. The
 outer allocator embeds the unchanged helper definitions and fixed relay source.
 """
 
+def require(condition, message='private boundary rejected'):
+ if not condition:raise RuntimeError(message)
+
+
 # Observation wrappers delegate every original syscall and preserve its return
 # or exception. They do not change stop decisions, pidfd checks or proof fields.
 supervision_events=[];fd_pids={}
@@ -38,7 +42,7 @@ def proc_snapshot():
   except FileNotFoundError:pass
  return dict(event='process_snapshot',pids=rows,at_ns=time.time_ns())
 def independent():
- assert status()['TracerPid']=='0','stop authority must never be traced'
+ require(status()['TracerPid']=='0', 'stop authority must never be traced')
 def relay(req):
  child.stdin.write(json.dumps(req).encode()+b'\n');child.stdin.flush()
  if not select.select([child.stdout],[],[],3)[0]:raise RuntimeError('bounded_relay_event')
@@ -46,11 +50,11 @@ def relay(req):
  if not line or len(line)>8192:raise RuntimeError('relay_closed')
  return json.loads(line)
 
-assert os.getpid()==1 and os.getuid()==0
-s=status();assert all(s[k]=='00000000000001e0' for k in ('CapEff','CapPrm','CapBnd')) and s['NoNewPrivs']=='1'
-independent();libc=ctypes.CDLL(None,use_errno=True);assert libc.prctl(4,0,0,0,0)==0 and libc.prctl(36,1,0,0,0)==0
-cfg=message();assert cfg['op']=='boot';identity=cfg['lineage'];deadline=cfg['deadline_ns']
-remaining=(deadline-time.time_ns())/1e9;assert 0<remaining<=35
+require(os.getpid()==1 and os.getuid()==0)
+s=status();require(all(s[k]=='00000000000001e0' for k in ('CapEff','CapPrm','CapBnd')) and s['NoNewPrivs']=='1')
+independent();libc=ctypes.CDLL(None,use_errno=True);require(libc.prctl(4,0,0,0,0)==0 and libc.prctl(36,1,0,0,0)==0)
+cfg=message();require(cfg['op']=='boot');identity=cfg['lineage'];deadline=cfg['deadline_ns']
+remaining=(deadline-time.time_ns())/1e9;require(0<remaining<=35)
 hard=time.monotonic()+remaining;stopped=False;proof=None;child=None
 emit(dict(event='lifecycle_ready',lineage=identity,net_namespace=os.readlink('/proc/self/ns/net'),pid_namespace=os.readlink('/proc/self/ns/pid')))
 try:
@@ -75,28 +79,28 @@ try:
    emit(relay({k:v for k,v in req.items() if k not in ('lineage',)}))
   elif op=='inspect':emit(proc_snapshot())
   elif op=='fault-tracer' and child is not None and not stopped:
-   action=req['action'];assert action in ('stop','kill')
+   action=req['action'];require(action in ('stop','kill'))
    fd=os.pidfd_open(child.pid,0)
    try:
     signal.pidfd_send_signal(fd,signal.SIGSTOP if action=='stop' else signal.SIGKILL)
-    if action=='kill':assert select.select([fd],[],[],1)[0],'crashed tracer pidfd must actually exit'
+    if action=='kill':require(select.select([fd],[],[],1)[0], 'crashed tracer pidfd must actually exit')
     else:
      end=time.monotonic()+1
      while not pathlib.Path(f'/proc/{child.pid}/status').read_text().split('State:',1)[1].strip().startswith('T'):
-      assert time.monotonic()<end;time.sleep(.005)
+      require(time.monotonic()<end);time.sleep(.005)
    finally:os.close(fd)
    emit(proc_snapshot())
   elif op=='stop':
    before=proc_snapshot();journal('stop_snapshot',pids=[dict(pid=x['pid'],state=x['status']['State'],tracer=x['status']['TracerPid']) for x in before['pids']]);emit(stop())
   elif op=='supervision-events' and stopped and proof and not pids():
-   raw=json.dumps(dict(lineage=identity,events=supervision_events),separators=(',',':')).encode();assert len(raw)<=65536
-   offset=req['offset'];assert isinstance(offset,int) and 0<=offset<=len(raw)
+   raw=json.dumps(dict(lineage=identity,events=supervision_events),separators=(',',':')).encode();require(len(raw)<=65536)
+   offset=req['offset'];require(isinstance(offset,int) and 0<=offset<=len(raw))
    emit(dict(event='supervision_events',offset=offset,total=len(raw),sha256=hashlib.sha256(raw).hexdigest(),chunk=base64.b64encode(raw[offset:offset+2048]).decode()))
   elif op=='trace' and stopped and proof and not pids():
    libc.setfsuid(65534)
    try:data=pathlib.Path('/tmp/probe.trace').read_bytes()
    finally:libc.setfsuid(0)
-   assert len(data)<=65536;offset=req['offset'];assert isinstance(offset,int) and 0<=offset<=len(data)
+   require(len(data)<=65536);offset=req['offset'];require(isinstance(offset,int) and 0<=offset<=len(data))
    emit(dict(event='trace',offset=offset,total=len(data),sha256=hashlib.sha256(data).hexdigest(),chunk=base64.b64encode(data[offset:offset+2048]).decode()))
   elif op=='retire' and stopped and proof and not pids():emit(dict(event='pid_namespace_retiring',pid_namespace=proof['pid_namespace'],lineage=identity));break
   else:raise RuntimeError('consumed')

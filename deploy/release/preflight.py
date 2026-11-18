@@ -185,7 +185,7 @@ def inspect(manifest_path, inspect_host=False, runner=run, root=ROOT):
         except HostCheckError as error:
             checks.append(dict(name=name, status='fail', code=error.args[0]))
             return None
-        except (OSError, ValueError, KeyError, TypeError, AssertionError, subprocess.SubprocessError):
+        except (OSError, ValueError, KeyError, TypeError, AssertionError, RuntimeError, subprocess.SubprocessError):
             checks.append(dict(name=name, status='fail', code=name + '_invalid_or_unverified'))
             return None
 
@@ -240,7 +240,7 @@ def main():
     args = parser.parse_args()
     try:
         report = inspect(args.manifest.absolute(), args.inspect_host)
-    except (OSError, ValueError, KeyError, TypeError, AssertionError, subprocess.SubprocessError):
+    except (OSError, ValueError, KeyError, TypeError, AssertionError, RuntimeError, subprocess.SubprocessError):
         report = dict(private_https_release_ready=False, services_started=False, sql_applied=False,
                       egress_opened=False, checks=[dict(name='configuration', status='fail', code='invalid_or_unavailable')], blockers=BLOCKERS)
     print(json.dumps(report, indent=2))

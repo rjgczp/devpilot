@@ -1,4 +1,4 @@
-//go:build (schedulerfixture || privateprobe) && linux
+//go:build (schedulerfixture || privateprobe || privateworker) && linux
 
 package monitoring
 

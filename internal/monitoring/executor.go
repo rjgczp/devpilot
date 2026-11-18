@@ -134,7 +134,7 @@ func (e *engine) probe(ctx context.Context, s Snapshot, rejected *atomic.Bool) (
 		defer dcancel()
 		dstopped := context.AfterFunc(dialCtx, dcancel)
 		defer dstopped()
-		ips, err := e.resolver.resolve(dctx, host)
+		ips, dnsDigest, err := e.resolver.resolveBound(dctx, host)
 		if err != nil {
 			return nil, err
 		}
@@ -144,7 +144,7 @@ func (e *engine) probe(ctx context.Context, s Snapshot, rejected *atomic.Bool) (
 		}
 		endpoint := netip.AddrPortFrom(ip, port)
 		deadline, _ := ctx.Deadline()
-		candidate := targetCandidate{scope: s.scope, version: s.version, scheme: u.Scheme, host: host, endpoint: endpoint, deadline: deadline}
+		candidate := targetCandidate{dnsDigest: dnsDigest, scope: s.scope, version: s.version, scheme: u.Scheme, host: host, endpoint: endpoint, deadline: deadline}
 		// The original full DNS/IP validation above is unchanged. This check can
 		// only subtract permission; it cannot select or re-resolve an address.
 		rejected.Store(true)

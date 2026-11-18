@@ -4,6 +4,10 @@ No database credential, Worker input reconstruction, deployment or public route.
 The durable journal burns a Run before allocation. Container removal is cleanup,
 never the source of a physical receipt.
 """
+
+def require(condition, message='private boundary rejected'):
+ if not condition:raise RuntimeError(message)
+
 import base64,datetime,hashlib,json,os,secrets,select,subprocess,time,threading
 from pathlib import Path
 from assets.authority import Authority,canonical,sync_directory
@@ -15,27 +19,27 @@ def utc(delay=0):return (datetime.datetime.now(datetime.timezone.utc)+datetime.t
 
 def install_command(c,line):
  request=c['request']
- assert {k:request[k] for k in line}==line
+ require({k:request[k] for k in line}==line)
  permit=c['permit']
  return dict(request=request,permit_id=permit['permit_id'],committed_at=permit['committed_at'],permit_deadline=permit['permit_deadline'])
 
 def project_event(r,line):
  event=r['event']
  if event=='sealed':
-  assert set(r)=={'event','proof'}
+  require(set(r)=={'event','proof'})
   proof=r['proof']
-  assert proof['tcp_only'] and not proof['sockets_denied'] and proof['fd_limit']==256
-  assert all(proof[k] for k in ('no_new_privileges','capabilities_zero','secrets_unavailable'))
-  assert proof['uid']==65534 and proof['gid']==65534
+  require(proof['tcp_only'] and not proof['sockets_denied'] and proof['fd_limit']==256)
+  require(all(proof[k] for k in ('no_new_privileges','capabilities_zero','secrets_unavailable')))
+  require(proof['uid']==65534 and proof['gid']==65534)
   return dict(event=event,line=line)
  if event=='observation':
-  assert set(r)<={'event','result','stop_reason'}
+  require(set(r)<={'event','result','stop_reason'})
   return dict(event=event,line=line,observation=r.get('result'))
  if event=='target_request':
-  assert set(r)=={'event','frame'}
+  require(set(r)=={'event','frame'})
   return dict(event=event,line=line,frame=r['frame'])
  if event in ('reply_delivered','reply_denied'):
-  assert set(r)=={'event'}
+  require(set(r)=={'event'})
   return dict(event=event,line=line)
  if event=='installed':return dict(r,line=line)
  raise RuntimeError('unsupported physical lifecycle event')
@@ -46,7 +50,7 @@ class Kernel:
   public=state/'public.pem'
   if public.exists():public.chmod(0o600)
   self.cfg=config;self.state=state;self.session=secrets.token_hex(16);self.authority=Authority(state);self.authority.pub.chmod(0o444);self.active={};self.count=0;self.sign_lock=threading.Lock();self.locks=[threading.RLock(),threading.RLock()]
-  self.target=config['target_container'];self.image=config['image'];self.prefix='dp-private-'+config['runtime_id']
+  self.approval=config.get('approval');self.target=config['target_container'];self.image=config['image'];self.prefix='dp-private-'+config['runtime_id']
   self.validate_target()
  def stderr(self,name):
   path=self.state/name;file=path.open('ab',buffering=0);path.chmod(0o600);return file
@@ -58,9 +62,9 @@ class Kernel:
  def exec(self,cid,*args,data=None):return self.run(['docker','exec','-i',cid,*args],data)
  def validate_target(self):
   t=self.inspect(self.target);h=t['HostConfig']
-  assert h['NetworkMode']=='none' and not h['PortBindings'] and not h['Privileged']
-  links=json.loads(self.exec(self.target,'ip','-j','link','show'));assert all(x['ifname']=='lo' for x in links),'target has an unbound upstream/old domain'
-  for family in ('-4','-6'):assert not json.loads(self.exec(self.target,'ip',family,'-j','route','show','default'))
+  require(h['NetworkMode']=='none' and not h['PortBindings'] and not h['Privileged'])
+  links=json.loads(self.exec(self.target,'ip','-j','link','show'));require(all(x['ifname']=='lo' for x in links), 'target has an unbound upstream/old domain')
+  for family in ('-4','-6'):require(not json.loads(self.exec(self.target,'ip',family,'-j','route','show','default')))
  def create(self,name,pid=None):
   args=['docker','run','-d','--name',name,'--label',LABEL+'='+self.cfg['runtime_id'],'--label',SESSION+'='+self.session,'--network','none','--cap-drop','ALL','--cap-add','NET_ADMIN','--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','--sysctl','net.ipv6.conf.all.disable_ipv6=0','--sysctl','net.ipv6.conf.all.accept_ra=0','--sysctl','net.ipv6.conf.default.accept_ra=0','--sysctl','net.ipv4.ip_forward='+('1' if name.endswith('-guard') else '0'),'--sysctl','net.ipv6.conf.all.forwarding='+('1' if name.endswith('-guard') else '0')]
   if pid:args+=['--pid','container:'+pid]
@@ -76,7 +80,10 @@ class Kernel:
   raise RuntimeError('kernel frame bound')
  def send(self,p,value):p.stdin.write(canonical(value)+b'\n');p.stdin.flush()
  def prepare(self,index,line):
-  assert index not in self.active
+  require(index not in self.active)
+  if self.approval:
+   from approval import bound
+   require(bound(self.approval,line), 'operator approval expired or configuration mismatch')
   self.authority.register(line) # O_EXCL+fsync before any allocation/restart.
   owner=self.state/(line['run_id']+'.owner.json')
   with owner.open('xb') as f:f.write(canonical(dict(index=index,line=line)));f.flush();os.fsync(f.fileno())
@@ -93,18 +100,20 @@ class Kernel:
   rm,gm,bm,xm=mac(run,'eth0'),mac(guard,'eth0'),mac(guard,'eth1'),mac(self.target,rx)
   for cid,dev,a,b,m in [(run,'eth0',gate4,gate6,gm),(guard,'eth0',probe4,probe6,rm),(guard,'eth1',rx4,rx6,xm),(self.target,rx,back4,back6,bm)]:
    for family,ip in [('-4',a),('-6',b)]:self.exec(cid,'ip',family,'neigh','replace',ip,'lladdr',m,'nud','permanent','dev',dev)
-  for ip,family,mask in [('93.184.216.34','-4','/32'),('192.0.2.53','-4','/32'),('2001:4860:ffff::34','-6','/128'),('fd64:53::53','-6','/128')]:
+  for ip,family,mask in [(self.cfg['target_ip'],'-6' if ':' in self.cfg['target_ip'] else '-4','/128' if ':' in self.cfg['target_ip'] else '/32'),('192.0.2.53','-4','/32'),('fd64:53::53','-6','/128')]:
    self.exec(run,'ip',family,'route','replace',ip+mask,'via',gate4 if family=='-4' else gate6,'dev','eth0');self.exec(guard,'ip',family,'route','replace',ip+mask,'via',rx4 if family=='-4' else rx6,'dev','eth1')
   for ip,family,via,mask in [(probe4,'-4',back4,'/32'),(probe6,'-6',back6,'/128')]:self.exec(self.target,'ip',family,'route','replace',ip+mask,'via',via,'dev',rx)
   ready=[]
   for role,cid in [('gateway',guard),('run',run)]:
-   fp=json.loads(self.exec(cid,'/toolbin/privatenetwork','fingerprint'));cfg=dict(lineage=line,role=role,**fp,probe4=probe4,probe6=probe6,host=self.cfg['target_host'],target=self.cfg['target_ip'],denied=['11.0.0.0/8','2600:dead::/32'],hard_deadline=utc(34));d['configs'][role]=cfg
+   fp=json.loads(self.exec(cid,'/toolbin/privatenetwork','fingerprint'));cfg=dict(lineage=line,role=role,**fp,probe4=probe4,probe6=probe6,host=self.cfg['target_host'],target=self.cfg['target_ip'],denied=self.cfg.get('denied_prefixes',['11.0.0.0/8','2600:dead::/32']),hard_deadline=utc(34))
+   if self.approval:cfg.update(dns_digest=self.approval['dns_digest'],approval_expires=self.approval['expires_at'])
+   d['configs'][role]=cfg
    p=subprocess.Popen(['docker','exec','-i',cid,'/toolbin/privatenetwork'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(line['run_id']+'-network-'+role+'.stderr'),bufsize=0);d['managers'][role]=p;self.send(p,dict(op='boot',config=cfg));ready.append(self.read(p))
   return dict(event='prepared',line=line,ready=ready)
  def launch(self,d,c):
   core=(HERE/'assets/termination_core.py').read_text();life=(HERE/'assets/lifecycle.py').read_text();bootstrap=(HERE/'assets/probe_bootstrap.py').read_text()
   # Same accepted private lifetime pipe adaptation, never a second stop engine.
-  life=life.replace("cfg=message();assert cfg['op']=='boot'","life_r,life_w=os.pipe();os.dup2(life_r,19,inheritable=True);os.close(life_r)\ncfg=message();assert cfg['op']=='boot'").replace("elif op=='inspect':","elif op=='lose-lifetime':os.close(life_w);emit(dict(event='lifetime_lost'))\n  elif op=='inspect':").replace('close_fds=True,preexec_fn=drop','close_fds=True,pass_fds=(19,),preexec_fn=drop')
+  life=life.replace("cfg=message();require(cfg['op']=='boot')","life_r,life_w=os.pipe();os.dup2(life_r,19,inheritable=True);os.close(life_r)\ncfg=message();require(cfg['op']=='boot')").replace("elif op=='inspect':","elif op=='lose-lifetime':os.close(life_w);emit(dict(event='lifetime_lost'))\n  elif op=='inspect':").replace('close_fds=True,preexec_fn=drop','close_fds=True,pass_fds=(19,),preexec_fn=drop')
   # Wait only within the original35s hard deadline for the existing10s
   # HTTP timeout. A lost bridge must not turn a pending observation into a
   # dead management channel before PID1 can produce its original stop proof.
@@ -115,12 +124,17 @@ class Kernel:
   args=['docker','run','--rm','-i','--name',d['name']+'-pid1','--label',LABEL+'='+self.cfg['runtime_id'],'--label',SESSION+'='+self.session,'--network','container:'+d['run'],'--cap-drop','ALL']
   for cap in ['KILL','SETUID','SETGID','SETPCAP']:args+=['--cap-add',cap]
   args+=['--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--memory-swap','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','-v',self.cfg['ca_file']+':/etc/ssl/certs/private-target.pem:ro','--entrypoint','python3',self.image,'-S','-u','-c',init]
+  if self.approval:
+   policy=self.state/(d['line']['run_id']+'.target-policy.json')
+   with policy.open('x') as f:f.write(json.dumps(dict(denied_prefixes=self.cfg['denied_prefixes'],expires_at=self.approval['expires_at'])))
+   policy.chmod(0o444)
+   at=args.index('--entrypoint');args[at:at]=['-v',str(policy)+':/run/private-target.json:ro']
   p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(d['line']['run_id']+'-pid1.stderr'),bufsize=0);d['life']=p
   deadline=int(datetime.datetime.fromisoformat(d['configs']['run']['hard_deadline'].replace('Z','+00:00')).timestamp()*1e9)
-  self.send(p,dict(op='boot',lineage=d['line'],deadline_ns=deadline));assert self.read(p)['event']=='lifecycle_ready'
+  self.send(p,dict(op='boot',lineage=d['line'],deadline_ns=deadline));require(self.read(p)['event']=='lifecycle_ready')
   self.send(p,dict(op='launch',lineage=d['line'],envelope=c['envelope'],receipt=c['receipt']));return self.read(p)
  def call(self,index,c):
-  assert index in (0,1)
+  require(index in (0,1))
   with self.locks[index]:return self._call(index,c)
  def _call(self,index,c):
   op=c['op']
@@ -132,7 +146,7 @@ class Kernel:
    return dict(event='none',line={})
   line=c['line']
   if op in ('accepted','recovered'):
-   assert (self.state/(line['run_id']+'.receipt')).exists()
+   require((self.state/(line['run_id']+'.receipt')).exists())
    p=self.state/(line['run_id']+'.database-accepted')
    if not p.exists():
     with p.open('xb') as f:f.write(b'physical receipt accepted; not an HTTP result\n');f.flush();os.fsync(f.fileno())
@@ -144,12 +158,15 @@ class Kernel:
      sync_directory(self.state)
    return dict(event=op,line=line)
   if op=='prepare':return self.prepare(index,line)
-  d=self.active[index];assert d['line']==line
+  d=self.active[index];require(d['line']==line)
   if op=='launch':r=self.launch(d,c)
   elif op=='install':
    install=install_command(c,line)
+   if self.approval:
+    from approval import permits
+    require(permits(self.approval,line,c['request']), 'operator approval mismatch')
    for role in ['gateway','run']:
-    p=d['managers'][role];self.send(p,dict(op='install',install=install));r=self.read(p);assert r['permit_id']==install['permit_id']
+    p=d['managers'][role];self.send(p,dict(op='install',install=install));r=self.read(p);require(r['permit_id']==install['permit_id'])
    r=dict(event='installed',confirmation=r)
   elif op in ('next','reply'):
    req=dict(op='next') if op=='next' else dict(op='permit-reply',frame=c['frame']) if c.get('frame') else dict(op='permit-denied')
@@ -163,12 +180,12 @@ class Kernel:
   d=self.active[index];line=d['line'];network=[]
   for role,cid in [('gateway',d['guard']),('run',d['run'])]:
    network.append(json.loads(self.exec(cid,'/toolbin/privatenetwork',data=canonical(dict(op='revoke',config=d['configs'][role]))+b'\n')))
-  p=d['life'];assert p is not None
-  self.send(p,dict(op='stop',lineage=line));process=self.read(p);assert process['event']=='processes_terminated'
-  self.send(p,dict(op='retire',lineage=line));retired=self.read(p);p.stdin.close();assert p.wait(timeout=3)==0
+  p=d['life'];require(p is not None)
+  self.send(p,dict(op='stop',lineage=line));process=self.read(p);require(process['event']=='processes_terminated')
+  self.send(p,dict(op='retire',lineage=line));retired=self.read(p);p.stdin.close();require(p.wait(timeout=3)==0)
   with self.sign_lock:receipt=self.authority.sign(line,network,process,retired)
   bundle=(self.state/(line['run_id']+'.proofs')).read_bytes()
   for cid in [d['guard'],d['run']]:
-   info=self.inspect(cid);assert info['Config']['Labels'][LABEL]==self.cfg['runtime_id'];self.run(['docker','rm','-f',cid])
+   info=self.inspect(cid);require(info['Config']['Labels'][LABEL]==self.cfg['runtime_id']);self.run(['docker','rm','-f',cid])
   del self.active[index]
   return dict(event='stopped',line=line,receipt=base64.b64encode(canonical(receipt)).decode(),bundle=base64.b64encode(bundle).decode())

@@ -1,3 +1,7 @@
+
+def require(condition, message='private boundary rejected'):
+ if not condition:raise RuntimeError(message)
+
 import base64,datetime,hashlib,json,os,subprocess,tempfile,uuid
 from pathlib import Path
 
@@ -28,7 +32,7 @@ class Authority:
         # A private management domain, never mounted or inherited by a child.
         self.directory=tempfile.TemporaryDirectory(prefix='devpilot-stop65-key-') if state is None else None
         self.path=Path(self.directory.name) if self.directory else Path(state)
-        metadata=self.path.stat();assert metadata.st_mode&0o777==0o700 and metadata.st_uid==os.getuid()
+        metadata=self.path.stat();require(metadata.st_mode&0o777==0o700 and metadata.st_uid==os.getuid())
         self.key=self.path/'private.pem';self.pub=self.path/'public.pem'
         if not self.key.exists():
             subprocess.run(['openssl','genpkey','-algorithm','ED25519','-out',str(self.key)],check=True,capture_output=True)
@@ -39,7 +43,7 @@ class Authority:
         self.pending={}
 
     def register(self,identity):
-        assert valid_identity(identity)
+        require(valid_identity(identity))
         run=identity['run_id']
         # Exclusive persistent burn precedes allocation; no replacement node can
         # get a second capability for the same Run, even after a lost ACK.
@@ -49,15 +53,15 @@ class Authority:
         self.pending[run]=identity.copy()
 
     def sign(self,identity,network,process,retired):
-        assert self.pending[identity['run_id']]==identity and len(network)==2
-        assert {x['role'] for x in network}=={'run','gateway'}
-        assert all(x['lineage']==identity and x['link_removed'] and x['conntrack_empty'] for x in network)
-        assert len({x['namespace'] for x in network})==2
-        assert process['lineage']==identity and process['remaining_pids']==[] and process['launch_consumed']
-        assert process['pids'] and all(x['pidfd_exited'] for x in process['pids'])
-        assert all(datetime.datetime.fromisoformat(x['stopped_at'].replace('Z','+00:00')).timestamp()*1e9<=process['at_ns'] for x in network)
-        assert process['net_namespace']==next(x['namespace'] for x in network if x['role']=='run')
-        assert retired['event']=='pid_namespace_retiring' and retired['lineage']==identity and retired['pid_namespace']==process['pid_namespace']
+        require(self.pending[identity['run_id']]==identity and len(network)==2)
+        require({x['role'] for x in network}=={'run','gateway'})
+        require(all(x['lineage']==identity and x['link_removed'] and x['conntrack_empty'] for x in network))
+        require(len({x['namespace'] for x in network})==2)
+        require(process['lineage']==identity and process['remaining_pids']==[] and process['launch_consumed'])
+        require(process['pids'] and all(x['pidfd_exited'] for x in process['pids']))
+        require(all(datetime.datetime.fromisoformat(x['stopped_at'].replace('Z','+00:00')).timestamp()*1e9<=process['at_ns'] for x in network))
+        require(process['net_namespace']==next(x['namespace'] for x in network if x['role']=='run'))
+        require(retired['event']=='pid_namespace_retiring' and retired['lineage']==identity and retired['pid_namespace']==process['pid_namespace'])
         payload=dict(protocol='fixture-physical-stop-v1',receipt_id=str(uuid.uuid4()),lineage=identity,
                      supervisor_key_id=self.key_id,network_sha256=digest(network),process_sha256=digest(process),
                      retire_sha256=digest(retired),pid_namespace=process['pid_namespace'],
@@ -68,7 +72,7 @@ class Authority:
         fd=os.open(self.path/(identity['run_id']+'.proofs'),os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
         with os.fdopen(fd,'wb') as f:f.write(canonical(bundle));f.flush();os.fsync(f.fileno())
         sync_directory(self.path)
-        raw=canonical(payload);assert len(raw)<=4096
+        raw=canonical(payload);require(len(raw)<=4096)
         content=self.path/'payload';content.write_bytes(raw)
         sig=subprocess.run(['openssl','pkeyutl','-sign','-rawin','-inkey',str(self.key),'-in',str(content)],capture_output=True,check=True).stdout
         # No repeated signing after a partial/lost delivery; reconciliation can

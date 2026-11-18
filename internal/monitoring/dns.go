@@ -33,6 +33,7 @@ type dnsSession struct {
 	conn                    net.Conn
 	total, records, queries int
 	policy                  addressPolicy
+	recordSet               []string
 }
 type familyAnswer struct {
 	chain     []string
@@ -68,44 +69,56 @@ func remoteMatches(conn net.Conn, approved netip.AddrPort) bool {
 }
 
 func (r dnsResolver) resolve(parent context.Context, host string) ([]netip.Addr, error) {
+	ips, _, err := r.resolveBound(parent, host)
+	return ips, err
+}
+
+func (r dnsResolver) resolveBound(parent context.Context, host string) ([]netip.Addr, string, error) {
+	report, err := r.review(parent, host)
+	if err != nil {
+		return nil, "", err
+	}
+	return report.Addresses, DNSBinding(report.Records), nil
+}
+func (r dnsResolver) review(parent context.Context, host string) (DNSReview, error) {
 	if !r.address.IsValid() || r.address.Is4In6() || r.address.Zone() != "" || !monitor.CanonicalTargetName(host) {
-		return nil, fail(BlockedTarget)
+		return DNSReview{}, fail(BlockedTarget)
 	}
 	ctx, cancel := context.WithTimeout(parent, 2*time.Second)
 	defer cancel()
 	endpoint := netip.AddrPortFrom(r.address, 53)
 	conn, err := (&net.Dialer{}).DialContext(ctx, networkFor(r.address), endpoint.String())
 	if err != nil {
-		return nil, fail(classify(ctx, err, DNSFailed))
+		return DNSReview{}, fail(classify(ctx, err, DNSFailed))
 	}
 	defer conn.Close()
 	if !remoteMatches(conn, endpoint) {
-		return nil, fail(DNSFailed)
+		return DNSReview{}, fail(DNSFailed)
 	}
 	deadline, _ := ctx.Deadline()
 	if conn.SetDeadline(deadline) != nil {
-		return nil, fail(DNSFailed)
+		return DNSReview{}, fail(DNSFailed)
 	}
 	stop := context.AfterFunc(ctx, func() { _ = conn.Close() })
 	defer stop()
 	session := dnsSession{conn: conn, policy: r.policy}
 	a, err := session.family(ctx, host, dnsmessage.TypeA)
 	if err != nil {
-		return nil, err
+		return DNSReview{}, err
 	}
 	aaaa, err := session.family(ctx, host, dnsmessage.TypeAAAA)
 	if err != nil {
-		return nil, err
+		return DNSReview{}, err
 	}
 	if !slices.Equal(a.chain, aaaa.chain) {
-		return nil, fail(DNSFailed)
+		return DNSReview{}, fail(DNSFailed)
 	}
 	set := map[netip.Addr]bool{}
 	for _, ip := range append(a.addresses, aaaa.addresses...) {
 		set[ip] = true
 	}
 	if len(set) == 0 || len(set) > dnsAddressLimit {
-		return nil, fail(DNSFailed)
+		return DNSReview{}, fail(DNSFailed)
 	}
 	addresses := make([]netip.Addr, 0, len(set))
 	for ip := range set {
@@ -120,7 +133,10 @@ func (r dnsResolver) resolve(parent context.Context, host string) ([]netip.Addr,
 		}
 		return a.Compare(b)
 	})
-	return addresses, nil
+	records := append(session.recordSet, "HOST|"+host)
+	slices.Sort(records)
+	records = slices.Compact(records)
+	return DNSReview{Host: host, Addresses: addresses, Records: records, ObservedAt: time.Now().UTC()}, nil
 }
 
 func canonicalDNSName(n dnsmessage.Name) (string, bool) {
@@ -147,6 +163,28 @@ func (s *dnsSession) family(ctx context.Context, host string, typ dnsmessage.Typ
 		all := append(append(append([]dnsmessage.Resource(nil), msg.Answers...), msg.Authorities...), msg.Additionals...)
 		// Inspect every received address, including records we will never use.
 		for _, rr := range all {
+			owner, valid := canonicalDNSName(rr.Header.Name)
+			switch body := rr.Body.(type) {
+			case *dnsmessage.AResource:
+				if !valid || rr.Header.Class != dnsmessage.ClassINET {
+					return out, fail(DNSFailed)
+				}
+				s.recordSet = append(s.recordSet, owner+"|A|"+netip.AddrFrom4(body.A).String())
+			case *dnsmessage.AAAAResource:
+				if !valid || rr.Header.Class != dnsmessage.ClassINET {
+					return out, fail(DNSFailed)
+				}
+				s.recordSet = append(s.recordSet, owner+"|AAAA|"+netip.AddrFrom16(body.AAAA).String())
+			case *dnsmessage.CNAMEResource:
+				target, ok := canonicalDNSName(body.CNAME)
+				if !valid || !ok {
+					return out, fail(BlockedTarget)
+				}
+				if rr.Header.Class != dnsmessage.ClassINET {
+					return out, fail(DNSFailed)
+				}
+				s.recordSet = append(s.recordSet, owner+"|CNAME|"+target)
+			}
 			if rr.Header.Type == dnsmessage.Type(39) {
 				return out, fail(DNSFailed)
 			}

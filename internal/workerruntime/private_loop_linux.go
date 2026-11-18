@@ -49,6 +49,7 @@ type PrivateLoop struct {
 	store        scheduler.Store
 	worker       *scheduler.Worker
 	storageGuard func() bool
+	approved     bool
 }
 
 // RequireStorageGuard adds a deny-only inherited monotonic watchdog. It grants
@@ -57,23 +58,32 @@ func (l *PrivateLoop) RequireStorageGuard(alive func() bool) { l.storageGuard = 
 func (l *PrivateLoop) storageAlive() bool                    { return l.storageGuard == nil || l.storageGuard() }
 
 func OpenPrivate(ctx context.Context, cfg *pgxpool.Config, incarnation string) (*PrivateLoop, func(), error) {
+	return openPrivateMode(ctx, cfg, incarnation, false)
+}
+func OpenApproved(ctx context.Context, cfg *pgxpool.Config, incarnation string) (*PrivateLoop, func(), error) {
+	return openPrivateMode(ctx, cfg, incarnation, true)
+}
+func openPrivateMode(ctx context.Context, cfg *pgxpool.Config, incarnation string, approved bool) (*PrivateLoop, func(), error) {
 	pool, e := openPool(ctx, cfg, incarnation)
 	if e != nil {
 		return nil, func() {}, e
 	}
 	store := scheduler.Store{DB: pool, Incarnation: incarnation}
 	w := scheduler.NewPrivateWorker(store)
+	if approved {
+		w = scheduler.NewApprovedWorker(store)
+	}
 	if !w.PrivateReady(ctx) {
 		pool.Close()
 		return nil, func() {}, scheduler.ErrClosed
 	}
-	return &PrivateLoop{store: store, worker: w}, pool.Close, nil
+	return &PrivateLoop{store: store, worker: w, approved: approved}, pool.Close, nil
 }
 
 // Run never reconstructs a started Run. Unknown Claim/Start/input/Result or lost
 // Supervisor stops this process; a restart cannot replay an old sending input.
 func (l *PrivateLoop) Run(ctx context.Context, sup Supervisor, directory scheduler.TargetDirectory, event func(string, string)) error {
-	if l == nil || sup == nil {
+	if l == nil || sup == nil || l.approved != directory.ApprovedMode() {
 		return ErrBoundary
 	}
 	ticker := time.NewTicker(time.Second)
@@ -90,6 +100,9 @@ func (l *PrivateLoop) Run(ctx context.Context, sup Supervisor, directory schedul
 			return e
 		}
 		for _, h := range hints {
+			if !directory.AllowsHint(h) {
+				continue
+			}
 			if !l.storageAlive() {
 				return fmt.Errorf("storage watchdog before claim: %w", scheduler.ErrClosed)
 			}
@@ -192,6 +205,12 @@ func (l *PrivateLoop) execute(ctx context.Context, sup Supervisor, directory sch
 		}
 		if e = l.store.PersistControlResult(ctx, outcome); e != nil {
 			return e
+		}
+		// Complete control-only state through the same trusted Controller before
+		// exit. A stdout event is not an acknowledged lifecycle operation.
+		done, e := sup.Call(ctx, Call{Op: "finalize_control", Line: &line})
+		if e != nil || done.Event != "control_finalized" || done.Line != line {
+			return ErrBoundary
 		}
 		return scheduler.ErrUnavailable
 	}
