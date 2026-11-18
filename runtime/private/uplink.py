@@ -63,7 +63,7 @@ def inspect(config, container, read):
             or host['Privileged'] or host['PortBindings'] or host['PidMode'] or host['Devices']
             or host['Binds'] or any(m.get('Type') != 'tmpfs' or m.get('Destination') != '/var/lib/postgresql' for m in container['Mounts'])
             or not host['ReadonlyRootfs'] or host['CapDrop'] != ['ALL']
-            or host['CapAdd'] != ['NET_ADMIN'] or 'no-new-privileges:true' not in (host['SecurityOpt'] or [])
+            or host['CapAdd'] not in (['NET_ADMIN'], ['CAP_NET_ADMIN']) or 'no-new-privileges:true' not in (host['SecurityOpt'] or [])
             or container['Path'] != 'sleep' or container['Args'] != ['infinity']):
         raise ValueError('dedicated holder required')
     netns = read('readlink', '/proc/self/ns/net').decode().strip()

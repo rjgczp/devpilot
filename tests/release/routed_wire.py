@@ -9,6 +9,7 @@ import subprocess
 import sys
 import time
 from contextlib import ExitStack
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'runtime/private'))
@@ -52,6 +53,21 @@ def test():
             cleanup.callback(docker, 'rm', '-f', cid)
             nodes.append(cid)
         client, router, server = nodes
+        # Real Docker metadata, including capability spelling. Use another
+        # disconnected Linux namespace as the reference namespace on Desktop.
+        holder = json.loads(docker('inspect',router))[0]
+        spec = dict(mode='private-approved', target_container=router, image=holder['Image'],
+                    target_ip=TARGET4, approval=dict(addresses=[TARGET4]),
+                    routed_uplink=dict(pci_slot='0000:01:00.0',mac='02:00:00:00:00:01'))
+        reference_ns = inside(client,'readlink','/proc/self/ns/net').decode().strip()
+        with mock.patch.object(uplink.os, 'readlink', return_value=reference_ns):
+            try:
+                uplink.inspect(spec, holder, lambda *args: inside(router,*args))
+            except ValueError as exc:
+                if str(exc) != 'unexpected uplink interface':
+                    raise
+            else:
+                raise RuntimeError('holder without dedicated NIC accepted')
         wire(client, 'eth0', router, 'dp1')
         wire(router, 'uplink0', server, 'edge0')
         for cid, dev, v4, v6 in [(client, 'eth0', '198.18.1.2', 'fd00:1::2'),
