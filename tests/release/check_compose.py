@@ -21,3 +21,14 @@ assert set(value['services']['api']['networks']) == {'ingress', 'database'}
 assert set(value['services']['postgres']['networks']) == {'database'}
 assert not any('worker' in s or 'probe' in s or 'supervisor' in s for s in value['services'])
 print('PASS: Compose render only; internal dual-stack PG, VPN-only ingress, tools profile, no executor or egress')
+
+# Render the standalone, disconnected holder with a placeholder image ID.
+import os
+holder = subprocess.run(['docker', 'compose', '-f', str(ROOT / 'deploy/release/compose.uplink.yaml'),
+                         'config', '--format', 'json'], check=True, capture_output=True,
+                        env=dict(os.environ, PRIVATE_RUNTIME_IMAGE='sha256:' + 'a' * 64))
+service = json.loads(holder.stdout)['services']['uplink']
+assert service['network_mode'] == 'none' and service['pull_policy'] == 'never'
+assert service['cap_add'] == ['NET_ADMIN'] and service['cap_drop'] == ['ALL']
+assert service['read_only'] and not any(service.get(k) for k in ('privileged','ports','secrets','volumes','devices'))
+print('PASS: disconnected uplink holder; no device, bind mount, credential or port')

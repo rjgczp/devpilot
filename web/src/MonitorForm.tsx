@@ -10,7 +10,7 @@ import {
 } from "./api";
 import { Dialog, Notice } from "./ui";
 import { formatTime } from "./status";
-import { isolatedDemo } from "./environment";
+import { isolatedDemo, privateBeta } from "./environment";
 
 export function MonitorForm({
   wid,
@@ -339,7 +339,7 @@ export function AuthorizeForm({
           <Notice kind="info">
             {isolatedDemo
               ? "隔离演示仅执行固定测试目标，授权不会开放任意 URL 或公网访问。"
-              : "普通管理环境执行关闭；授权只保存启用意图，不会开始 HTTP 检查。"}
+              : privateBeta ? "此授权仅适用于当前版本。操作者批准目标、执行环境就绪后才会开始检查。" : "普通管理环境执行关闭；授权只保存启用意图，不会开始 HTTP 检查。"}
           </Notice>
           <footer className="dialog-actions">
             <button

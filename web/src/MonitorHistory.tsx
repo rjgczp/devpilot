@@ -1,4 +1,4 @@
-import { isolatedDemo } from "./environment";
+import { isolatedDemo, privateBeta } from "./environment";
 import { useEffect, useState } from "react";
 import {
   aborted,
@@ -99,7 +99,7 @@ export function MonitorHistory({
           </label>
         </div>
         <HistoryRows
-          key={`${path}/${monitor.id}/${filter}/${refresh}/${isolatedDemo ? `${status?.latest_attempt?.run_id}:${status?.latest_attempt?.attempt_state}:${status?.latest_attempt?.finished_at}` : ""}`}
+          key={`${path}/${monitor.id}/${filter}/${refresh}/${isolatedDemo || privateBeta ? `${status?.latest_attempt?.run_id}:${status?.latest_attempt?.attempt_state}:${status?.latest_attempt?.finished_at}` : ""}`}
           path={`${path}/${monitor.id}/history`}
           filter={filter}
         />
@@ -178,7 +178,7 @@ function HistoryRows({ path, filter }: { path: string; filter: string }) {
                     ? "可切换到全部状态，查看其他检查记录。"
                     : isolatedDemo
                       ? "请返回监控，由临时 Owner 确认目标并授权。只有真实检查开始后才会产生历史。"
-                      : "普通管理环境不发起检查，暂无历史属于正常情况。已有历史只展示真实检查，授权本身不会生成结果。"}
+                      : privateBeta ? "尚无检查记录。请确认目标审批、Owner 授权和当前执行状态。" : "普通管理环境不发起检查，暂无历史属于正常情况。已有历史只展示真实检查，授权本身不会生成结果。"}
               </p>
             </div>
           )}

@@ -1,11 +1,6 @@
-# Private test release preparation — NOT a release approval
+# Private beta release preparation
 
-Baseline: PR25 `9c497d372661f95722a7176a613579578bcdd02f`, merged as
-`d85204335d101534e4595e64632dd4e36fcd59aa`. This directory adds read-only checks
-and a management-network override. It does not start a service/execution domain, connect to PG or
-a target, create resources, read credentials/private keys, apply SQL/ACL, or open
-a Gate/route. Bounded OpenSSL/Docker/ip inspection commands may run.
-OpenSpec remains37/47;8.3 and production M14/M15 remain deferred.
+The management stack and private-approved runtime share the existing API, Dashboard and PG18. The preflight is read-only. A named server, database approval, dedicated egress and deployment authorization are still required. OpenSpec remains 37/47.
 
 ## One preflight entry
 
@@ -13,7 +8,7 @@ OpenSpec remains37/47;8.3 and production M14/M15 remain deferred.
 cp deploy/release/release.example.json /absolute/private/release.json
 # Edit references to the already prepared nonsecret management .env, private
 # secret directory, existing service.json and persistent journal; create nothing
-# with this checker. service.json is the existing PR25 private-isolated format.
+# with this checker. For the dedicated uplink use the routed fields below.
 sh scripts/private-release.sh --manifest /absolute/private/release.json
 # Exit2: real private HTTPS release remains blocked, even when local checks pass.
 sh scripts/private-release.sh --manifest /absolute/private/release.json --config-only
@@ -27,8 +22,8 @@ secret-file metadata, and journal recovery guard. They do not validate private
 key material/pair matching, CA chain trust, effective SQL roles, actual Gate,
 registration/Owner authorization, filesystem canonical FSID or firewall policy.
 These appear explicitly as unverified; `private_https_release_ready` is always
-false in this revision. Secret content is never echoed/hashed/read; only the
-PUBLIC certificate is parsed by bounded offline OpenSSL. Files0444 are allowed
+false in this revision. Secret files receive metadata checks. The routed preflight
+hashes the two designated public PEM files and uses offline OpenSSL for the management certificate. Files0444 are allowed
 only beneath their operator-owned0700 host parent; files0400/0600 must be owned
 by their intended container UID. No ACL is widened. Use the existing deployment
 secret instructions; no password belongs in this manifest, argv, Git or image.
@@ -40,7 +35,7 @@ published ports, actual PG volume/log metadata mounts, and PGDATA/WAL/default
 temp/journal device coverage. It rejects external tablespaces/symlinks. SQL
 settings (temp_tablespaces, archive/replication slots, logging mode), canonical
 FSID/postmaster registration, real VPN peer access and host/cloud firewall still
-require separately authorized host acceptance. No network request or SQL query
+require separately authorized host acceptance. No target request or SQL query
 is made by this checker. Failed daemon/secret payloads never enter its report.
 
 The journal/key must persist with PG data and private backup custody. A burned
@@ -56,10 +51,10 @@ Parent death without a complete trusted proof stays closed for operator recovery
 | Component | Existing entry / state | Preparation still needed |
 | --- | --- | --- |
 | Management API + React HTTPS | `deploy/private/compose.yaml`; Secure Cookie, Origin/CSRF, auth limits already implemented | VPN IP/private DNS, trusted cert/key, invited/noninvited peer tests |
-| PG18 + migrator / API identity | dedicated persistent volume; tools profile only; API gets its own credential | reviewed offline M13→M14→M15 and identity binding; never on normal startup |
+| PG18 + migrator / API identity | dedicated persistent volume; tools profile only; API gets its own credential | reviewed offline M13→M14→M15→M16 and identity binding; never on normal startup |
 | Two Workers + Supervisor + Controller | `scripts/private-service.sh`; real standalone binaries/anonymous IPC, original stop proof; Controller includes retention | five separate LOGIN files, offline incarnations/expiry/catalog, pinned public key |
 | Reporter + independent watchdog | actual metadata,3s monotonic guard,5s SQL sample;1GiB relation/80% gate unchanged | device/FSID/postmaster binding, readonly metadata paths and actual content EACCES |
-| Private Probe / network managers | one GET, DNS/IP/Permit/literal/TLS protections already implemented | REAL routed target/resolver lifecycle remains unimplemented below |
+| Private Probe / network managers | one GET, DNS/IP/Permit/literal/TLS protections already implemented | dedicated routed holder and server acceptance below |
 
 The management-only database network was IPv4-only. The following **render-only**
 override prepares an internal dual-stack network named `devpilot-private-control`,
@@ -90,7 +85,7 @@ keep storage's existing thresholds rather than substituting a disk-size guess.
 ## Exact database order and pending authority
 
 `release-lock.json` freezes filenames/SHA256/dependencies. Order is **1–10,12,13,
-then candidate14, then candidate15**.11 remains absent. Neither candidate is in
+then candidates 14 → 15 → 16**. 11 remains absent. No candidate is in
 Goose or the management image's migration directory; normal `migrate up` stops
 at13. No file is copied, renamed, renumbered or applied by this PR.
 
@@ -103,6 +98,12 @@ at13. No file is copied, renamed, renumbered or applied by this PR.
   Depends on exact M14; Reporter NOLOGIN group, two private tables, two Reporter
   EXECUTEs and API definer owner's boolean EXECUTE; seven bounded function
   replacements. Worker/Controller/Supervisor gain no additional privilege.
+- M16: `deploy/targetadmission/approved-mode.sql.candidate`, SHA256
+  `264ddb9bcb8bf48cf305bc81d2ce58434f0e0ff2dac9ad5f2b45ae0210fcf095`.
+  Requires the locked M14 and M15. Adds the private-approved Gate/mode value,
+  replaces three mode predicates and grants the existing Worker group only
+  EXECUTE on `approved_worker_ready(uuid)` (PUBLIC revoked). No new roles or
+  table/column grants. See [M16 permissions](../targetadmission/PERMISSIONS.md).
 - `runtime-identities.sql.proposed`: precise **unapproved/unapplied** five LOGIN
   proposal (two Workers, Supervisor, Controller, Reporter), existing group
   membership/CONNECT only,2s/2s/250ms defaults. No new function/table/column/DDL/
@@ -112,41 +113,118 @@ at13. No file is copied, renamed, renumbered or applied by this PR.
   Reporter postmaster/device/FSID/generation are separately bound offline to the
   chosen asset; this PR supplies no fabricated registration or opening UPDATE.
 
-Prior M14/M15 approvals are disposable/no-upstream ONLY. Their production
+Prior M14/M15/M16 approvals are disposable/no-upstream ONLY. Their production
 application and these LOGINs require separate exact approval. Gate stays closed
-with emergency_stop=true. There is no real-Gate/egress activation SQL/command in
-this bundle; applying old candidates alone cannot enable real private monitoring.
+with emergency_stop=true during provisioning. Applying the candidates alone cannot enable execution.
 See the existing PERMISSIONS.md/permission manifests for unchanged exact functions.
 
-## Three remaining P0/P1 blockers only
+## Dedicated uplink and startup
 
-1. **P0 — missing implementation:** real target admission + DNS/routed egress
-   integration. Web URL save/Owner consent is not target admission. Current
-   launcher restricts `a.fixture.example.com`/two fixture IPs, kernel creates
-   network-none veths to that receiver, and Probe/network policy use fixed
-   `192.0.2.53`/`fd64:53::53` fixture resolver exceptions. These are code limits,
-   not production settings. Next minimal work must bind an operator-approved
-   invited target to the existing catalog/rotation/Permit, obtain full validated
-   A/AAAA/CNAME answers, bind the same literal to the independent expiring
-   default-deny gateway/run rules, then use the original TLS/one-GET/Result/stop
-   path. No arbitrary user URL, host default route, DNS redial, proxy/redirect/
-   retry or fixture Gate is an acceptable shortcut. Existing SSRF/physical
-   mechanisms should be reused; no generic proxy or new scheduler is needed.
-2. **P0 — pending production authority:** exact M14/M15, five LOGINs and concrete
-   asset/identity/catalog/storage/key registration are not production-approved.
-   A future real execution mode/Gate requires its own implemented, reviewed
-   forward diff; `private-isolated` must never masquerade as Internet mode.
-3. **P1 — host acceptance, mainly configuration:** bind one dedicated native
-   Linux server, VPN/DNS/certificate, persistent storage/backups and secret/key
-   ownership; prove invited access and rejected noninvited/XFF/IPv6 bypass, plus
-   independent default-deny outbound/host-control exclusions on that asset.
-   Local render/mocked metadata/isolated CI do not prove these host facts.
+The deployment overlay builds the existing Dashboard for invited users. Its
+status and history still come from the API. The Worker, Supervisor, Controller
+and Reporter start together using the existing private-service entry. An optional
+network-none holder carries a dedicated physical or PCI-backed virtio NIC. The
+VPN/management NIC, a Docker bridge, host forwarding, and the host default route
+are unsuitable. The read-only preflight can inspect an already prepared holder.
 
-Historical125ms/55P03/IPv6/management-ACK unknown causes and all failed PR25
-artifacts remain retained, not declared repaired by unrelated green tests.
-Pressure/scalability work remains P2; do not add it to these three blockers.
+On an approved native Linux host, render both configurations first:
 
-Verification: `python3 -m unittest discover -s tests/release -v` and
-`python3 tests/release/check_compose.py`. Tests use temporary public certificates
-and dummy secret files, never a database, workload or Internet target. CI runs
-only these directed release checks in addition to the repository's automatic Go CI.
+```sh
+export PRIVATE_RUNTIME_IMAGE="$(docker image inspect devpilot-private-runtime --format '{{.Id}}')"
+docker compose -f deploy/release/compose.uplink.yaml config
+docker compose --env-file deploy/private/.env -f deploy/private/compose.yaml \
+  -f deploy/release/compose.management.yaml config
+```
+
+After **host/network provisioning approval**, use the same Compose files for a
+new stack. Create only the disconnected holder with
+`docker compose -f deploy/release/compose.uplink.yaml up -d uplink`. Record its
+full container ID from `docker compose -f deploy/release/compose.uplink.yaml ps -q uplink`
+and resolve the full ID with `docker inspect --format '{{.Id}}' CID`.
+An operator binds the dedicated data-plane NIC to this namespace as `uplink0`,
+with its actual MAC and PCI slot. The physical port must terminate on the
+reviewed upstream VLAN/router. Provision only the following on this NIC:
+
+- Configure static source addresses with /32 or /128 and `noprefixroute`. Disable
+  automatic link-local address generation, RAs, redirects and DHCP. Set permanent
+  neighbors on both ends (forwarding policy drops local input and output).
+- Add an explicit IPv4 host route for `192.0.2.53/32` and a host route for the
+  **single approved target literal**, IPv4 /32 or IPv6 /128. For example,
+  `ip route add 192.0.2.53/32 via "$NEXT_HOP4" dev uplink0 onlink` **inside the
+  holder**, with separately assigned link and neighbor addresses. For an IPv6
+  target use `ip -6 route add "$TARGET6/128" via "$NEXT_HOP6" dev uplink0 onlink`.
+  No default route in any table. Admission rejects preexisting downstream links,
+  local target aliases, foreign firewall tables and extra unicast routes.
+- The independent trusted resolver must own or serve the dedicated wire endpoint
+  `192.0.2.53:53/TCP` and resolve both A and AAAA using trusted upstream DNS.
+  Publish no resolver on the management host. The independent upstream firewall
+  allows only this resolver and the approved HTTPS literal, with explicit expiry.
+  Install this separately on the named asset. Revoke it when approval ends.
+- The launcher atomically installs the holder's default-drop input/output/forward
+  filter before creating any per-run link. Only TCP DNS to the fixed wire and
+  TCP/443 to the selected literal pass; SNAT uses the dedicated interface.
+  The original run and gateway each require a time-limited Permit before HTTPS.
+  The holder does not create a permitted Run, extend expiry or accept a new IP
+  after a DNS change. Host/network administrators and NIC assignment are trusted.
+
+Start with `deploy/privateservice/service.example.json`, applying the operator
+approval instructions in [target admission](../targetadmission/README.md).
+Set `mode=private-approved`, `target_container` to the holder ID,
+`target_host` and `target_ip` to the approved name/literal, `approval_file`,
+and `denied_prefixes` to actual management/VPN/control ranges for both families.
+Add `routed_uplink` with exactly `pci_slot` and `mac`. Pin the SHA256 of the
+actual **public PEM bytes** in `supervisor_key_sha256` and `target_ca_sha256`
+(the latter hashes `ca_file`). Keep target catalog and public approval in sync.
+Re-review DNS with the operator CLI in a dedicated review namespace having only
+the fixed resolver route. Register via the existing Controller catalog path.
+
+Bind distinct incarnation UUIDs and DSN files for the five existing identities.
+All names begin with `devpilot_private_`. Suffix → container UID mappings are
+`worker` → 65532, `worker2` → 65533, `supervisor` → 65531,
+`controller` → 65530, `reporter` → 65529 (sampler/watchdog). The proposal
+in `release-lock.json` pins the exact role memberships. Each role reads only
+its own DSN, with URL-encoded password, `postgres:5432/devpilot_private` and
+`?sslmode=disable` on the internal-only PG network. No DSN or private key is
+printed. Pin the Supervisor public key to its registered DB row. The offline
+preflight checks local metadata, distinct files/UUIDs, certificate hostname and
+expiry, and public pins; the effective LOGIN/registry and key pair still require
+real-host verification. Verify the management TLS chain and key pair locally or
+in a VPN client handshake before inviting users.
+
+```sh
+sh scripts/private-release.sh --manifest /secure/release.json --inspect-host --config-only
+# Only after separate Gate, egress and deployment approval:
+sh scripts/private-service.sh start --state /var/lib/devpilot-private --config /secure/service.json --run-routed
+sh scripts/private-service.sh status --state /var/lib/devpilot-private
+sh scripts/private-service.sh stop --state /var/lib/devpilot-private
+```
+
+Without the routed switch, a routed configuration cannot start. Stop new
+admission first on rollback, revoke the upstream allowance, drain via the
+existing Supervisor, preserve the journal and reconcile with PG. A missing
+trusted receipt keeps capacity held and requires recovery. Retain the holder
+and diagnostics while any Run lacks trusted physical termination.
+
+## Remaining approvals and host acceptance
+
+1. **Database and Gate.** On a dedicated PG18, independently approve the exact
+   M14 → M15 → M16 sources, five-LOGIN proposal and registrations. Keep
+   deployment closed/emergency-stopped during migration; require no unreleased
+   Runs. Bind LOGIN, private-approved mode, incarnation, expiry, Supervisor key,
+   target budget/catalog and Reporter postmaster/filesystem identities.
+   Separately authorize a finite deployment Gate for private-approved and
+   clearing emergency stop. The existing finite Owner consent is also required.
+2. **Network.** Bind a real dedicated NIC and upstream ACL with named target,
+   resolver, expiry and revocation owner. Verify the physical return path, both
+   families, and denial after expiry on that specific asset before enabling.
+3. **Deployment.** Approve the server, VPN-only access, management certificate,
+   secret and persistent journal/storage mounts, backup, operator and start/stop
+   window. Check invited and noninvited access, per-role effective identity and
+   real Run/Result/history on the authorized asset.
+
+Directed checks: `python3 -B -m unittest discover -s tests/release -v`,
+`python3 tests/release/check_compose.py`, and after building the service image,
+`python3 -B tests/release/routed_wire.py`. The latter uses three disconnected
+Linux namespaces and an owned DNS/TLS peer; veth exercises forwarding, not
+physical NIC identity or Internet reachability. Original failure artifacts and
+unresolved 55P03, IPv6, timing and lifecycle-wrapper EOF evidence are retained.

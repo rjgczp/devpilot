@@ -12,6 +12,7 @@ import re
 import stat
 import subprocess
 import sys
+import uuid
 
 sys.dont_write_bytecode = True
 
@@ -19,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 VERSIONS = list(range(1, 11)) + [12, 13]
 PG18 = 'postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336'
 BLOCKERS = [
-    {'id': 'P0-1', 'kind': 'implementation', 'code': 'real_target_admission_dns_and_routed_egress_not_wired'},
+    {'id': 'P0-1', 'kind': 'network_acceptance', 'code': 'dedicated_nic_trusted_resolver_and_upstream_acceptance_pending'},
     {'id': 'P0-2', 'kind': 'authorization', 'code': 'production_schema_logins_registration_and_gate_not_approved'},
     {'id': 'P1-3', 'kind': 'host_acceptance', 'code': 'dedicated_linux_vpn_tls_firewall_storage_and_key_boundaries_unverified'},
 ]
@@ -51,14 +52,14 @@ def mounted_secret(path, uid):
     # No content reads. Compose file binds rely on a private HOST parent, then
     # expose only that one read-only file to its numeric container identity.
     s = path.lstat()
-    return (private_directory(path.parent) and stat.S_ISREG(s.st_mode)
+    return bool(private_directory(path.parent) and stat.S_ISREG(s.st_mode)
             and s.st_uid in (os.getuid(), uid) and not s.st_mode & 0o022
             and (s.st_mode & 0o004 or s.st_uid == uid and s.st_mode & 0o400))
 
 
 def run(args):
     # Fixed read-only argv from the call sites below; no shell, URL fetch, SQL,
-    # stdin credentials, Docker run/exec/up, ACL, nft or route mutations.
+    # stdin credentials, container startup, ACL, nft or route mutations.
     p = subprocess.run(args, capture_output=True, timeout=10, stdin=subprocess.DEVNULL)
     if p.returncode:
         raise ValueError('inspection unavailable')
@@ -72,7 +73,7 @@ def schema(root):
         raise ValueError('migration inventory')
     if [p.relative_to(root).as_posix() for p in paths] != [r['path'] for r in lock['order'][:12]]:
         raise ValueError('migration filenames')
-    if [r['version'] for r in lock['order']] != VERSIONS + [14, 15]:
+    if [r['version'] for r in lock['order']] != VERSIONS + [14, 15, 16]:
         raise ValueError('forward order')
     for item in lock['order'] + [lock['identities']]:
         if hashlib.sha256((root / item['path']).read_bytes()).hexdigest() != item['sha256']:
@@ -82,6 +83,10 @@ def schema(root):
         for item in manifest.get('functions', manifest.get('existing_functions', [])):
             if hashlib.sha256((root / item['source']).read_bytes()).hexdigest() != item['source_sha256']:
                 raise ValueError('candidate source dependency')
+    approved = json.loads((root / 'deploy/targetadmission/permission-diff.json').read_text())
+    if (approved['requires'] != {r['path']: r['sha256'] for r in lock['order'][-3:-1]}
+            or approved['candidate_sha256'] != lock['order'][-1]['sha256']):
+        raise ValueError('M16 dependency mismatch')
     if lock['production_activation'] or lock['new_gate_values'] or lock['new_function_execute_grants'] or lock['new_table_column_grants']:
         raise ValueError('activation unexpectedly included')
     return lock['order']
@@ -212,14 +217,30 @@ def inspect(manifest_path, inspect_host=False, runner=run, root=ROOT):
     for filename, uid in [('migration_password', 999), ('app_password', 0), ('app_url', 65532), ('tls.key', 101), ('tls.crt', 101)]:
         check('management_' + filename.replace('.', '_'), lambda filename=filename, uid=uid: mounted_secret(secrets / filename, uid))
     if ingress:
-        check('certificate_name_and_expiry', lambda: runner(['openssl', 'x509', '-in', str(secrets / 'tls.crt'), '-noout', '-checkend', '86400', '-checkhost', values['PRIVATE_HOST']]) is not None)
+        # Some OpenSSL versions exit zero for a hostname mismatch with -checkhost.
+        def certificate():
+            name = values['PRIVATE_HOST']
+            args = ['openssl', 'x509', '-in', str(secrets / 'tls.crt'), '-noout']
+            runner([*args, '-checkend', '86400'])
+            output = runner([*args, '-checkhost', name])
+            return ('Hostname ' + name + ' does match certificate').encode() in output.splitlines()
+        check('certificate_name_and_expiry', certificate)
     sys.path.insert(0, str(root / 'runtime/private'))
     runtime = module('private_service_config', root / 'runtime/private/launcher.py')
-    current = check('isolated_runtime_configuration', lambda: runtime.load(abspath(base, config['runtime_config'])))
+    current = check('runtime_configuration', lambda: runtime.load(abspath(base, config['runtime_config'])))
     if current:
+        report['routed_uplink_configured'] = 'routed_uplink' in current
         check('catalog_secret_boundary', lambda: all(mounted_secret(Path(current['catalog_file']), uid) for uid in (65532, 65533)))
         for name, profile, uid in [('worker0', current['workers'][0], 65532), ('worker1', current['workers'][1], 65533), ('supervisor', current['supervisor'], 65531), ('controller', current['controller'], 65530), ('reporter', current['reporter'], 65529)]:
             check(name + '_secret_boundary', lambda profile=profile, uid=uid: mounted_secret(Path(profile['database_url_file']), uid))
+        if 'routed_uplink' in current:
+            profiles = current['workers'] + [current[k] for k in ('supervisor', 'controller', 'reporter')]
+            check('five_incarnation_bindings', lambda: len({uuid.UUID(v['incarnation']) for v in profiles} - {uuid.UUID(int=0)}) == 5)
+            all_files = [Path(v['database_url_file']) for v in profiles] + [secrets / n for n in ('app_url', 'app_password', 'migration_password', 'tls.key')] + [state / 'private.pem', Path(current['catalog_file'])]
+            all_files += [state / 'public.pem', Path(current['ca_file'])]
+            distinct = check('separate_credential_files', lambda: len({(f.stat().st_dev, f.stat().st_ino) for f in all_files}) == len(all_files))
+            import uplink
+            check('public_key_and_target_ca_pins', lambda: bool(distinct) and uplink.check_public_pins(current, state))
     status = check('journal_metadata', lambda: journal(state))
     if status:
         report['journal'] = status
@@ -228,6 +249,28 @@ def inspect(manifest_path, inspect_host=False, runner=run, root=ROOT):
         observed = check('native_host', lambda: host(current, state, values['PRIVATE_BIND_IP'], config['vpn_interface'], runner))
         if observed:
             report['host'] = observed
+            if 'routed_uplink' in current:
+                import uplink
+                # Select only fields used by the holder check. Never inspect Env.
+                fields = ('Id', 'Image', 'Path', 'Args', 'State.Running', 'Mounts', 'HostConfig.NetworkMode',
+                          'HostConfig.Privileged', 'HostConfig.PortBindings', 'HostConfig.PidMode', 'HostConfig.Devices',
+                          'HostConfig.Binds', 'HostConfig.ReadonlyRootfs', 'HostConfig.CapDrop', 'HostConfig.CapAdd', 'HostConfig.SecurityOpt')
+                def upstream():
+                    cid = current['target_container']
+                    template = '\n'.join('{{json .' + field + '}}' for field in fields)
+                    values = runner(['docker', 'inspect', '--format', template, cid]).splitlines()
+                    if len(values) != len(fields):
+                        raise ValueError('holder metadata incomplete')
+                    holder = {}
+                    for key, value in zip(fields, values):
+                        section, dot, name = key.partition('.')
+                        if dot:
+                            holder.setdefault(section, {})[name] = json.loads(value)
+                        else:
+                            holder[key] = json.loads(value)
+                    uplink.inspect(current, holder, lambda *args: runner(['docker', 'exec', cid, *args]))
+                    return True
+                check('dedicated_uplink_before_start', upstream)
     report['configuration_structure_valid'] = bool(checks) and all(c['status'] == 'pass' for c in checks)
     return report
 
