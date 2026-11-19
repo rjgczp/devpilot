@@ -22,6 +22,7 @@ const (
 
 type Config struct {
 	Auth             AuthConfig
+	AI               AIConfig
 	HTTPAddr         string
 	Database         *pgxpool.Config
 	LogLevel         slog.Level
@@ -84,6 +85,10 @@ func Load(getenv func(string) string) (Config, error) {
 		return Config{}, err
 	}
 
+	cfg.AI, err = loadAI(getenv)
+	if err != nil {
+		return Config{}, err
+	}
 	return cfg, nil
 }
 

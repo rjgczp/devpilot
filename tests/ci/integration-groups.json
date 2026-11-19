@@ -175,6 +175,12 @@
       ]
     },
     {
+      "name": "ai-diagnosis",
+      "tests": [
+        "TestAIDiagnoseWorkspaceBoundaryPG"
+      ]
+    },
+    {
       "name": "status74",
       "tests": [
         "TestExecutionStatusHTTPAuthority",
