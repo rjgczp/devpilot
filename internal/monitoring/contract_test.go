@@ -125,10 +125,11 @@ func TestDormantProductionDependencyAndSchemaBoundary(t *testing.T) {
 			t.Fatal("unreviewed migration", p)
 		}
 	}
-	// Startup wiring remains byte-identical. The approved schema8 API additions
-	// are validated by monitor package OpenAPI response/shape contract tests.
+	// Pin reviewed route wiring, including the authorized read-only AI endpoint.
+	// Worker startup and prober separation remain enforced above; schema8 API
+	// shapes remain validated by monitor package OpenAPI contract tests.
 	for p, want := range map[string]string{
-		"internal/app/routes.go":                          "96d4192f3ab0e92ed1b49b4b8cee07393d329cf83d8538b6139ee3844a97fc38",
+		"internal/app/routes.go":                          "c0e0582c44b0f02d690472d465a5db68201c128a2ac2c88e2a2461164f63011f",
 		"migrations/00008_create_monitor_scheduler.sql":   "7f56196a3e6b5e2c4bb32dc8e7382c177435d60da833191ad994349b29f417f2",
 		"migrations/00009_enforce_scheduler_capacity.sql": "3ec3404418766ca76492f8f0cd00706d0e8e8bf29cafc47c79050b1fee230d9e",
 	} {
