@@ -1,6 +1,6 @@
 {
-  "runtime_baseline": "9c497d372661f95722a7176a613579578bcdd02f",
-  "merged_main": "d85204335d101534e4595e64632dd4e36fcd59aa",
+  "runtime_baseline": "5f411429036c1a3aae308fee2a67a25cfddb1049",
+  "merged_main": "5afeb1490fa2ad0bd49e1b8dc179d2d26ff870e3",
   "order": [
     {
       "version": 1,
@@ -84,6 +84,12 @@
       "version": 15,
       "path": "deploy/capacity/continuous-capacity.sql.candidate",
       "sha256": "78a2ac0e388ea0d4fb46e046b624315a88f07b82b58fe5784e246815197fa212",
+      "authorization": "disposable-only; production NOT approved"
+    },
+    {
+      "version": 16,
+      "path": "deploy/targetadmission/approved-mode.sql.candidate",
+      "sha256": "264ddb9bcb8bf48cf305bc81d2ce58434f0e0ff2dac9ad5f2b45ae0210fcf095",
       "authorization": "disposable-only; production NOT approved"
     }
   ],

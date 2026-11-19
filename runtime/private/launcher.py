@@ -31,6 +31,9 @@ def load(path):
   c['approval']=load_approval(c['approval_file'],c['target_host'],c['target_ip'])
   require(not any(ipaddress.ip_address(ip) in subnet for ip in c['approval']['addresses'] for subnet in excluded))
 
+ if 'routed_uplink' in c:
+  from uplink import binding
+  binding(c)
  require(len(c['workers'])==2 and c['workers'][0]['incarnation']!=c['workers'][1]['incarnation'])
  paths=[x['database_url_file'] for x in c['workers']]+[c[k]['database_url_file'] for k in ('supervisor','controller','reporter')]
  require(len(set(paths))==5)
@@ -58,6 +61,7 @@ class Runtime:
   args+=['--entrypoint','python3',self.c['image'],'-S','-u','/runtime/control_child.py',role,profile['incarnation']]
   if role=='supervisor':args.append(self.c['workers'][index]['incarnation'])
   if role=='worker':args.append(self.c['mode'])
+  if 'routed_uplink' in self.c:args.append('--bound-login')
   err=open(self.state/(name+'.stderr'),'ab',buffering=0);os.chmod(err.name,0o600)
   p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=err,bufsize=0);err.close()
   self.children[name]=p;self.pending[name]=bytearray()
@@ -237,7 +241,7 @@ def stop(state):
  except ProcessLookupError:return 0
  return 0
 def main():
- p=argparse.ArgumentParser();p.add_argument('action',choices=['init','start','run','stop','status']);p.add_argument('--config',type=Path);p.add_argument('--state',type=Path,required=True);p.add_argument('--run-isolated',action='store_true');p.add_argument('--run-approved',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['init','start','run','stop','status']);p.add_argument('--config',type=Path);p.add_argument('--state',type=Path,required=True);p.add_argument('--run-isolated',action='store_true');p.add_argument('--run-approved',action='store_true');p.add_argument('--run-routed',action='store_true');a=p.parse_args()
  require(not sys.flags.optimize, 'optimized launcher startup is disabled')
  require(sys.platform=='linux', 'native Linux host required');state=private_dir(a.state)
  if a.action=='init':
@@ -245,18 +249,18 @@ def main():
   authority=Authority(state);authority.pub.chmod(0o444);print(json.dumps(dict(event='private_state_initialized',public_key_file=str(authority.pub),execution_available=False)));return 0
  if a.action=='status':print((state/'status.json').read_text() if (state/'status.json').exists() else '{"event":"closed"}');return 0
  if a.action=='stop':return stop(state)
- if not (a.run_isolated or a.run_approved):print('{"event":"private_service_closed","execution_available":false}');return 0
+ if not (a.run_isolated or a.run_approved or a.run_routed):print('{"event":"private_service_closed","execution_available":false}');return 0
  c=load(a.config)
- require(a.run_isolated != a.run_approved and c['mode']==('private-approved' if a.run_approved else 'private-isolated'), 'mode/launch binding')
+ require(sum((a.run_isolated,a.run_approved,a.run_routed))==1 and a.run_routed==('routed_uplink' in c) and c['mode']==('private-isolated' if a.run_isolated else 'private-approved'), 'mode/launch binding')
  if a.action=='start':
   log=open(state/'launcher.stderr','ab',buffering=0);os.chmod(log.name,0o600)
-  child=subprocess.Popen([sys.executable,'-S',str(Path(__file__).resolve()),'run','--run-approved' if a.run_approved else '--run-isolated','--config',str(a.config.resolve()),'--state',str(state)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,close_fds=True)
+  child=subprocess.Popen([sys.executable,'-S',str(Path(__file__).resolve()),'run','--run-routed' if a.run_routed else '--run-approved' if a.run_approved else '--run-isolated','--config',str(a.config.resolve()),'--state',str(state)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,close_fds=True)
   end=time.monotonic()+30
   while time.monotonic()<end:
    if child.poll() is not None:return 2
    if (state/'status.json').exists():
     s=json.loads((state/'status.json').read_text())
-    if s['pid']==child.pid and s['event']=='running':print('{"event":"private_service_running","workers":2,"internet":false}');return 0
+    if s['pid']==child.pid and s['event']=='running':print(json.dumps(dict(event="private_service_running",workers=2,egress="dedicated-permit" if "routed_uplink" in c else "isolated",internet="routed_uplink" in c)));return 0
    time.sleep(.1)
   stop(state);return 2
  lock=open(state/'launcher.lock','a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

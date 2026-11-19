@@ -11,6 +11,18 @@ import base64,fcntl,json,os,select,subprocess,sys
 role,inc,*extra=sys.argv[1:]
 uids={'worker':(65532,65533),'supervisor':(65531,),'controller':(65530,),'sampler':(65529,),'watchdog':(65529,)}
 require(role in uids and os.getuid() in uids[role])
+if extra[-1:]==['--bound-login']:
+ # Only the intended cap0 process reads its own DSN. Pin user, PG host and DB
+ # before pgx sees it; alternate hosts or startup options are not permitted.
+ import re
+ from pathlib import Path
+ extra.pop()
+ logins={65532:'worker',65533:'worker2',65531:'supervisor',65530:'controller',65529:'reporter'}
+ with Path('/run/own-url').open('rb') as secret:
+  dsn=secret.read(8193)
+ prefix=b'postgres://devpilot_private_'+logins[os.getuid()].encode()+b':'
+ require(len(dsn)<=8192 and dsn.startswith(prefix) and re.fullmatch(rb'(?:[A-Za-z0-9._~-]|%[0-9a-fA-F]{2})+@postgres:5432/devpilot_private\?sslmode=disable\n?',dsn[len(prefix):]), 'private deployment identity mismatch')
+ del dsn
 pairs={'worker':3,'supervisor':6,'controller':6,'sampler':1,'watchdog':3}[role]
 raw=[]
 for _ in range(pairs):raw+=list(os.pipe())

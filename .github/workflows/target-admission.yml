@@ -2,7 +2,7 @@ name: Approved HTTPS admission
 on:
   pull_request:
     branches: [main]
-    paths: ['cmd/privateapproval/**', 'cmd/privateworker/**', 'cmd/privateprobe/**', 'internal/monitoring/**', 'internal/probenetwork/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'runtime/private/**', 'deploy/targetadmission/**', 'deploy/privateservice/**', 'tests/targetadmission/**', 'tests/integration/private_approved_test.go', 'tests/integration/private_service_test.go', '.github/workflows/target-admission.yml']
+    paths: ['cmd/privateapproval/**', 'cmd/privateworker/**', 'cmd/privateprobe/**', 'internal/monitoring/**', 'internal/probenetwork/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'runtime/private/**', 'deploy/targetadmission/**', 'deploy/privateservice/**', 'tests/targetadmission/**', 'tests/release/routed_wire.py', 'tests/integration/private_approved_test.go', 'tests/integration/private_service_test.go', '.github/workflows/target-admission.yml']
 permissions:
   contents: read
 jobs:
@@ -17,6 +17,8 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Own HTTPS with full DNS binding on no-upstream Linux
         run: sh tests/targetadmission/run.sh "$RUNNER_TEMP/target-admission"
+      - name: Validate the dedicated uplink filter over a disconnected DNS and TLS wire
+        run: python3 -B tests/release/routed_wire.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

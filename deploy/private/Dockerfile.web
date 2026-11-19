@@ -3,7 +3,8 @@ WORKDIR /web
 COPY web/package.json web/package-lock.json ./
 RUN npm ci
 COPY web/ ./
-RUN npm run build
+ARG VITE_PRIVATE_BETA=false
+RUN VITE_PRIVATE_BETA="$VITE_PRIVATE_BETA" npm run build
 
 FROM nginx:stable-alpine@sha256:583b7f2fce1cdb8da5ad5c39ebd3c33b98b87d493190e548bdee1fa8c619c311
 COPY --from=build /web/dist /usr/share/nginx/html
