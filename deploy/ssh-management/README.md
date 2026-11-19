@@ -17,7 +17,7 @@ PRIVATE_ALLOWED_CIDRS=127.0.0.1/32,172.30.87.1/32
 The second allowlisted source is Docker's dedicated entry bridge gateway, as
 seen for host-local SSH forwarding; it is not a public/VPN peer allowlist. Check
 that subnet 172.30.87.0/24 and port 18443 are unused before creating the stack.
-The overlay caps PG/API/web at 256/160/64 MiB, with low PG connections and buffers;
+The overlay caps PG/API/web at 256/256/64 MiB, with low PG connections and buffers;
 monitor actual resource use on a shared server. Images are built off-host for
 linux/amd64 and transferred through SSH; no registry credential or SSH key is
 included. Watchtower updates are disabled for these three services.
@@ -31,12 +31,12 @@ trust store before use. Do not disable certificate verification.
 All operator commands use both files, with `deploy/private` as project directory:
 
 ```
-docker compose -p devpilot-mvp -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml up -d --wait postgres
+docker compose -p devpilot-mvp --env-file deploy/private/.env -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml up -d --wait postgres
 # Only after explicit authorization for this NEW database's management schema/role:
-docker compose -p devpilot-mvp -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml run --rm migrate migrate
-docker compose -p devpilot-mvp -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml run --rm migrate provision
-docker compose -p devpilot-mvp -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml run --rm migrate check
-docker compose -p devpilot-mvp -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml up -d api web
+docker compose -p devpilot-mvp --env-file deploy/private/.env -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml run --rm migrate migrate
+docker compose -p devpilot-mvp --env-file deploy/private/.env -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml run --rm migrate provision
+docker compose -p devpilot-mvp --env-file deploy/private/.env -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml run --rm migrate check
+docker compose -p devpilot-mvp --env-file deploy/private/.env -f deploy/private/compose.yaml -f deploy/ssh-management/compose.yaml up -d api web
 ```
 
 For image-only installs add the local `images.yaml` override which maps api,
