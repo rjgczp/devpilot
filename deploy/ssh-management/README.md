@@ -22,6 +22,10 @@ monitor actual resource use on a shared server. Images are built off-host for
 linux/amd64 and transferred through SSH; no registry credential or SSH key is
 included. Watchtower updates are disabled for these three services.
 
+After rendering, run `chmod 755 deploy/private/.runtime` so the nonroot gateway
+can traverse its nonsecret configuration mount even with operator umask 077.
+Keep `.secrets` and the host installation directory 0700.
+
 Generate secrets using the existing `deploy/private/configure.py`, supply a TLS
 certificate for `devpilot.localhost`, and keep the secret directory 0700. Only
 public CA material should be copied to a client; never copy the TLS private key.
