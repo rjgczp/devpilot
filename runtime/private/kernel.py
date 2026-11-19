@@ -63,6 +63,20 @@ class Kernel:
  def validate_target(self):
   t=self.inspect(self.target);h=t['HostConfig']
   require(h['NetworkMode']=='none' and not h['PortBindings'] and not h['Privileged'])
+  if 'routed_uplink' in self.cfg:
+   import uplink
+   from functools import partial
+   read=partial(self.exec,self.target)
+   uplink.check_public_pins(self.cfg,self.state)
+   if os.environ.get('DOCKER_HOST') or not self.run(['docker','context','inspect','--format','{{.Endpoints.docker.Host}}']).strip().startswith(b'unix://'):
+    raise RuntimeError('local Docker socket required')
+   if b'desktop' in self.run(['docker','info','--format','{{.OperatingSystem}}']).lower():
+    raise RuntimeError('native Linux Docker required')
+   existing=uplink.inspect(self.cfg,t,read)
+   # Atomic install before creating either downstream link or starting Workers.
+   policy=('delete table inet dp_uplink\n' if existing else '')+uplink.rules(self.cfg)
+   read('nft','-f','-',data=policy.encode())
+   return
   links=json.loads(self.exec(self.target,'ip','-j','link','show'));require(all(x['ifname']=='lo' for x in links), 'target has an unbound upstream/old domain')
   for family in ('-4','-6'):require(not json.loads(self.exec(self.target,'ip',family,'-j','route','show','default')))
  def create(self,name,pid=None):

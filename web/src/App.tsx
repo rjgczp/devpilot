@@ -12,7 +12,7 @@ import {
   type User,
   type Workspace,
 } from "./api";
-import { isolatedDemo, isolatedPrivate } from "./environment";
+import { isolatedDemo, isolatedPrivate, privateBeta } from "./environment";
 import { MonitorHistory } from "./MonitorHistory";
 import { AuthorizeForm, MonitorForm } from "./MonitorForm";
 import {
@@ -377,8 +377,8 @@ function WorkspaceApp({
         <div className="sidebar-note">
           <span className="small-dot" />
           <div>
-            <strong>{isolatedPrivate ? "私人隔离闭环" : isolatedDemo ? "隔离演示" : "本地开发环境"}</strong>
-            <p>生产公网执行保持关闭</p>
+            <strong>{isolatedPrivate ? "私人隔离闭环" : isolatedDemo ? "隔离演示" : privateBeta ? "受邀私人测试" : "本地开发环境"}</strong>
+            <p>{privateBeta ? "仅接受经操作者批准的 HTTPS 目标" : "生产公网执行保持关闭"}</p>
           </div>
         </div>
         <div className="account">
@@ -425,10 +425,9 @@ function WorkspaceApp({
           )}
           {!isolatedDemo && (
             <div className="environment-banner" aria-label="执行环境">
-              <strong>普通管理 · 执行关闭</strong>
+              <strong>{privateBeta ? "私人测试 · 受限 HTTPS" : "普通管理 · 执行关闭"}</strong>
               <p>
-                可管理配置、授权并查看历史；此环境不会发起 HTTP
-                检查。授权成功不代表已开始执行。
+                {privateBeta ? "请先由操作者批准目标，再由 Workspace Owner 授权。每个监控的实际执行状态见下表。" : "可管理配置、授权并查看历史；此环境不会发起 HTTP 检查。授权成功不代表已开始执行。"}
               </p>
             </div>
           )}
@@ -1052,7 +1051,7 @@ function Dashboard({
                 : isolatedDemo
                   ? "固定演示监控尚未就绪，请确认演示环境已完成启动。"
                   : owner
-                    ? "添加服务地址与检查间隔。保存后再确认授权；本地普通管理环境不会发起检查。"
+                    ? privateBeta ? "添加 HTTPS 地址并保存，再联系操作者批准目标。" : "添加服务地址与检查间隔。保存后再确认授权；本地普通管理环境不会发起检查。"
                     : "此 Project 尚无监控，请联系 Owner 添加。"}
             </p>
             {(query || filter !== "all") && (

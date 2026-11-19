@@ -5,3 +5,8 @@ networks:
     name: devpilot-private-control
     internal: true
     enable_ipv6: true
+services:
+  web:
+    build:
+      args:
+        VITE_PRIVATE_BETA: "true"

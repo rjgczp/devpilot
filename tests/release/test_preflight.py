@@ -60,7 +60,7 @@ class ReleasePreflight(unittest.TestCase):
     def offline_runner(self, args):
         self.commands.append(args)
         self.assertEqual(args[:2], ['openssl', 'x509'])
-        return b'public certificate check mocked; not host acceptance'
+        return b'Hostname devpilot.private.example does match certificate\n'
 
     def inspect(self, **kw):
         return p.inspect(self.manifest, runner=self.offline_runner, **kw)
@@ -102,9 +102,9 @@ class ReleasePreflight(unittest.TestCase):
 
     def test_missing_or_modified_migration_and_candidate_are_rejected(self):
         copy = self.base / 'source'
-        for name in ('migrations', 'deploy/release', 'deploy/privateloop', 'deploy/capacity'):
+        for name in ('migrations', 'deploy/release', 'deploy/privateloop', 'deploy/capacity', 'deploy/targetadmission'):
             shutil.copytree(ROOT / name, copy / name)
-        self.assertEqual([r['version'] for r in p.schema(copy)], p.VERSIONS + [14, 15])
+        self.assertEqual([r['version'] for r in p.schema(copy)], p.VERSIONS + [14, 15, 16])
         rogue = copy / 'migrations/00011_forbidden.sql'
         rogue.write_text('-- not permitted')
         with self.assertRaises(ValueError): p.schema(copy)
@@ -126,6 +126,33 @@ class ReleasePreflight(unittest.TestCase):
         value['desired_gate'] = 'private-real'
         self.manifest.write_text(json.dumps(value))
         self.assertFalse(self.inspect().get('configuration_structure_valid', False))
+
+    def test_routed_bindings_require_distinct_ids_inodes_and_pinned_public_files(self):
+        import datetime
+        import hashlib
+        import uuid
+        now = datetime.datetime.now(datetime.timezone.utc)
+        a = self.base / 'operator-approval'
+        a.write_text(json.dumps(dict(url='https://approved.example.com/check',
+            addresses=[self.runtime['target_ip']], approved_at=now.isoformat(),
+            expires_at=(now + datetime.timedelta(minutes=5)).isoformat(), dns_digest='a'*64)))
+        self.runtime.update(mode='private-approved', target_host='approved.example.com', approval_file=str(a),
+            denied_prefixes=['10.0.0.0/8','fd00::/8'], routed_uplink=dict(pci_slot='0000:01:00.0',mac='02:00:00:00:00:01'),
+            target_ca_sha256=hashlib.sha256((self.secrets/'ca').read_bytes()).hexdigest(),
+            supervisor_key_sha256=hashlib.sha256((self.state/'public.pem').read_bytes()).hexdigest())
+        for role in ('supervisor','controller','reporter'):
+            self.runtime[role]['incarnation'] = str(uuid.uuid4())
+        self.save_runtime()
+        self.assertTrue(self.inspect()['configuration_structure_valid'])
+        self.runtime['reporter']['incarnation'] = self.runtime['supervisor']['incarnation']
+        self.runtime['supervisor_key_sha256'] = 'b'*64
+        self.save_runtime()
+        (self.secrets/'w0').unlink()
+        os.link(self.secrets/'w1',self.secrets/'w0')
+        report = self.inspect()
+        failed = {v['name'] for v in report['checks'] if v['status']=='fail'}
+        self.assertEqual(failed, {'five_incarnation_bindings','separate_credential_files','public_key_and_target_ca_pins'})
+        self.assertFalse(report['configuration_structure_valid'])
 
     def test_errors_never_emit_daemon_or_secret_payload(self):
         def failing(args):
@@ -178,6 +205,11 @@ class ReleasePreflight(unittest.TestCase):
         self.assertFalse(report['key_pair_match_verified'])
         self.assertFalse(report['sql_applied'])
         self.assertEqual(invoke()[0], 2)
+        self.env.write_text(self.env.read_text().replace('devpilot.private.example', 'wrong.private.example'))
+        code, report = invoke('--config-only')
+        self.assertEqual(code, 2)
+        self.assertIn('certificate_name_and_expiry', [v['name'] for v in report['checks'] if v['status'] == 'fail'])
+        self.env.write_bytes(before[self.env])
         result = subprocess.run(['sh', str(ROOT / 'scripts/private-release.sh'), '--manifest', str(self.manifest), '--apply'], capture_output=True, timeout=15)
         self.assertEqual(result.returncode, 2)
         self.assertEqual(before, {f: f.read_bytes() for f in self.base.rglob('*') if f.is_file()})
