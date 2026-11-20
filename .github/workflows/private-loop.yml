@@ -2,7 +2,7 @@ name: Private HTTP loop
 on:
   pull_request:
     branches: [main]
-    paths: ['cmd/privateworker/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'tests/privateloop/**', 'tests/integration/private_loop_test.go', 'deploy/privateloop/**', 'scripts/dev-private-loop.sh', 'web/**', '.github/workflows/private-loop.yml']
+    paths: ['tests/scheduler/periodic91.py', 'cmd/privateworker/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'tests/privateloop/**', 'tests/integration/private_loop_test.go', 'deploy/privateloop/**', 'scripts/dev-private-loop.sh', 'web/**', '.github/workflows/private-loop.yml']
 permissions:
   contents: read
 jobs:

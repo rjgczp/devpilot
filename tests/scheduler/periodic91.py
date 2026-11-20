@@ -20,6 +20,10 @@ from recovery_fixture import RecoveryHarness
 PG = 'postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336'
 
 
+class DriverEOF(RuntimeError):
+    """A complete stdout stream ended; process exit still needs bounded reaping."""
+
+
 class PeriodicHarness(RecoveryHarness):
     def __init__(self, dest, tools, mode):
         super().__init__(dest, tools/'networksupervisorfixture', tools/'schedulerprobefixture', 'allow-https', mode)
@@ -102,11 +106,24 @@ class PeriodicHarness(RecoveryHarness):
                 raise RuntimeError('bounded periodic management wait expired')
             b = os.read(proc.stdout.fileno(), 1)
             if not b:
-                raise RuntimeError('periodic process exited without completion')
+                if raw:
+                    raise RuntimeError('truncated periodic reply')
+                raise DriverEOF('periodic process exited without completion')
             raw += b
             if b == b'\n':
                 return bytes(raw)
         raise RuntimeError('oversized periodic reply')
+
+    @staticmethod
+    def reap_driver(driver, until):
+        # EOF can precede Docker CLI exit. Keep the existing five-second reap
+        # cap inside the original operation deadline; never accept a live child.
+        try:
+            return driver.wait(timeout=min(5, max(0, until-time.monotonic())))
+        except subprocess.TimeoutExpired:
+            driver.kill()
+            driver.wait(timeout=5)  # bounded teardown, not extra verification time
+            raise
 
     @staticmethod
     def send(proc, value):
@@ -201,10 +218,9 @@ class PeriodicHarness(RecoveryHarness):
             while driver.poll() is None or select.select([driver.stdout], [], [], 0)[0]:
                 try:
                     line = self.read_bytes(driver, until)
-                except RuntimeError:
-                    if driver.poll() is not None:
-                        break
-                    raise
+                except DriverEOF:
+                    status = self.reap_driver(driver, until)
+                    break
                 log.append(self.driver_log_line(line))
                 if not line.startswith(b'NETWORK64 '):
                     continue
@@ -217,13 +233,16 @@ class PeriodicHarness(RecoveryHarness):
                 else:
                     answer = self.pg_operation(None, op, payload, None, mode)
                 self.send(driver, answer)
-            status = driver.wait(timeout=5)
+            if status is None:
+                status = self.reap_driver(driver, until)
             expected_cycles=getattr(self,'expected_cycles',3)
             assert status == 0 and len(self.completed) == expected_cycles, 'actual bounded PG18/Linux verification failed'
             assert len([x for x in self.receiver_events if x['kind']=='get']) == getattr(self,'expected_gets',3)
             self.record('result', dict(task=getattr(self,'task_name','9.1'), exit_code=0, cycles=expected_cycles, workers=2, configured_interval_seconds=60, real_interval_seconds=None if getattr(self,'virtual_eligibility',False) else 60, virtual_eligibility=getattr(self,'virtual_eligibility',False),
                                       original_kernel=True, production_execution=False, storage_capacity_verified=False))
         finally:
+            if status is None:
+                status = driver.poll()
             (self.dest/'pg-driver.log').write_bytes(b''.join(log))
             self.record('pg-driver-command', dict(command=driver_cmd, exit_code=status, binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest()))
             self.record('worker-protocol', self.worker_log)

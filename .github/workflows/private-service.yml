@@ -2,7 +2,7 @@ name: Private service lifecycle
 on:
   pull_request:
     branches: [main]
-    paths: ['cmd/privatesupervisor/**', 'internal/supervisorruntime/**', 'internal/supervisorfixture/**', 'internal/workerruntime/**', 'internal/storagecontrol/**', 'internal/retentioncontrol/**', 'internal/probenetwork/**', 'runtime/private/**', 'deploy/privateservice/**', 'scripts/private-service.sh', 'tests/privateservice/**', 'tests/integration/private_service_test.go', '.dockerignore', '.github/workflows/private-service.yml']
+    paths: ['tests/scheduler/periodic91.py', 'cmd/privatesupervisor/**', 'internal/supervisorruntime/**', 'internal/supervisorfixture/**', 'internal/workerruntime/**', 'internal/storagecontrol/**', 'internal/retentioncontrol/**', 'internal/probenetwork/**', 'runtime/private/**', 'deploy/privateservice/**', 'scripts/private-service.sh', 'tests/privateservice/**', 'tests/integration/private_service_test.go', '.dockerignore', '.github/workflows/private-service.yml']
 permissions:
   contents: read
 jobs:

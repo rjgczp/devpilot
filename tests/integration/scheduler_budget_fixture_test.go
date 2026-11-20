@@ -429,11 +429,8 @@ func budgetWidePool(t *testing.T, p *pgxpool.Pool) *pgxpool.Pool {
 	return wide
 }
 
-// This one rate-burst fixture observes server transaction admission. Each
-// independent connection still commits a real READ COMMITTED transaction;
-// autocommit removes a client scheduling pause between function return and
-// Commit from the125ms burst prerequisite. Production Start/Commit and its ACK
-// tests remain explicit and unchanged. No Probe is launched by this fixture.
+// These fixture-only Start calls use a fixed observed_now in the disposable DB.
+// Production SQL, token refill math, roles and autocommit admission are unchanged.
 func budgetBurstAutocommit(t *testing.T, p *pgxpool.Pool, sql string, args ...any) (int, <-chan error) {
 	t.Helper()
 	c, err := p.Acquire(context.Background())
@@ -454,7 +451,61 @@ func budgetBurstAutocommit(t *testing.T, p *pgxpool.Pool, sql string, args ...an
 	}()
 	return pid, result
 }
-func TestBudgetGlobalRateConcurrentStarts(t *testing.T) {
+
+// Only the guarded disposable fixture may replace the single Start clock read.
+// Keep the original function owner/ACL/config and restore its exact definition.
+func budgetStartClock(t *testing.T, db *pgxpool.Pool) time.Time {
+	t.Helper()
+	ctx := context.Background()
+	var cluster, original, identity string
+	const signature = "scheduler_private.start_run(uuid,uuid,uuid,uuid,uuid,uuid,uuid,bigint)"
+	if err := db.QueryRow(ctx, `SHOW cluster_name`).Scan(&cluster); err != nil || cluster != "devpilot-budget-disposable" {
+		t.Fatal("controlled clock requires disposable budget cluster", err)
+	}
+	snapshot := func() (string, string) {
+		var definition, metadata string
+		if err := db.QueryRow(ctx, `SELECT pg_get_functiondef(oid),jsonb_build_object('owner',proowner,'acl',proacl,'config',proconfig)::text FROM pg_proc WHERE oid=$1::regprocedure`, signature).Scan(&definition, &metadata); err != nil {
+			t.Fatal(err)
+		}
+		return definition, metadata
+	}
+	original, identity = snapshot()
+	const site = "SELECT clock_timestamp() INTO observed_now;"
+	if strings.Count(original, site) != 1 {
+		t.Fatal("Start clock site changed; review fixture")
+	}
+	var fixed time.Time
+	if err := db.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&fixed); err != nil {
+		t.Fatal(err)
+	}
+	replacement := fmt.Sprintf("SELECT '%s'::timestamptz INTO observed_now;", fixed.UTC().Format(time.RFC3339Nano))
+	if _, err := db.Exec(ctx, strings.Replace(original, site, replacement, 1)); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if _, err := db.Exec(ctx, original); err != nil {
+			t.Error(err)
+			return
+		}
+		restored, metadata := snapshot()
+		if restored != original || metadata != identity {
+			t.Error("Start definition or identity not restored")
+		}
+	})
+	installed, metadata := snapshot()
+	if installed != strings.Replace(original, site, replacement, 1) || metadata != identity {
+		t.Fatal("clock fixture changed more than the single time read")
+	}
+	return fixed
+}
+
+func TestBudgetGlobalRateConcurrentStarts(t *testing.T) { budgetGlobalRateStarts(t, false) }
+
+// A deliberately late ninth Start must still observe the same controlled burst.
+// This reproduces the >125ms host delay without relaxing the original 8/1 rule.
+func TestBudgetGlobalRateDelayedStart(t *testing.T) { budgetGlobalRateStarts(t, true) }
+
+func budgetGlobalRateStarts(t *testing.T, delayedNinth bool) {
 	db := budgetDB(t)
 	hs := budgetFixtures(t, db, 9)
 	w1, i1 := schedulerWorkerLogin(t, db, "scheduler_claim_worker1")
@@ -472,6 +523,7 @@ func TestBudgetGlobalRateConcurrentStarts(t *testing.T) {
 		}
 		budgetPrepare(t, db, s, si, inc, h)
 	}
+	fixed := budgetStartClock(t, db)
 	barrier, err := db.Begin(context.Background())
 	if err != nil {
 		t.Fatal(err)
@@ -482,7 +534,11 @@ func TestBudgetGlobalRateConcurrentStarts(t *testing.T) {
 	}
 	var cs []<-chan error
 	var pids []int
-	for j, h := range hs {
+	starts := hs
+	if delayedNinth {
+		starts = hs[:8]
+	}
+	for j, h := range starts {
 		w, inc := w1, i1
 		if j%2 == 1 {
 			w, inc = w2, i2
@@ -507,6 +563,24 @@ func TestBudgetGlobalRateConcurrentStarts(t *testing.T) {
 			refused++
 		}
 	}
+	if delayedNinth {
+		before := time.Now()
+		time.Sleep(150 * time.Millisecond)
+		if time.Since(before) < 125*time.Millisecond {
+			t.Fatal("delay regression did not cross original burst window")
+		}
+		h := hs[8]
+		_, ch := budgetBurstAutocommit(t, w1, `SELECT scheduler_private.start_run($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5::uuid,$6::uuid,$7::uuid,1)`, i1, h.w, h.p, h.m, h.u, h.b, h.r)
+		if err := <-ch; err == nil {
+			passed++
+		} else {
+			budgetSQLState(t, err, "P0001")
+			if !strings.Contains(err.Error(), "resource_limited") {
+				t.Fatal("wrong refusal", err)
+			}
+			refused++
+		}
+	}
 	if passed != 8 || refused != 1 {
 		t.Fatalf("global8 burst: passed%d refused%d", passed, refused)
 	}
@@ -516,6 +590,9 @@ func TestBudgetGlobalRateConcurrentStarts(t *testing.T) {
 	var span float64
 	if err := db.QueryRow(context.Background(), `SELECT extract(epoch FROM max(started_at)-min(started_at))::float8 FROM monitor_runs WHERE attempt_state='started'`).Scan(&span); err != nil || span >= .125 {
 		t.Fatal("test did not witness same burst window", span, err)
+	}
+	if queryInt(t, db, `SELECT count(*) FROM monitor_runs WHERE attempt_state='started' AND started_at=$1`, fixed) != 8 {
+		t.Fatal("Start did not use the controlled clock")
 	}
 	t.Logf("real DB nine Start transactions:8 accepted,1 refused, accepted span=%fs", span)
 }
