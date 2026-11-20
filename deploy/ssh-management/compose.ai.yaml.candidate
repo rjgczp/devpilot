@@ -1,0 +1,15 @@
+# INACTIVE candidate. Add only after separate AI rollout + provider authorization.
+# Merge after deploy/private/compose.yaml (relative secret path is based there).
+# This file grants no network egress and starts no additional service.
+services:
+  api:
+    environment:
+      AI_BASE_URL: ${AI_BASE_URL:?Set the separately approved fixed provider base URL}
+      AI_MODEL: ${AI_MODEL:?Set the separately approved model}
+      AI_API_KEY: ''
+      AI_API_KEY_FILE: /run/secrets/ai_key
+      AI_TIMEOUT: ${AI_TIMEOUT:-20s}
+    secrets: [ai_key]
+secrets:
+  ai_key:
+    file: ./.secrets/ai_api_key
