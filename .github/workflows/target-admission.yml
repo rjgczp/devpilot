@@ -2,7 +2,7 @@ name: Approved HTTPS admission
 on:
   pull_request:
     branches: [main]
-    paths: ['cmd/privateapproval/**', 'cmd/privateworker/**', 'cmd/privateprobe/**', 'internal/monitoring/**', 'internal/probenetwork/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'runtime/private/**', 'deploy/targetadmission/**', 'deploy/privateservice/**', 'tests/targetadmission/**', 'tests/release/routed_wire.py', 'tests/integration/private_approved_test.go', 'tests/integration/private_service_test.go', '.github/workflows/target-admission.yml']
+    paths: ['tests/scheduler/periodic91.py', 'cmd/privateapproval/**', 'cmd/privateworker/**', 'cmd/privateprobe/**', 'internal/monitoring/**', 'internal/probenetwork/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'runtime/private/**', 'deploy/targetadmission/**', 'deploy/privateservice/**', 'tests/targetadmission/**', 'tests/release/routed_wire.py', 'tests/integration/private_approved_test.go', 'tests/integration/private_service_test.go', '.github/workflows/target-admission.yml']
 permissions:
   contents: read
 jobs:
