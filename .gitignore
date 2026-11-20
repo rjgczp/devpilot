@@ -40,3 +40,5 @@ web/playwright-report/
 # .vscode/
 .devpilot-isolated-demo/
 .devpilot-private-loop/
+/deploy/private/.secrets/
+/deploy/private/.runtime/

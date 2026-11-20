@@ -23,6 +23,9 @@ func NewRoutes(health, registration http.Handler, authentication ...http.Handler
 		mux.Handle("/api/v1/workspaces", authentication[1])
 		mux.Handle("/api/v1/workspaces/{workspace_id}", authentication[1])
 	}
+	if len(authentication) > 4 {
+		mux.Handle("/api/v1/ai/diagnose", authentication[4])
+	}
 	mux.Handle("/", health)
 	// Bypass ServeMux path cleaning for the member namespace: reject ambiguous
 	// member paths in the handler instead of redirecting a mutation to an alias.

@@ -11,6 +11,7 @@ import {
 import { formatTime, presentStatus, reasons } from "./status";
 import { Notice } from "./ui";
 import { historyTrend, type HistoryItem } from "./history";
+import { AIDiagnosis } from "./AIDiagnosis";
 
 type HistoryPage = Page<HistoryItem> & { configuration_version: string };
 const labels: Record<string, string> = {
@@ -79,6 +80,7 @@ export function MonitorHistory({
             : "。历史记录不代表当前执行环境已开放。"}
         </Notice>
       )}
+      <AIDiagnosis key={`${path}/${monitor.id}/${monitor.version}`} monitor={monitor} />
       <section className="monitor-panel" aria-label="检查历史">
         <div className="table-toolbar">
           <strong>检查历史</strong>

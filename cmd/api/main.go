@@ -10,6 +10,7 @@ import (
 	"syscall"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rjgczp/devpilot/internal/ai"
 	"github.com/rjgczp/devpilot/internal/app"
 	"github.com/rjgczp/devpilot/internal/auth"
 	"github.com/rjgczp/devpilot/internal/config"
@@ -59,7 +60,7 @@ func run() int {
 	users := user.Store{Pool: pool}
 	sessions := session.Store{Pool: pool}
 	authentication := auth.New(users, sessions, passwords, session.NewTokens(), budget, cfg.Auth, logger)
-	handler := app.NewRoutes(healthRoutes, registration.New(users, passwords, logger, budget), authentication, workspace.New(workspace.Store{Pool: pool}, cfg.Auth, logger), project.New(project.Store{Pool: pool}, cfg.Auth, logger), monitor.New(monitor.Store{Pool: pool}, cfg.Auth, logger))
+	handler := app.NewRoutes(healthRoutes, registration.New(users, passwords, logger, budget), authentication, workspace.New(workspace.Store{Pool: pool}, cfg.Auth, logger), project.New(project.Store{Pool: pool}, cfg.Auth, logger), monitor.New(monitor.Store{Pool: pool}, cfg.Auth, logger), ai.New(monitor.Store{Pool: pool}, cfg.Auth, cfg.AI))
 	cleanup := session.NewWorker(sessions, logger)
 	runner := app.Runner{
 		Server:          app.NewServer(cfg.HTTPAddr, handler),

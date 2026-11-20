@@ -1263,3 +1263,17 @@ label.consent {
 .status-coverage { margin: 0; padding: 0 21px 15px; color: var(--muted); font-size: 11px; line-height: 1.8; }
 .table-toolbar > label { margin: 0; flex-direction: row; align-items: center; gap: 10px; }
 .table-toolbar > label select { width: auto; }
+
+.ai-panel { margin-bottom: 24px; }
+.ai-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.ai-content { padding: 0 24px 24px; }
+.ai-content > .field-help { margin-top: 0; }
+.ai-result { overflow-wrap: anywhere; line-height: 1.8; }
+.ai-result h3 { margin: 20px 0 8px; font-size: 14px; }
+.ai-result p { white-space: pre-wrap; margin: 8px 0; }
+.ai-result ul { padding-left: 22px; margin: 8px 0; }
+.ai-result li { margin: 6px 0; white-space: pre-wrap; }
+@media (max-width: 560px) {
+  .ai-panel .table-toolbar { flex-wrap: wrap; gap: 12px; }
+  .ai-content { padding: 0 16px 20px; }
+}

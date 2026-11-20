@@ -68,6 +68,10 @@ export interface ExecutionStatus {
 }
 
 const errors: Record<string, string> = {
+  ai_unavailable: "AI 诊断尚未配置，请联系管理员。",
+  ai_provider_failed: "模型服务暂时不可用或返回无效结果，请稍后手动重试。",
+  ai_timeout: "AI 诊断超时，请稍后手动重试。",
+  ai_busy: "AI 诊断调用过于频繁或正在处理其他请求，请至少等待 30 秒再试。",
   isolated_demo_readonly:
     "隔离演示只允许固定 Monitor，不能创建或修改目标配置。",
   invalid_credentials: "邮箱或密码不正确。",

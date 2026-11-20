@@ -58,3 +58,27 @@ Open `https://devpilot.localhost:18443`. Registration/login and Workspace,
 Project and Monitor CRUD are available. History is empty until separately
 authorized execution exists. Stop with `docker compose ... stop`; retain the
 volume, secret directory and TLS material for restart. Never use `down -v`.
+
+## AI deployment candidate (inactive)
+
+`compose.ai.yaml.candidate` and `ai.env.example` prepare compatibility only. The
+server's `manage.sh` does not load them automatically. They contain no key or
+secret file and authorize no rollout, model request or outbound connection.
+After separate rollout/provider approval, layer the candidate **after** the
+private and SSH Compose files; never run it alone with `-f`. Secret paths resolve
+relative to the first `deploy/private/compose.yaml`, so the future host file is
+`deploy/private/.secrets/ai_api_key`. Keep its parent 0700 and file 0444 for the
+API's UID 65534; only API receives the named secret, retaining its `app_url`.
+
+All `AI_*` absent leaves diagnosis disabled. Partially configuring the API fails
+startup; the candidate also requires a fixed provider URL and model. It creates
+no egress: API stays on internal networks and must not join `entry`. The client
+sets `Proxy=nil`, so environment HTTP proxies do not supply a model channel.
+Provider connectivity remains separately authorized and unconfigured here.
+
+A future rollout must rebuild both API and Dashboard from the integrated SHA,
+update their image mappings, and rerender `deploy/private/.runtime/nginx.conf`
+with the AI location's 32-second timeout. Retain `chmod 755` on `.runtime` for the
+nonroot gateway. Recreate only DevPilot API/web; this requires no database
+migration or permission change. This candidate has not been activated or tested
+against a real model, and does not change the closed execution Gate.
