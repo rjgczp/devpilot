@@ -8,6 +8,8 @@ from demo import DemoHarness
 
 class PrivateDemo(LoopHarness):
  demo=DemoHarness.demo
+ def control_command(self,*args,**kwargs):
+  return DemoHarness.model_command(super().control_command(*args,**kwargs),kwargs.get('source'))
  demo_binary='private-loop-pg.test'
  demo_pattern='TestPrivateLoopPG'
  def public_catalog(self,selected):

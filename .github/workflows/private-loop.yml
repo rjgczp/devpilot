@@ -2,7 +2,7 @@ name: Private HTTP loop
 on:
   pull_request:
     branches: [main]
-    paths: ['tests/scheduler/periodic91.py', 'cmd/privateworker/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'tests/privateloop/**', 'tests/integration/private_loop_test.go', 'deploy/privateloop/**', 'scripts/dev-private-loop.sh', 'web/**', '.github/workflows/private-loop.yml']
+    paths: ['tests/scheduler/periodic91.py', 'cmd/privateworker/**', 'internal/scheduler/**', 'internal/workerruntime/**', 'tests/privateloop/**', 'tests/demo/**', 'tests/integration/private_loop_test.go', 'tests/integration/web_demo_api_test.go', 'tests/integration/web_demo_test.go', 'deploy/privateloop/**', 'scripts/dev-private-loop.sh', 'web/**', '.github/workflows/private-loop.yml']
 permissions:
   contents: read
 jobs:
@@ -23,6 +23,7 @@ jobs:
       - name: Build and targeted UI tests
         run: |
           test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+          python3 -B -m unittest discover -s tests/demo -p test_model.py -v
           python3 tests/privateloop/build_candidate.py --check
           npm ci --prefix web
           npm run --prefix web build

@@ -23,6 +23,36 @@ and the two cap0 Workers use a separate internal control network. Probe has no
 DB secret or Supervisor control pipe. The existing root allocator and signed
 PID1/namespace/guard stop proofs remain outside Worker/Probe.
 
+### History and AI demo
+
+The demo API now mounts the existing AI handler over the same fixture database
+and member-scoped history reader. After three actual cycles, History and the
+trend retain those stored Run IDs and the AI button can analyze them. The
+default model is an explicitly labelled **model Mock**; it cites the supplied
+Run IDs and measurements and never claims a real-model or Internet result.
+
+If port5174 belongs to another project, use
+`DEVPILOT_DEMO_PORT=15174 ./scripts/mvp.sh private` and open
+`http://127.0.0.1:15174`. All listeners remain loopback-only. CI keeps5174.
+
+Real DeepSeek is opt-in, after model-call authorization, using
+`DEVPILOT_DEMO_AI_CONFIG_FILE=/absolute/private/model.json`. The0600 JSON holds
+`{"base_url":"https://api.deepseek.com","model":"deepseek-flash","api_key_file":"/absolute/private/key"}`;
+the Key file must also deny group/other access. Keep both beneath
+`.devpilot-private-loop` (denied by Vite) or outside the served source. Never put
+the Key in the JSON, environment, browser or logs. The host-side demo backend
+alone reads it. Only fixed DeepSeek HTTPS requests cross private Docker stdio;
+no network, DNS/IP policy or upstream route is added to PG/Worker/Probe. The
+transport disables provider thinking for the existing800-token response cap.
+Real mode allows at most3 upstream requests for this bounded demo lifetime,
+with no automatic retries; each diagnosis retains the existing3-step/20s cap.
+`demo-model-usage.json` records only usage/latency and cited Run IDs.
+
+The browser demo test also checks the AI result against actual History IDs.
+For an interactive local review, `DEVPILOT_DEMO_KEEP_RUNNING=1` skips the test's
+stop-file signal; the original15-minute demo bound and three-cycle stop remain.
+The disposable data is never imported into the production management database.
+
 The default `privateworker` entry still stays closed. `--private-isolated`
 additionally needs the real approved private Gate, registered restricted Worker
 identity, operator catalog, and inherited anonymous Supervisor pipes (read3,

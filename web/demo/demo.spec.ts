@@ -6,6 +6,7 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
   page,
 }) => {
   const privateLoop = process.env.DEVPILOT_PRIVATE_LOOP === "1";
+  const origin = `http://127.0.0.1:${process.env.DEVPILOT_DEMO_PORT || 5174}`;
   const state = resolve(process.cwd(), "..", privateLoop ? ".devpilot-private-loop" : ".devpilot-isolated-demo");
   const credentialName = readdirSync(state).find((n) =>
     /^credentials-[0-9]+\.json$/.test(n),
@@ -19,7 +20,7 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
   );
   const targets: string[] = [];
   page.on("request", (r) => {
-    if (!r.url().startsWith("http://127.0.0.1:5174/")) targets.push(r.url());
+    if (!r.url().startsWith(origin + '/')) targets.push(r.url());
   });
   await page.goto("/");
   const privateFile = resolve(state, credentialName);
@@ -50,7 +51,7 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
   const monitors = await page.request.get(path);
   const monitor = (await monitors.json()).data[0];
   const headers = {
-    Origin: "http://127.0.0.1:5174",
+    Origin: origin,
     "X-DevPilot-CSRF": "1",
     "Content-Type": "application/json",
     "If-Match": `"monitor:${monitor.id}:${monitor.version}"`,
@@ -145,10 +146,27 @@ test("real isolated Web Owner -> three60s Run/GET/Result/physical release cycles
     path: "test-results/real-isolated-history.png",
     fullPage: true,
   });
+  const diagnosisResponse = page.waitForResponse((r) =>
+    r.url().endsWith('/api/v1/ai/diagnose') && r.request().method() === 'POST',
+  );
+  await page.getByRole('button', { name: 'AI 诊断', exact: true }).click();
+  const diagnosis = await diagnosisResponse;
+  expect(diagnosis.status()).toBe(200);
+  const analysis = (await diagnosis.json()).data;
+  expect(['low', 'medium', 'high']).toContain(analysis.confidence);
+  expect(analysis.evidence.length).toBeGreaterThan(0);
+  const evidence = analysis.evidence.join(' ');
+  expect(history.data.some((r: { id: string }) => evidence.includes(r.id))).toBe(true);
+  await expect(page.getByLabel('AI 诊断', { exact: true })).toContainText(analysis.summary);
+  await page.screenshot({ path: 'test-results/fixture-history-ai.png', fullPage: true });
+  writeFileSync(resolve(state, 'last-ai-acceptance.json'), JSON.stringify({
+    fixture_only: true, production_execution: false, history: history.data,
+    diagnosis: analysis, browser_model_key: false,
+  }, null, 2));
   await page.getByRole("button", { name: "← 返回监控" }).click();
   await row.getByRole("button", { name: "暂停", exact: true }).click();
   await expect(row).toContainText("意图已暂停");
-  writeFileSync(
+  if (process.env.DEVPILOT_DEMO_KEEP_RUNNING !== '1') writeFileSync(
     resolve(
       state,
       credentialName.replace("credentials-", "stop-").replace(".json", ""),
