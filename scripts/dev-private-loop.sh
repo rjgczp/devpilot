@@ -5,12 +5,14 @@ repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$repo"
 for tool in docker node npm python3 openssl; do command -v "$tool" >/dev/null; done
 python3 - <<'PY'
-import socket
+import socket,os
+port=int(os.environ.get('DEVPILOT_DEMO_PORT','5174'))
+if not 1024<=port<=65535:raise SystemExit('Invalid demo port')
 for family,host in [(socket.AF_INET,'127.0.0.1'),(socket.AF_INET6,'::1')]:
  with socket.socket(family) as s:
   s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-  try:s.bind((host,5174))
-  except OSError:raise SystemExit('Demo loopback port5174 unavailable; stop its owner first.')
+  try:s.bind((host,port))
+  except OSError:raise SystemExit('Demo loopback port unavailable; choose DEVPILOT_DEMO_PORT.')
 PY
 umask 077
 export PYTHONDONTWRITEBYTECODE=1

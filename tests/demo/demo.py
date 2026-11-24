@@ -16,9 +16,26 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/'scheduler'))
 from periodic91 import PeriodicHarness
 from gateway import serve
+from model import ModelBridge, settings as model_settings
 
 
 class DemoHarness(PeriodicHarness):
+    def control_command(self, *args, **kwargs):
+        command = super().control_command(*args, **kwargs)
+        return DemoHarness.model_command(command, kwargs.get('source'))
+
+    @staticmethod
+    def model_command(command, source):
+        if source:
+            cfg = model_settings()
+            port = int(os.environ.get('DEVPILOT_DEMO_PORT', '5174'))
+            assert 1024 <= port <= 65535
+            i = command.index('--entrypoint')
+            command[i:i] = ['-e', 'AI_BASE_URL=http://127.0.0.1:18082/v1',
+                            '-e', 'AI_MODEL='+cfg['model'], '-e', 'AI_API_KEY=fixture-transport-only',
+                            '-e', 'AI_TIMEOUT=20s', '-e', 'DEVPILOT_DEMO_PORT='+str(port)]
+        return command
+
     def pg_operation(self,instance,op,payload,selected,mode):
         if op == 'demo-bootstrap':
             return dict(frame=base64.b64encode(self.password.encode()).decode())
@@ -28,14 +45,16 @@ class DemoHarness(PeriodicHarness):
             self.control_ids.add(name);self.containers.append(name)
             self.record('demo-api-coordinator',info)
             self.assert_wires()
-            self.gateway = serve(name)
+            self.model_bridge = ModelBridge(name, self.dest, model_settings())
+            port = int(os.environ.get('DEVPILOT_DEMO_PORT', '5174'))
+            self.gateway = serve(name, port)
             self.metadata = payload
             private = self.credentials
             fd=os.open(private,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
             with os.fdopen(fd,'w') as stream:
                 stream.write(json.dumps(dict(email=payload['email'],password=self.password),indent=2)+'\n')
-            self.record('demo',dict(**payload,url='http://127.0.0.1:5174',isolated=True,cycles=3,interval_seconds=60))
-            print('隔离演示已就绪：http://127.0.0.1:5174\n临时 Owner 登录信息：'+str(private)+'\n请登录并点击“授权激活”。只允许固定无上游 fixture；三次真实60秒周期后停止新执行。',flush=True)
+            self.record('demo',dict(**payload,url='http://127.0.0.1:'+str(port),isolated=True,cycles=3,interval_seconds=60))
+            print('隔离演示已就绪：http://127.0.0.1:'+str(port)+'\n临时 Owner 登录信息：'+str(private)+'\n请登录并点击“授权激活”。只允许固定无上游 fixture；三次真实60秒周期后停止新执行。',flush=True)
             return dict(event='demo_ready')
         if op == 'demo-completed':
             assert len(self.completed)==payload['cycles'] and 0<=payload['cycles']<=3
@@ -83,6 +102,7 @@ class DemoHarness(PeriodicHarness):
         finally:
             (self.dest/'demo-driver.log').write_bytes(b''.join(logs))
             if hasattr(self,'gateway'):self.gateway.shutdown();self.gateway.server_close()
+            if hasattr(self,'model_bridge'):self.model_bridge.close()
 
 
 def main():

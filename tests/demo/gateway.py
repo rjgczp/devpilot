@@ -15,7 +15,7 @@ CLIENT = r'''
 import base64,http.client,json,sys
 r=json.load(sys.stdin)
 assert r['path'].startswith('/api/v1/') and not r['path'].startswith('//')
-c=http.client.HTTPConnection('127.0.0.1',5174,timeout=5)
+c=http.client.HTTPConnection('127.0.0.1',5174,timeout=22 if r['path']=='/api/v1/ai/diagnose' else 5)
 c.request(r['method'],r['path'],body=base64.b64decode(r['body']),headers=r['headers'])
 x=c.getresponse();b=x.read(2*1024*1024+1);assert len(b)<=2*1024*1024
 print(json.dumps(dict(status=x.status,headers=x.getheaders(),body=base64.b64encode(b).decode())))
@@ -23,14 +23,14 @@ c.close()
 '''
 
 
-def serve(container):
+def serve(container, port=5174):
     slots = threading.BoundedSemaphore(4)
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
             pass
         def proxy(self):
             self.connection.settimeout(8)
-            if self.headers.get('Host') != '127.0.0.1:5174' or not self.path.startswith('/api/v1/') or self.path.startswith('//'):
+            if self.headers.get('Host') != '127.0.0.1:'+str(port) or not self.path.startswith('/api/v1/') or self.path.startswith('//'):
                 self.send_error(400); return
             if not slots.acquire(blocking=False):
                 self.send_error(503); return
@@ -40,7 +40,8 @@ def serve(container):
                     self.send_error(413); return
                 headers = {k: v for k, v in self.headers.items() if k.lower() in ('host','origin','cookie','content-type','accept','if-match','if-none-match','x-devpilot-csrf')}
                 request = dict(method=self.command,path=self.path,headers=headers,body=base64.b64encode(self.rfile.read(length)).decode())
-                result = subprocess.run(['docker','exec','-i',container,'python3','-c',CLIENT],input=json.dumps(request).encode(),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=7)
+                timeout = 24 if self.path == '/api/v1/ai/diagnose' else 7
+                result = subprocess.run(['docker','exec','-i',container,'python3','-c',CLIENT],input=json.dumps(request).encode(),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=timeout)
                 if result.returncode:
                     self.send_error(503); return
                 response = json.loads(result.stdout)
@@ -61,6 +62,6 @@ def serve(container):
     class Server(ThreadingHTTPServer):
         address_family = socket.AF_INET6
         daemon_threads = True
-    server = Server(('::1',5174), Handler)
+    server = Server(('::1',port), Handler)
     threading.Thread(target=server.serve_forever,daemon=True).start()
     return server
