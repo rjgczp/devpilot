@@ -38,6 +38,14 @@ class LiteHarness(a.ApprovedHarness):
   result=subprocess.run(command,capture_output=True,timeout=40)
   (self.dest/('cli-'+action+'.log')).open('ab').write(result.stdout+result.stderr)
   assert result.returncode==0,action
+  if action=='stop' and (self.state/'status.json').exists():
+   status=json.loads((self.state/'status.json').read_text())
+   for proc in self.processes:
+    if proc.pid==status['pid']:
+     code=proc.wait(timeout=65)  # existing physical-drain test bound
+     final=json.loads((self.state/'status.json').read_text())
+     assert code==(2 if final['failed'] else 0),(code,final)
+     self.record('lite-reaped',dict(exit_code=code,failed=final['failed']))
  def review(self,payload):
   request=dict(approval=dict(url=payload['url']),denied_prefixes=['11.0.0.0/8','2600:dead::/32'],resolver='1.1.1.1')
   file=Path(self.private_files.name)/'review-request';file.write_text(json.dumps(request));file.chmod(0o444)
