@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Reuse the accepted PG18/Owner/Permit/Supervisor harness with a Lite adapter."""
 import argparse
+import base64
 import datetime
 import importlib.util
 import json
@@ -45,6 +46,18 @@ class LiteHarness(a.ApprovedHarness):
   assert review['host']==a.HOST and set(review['addresses'])=={'93.184.216.34','2001:4860:ffff::34'}
   self.record('lite-full-dns-review',review);return review,command,file
  def pg_operation(self,instance,op,payload,selected,mode):
+  if op=='service-refusal-start' and self.case_under_test=='approval-revoked':
+   # Keep the catalog unapproved while starting, so this revocation test
+   # cannot race a GET. Packet tests separately cover already-open flows.
+   c=json.loads(self.config.read_text());p=Path(c['catalog_file']);v=json.loads(p.read_text())
+   v['approvals'][0]['monitor_id']='01900000-0000-7000-8000-000000000099'
+   p.chmod(0o600);p.write_text(json.dumps(v));p.chmod(0o444)
+   self.cli('start',True)
+   Path(c['approval_file']).unlink()
+   status=self.stopped(15)
+   assert status['failed'] and status['completed_runs']==0 and status['mode']=='private-lite'
+   self.record('lite-approval-revoked',dict(admission_closed=True,completed_runs=0))
+   return dict(frame=base64.b64encode(b'unapproved').decode())
   if op=='service-config':
    # Reuse the existing service's five identities/storage binding/configuration.
    result=a.service.ServiceHarness.pg_operation(self,instance,op,payload,selected,mode)
@@ -71,7 +84,7 @@ class LiteHarness(a.ApprovedHarness):
   return super().pg_operation(instance,op,payload,selected,mode)
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--tools',type=Path,required=True);p.add_argument('--evidence',type=Path,required=True);p.add_argument('--case',choices=['allow','unapproved','dns-change','private4','private6'],default='allow');args=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--tools',type=Path,required=True);p.add_argument('--evidence',type=Path,required=True);p.add_argument('--case',choices=['allow','unapproved','dns-change','private4','private6','approval-revoked'],default='allow');args=p.parse_args()
  h=LiteHarness(args.evidence.resolve(),args.tools.resolve(),'normal',case=args.case);code=1
  try:h.pg(args.tools/'approved-pg.test','normal');code=0
  finally:h.record('lite-exit',dict(exit_code=code,no_upstream=True,real_host_verified=False));h.close()

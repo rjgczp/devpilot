@@ -8,6 +8,7 @@ import hashlib
 import ipaddress
 import json
 import re
+import threading
 
 
 def public4(value):
@@ -38,6 +39,8 @@ class HostFilter:
         suffix = hashlib.sha256(identity.encode()).hexdigest()[:12]
         self.tables = ['dpl_policy_' + suffix, 'dpl_guard_' + suffix]
         self.hashes = None
+        self.lock = threading.RLock()
+        self.closed = False
 
     def script(self):
         interface, source = self.interface, self.source
@@ -112,10 +115,17 @@ table inet {second} {{
             if not self.hashes or self.snapshot() != self.hashes:
                 raise ValueError('host policy drift')
         except Exception:
+            self.closed = True
             self.revoke()
             raise
 
     def grant(self, deadline, target=False):
+        with self.lock:
+            if self.closed:
+                raise ValueError('host admission permanently closed')
+            return self._grant(deadline, target)
+
+    def _grant(self, deadline, target):
         self.check()
         now = datetime.datetime.now(datetime.timezone.utc)
         end = datetime.datetime.fromisoformat(deadline.replace('Z', '+00:00'))
@@ -132,6 +142,17 @@ table inet {second} {{
         self.run('nft', '-f', '-', data=script.encode())
 
     def revoke(self):
+        with self.lock:
+            self._revoke()
+
+    def close(self):
+        # Serialize against in-flight grants: shutdown/revocation cannot race
+        # a successful Permit callback into reopening the host exception.
+        with self.lock:
+            self.closed = True
+            self._revoke()
+
+    def _revoke(self):
         # Each remaining table independently denies when the other is missing.
         # Do not delete the anchors while a physical domain may still exist.
         for table in self.tables:

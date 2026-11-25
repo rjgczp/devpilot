@@ -24,7 +24,8 @@ python3 tests/scheduler/record.py --evidence "$1/build" --name tools -- docker r
  -v "$repo:$repo:ro" -w "$repo" -v "$1/tools:/tools" \
  -v devpilot-fixture-gomod:/go/pkg/mod -v devpilot-fixture-gobuild:/root/.cache/go-build \
  -e GOTOOLCHAIN=local golang:1.24.3-bookworm@sha256:29d97266c1d341b7424e2f5085440b74654ae0b61ecdba206bc12d6264844e21 \
- sh -ec 'CGO_ENABLED=0 go test -c -tags=integration,schedulerfixture,privateworker,budgetfixture,networkfixture,releasefixture,jointfixture,resultfixture,periodicfixture,privateloopfixture,capacityfixture,privateservicefixture,approvedfixture -o /tools/approved-pg.test ./tests/integration
+ sh -ec 'git config --global --add safe.directory "$(pwd)"
+ CGO_ENABLED=0 go test -c -tags=integration,schedulerfixture,privateworker,budgetfixture,networkfixture,releasefixture,jointfixture,resultfixture,periodicfixture,privateloopfixture,capacityfixture,privateservicefixture,approvedfixture -o /tools/approved-pg.test ./tests/integration
  CGO_ENABLED=0 go build -tags=privateworker -o /tools/storagereporter ./cmd/storagereporter
  CGO_ENABLED=0 GOBIN=/tools go install -tags="no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb" github.com/pressly/goose/v3/cmd/goose@v3.26.0
  go test -race -tags=privateprobe,privateworker ./internal/monitoring ./internal/probenetwork ./internal/supervisorruntime ./internal/monitoring/targetpermit'
@@ -37,6 +38,6 @@ try:
 finally:subprocess.run(['docker','rm',cid],check=True)
 PY
 python3 tests/scheduler/record.py --evidence "$1/receipts" --name packets -- python3 tests/private_lite/network.py "$1/packets"
-for scenario in allow unapproved dns-change private4 private6; do
+for scenario in allow unapproved dns-change private4 private6 approval-revoked; do
  python3 tests/scheduler/record.py --evidence "$1/receipts" --name "$scenario" -- python3 tests/private_lite/lifecycle.py --tools "$1/tools" --evidence "$1/$scenario" --case "$scenario"
 done

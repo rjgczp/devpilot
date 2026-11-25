@@ -94,8 +94,15 @@ class LiteKernel(Kernel):
         self.host_filter.grant(utc(34))
         return super().prepare(index, line)
 
+    def check_approval(self):
+        from approval import load_approval
+        approval = load_approval(self.cfg['approval_file'], self.cfg['target_host'], self.cfg['target_ip'])
+        require(approval == self.approval, 'approval changed: close Lite admission')
+
     def call(self, index, command):
-        self.host_filter.check()
+        if command['op'] not in ('stop', 'pending', 'accepted', 'recovered'):
+            self.check_approval()
+            self.host_filter.check()
         result = super().call(index, command)
         if command['op'] == 'install':
             self.host_filter.grant(command['permit']['permit_deadline'], target=True)
@@ -111,6 +118,18 @@ class LiteRuntime(legacy.Runtime):
 
     def worker_mode(self):
         return 'private-approved'
+
+    def close_admission(self, failure=False):
+        self.kernel.host_filter.close()
+        return super().close_admission(failure)
+
+    def poll(self, seconds=.1):
+        if not self.closing:
+            try:
+                self.kernel.check_approval()
+            except Exception:
+                self.close_admission(True)
+        return super().poll(seconds)
 
 
 def main():

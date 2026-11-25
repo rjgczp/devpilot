@@ -60,7 +60,7 @@ ready.wait();print('ready',flush=True);time.sleep(180)
 def test(dest):
  dest.mkdir(parents=True,exist_ok=False)
  records=[]
- for failure in ['policy','guard','expiry','revoke']:
+ for failure in ['policy','guard','expiry','revoke','close']:
   with ExitStack() as cleanup:
    nodes=[]
    for index in range(3):
@@ -101,6 +101,11 @@ except TimeoutError:print('blocked',flush=True)
    assert line(live)==b'ready'
    if failure in ('policy','guard'):w.inside(host,'nft','delete','table','inet',f.tables[int(failure=='guard')])
    elif failure=='revoke':f.revoke()
+   elif failure=='close':
+    f.close()
+    try:f.grant(deadline(),True)
+    except ValueError:pass
+    else:raise RuntimeError('closed host admission reopened')
    else:f.grant(deadline(3),True);time.sleep(1.1)
    live.stdin.write(b'go\n');live.stdin.close();assert line(live)==b'blocked';assert live.wait(timeout=5)==0
    attempt('93.184.216.34',443,'deny')
