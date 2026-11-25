@@ -21,7 +21,19 @@ import (
 	"time"
 )
 
+var executionProfile = "private-approved"
+
+func reviewProfile(ctx context.Context, raw string, deny []netip.Prefix, resolver netip.Addr) (monitoring.DNSReview, error) {
+	if executionProfile == "private-lite" {
+		return monitoring.ReviewLiteDNS(ctx, raw, deny, resolver)
+	}
+	return monitoring.ReviewPrivateDNSDeny(ctx, raw, deny)
+}
 func run() error {
+	if executionProfile != "private-approved" && executionProfile != "private-lite" {
+		return errors.New("profile")
+	}
+	liteProfile := executionProfile == "private-lite"
 	if len(os.Args) < 2 {
 		return errors.New("action required")
 	}
@@ -43,15 +55,19 @@ func run() error {
 		Approval scheduler.TargetApproval `json:"approval"`
 		Denied   []netip.Prefix           `json:"denied_prefixes"`
 		Review   monitoring.DNSReview     `json:"review"`
+		Resolver netip.Addr               `json:"resolver,omitempty"`
 	}
 	d := json.NewDecoder(bytes.NewReader(b))
 	d.DisallowUnknownFields()
 	if d.Decode(&request) != nil {
 		return errors.New("request")
 	}
+	if liteProfile && !monitoring.LiteResolverAllowed(request.Resolver) || !liteProfile && request.Resolver.IsValid() {
+		return errors.New("resolver profile")
+	}
 	switch os.Args[1] {
 	case "review":
-		r, e := monitoring.ReviewPrivateDNSDeny(context.Background(), request.Approval.URL, request.Denied)
+		r, e := reviewProfile(context.Background(), request.Approval.URL, request.Denied, request.Resolver)
 		if e != nil {
 			return e
 		}

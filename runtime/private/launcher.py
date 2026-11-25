@@ -19,7 +19,9 @@ def private_dir(p):
 def ticks(pid):return Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()[19]
 def load(path):
  p=Path(path).resolve();st=p.stat();require(st.st_uid==os.getuid() and st.st_mode&0o077==0)
- c=json.loads(p.read_text());require(c['mode'] in ('private-isolated','private-approved') and re.fullmatch('[a-z0-9-]{1,32}',c['runtime_id']))
+ return validate_config(json.loads(p.read_text()))
+def validate_config(c):
+ require(c['mode'] in ('private-isolated','private-approved') and re.fullmatch('[a-z0-9-]{1,32}',c['runtime_id']))
  require(re.fullmatch('sha256:[0-9a-f]{64}',c['image']) and re.fullmatch('[0-9a-f]{64}',c['target_container']) and re.fullmatch('[0-9a-f]{64}',c['pg_container']))
  if c['mode']=='private-isolated':
   require(c['target_ip'] in ('93.184.216.34','2001:4860:ffff::34') and c['target_host']=='a.fixture.example.com', 'real egress is not enabled by this entry')
@@ -42,8 +44,10 @@ def load(path):
  return c
 
 class Runtime:
+ kernel_type=Kernel
+ def worker_mode(self):return self.c['mode']
  def __init__(self,c,state):
-  self.c=c;self.state=state;self.kernel=Kernel(c,state);self.children={};self.pending={};self.lock=threading.RLock();self.closing=False;self.failed=False
+  self.c=c;self.state=state;self.kernel=self.kernel_type(c,state);self.children={};self.pending={};self.lock=threading.RLock();self.closing=False;self.failed=False
   self.guard_counts=[0,0];self.latest={};self.hellos={};self.hello_replies={};self.ready=set();self.done=[];self.closed_channels=set();self.recoveries=[];self.pool=concurrent.futures.ThreadPoolExecutor(max_workers=2)
  def status(self,event,**values):
   value=dict(event=event,pid=os.getpid(),start_ticks=ticks(os.getpid()),runtime_id=self.c['runtime_id'],mode=self.c['mode'],production=False,**values)
@@ -60,7 +64,7 @@ class Runtime:
    for src,dst in self.c['metadata_mounts']:args+=['-v',src+':'+dst+':ro']
   args+=['--entrypoint','python3',self.c['image'],'-S','-u','/runtime/control_child.py',role,profile['incarnation']]
   if role=='supervisor':args.append(self.c['workers'][index]['incarnation'])
-  if role=='worker':args.append(self.c['mode'])
+  if role=='worker':args.append(self.worker_mode())
   if 'routed_uplink' in self.c:args.append('--bound-login')
   err=open(self.state/(name+'.stderr'),'ab',buffering=0);os.chmod(err.name,0o600)
   p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=err,bufsize=0);err.close()
@@ -263,13 +267,15 @@ def main():
     if s['pid']==child.pid and s['event']=='running':print(json.dumps(dict(event="private_service_running",workers=2,egress="dedicated-permit" if "routed_uplink" in c else "isolated",internet="routed_uplink" in c)));return 0
    time.sleep(.1)
   stop(state);return 2
+ return serve(c,state)
+def serve(c,state,runtime_type=Runtime):
  lock=open(state/'launcher.lock','a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  for burned in state.iterdir():
   if re.fullmatch('[0-9a-f]{8}-[0-9a-f-]{27}',burned.name):
    require((state/(burned.name+'.owner.json')).exists(), 'incomplete durable Run journal: stay closed')
  for meta in state.glob('*.owner.json'):
   line=json.loads(meta.read_text())['line'];require((state/(line['run_id']+'.receipt')).exists(), 'unverified physical domain: stay closed, no inferred release')
- runtime=Runtime(c,state)
+ runtime=runtime_type(c,state)
  def closing(*_):runtime.close_admission()
  signal.signal(signal.SIGTERM,closing);signal.signal(signal.SIGINT,closing)
  try:return runtime.run()

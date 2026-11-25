@@ -1,0 +1,23 @@
+name: Private-Lite isolated acceptance
+on:
+  pull_request:
+    branches: [main]
+    paths: ['runtime/private_lite/**', 'runtime/private/**', 'internal/monitoring/**', 'internal/probenetwork/**', 'cmd/privateprobe/**', 'cmd/privatenetwork/**', 'cmd/privateapproval/**', 'deploy/private-lite/**', 'tests/private_lite/**', '.github/workflows/private-lite.yml']
+permissions:
+  contents: read
+jobs:
+  private-lite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Disconnected host filters and existing PG18 physical lifecycle
+        run: sh tests/private_lite/run.sh "$RUNNER_TEMP/private-lite"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: private-lite
+          path: ${{ runner.temp }}/private-lite/
+          if-no-files-found: error

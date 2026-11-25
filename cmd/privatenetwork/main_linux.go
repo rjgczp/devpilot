@@ -21,7 +21,21 @@ type message struct {
 	Install *probenetwork.Install `json:"install,omitempty"`
 }
 
+var executionProfile = "private-approved"
+
+func bootProfile(ctx context.Context, c probenetwork.Config) (*probenetwork.Policy, error) {
+	if executionProfile == "private-lite" {
+		return probenetwork.BootLite(ctx, c)
+	}
+	if executionProfile != "private-approved" {
+		return nil, probenetwork.ErrDenied
+	}
+	return probenetwork.BootPrivate(ctx, c)
+}
 func run() error {
+	if executionProfile != "private-approved" && executionProfile != "private-lite" {
+		return probenetwork.ErrDenied
+	}
 	if len(os.Args) == 2 && os.Args[1] == "fingerprint" {
 		r, a, e := probenetwork.Fingerprints(context.Background())
 		if e != nil {
@@ -52,12 +66,15 @@ func run() error {
 		if probenetwork.Decode(s.Bytes(), &m) != nil {
 			return probenetwork.ErrDenied
 		}
+		if m.Config != nil && ((executionProfile == "private-approved" && m.Config.Lite != nil) || (executionProfile == "private-lite" && m.Config.Lite == nil)) {
+			return probenetwork.ErrDenied
+		}
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		var answer any
 		var e error
 		switch {
 		case m.Op == "boot" && p == nil && m.Config != nil && m.Install == nil:
-			p, e = probenetwork.BootPrivate(ctx, *m.Config)
+			p, e = bootProfile(ctx, *m.Config)
 			if e == nil {
 				answer = p.Ready()
 			}

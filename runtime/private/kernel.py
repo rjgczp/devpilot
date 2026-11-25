@@ -45,6 +45,12 @@ def project_event(r,line):
  raise RuntimeError('unsupported physical lifecycle event')
 
 class Kernel:
+ network_tool="/toolbin/privatenetwork"
+ probe_tool="/toolbin/privateprobe"
+ policy_path="/run/private-target.json"
+ def dns_routes(self):return [("192.0.2.53","-4","/32"),("fd64:53::53","-6","/128")]
+ def network_config(self,c):return c
+ def probe_policy(self):return dict(denied_prefixes=self.cfg["denied_prefixes"],expires_at=self.approval["expires_at"])
  def __init__(self,config,state):
   # Authority refreshes its public PEM; it was read-only in child mounts.
   public=state/'public.pem'
@@ -114,15 +120,15 @@ class Kernel:
   rm,gm,bm,xm=mac(run,'eth0'),mac(guard,'eth0'),mac(guard,'eth1'),mac(self.target,rx)
   for cid,dev,a,b,m in [(run,'eth0',gate4,gate6,gm),(guard,'eth0',probe4,probe6,rm),(guard,'eth1',rx4,rx6,xm),(self.target,rx,back4,back6,bm)]:
    for family,ip in [('-4',a),('-6',b)]:self.exec(cid,'ip',family,'neigh','replace',ip,'lladdr',m,'nud','permanent','dev',dev)
-  for ip,family,mask in [(self.cfg['target_ip'],'-6' if ':' in self.cfg['target_ip'] else '-4','/128' if ':' in self.cfg['target_ip'] else '/32'),('192.0.2.53','-4','/32'),('fd64:53::53','-6','/128')]:
+  for ip,family,mask in [(self.cfg['target_ip'],'-6' if ':' in self.cfg['target_ip'] else '-4','/128' if ':' in self.cfg['target_ip'] else '/32')]+self.dns_routes():
    self.exec(run,'ip',family,'route','replace',ip+mask,'via',gate4 if family=='-4' else gate6,'dev','eth0');self.exec(guard,'ip',family,'route','replace',ip+mask,'via',rx4 if family=='-4' else rx6,'dev','eth1')
   for ip,family,via,mask in [(probe4,'-4',back4,'/32'),(probe6,'-6',back6,'/128')]:self.exec(self.target,'ip',family,'route','replace',ip+mask,'via',via,'dev',rx)
   ready=[]
   for role,cid in [('gateway',guard),('run',run)]:
-   fp=json.loads(self.exec(cid,'/toolbin/privatenetwork','fingerprint'));cfg=dict(lineage=line,role=role,**fp,probe4=probe4,probe6=probe6,host=self.cfg['target_host'],target=self.cfg['target_ip'],denied=self.cfg.get('denied_prefixes',['11.0.0.0/8','2600:dead::/32']),hard_deadline=utc(34))
+   fp=json.loads(self.exec(cid,self.network_tool,'fingerprint'));cfg=dict(lineage=line,role=role,**fp,probe4=probe4,probe6=probe6,host=self.cfg['target_host'],target=self.cfg['target_ip'],denied=self.cfg.get('denied_prefixes',['11.0.0.0/8','2600:dead::/32']),hard_deadline=utc(34))
    if self.approval:cfg.update(dns_digest=self.approval['dns_digest'],approval_expires=self.approval['expires_at'])
-   d['configs'][role]=cfg
-   p=subprocess.Popen(['docker','exec','-i',cid,'/toolbin/privatenetwork'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(line['run_id']+'-network-'+role+'.stderr'),bufsize=0);d['managers'][role]=p;self.send(p,dict(op='boot',config=cfg));ready.append(self.read(p))
+   cfg=self.network_config(cfg);d['configs'][role]=cfg
+   p=subprocess.Popen(['docker','exec','-i',cid,self.network_tool],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(line['run_id']+'-network-'+role+'.stderr'),bufsize=0);d['managers'][role]=p;self.send(p,dict(op='boot',config=cfg));ready.append(self.read(p))
   return dict(event='prepared',line=line,ready=ready)
  def launch(self,d,c):
   core=(HERE/'assets/termination_core.py').read_text();life=(HERE/'assets/lifecycle.py').read_text();bootstrap=(HERE/'assets/probe_bootstrap.py').read_text()
@@ -132,7 +138,7 @@ class Kernel:
   # HTTP timeout. A lost bridge must not turn a pending observation into a
   # dead management channel before PID1 can produce its original stop proof.
   life=life.replace("select.select([child.stdout],[],[],3)","select.select([child.stdout],[],[],min(12,max(0,hard-time.monotonic())))")
-  bootstrap=bootstrap.replace('original=[]',"life=fcntl.fcntl(19,fcntl.F_DUPFD_CLOEXEC,30);os.close(19)\noriginal=[]").replace('child=subprocess.Popen(',"os.dup2(life,7,inheritable=True);os.close(life)\nchild=subprocess.Popen(").replace('pass_fds=(3,4,5,6)','pass_fds=(3,4,5,6,7)').replace('for fd in [3,4,5,6,er,ar,qw,rr]','for fd in [3,4,5,6,7,er,ar,qw,rr]').replace('/usr/local/bin/schedulerprobefixture','/toolbin/privateprobe')
+  bootstrap=bootstrap.replace('original=[]',"life=fcntl.fcntl(19,fcntl.F_DUPFD_CLOEXEC,30);os.close(19)\noriginal=[]").replace('child=subprocess.Popen(',"os.dup2(life,7,inheritable=True);os.close(life)\nchild=subprocess.Popen(").replace('pass_fds=(3,4,5,6)','pass_fds=(3,4,5,6,7)').replace('for fd in [3,4,5,6,er,ar,qw,rr]','for fd in [3,4,5,6,7,er,ar,qw,rr]').replace('/usr/local/bin/schedulerprobefixture',self.probe_tool)
   bootstrap=bootstrap.replace(',[],[],2.5)',',[],[],12)')
   init=core+'\nBOOTSTRAP_SOURCE='+repr(bootstrap)+'\n'+life
   args=['docker','run','--rm','-i','--name',d['name']+'-pid1','--label',LABEL+'='+self.cfg['runtime_id'],'--label',SESSION+'='+self.session,'--network','container:'+d['run'],'--cap-drop','ALL']
@@ -140,9 +146,9 @@ class Kernel:
   args+=['--security-opt','no-new-privileges:true','--read-only','--tmpfs','/var/lib/postgresql:ro,noexec,nosuid,size=4k','--memory','128m','--memory-swap','128m','--cpus','1','--pids-limit','128','--ulimit','nofile=256:256','--tmpfs','/tmp:rw,noexec,nosuid,size=4m','-v',self.cfg['ca_file']+':/etc/ssl/certs/private-target.pem:ro','--entrypoint','python3',self.image,'-S','-u','-c',init]
   if self.approval:
    policy=self.state/(d['line']['run_id']+'.target-policy.json')
-   with policy.open('x') as f:f.write(json.dumps(dict(denied_prefixes=self.cfg['denied_prefixes'],expires_at=self.approval['expires_at'])))
+   with policy.open('x') as f:f.write(json.dumps(self.probe_policy()))
    policy.chmod(0o444)
-   at=args.index('--entrypoint');args[at:at]=['-v',str(policy)+':/run/private-target.json:ro']
+   at=args.index('--entrypoint');args[at:at]=['-v',str(policy)+':'+self.policy_path+':ro']
   p=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr(d['line']['run_id']+'-pid1.stderr'),bufsize=0);d['life']=p
   deadline=int(datetime.datetime.fromisoformat(d['configs']['run']['hard_deadline'].replace('Z','+00:00')).timestamp()*1e9)
   self.send(p,dict(op='boot',lineage=d['line'],deadline_ns=deadline));require(self.read(p)['event']=='lifecycle_ready')
@@ -193,7 +199,7 @@ class Kernel:
  def _stop(self,index):
   d=self.active[index];line=d['line'];network=[]
   for role,cid in [('gateway',d['guard']),('run',d['run'])]:
-   network.append(json.loads(self.exec(cid,'/toolbin/privatenetwork',data=canonical(dict(op='revoke',config=d['configs'][role]))+b'\n')))
+   network.append(json.loads(self.exec(cid,self.network_tool,data=canonical(dict(op='revoke',config=d['configs'][role]))+b'\n')))
   p=d['life'];require(p is not None)
   self.send(p,dict(op='stop',lineage=line));process=self.read(p);require(process['event']=='processes_terminated')
   self.send(p,dict(op='retire',lineage=line));retired=self.read(p);p.stdin.close();require(p.wait(timeout=3)==0)

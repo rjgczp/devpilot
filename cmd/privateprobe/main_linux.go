@@ -19,7 +19,18 @@ import (
 	"github.com/rjgczp/devpilot/internal/monitoring/targetpermit"
 )
 
+// Set only by the explicit Lite binary build, never by environment or input.
+var executionProfile = "private-approved"
+
 func run() error {
+	if executionProfile != "private-approved" && executionProfile != "private-lite" {
+		return handoff.ErrInput
+	}
+	liteProfile := executionProfile == "private-lite"
+	policyPath := "/run/private-target.json"
+	if liteProfile {
+		policyPath = "/run/private-lite.json"
+	}
 	if len(os.Args) != 1 {
 		return handoff.ErrInput
 	}
@@ -45,11 +56,12 @@ func run() error {
 	}
 	// Optional deny-only root-owned read-only mount; no DB/key/management input.
 	var policy struct {
-		Denied  []netip.Prefix `json:"denied_prefixes"`
-		Expires time.Time      `json:"expires_at"`
+		Denied   []netip.Prefix `json:"denied_prefixes"`
+		Expires  time.Time      `json:"expires_at"`
+		Resolver netip.Addr     `json:"resolver,omitempty"`
 	}
 	approved := false
-	if f, e := os.Open("/run/private-target.json"); e == nil {
+	if f, e := os.Open(policyPath); e == nil {
 		b, e := io.ReadAll(io.LimitReader(f, 8193))
 		f.Close()
 		if e != nil || len(b) > 8192 || !credentials.ValidJSON(b) {
@@ -62,6 +74,9 @@ func run() error {
 		}
 		approved = true
 	} else if !os.IsNotExist(e) {
+		return handoff.ErrInput
+	}
+	if liteProfile && (!approved || !monitoring.LiteResolverAllowed(policy.Resolver)) || !liteProfile && policy.Resolver.IsValid() {
 		return handoff.ErrInput
 	}
 	proof, err := probesandbox.SealPrivateNetwork()
@@ -88,7 +103,9 @@ func run() error {
 		return handoff.ErrInput
 	}
 	var result *monitoring.Result
-	if approved {
+	if liteProfile {
+		result, err = input.ExecuteLite(context.Background(), targetpermit.NewClient(req, reply), supervisor, policy.Denied, policy.Expires, policy.Resolver)
+	} else if approved {
 		result, err = input.ExecuteApproved(context.Background(), targetpermit.NewClient(req, reply), supervisor, policy.Denied, policy.Expires)
 	} else {
 		result, err = input.ExecutePrivate(context.Background(), targetpermit.NewClient(req, reply), supervisor)

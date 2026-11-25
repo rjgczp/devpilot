@@ -1,0 +1,19 @@
+# Private-Lite isolated prototype — default CLOSED
+
+No Lighthouse deployment, production migration/LOGIN, cloud purchase or public Probe is authorized by this prototype. `private-approved`/fixture entries reject Lite profiles. A separate build of the existing commands (`-ldflags '-X main.executionProfile=private-lite'`) produces `liteprobe`, `litenetwork`, and `liteapproval`; no environment variable can change an existing binary's profile.
+
+The explicit foreground entry is `python3 -S runtime/private_lite/launcher.py run --enable-private-lite --config /absolute/private.json --state /absolute/private-state`. Omitting the flag returns closed without loading configuration or starting Docker. Configuration requires `mode: private-lite`, `enabled: true`, all existing service fields and `lite: {resolver, host_container, host_interface, source}`. No defaults are provided. The prototype accepts only a disconnected test-host container; it cannot install rules on the real host.
+
+An operator pins an actual controlled ordinary IPv4 TCP53 endpoint, reviews the entire DNS response with `liteapproval` (request includes `resolver`), and creates the existing scoped/versioned approval/catalog. No system resolver/fallback or 192.0.2.53 is used in Lite. Only a selected IPv4 TCP443 target is admitted; A/AAAA/CNAME validation still runs and dangerous AAAA rejects the complete answer. The infrastructure DNS exception never permits HTTPS.
+
+Runtime status is `private-lite`; the unchanged Worker/SQL protocol remains `private-approved` inside disposable PG18 only. This is explicit protocol reuse, not a database Gate bypass. Owner consent, existing isolated least-privilege SQL identities, existing resource limits, storage admission, original PID1 Supervisor, Permit and signed physical receipts remain required. No new schema or result store is introduced. This disconnected prototype uses the existing disposable test-role naming; it does not claim acceptance of the five production LOGIN/DSN bindings. Those remain a separate deployment requirement.
+
+## Host trust and least privilege
+
+Probe: UID/GID65534, capabilities0, no_new_privs/seccomp, read-only root, only read-only CA/profile plus original anonymous pipes, memory128MiB/CPU1/PID128/FD256. Worker retains only its existing DB credential and internal control network. Neither has NET_ADMIN, Docker socket or host-filter handles. Trusted namespace managers get only NET_ADMIN in their own namespaces; PID1 retains only the original termination capabilities. The trusted outer orchestrator retains Docker/signing authority. All host filter mutations are scoped to a fresh veth and uniquely named tables, never `flush ruleset` on the host or edits to existing Docker chains.
+
+Each packet requires positive marks through two host tables across pre/forward/postrouting hooks; either table alone blocks traffic. Timed DNS/target tuples are installed only after namespace preparation / original Permit commit. Revocation flushes both tables' grants before original physical drain. There is no unconditional established-flow allowance. Tables remain as deny anchors after drain. Deliberate simultaneous removal of all enforcement, hostile root, kernel or daemon compromise is outside this trusted-host model. Namespaces are not VM isolation. Real Docker hook coexistence, host capacity and Lighthouse operation remain unproven.
+
+## Targeted acceptance
+
+`sh tests/private_lite/run.sh /absolute/new-evidence-directory` on an independent Linux test host. All data-plane namespaces are network-none, with no default/upstream route; simulated public-shaped DNS/HTTPS addresses are owned only by the isolated receiver. No real target is contacted. Evidence separates packet tests, Go profile checks and existing Owner/PG18/Supervisor/physical-release lifecycle. Existing mode compatibility tests remain intact.
