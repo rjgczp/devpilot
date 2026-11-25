@@ -160,3 +160,14 @@ table inet {second} {{
                 self.run('nft', '-f', '-', data=f'flush set inet {table} allow\n'.encode())
             except Exception:
                 pass
+
+    def retire(self):
+        # Only the trusted runtime may call this AFTER original signed physical
+        # drain and namespace removal. Missing/drifted anchors stay quarantined.
+        with self.lock:
+            if not self.closed:
+                raise ValueError('live host anchors cannot be retired')
+            self.check()
+            self.run('nft', '-f', '-', data=''.join(
+                f'delete table inet {table}\n' for table in self.tables).encode())
+            self.hashes = None

@@ -19,5 +19,7 @@ jobs:
         if: always()
         with:
           name: private-lite
-          path: ${{ runner.temp }}/private-lite/
+          path: |
+            ${{ runner.temp }}/private-lite/
+            !${{ runner.temp }}/private-lite/tools/**
           if-no-files-found: error

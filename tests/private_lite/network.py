@@ -80,14 +80,20 @@ def test(dest):
    w.inside(client,'ip','-6','route','add','2001:4860:ffff::34/128','via','fd00:2::1')
    w.inside(host,'ip','-6','route','add','2001:4860:ffff::34/128','via','fd00:3::2')
    w.inside(server,'ip','-6','route','add','fd00:2::/64','via','fd00:3::1')
+   for cid,dev,peer,pdev,address in [(client,'eth0',host,'lite0','fd00:2::1'),(host,'lite0',client,'eth0','fd00:2::2'),(host,'wan0',server,'edge0','fd00:3::2'),(server,'edge0',host,'wan0','fd00:3::1')]:
+    mac=json.loads(w.inside(peer,'ip','-j','link','show',pdev))[0]['address']
+    w.inside(cid,'ip','-6','neigh','replace',address,'lladdr',mac,'nud','permanent','dev',dev)
    p=subprocess.Popen(['docker','exec',server,'python3','-u','-c',SERVER],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
    cleanup.callback(p.terminate);assert line(p)==b'ready'
    host_server=subprocess.Popen(['docker','exec',host,'python3','-u','-c',SERVER],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
    cleanup.callback(host_server.terminate);assert line(host_server)==b'ready'
    w.inside(host,'python3','-c',CLIENT,'127.0.0.1','443','allow')
-   f=HostFilter(lambda *a,**kw:w.inside(host,*a,**kw),'test','lite0','198.18.2.2','1.1.1.1','93.184.216.34');f.install()
    def attempt(ip,port,want):
     w.docker('run','--rm','--network','container:'+client,'--user','65534:65534','--cap-drop','ALL','--read-only','--security-opt','no-new-privileges:true','--entrypoint','python3',w.IMAGE,'-c',CLIENT,ip,str(port),want)
+   # Calibrate the paths before installing the filter: refusal cannot pass
+   # merely because IPv6 neighbor discovery or the test receiver is broken.
+   for ip in ['2001:4860:ffff::34','93.184.216.35','198.18.2.1']:attempt(ip,443,'allow')
+   f=HostFilter(lambda *a,**kw:w.inside(host,*a,**kw),'test','lite0','198.18.2.2','1.1.1.1','93.184.216.34');f.install()
    attempt('93.184.216.34',443,'deny')
    f.grant(deadline(),True);attempt('93.184.216.34',443,'allow');attempt('1.1.1.1',53,'allow')
    for ip,port in [('93.184.216.35',443),('169.254.169.254',443),('10.0.0.9',443),('11.0.0.9',443),('1.1.1.1',443),('93.184.216.34',8080),('2001:4860:ffff::34',443),('198.18.2.1',443),('198.18.3.1',443)]:attempt(ip,port,'deny')

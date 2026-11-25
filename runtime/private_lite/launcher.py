@@ -131,6 +131,16 @@ class LiteRuntime(legacy.Runtime):
                 self.close_admission(True)
         return super().poll(seconds)
 
+    def close(self):
+        super().close()
+        # The original stop routine signs the physical receipt, removes run /
+        # gateway namespaces and only then removes each active entry. Do not
+        # retire deny anchors for any unverified domain or synthesize a proof.
+        unverified = [p for p in self.state.glob('*.owner.json')
+                      if not (self.state/(json.loads(p.read_text())['line']['run_id']+'.receipt')).exists()]
+        if not self.kernel.active and not unverified:
+            self.kernel.host_filter.retire()
+
 
 def main():
     p = argparse.ArgumentParser()

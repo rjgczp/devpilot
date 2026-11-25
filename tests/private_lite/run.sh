@@ -30,14 +30,24 @@ python3 tests/scheduler/record.py --evidence "$1/build" --name tools -- docker r
  CGO_ENABLED=0 GOBIN=/tools go install -tags="no_clickhouse no_libsql no_mssql no_mysql no_sqlite3 no_vertica no_ydb" github.com/pressly/goose/v3/cmd/goose@v3.26.0
  go test -race -tags=privateprobe,privateworker ./internal/monitoring ./internal/probenetwork ./internal/supervisorruntime ./internal/monitoring/targetpermit'
 python3 - "$1/tools" <<'PY'
-import subprocess,sys
+import hashlib,json,pathlib,subprocess,sys
 cid=subprocess.check_output(['docker','create','devpilot-private-lite-runtime'],text=True).strip()
 try:
  for tool in ['privateprobe','privatenetwork','privateapproval','liteprobe','litenetwork','liteapproval']:
   subprocess.run(['docker','cp',cid+':/toolbin/'+tool,sys.argv[1]+'/'+tool],check=True)
 finally:subprocess.run(['docker','rm',cid],check=True)
+tools=pathlib.Path(sys.argv[1])
+(tools.parent/'binaries.json').write_text(json.dumps({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(tools.iterdir()) if p.is_file()},indent=2)+'\n')
 PY
 python3 tests/scheduler/record.py --evidence "$1/receipts" --name packets -- python3 tests/private_lite/network.py "$1/packets"
 for scenario in allow unapproved dns-change private4 private6 approval-revoked; do
- python3 tests/scheduler/record.py --evidence "$1/receipts" --name "$scenario" -- python3 tests/private_lite/lifecycle.py --tools "$1/tools" --evidence "$1/$scenario" --case "$scenario"
+ if python3 tests/scheduler/record.py --evidence "$1/receipts" --name "$scenario" -- python3 tests/private_lite/lifecycle.py --tools "$1/tools" --evidence "$1/$scenario" --case "$scenario"; then
+  :
+ else
+  # Only disposable test diagnostics, never credential/config files.
+  for log in "$1/$scenario/lite-launcher.stderr" "$1/receipts/$scenario.log"; do
+   test ! -f "$log" || tail -n 80 "$log"
+  done
+  exit 1
+ fi
 done
