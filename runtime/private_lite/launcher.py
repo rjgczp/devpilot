@@ -12,6 +12,7 @@ sys.path.insert(0, str(HERE.parent / 'private'))
 import launcher as legacy
 from kernel import Kernel, require, utc
 from egress import HostFilter, public4
+from namespace import NamespaceExecutor
 
 
 def load(path):
@@ -22,7 +23,7 @@ def load(path):
     c = json.loads(p.read_text())
     require(c['mode'] == 'private-lite' and c['enabled'] is True and 'routed_uplink' not in c)
     lite = c['lite']
-    require(set(lite) == {'resolver', 'host_container', 'host_interface', 'source'})
+    require(set(lite) == {'resolver', 'host_container', 'host_interface', 'source', 'uplink_interface'})
     lite['resolver'] = public4(lite['resolver'])
     target = public4(c['target_ip'])
     # Full existing config, approval, five identities and file checks. The SQL
@@ -51,8 +52,8 @@ class LiteKernel(Kernel):
 
     def validate_target(self):
         lite = self.cfg['lite']
-        # This prototype accepts ONLY a disconnected test-host namespace. It is
-        # intentionally not a runnable root-host/Lighthouse deployment command.
+        # This prototype manages a network-none host-stand-in namespace, not
+        # a root-host/Lighthouse network installer. The harness has no upstream.
         for cid in (self.target, lite['host_container']):
             v = self.inspect(cid); h = v['HostConfig']
             require(v['State']['Running'] and v['Image'] == self.image and h['NetworkMode'] == 'none'
@@ -75,15 +76,28 @@ class LiteKernel(Kernel):
                 require(not json.loads(self.exec(self.target,'ip',family,'-j','route','show','table','all','dev',v['ifname'])))
         interface = next(v for v in json.loads(self.exec(host, 'ip', '-j', 'link')) if v['ifname'] == lite['host_interface'])
         require(interface.get('link_index') == next(v for v in json.loads(self.exec(self.target, 'ip', '-j', 'link')) if v['ifname'] == 'uplink0')['ifindex'])
-        self.host_filter = HostFilter(lambda *a, **kw: self.exec(host, *a, **kw), self.prefix,
-                                      lite['host_interface'], lite['source'], lite['resolver'], self.cfg['target_ip'])
-        self.host_filter.install()
-        # Independent namespace default deny, no PCI requirement in Lite only.
-        import uplink
-        config = dict(mode='private-approved', target_ip=self.cfg['target_ip'], approval=self.approval,
-                      routed_uplink=dict(pci_slot='0000:00:00.0', mac='00:00:00:00:00:00'))
-        rules = uplink.rules(config).replace('192.0.2.53', lite['resolver'])
-        self.exec(self.target, 'nft', '-f', '-', data=rules.encode())
+        for iface in (lite['host_interface'], lite['uplink_interface']):
+            link = json.loads(self.exec(host, 'ip', '-d', '-j', 'link', 'show', 'dev', iface))[0]
+            require(link.get('linkinfo', {}).get('info_kind') == 'veth', 'only fresh veth guards, never the main NIC')
+        # Capture Docker-bound identity only at startup; the native helper then
+        # holds the namespace itself and needs no daemon/API for host revocation.
+        pending = HostFilter(None, self.prefix, lite['host_interface'], lite['source'], lite['resolver'], self.cfg['target_ip'], lite['uplink_interface'])
+        namespace = self.exec(host, 'readlink', '/proc/self/ns/net').decode().strip()
+        self.host_executor = NamespaceExecutor(self.inspect(host)['State']['Pid'], namespace,
+                                               [lite['host_interface'], lite['uplink_interface']], pending.tables)
+        self.host_filter = HostFilter(self.host_executor.run, self.prefix, lite['host_interface'],
+                                      lite['source'], lite['resolver'], self.cfg['target_ip'], lite['uplink_interface'])
+        try:
+            self.host_filter.install()
+            # Independent namespace default deny, no PCI requirement in Lite only.
+            import uplink
+            config = dict(mode='private-approved', target_ip=self.cfg['target_ip'], approval=self.approval,
+                          routed_uplink=dict(pci_slot='0000:00:00.0', mac='00:00:00:00:00:00'))
+            rules = uplink.rules(config).replace('192.0.2.53', lite['resolver'])
+            self.exec(self.target, 'nft', '-f', '-', data=rules.encode())
+        except BaseException:
+            self.host_executor.close()
+            raise
 
     def prepare(self, index, line):
         # Reload the operator file for each allocation; no catalog mutation or
@@ -120,7 +134,12 @@ class LiteRuntime(legacy.Runtime):
         return 'private-approved'
 
     def close_admission(self, failure=False):
-        self.kernel.host_filter.close()
+        try:
+            self.kernel.host_filter.close()
+        except Exception:
+            # Failed host I/O never keeps business admission open or becomes
+            # a physical-release proof. The original Supervisor still drains.
+            failure = True
         return super().close_admission(failure)
 
     def poll(self, seconds=.1):
@@ -138,8 +157,11 @@ class LiteRuntime(legacy.Runtime):
         # retire deny anchors for any unverified domain or synthesize a proof.
         unverified = [p for p in self.state.glob('*.owner.json')
                       if not (self.state/(json.loads(p.read_text())['line']['run_id']+'.receipt')).exists()]
-        if not self.kernel.active and not unverified:
-            self.kernel.host_filter.retire()
+        try:
+            if not self.kernel.active and not unverified:
+                self.kernel.host_filter.retire()
+        finally:
+            self.kernel.host_executor.close()
 
 
 def main():

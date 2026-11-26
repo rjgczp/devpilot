@@ -20,6 +20,7 @@ python3 -S runtime/private_lite/launcher.py run --state "$1/closed"
 python3 tests/scheduler/record.py --evidence "$1/build" --name legacy-runtime -- sh scripts/private-service.sh build
 python3 tests/scheduler/record.py --evidence "$1/build" --name lite-runtime -- docker build -t devpilot-private-lite-runtime -f deploy/private-lite/Dockerfile .
 python3 tests/scheduler/record.py --evidence "$1/build" --name fixture -- docker build -t devpilot-scheduler-fixture -f tests/scheduler/Dockerfile .
+python3 tests/scheduler/record.py --evidence "$1/build" --name coexist-runtime -- docker build -t devpilot-lite-coexist:26.1.3 -f tests/private_lite/Dockerfile.dind .
 python3 tests/scheduler/record.py --evidence "$1/build" --name tools -- docker run --rm \
  -v "$repo:$repo:ro" -w "$repo" -v "$1/tools:/tools" \
  -v devpilot-fixture-gomod:/go/pkg/mod -v devpilot-fixture-gobuild:/root/.cache/go-build \
@@ -40,6 +41,7 @@ tools=pathlib.Path(sys.argv[1])
 (tools.parent/'binaries.json').write_text(json.dumps({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(tools.iterdir()) if p.is_file()},indent=2)+'\n')
 PY
 python3 tests/scheduler/record.py --evidence "$1/receipts" --name packets -- python3 tests/private_lite/network.py "$1/packets"
+python3 tests/scheduler/record.py --evidence "$1/receipts" --name coexist -- python3 tests/private_lite/coexist.py "$1/coexist"
 for scenario in allow unapproved dns-change private4 private6 approval-revoked; do
  if python3 tests/scheduler/record.py --evidence "$1/receipts" --name "$scenario" -- python3 tests/private_lite/lifecycle.py --tools "$1/tools" --evidence "$1/$scenario" --case "$scenario"; then
   :

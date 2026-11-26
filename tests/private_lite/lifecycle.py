@@ -87,7 +87,7 @@ class LiteHarness(a.ApprovedHarness):
     self.exec(holder,'ip','route','add',target+'/32','via','198.18.2.1')
     self.exec(host,'ip','route','add',target+'/32','via','198.18.3.2')
    self.exec(self.receiver,'ip','route','add','198.18.2.0/30','via','198.18.3.1')
-   c.update(mode='private-lite',enabled=True,image=image,target_container=holder,target_host=a.HOST,approval_file=str(path),denied_prefixes=['11.0.0.0/8','2600:dead::/32'],lite=dict(resolver='1.1.1.1',host_container=host,host_interface='lite0',source='198.18.2.2'))
+   c.update(mode='private-lite',enabled=True,image=image,target_container=holder,target_host=a.HOST,approval_file=str(path),denied_prefixes=['11.0.0.0/8','2600:dead::/32'],lite=dict(resolver='1.1.1.1',host_container=host,host_interface='lite0',uplink_interface='wan0',source='198.18.2.2'))
    self.config.write_text(json.dumps(c));self.record('lite-topology',dict(no_upstream=True,host=host,holder=holder,resolver='1.1.1.1',old_dns_wire=False));return result
   return super().pg_operation(instance,op,payload,selected,mode)
 

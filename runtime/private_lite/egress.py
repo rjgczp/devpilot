@@ -1,7 +1,7 @@
 """Veth-scoped trusted-host filter; never installed by Probe or Worker.
 
-Two nft tables positively attest each packet across hooks. Either table alone
-rejects traffic. Host root/kernel and simultaneous removal of both are trusted.
+TC ingress and nft hooks positively attest each packet; independent TC egress
+rejects loss of the entire nft ruleset. Host root/kernel remain trusted.
 """
 import datetime
 import hashlib
@@ -9,6 +9,7 @@ import ipaddress
 import json
 import re
 import threading
+from tc_guard import TCGuard, ENTRY
 
 
 def public4(value):
@@ -28,7 +29,7 @@ def stable(value):
 
 
 class HostFilter:
-    def __init__(self, run, identity, interface, source, resolver, target):
+    def __init__(self, run, identity, interface, source, resolver, target, uplink):
         if not re.fullmatch(r'[a-zA-Z0-9_-]{1,15}', interface):
             raise ValueError('owned veth required')
         self.run, self.interface = run, interface
@@ -38,6 +39,8 @@ class HostFilter:
             raise ValueError('DNS exception cannot be an HTTPS target')
         suffix = hashlib.sha256(identity.encode()).hexdigest()[:12]
         self.tables = ['dpl_policy_' + suffix, 'dpl_guard_' + suffix]
+        self.guard = TCGuard(run, [interface, uplink])
+        self.uplink = uplink
         self.hashes = None
         self.lock = threading.RLock()
         self.closed = False
@@ -57,28 +60,24 @@ class HostFilter:
   {reverse} jump inbound
  }}
  chain outbound {{
-  meta mark set 0
-  ip saddr {source} ip daddr . tcp dport @allow meta mark set 0x4c310001 return
+  meta mark {ENTRY} ip saddr {source} ip daddr . tcp dport @allow meta mark set 0x4c310001 return
   counter drop
  }}
  chain inbound {{
-  meta mark set 0
-  ip daddr {source} ip saddr . tcp sport @allow ct state established meta mark set 0x4c310001 return
+  meta mark {ENTRY} ip daddr {source} ip saddr . tcp sport @allow ct state established meta mark set 0x4c310001 return
   counter drop
  }}
  chain post {{ type filter hook postrouting priority 50; policy accept;
   {match} meta mark != 0x4c310002 counter drop
   {reverse} meta mark != 0x4c310002 counter drop
-  {match} meta mark set 0
-  {reverse} meta mark set 0
  }}
 }}
 table inet {second} {{
  {sets}
  {local}
  chain pre {{ type filter hook prerouting priority -50; policy accept;
-  {match} meta mark set 0
-  ip daddr {source} meta mark set 0
+  {match} meta mark != {ENTRY} counter drop
+  iifname "{self.uplink}" meta mark != {ENTRY} counter drop
  }}
  chain forward {{ type filter hook forward priority 60; policy accept;
   {match} jump outbound
@@ -107,17 +106,23 @@ table inet {second} {{
         existing = json.loads(self.run('nft', '-j', 'list', 'tables'))['nftables']
         if any(row.get('table', {}).get('name') in self.tables for row in existing):
             raise ValueError('old filter domain must be reconciled')
+        self.guard.install()
         self.run('nft', '-f', '-', data=self.script().encode())
         self.hashes = self.snapshot()
 
     def check(self):
-        try:
-            if not self.hashes or self.snapshot() != self.hashes:
-                raise ValueError('host policy drift')
-        except Exception:
-            self.closed = True
-            self.revoke()
-            raise
+        with self.lock:
+            try:
+                self.guard.check()
+                if not self.hashes or self.snapshot() != self.hashes:
+                    raise ValueError('host policy drift')
+            except Exception:
+                self.closed = True
+                try:
+                    self.guard.close()
+                finally:
+                    self.revoke()
+                raise
 
     def grant(self, deadline, target=False):
         with self.lock:
@@ -150,7 +155,10 @@ table inet {second} {{
         # a successful Permit callback into reopening the host exception.
         with self.lock:
             self.closed = True
-            self._revoke()
+            try:
+                self.guard.close()
+            finally:
+                self._revoke()
 
     def _revoke(self):
         # Each remaining table independently denies when the other is missing.
@@ -170,4 +178,5 @@ table inet {second} {{
             self.check()
             self.run('nft', '-f', '-', data=''.join(
                 f'delete table inet {table}\n' for table in self.tables).encode())
+            self.guard.retire()
             self.hashes = None

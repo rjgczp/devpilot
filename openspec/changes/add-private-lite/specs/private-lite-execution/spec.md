@@ -31,3 +31,10 @@ Acceptance SHALL use disconnected Linux namespaces and disposable PG18, preserve
 #### Scenario: Missing real-host evidence
 - **WHEN** isolated acceptance succeeds
 - **THEN** evidence is reported only for that topology, never as Lighthouse deployment acceptance
+
+#### Scenario: All host nft tables lost
+- **WHEN** both host nft policy tables or the complete nft ruleset disappear
+- **THEN** an independently installed TC egress guard drops IPv4/IPv6 packets without the nft positive mark, including established traffic
+#### Scenario: Docker API unavailable during revoke
+- **WHEN** the daemon is unavailable but live-restore retains actors
+- **THEN** the pinned namespace executor revokes permission without Docker API access and never substitutes this for signed physical release

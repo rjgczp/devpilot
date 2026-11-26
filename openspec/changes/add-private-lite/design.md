@@ -18,3 +18,6 @@ Deliver an isolated prototype only. No Lighthouse, cloud resource, production SQ
 
 ## Migration Plan
 No production migration. Remove only owned isolated test resources; Gate stays closed outside disposable tests.
+
+## Proven final-review faults
+Both host nft tables disappearing allowed fresh and established flows. Docker API loss also prevented host revoke under live-restore. Add only a TC mark guard on the two fresh owned veths and a bounded NET_ADMIN-only namespace executor pinned at startup through native Linux nsenter. The executor uses anonymous parent pipes, never Docker exec after pinning; EOF revokes host permissions, not a physical receipt. Keep the original Run/Supervisor/Owner/SQL algorithms unchanged. Host root/kernel compromise or removal of every independent enforcement mechanism remains outside the trusted-host model.

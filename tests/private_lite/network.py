@@ -13,6 +13,7 @@ from contextlib import ExitStack
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'runtime/private_lite'))
 from egress import HostFilter
+from namespace import NamespaceExecutor
 spec=importlib.util.spec_from_file_location('wire',ROOT/'tests/release/routed_wire.py')
 w=importlib.util.module_from_spec(spec);spec.loader.exec_module(w)
 w.IMAGE='devpilot-private-lite-runtime'
@@ -60,7 +61,7 @@ ready.wait();print('ready',flush=True);time.sleep(180)
 def test(dest):
  dest.mkdir(parents=True,exist_ok=False)
  records=[]
- for failure in ['policy','guard','expiry','revoke','close']:
+ for failure in ['policy','guard','all-tables','all-nft','tc-ingress','control-eof','expiry','revoke','close']:
   with ExitStack() as cleanup:
    nodes=[]
    for index in range(3):
@@ -93,7 +94,11 @@ def test(dest):
    # Calibrate the paths before installing the filter: refusal cannot pass
    # merely because IPv6 neighbor discovery or the test receiver is broken.
    for ip in ['2001:4860:ffff::34','93.184.216.35','198.18.2.1']:attempt(ip,443,'allow')
-   f=HostFilter(lambda *a,**kw:w.inside(host,*a,**kw),'test','lite0','198.18.2.2','1.1.1.1','93.184.216.34');f.install()
+   pending=HostFilter(None,'test','lite0','198.18.2.2','1.1.1.1','93.184.216.34','wan0')
+   namespace=w.inside(host,'readlink','/proc/self/ns/net').decode().strip()
+   executor=NamespaceExecutor(json.loads(w.docker('inspect',host))[0]['State']['Pid'],namespace,['lite0','wan0'],pending.tables)
+   cleanup.callback(executor.close)
+   f=HostFilter(executor.run,'test','lite0','198.18.2.2','1.1.1.1','93.184.216.34','wan0');f.install()
    attempt('93.184.216.34',443,'deny')
    f.grant(deadline(),True);attempt('93.184.216.34',443,'allow');attempt('1.1.1.1',53,'allow')
    for ip,port in [('93.184.216.35',443),('169.254.169.254',443),('10.0.0.9',443),('11.0.0.9',443),('1.1.1.1',443),('93.184.216.34',8080),('2001:4860:ffff::34',443),('198.18.2.1',443),('198.18.3.1',443)]:attempt(ip,port,'deny')
@@ -106,6 +111,13 @@ except TimeoutError:print('blocked',flush=True)
    live=subprocess.Popen(['docker','run','--rm','-i','--network','container:'+client,'--user','65534:65534','--cap-drop','ALL','--read-only','--security-opt','no-new-privileges:true','--entrypoint','python3',w.IMAGE,'-u','-c',persistent],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
    assert line(live)==b'ready'
    if failure in ('policy','guard'):w.inside(host,'nft','delete','table','inet',f.tables[int(failure=='guard')])
+   elif failure=='all-tables':
+    for table in f.tables:w.inside(host,'nft','delete','table','inet',table)
+   elif failure=='all-nft':
+    # Fault injection only in this owned network-none stand-in, never the host.
+    w.inside(host,'nft','flush','ruleset')
+   elif failure=='tc-ingress':w.inside(host,'tc','filter','del','dev','lite0','ingress')
+   elif failure=='control-eof':executor.close()
    elif failure=='revoke':f.revoke()
    elif failure=='close':
     f.close()
@@ -115,7 +127,7 @@ except TimeoutError:print('blocked',flush=True)
    else:f.grant(deadline(3),True);time.sleep(1.1)
    live.stdin.write(b'go\n');live.stdin.close();assert line(live)==b'blocked';assert live.wait(timeout=5)==0
    attempt('93.184.216.34',443,'deny')
-   if failure in ('policy','guard'):
+   if failure in ('policy','guard','all-tables','all-nft','tc-ingress','control-eof'):
     try:f.grant(deadline(),True)
     except Exception:pass
     else:raise RuntimeError('lost table renewed permission')
