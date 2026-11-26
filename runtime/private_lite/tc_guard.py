@@ -54,6 +54,11 @@ class TCGuard:
             raise ValueError('TC guard drift')
 
     def close(self):
+        if self.closed:
+            # matchall supports one classifier per priority. Revalidate the
+            # existing deny anchor; do not attempt a second implicit insertion.
+            self.check()
+            return
         self.closed = True
         present = {v['ifname'] for v in json.loads(self.run('ip', '-j', 'link', 'show'))}
         for iface in self.interfaces:

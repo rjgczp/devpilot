@@ -120,7 +120,7 @@ except TimeoutError:print('blocked',flush=True)
    elif failure=='control-eof':executor.close()
    elif failure=='revoke':f.revoke()
    elif failure=='close':
-    f.close()
+    f.close();f.close()  # normal signal + final drain must be idempotent
     try:f.grant(deadline(),True)
     except ValueError:pass
     else:raise RuntimeError('closed host admission reopened')
