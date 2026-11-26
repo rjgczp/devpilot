@@ -56,7 +56,12 @@ const kernelCommandBudget = 2 * time.Second
 // attaches only fresh point-to-point veth peers to its owned namespaces, and
 // attests that there is no host interface, bridge, or published port.
 // Route hashes bind the actual allocated namespace, not an environment flag.
+type LiteProfile struct {
+	Resolver netip.Addr `json:"resolver"`
+}
+
 type Config struct {
+	Lite            *LiteProfile    `json:"lite,omitempty"`
 	DNSDigest       string          `json:"dns_digest,omitempty"`
 	ApprovalExpires time.Time       `json:"approval_expires,omitempty"`
 	Target          netip.Addr      `json:"target,omitempty"`
@@ -179,7 +184,7 @@ func Fingerprints(ctx context.Context) (string, string, error) {
 }
 
 func validConfig(c Config, now time.Time) bool {
-	return c.Host == "a.fixture.example.com" && validBaseConfig(c, now)
+	return c.Lite == nil && c.Host == "a.fixture.example.com" && validBaseConfig(c, now)
 }
 func validBaseConfig(c Config, now time.Time) bool {
 	return c.Lineage.Valid() && (c.Role == "run" || c.Role == "gateway") &&
@@ -361,6 +366,9 @@ func boot(ctx context.Context, c Config, private bool) (*Policy, error) {
 		return nil, ErrDenied
 	}
 	bootstrap := fmt.Sprintf("add element inet dp_run resolver4 { 192.0.2.53 . 53 timeout %dms }\nadd element inet dp_run resolver6 { fd64:53::53 . 53 timeout %dms }\n", ms, ms)
+	if c.Lite != nil {
+		bootstrap = fmt.Sprintf("add element inet dp_run resolver4 { %s . 53 timeout %dms }\n", resolver4(c), ms)
+	}
 	if _, e = command(ctx, "flush ruleset\n"+policy(c)+bootstrap, "/usr/sbin/nft", "-f", "-"); e != nil {
 		return nil, e
 	}
@@ -477,12 +485,12 @@ func (p *Policy) ruleHash(ctx context.Context, empty bool) (string, error) {
 			}
 			bound := p.c.HardDeadline
 			if name == "resolver4" {
-				if ip != "192.0.2.53" || port != 53 {
+				if ip != resolver4(p.c) || port != 53 {
 					return "", ErrDenied
 				}
 			}
 			if name == "resolver6" {
-				if ip != "fd64:53::53" || port != 53 {
+				if p.c.Lite != nil || ip != "fd64:53::53" || port != 53 {
 					return "", ErrDenied
 				}
 			}
@@ -502,7 +510,11 @@ func (p *Policy) ruleHash(ctx context.Context, empty bool) (string, error) {
 			counts[name]++
 		}
 	}
-	if counts["resolver4"] != 1 || counts["resolver6"] != 1 || empty && counts["target4"]+counts["target6"] != 0 || !empty && counts["target4"]+counts["target6"] != 1 {
+	want6 := 1
+	if p.c.Lite != nil {
+		want6 = 0
+	}
+	if counts["resolver4"] != 1 || counts["resolver6"] != want6 || empty && counts["target4"]+counts["target6"] != 0 || !empty && counts["target4"]+counts["target6"] != 1 {
 		return "", ErrDenied
 	}
 	if empty {
@@ -662,8 +674,29 @@ func uniqueJSON(d *json.Decoder, depth int) error {
 
 // BootPrivate never accepts a fixture gate/flag. A trusted allocator must bind
 // exactly one HTTPS host/literal and explicit host/control exclusions offline.
-func BootPrivate(ctx context.Context, c Config) (*Policy, error) { return boot(ctx, c, true) }
+func BootPrivate(ctx context.Context, c Config) (*Policy, error) {
+	if c.Lite != nil {
+		return nil, ErrDenied
+	}
+	return boot(ctx, c, true)
+}
+
+func BootLite(ctx context.Context, c Config) (*Policy, error) {
+	if c.Lite == nil || !monitoring.LiteResolverAllowed(c.Lite.Resolver) || !c.Target.Is4() || c.DNSDigest == "" {
+		return nil, ErrDenied
+	}
+	return boot(ctx, c, true)
+}
+func resolver4(c Config) string {
+	if c.Lite != nil {
+		return c.Lite.Resolver.String()
+	}
+	return "192.0.2.53"
+}
 func validPrivateConfig(c Config, now time.Time) bool {
+	if c.Lite != nil && (!monitoring.LiteResolverAllowed(c.Lite.Resolver) || !c.Target.Is4() || c.DNSDigest == "") {
+		return false
+	}
 	if c.DNSDigest != "" {
 		if len(c.DNSDigest) != 64 || !c.ApprovalExpires.After(now) || c.ApprovalExpires.After(now.Add(24*time.Hour)) || c.HardDeadline.After(c.ApprovalExpires) {
 			return false

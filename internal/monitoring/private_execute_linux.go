@@ -51,6 +51,9 @@ func (s SchedulerInput) ExecuteApproved(ctx context.Context, client *targetpermi
 	return s.executePrivate(ctx, client, supervisor, deny, expires)
 }
 func (s SchedulerInput) executePrivate(ctx context.Context, client *targetpermit.Client, supervisor *os.File, deny []netip.Prefix, expires time.Time) (*Result, error) {
+	return s.executeResolved(ctx, client, supervisor, deny, expires, netip.MustParseAddr("192.0.2.53"), false)
+}
+func (s SchedulerInput) executeResolved(ctx context.Context, client *targetpermit.Client, supervisor *os.File, deny []netip.Prefix, expires time.Time, resolver netip.Addr, lite bool) (*Result, error) {
 	if !s.Valid() || s.executeAttempt == nil || !s.executeAttempt.CompareAndSwap(false, true) || client == nil || !SupervisorAlive(supervisor) {
 		return nil, ErrTargetPermit
 	}
@@ -60,12 +63,15 @@ func (s SchedulerInput) executePrivate(ctx context.Context, client *targetpermit
 	}
 	ctx, cancel := context.WithDeadline(ctx, s.deadline)
 	defer cancel()
-	engine, e := newEngine(netip.MustParseAddr("192.0.2.53"), deny)
+	engine, e := newEngine(resolver, deny)
 	if e != nil {
 		return nil, e
 	}
 	acquire := s.targetHook(client)
 	engine.targetPermit = func(c context.Context, r targetCandidate) error {
+		if lite && !r.endpoint.Addr().Is4() {
+			return ErrTargetPermit
+		}
 		if !SupervisorAlive(supervisor) || r.scheme != "https" || r.endpoint.Port() != 443 {
 			return ErrTargetPermit
 		}
