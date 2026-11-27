@@ -95,6 +95,19 @@ class TCCompatibility(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     verified_filters(raw, 'egress', False)
 
+    def test_legacy_repair_inside_foreign_nested_field_is_rejected(self):
+        rows = json.loads(MODERN)
+        fw = next(row for row in rows if row['kind'] == 'fw' and 'options' in row)
+        nested = json.dumps(fw, separators=(',', ':')).replace(
+            '"fw":{"mark":"0x4c310002","mask":"0xffffffff"},',
+            'handle 0x4c310002 \n')
+        for container in [dict(foreign='MARKER'), dict(foreign=['MARKER'])]:
+            with self.subTest(container=container):
+                rows[1].update(container)
+                raw = json.dumps(rows, separators=(',', ':')).replace('"MARKER"', nested)
+                with self.assertRaises(ValueError):
+                    verified_filters(raw, 'egress', False)
+
     def test_empty_incomplete_and_wrong_priority_cannot_be_baseline(self):
         for mutation in [lambda rows: [],
                          lambda rows: [v for v in rows if v['pref'] != 1000],

@@ -36,6 +36,13 @@ def filter_json(raw):
         def replace(match):
             fw = dict(mark=hex(int(match[2], 16)), mask=hex(int(match[3], 16)) if match[3] else '0xffffffff')
             return match[1] + '"fw":' + json.dumps(fw, separators=(',', ':')) + ','
+        matches = list(re.finditer(pattern, text))
+        if len(matches) != 1:
+            raise ValueError('unsupported malformed TC JSON')
+        # A dummy final record must close the root array here. A match inside
+        # another record/string/array cannot satisfy that strict JSON prefix.
+        if not isinstance(decode(text[:matches[0].start()] + '{}]'), list):
+            raise ValueError('legacy fw must be a top-level TC record')
         fixed, count = re.subn(pattern, replace, text)
         if count != 1:
             raise ValueError('unsupported malformed TC JSON')
